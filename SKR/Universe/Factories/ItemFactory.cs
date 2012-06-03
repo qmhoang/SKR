@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SKR.Universe.Entities.Actor;
-using SKR.Universe.Entities.Item;
+using SKR.Universe.Entities.Items;
 
 namespace SKR.Universe.Factories {
     public abstract class ItemFactory {

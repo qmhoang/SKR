@@ -5,9 +5,12 @@ using System.Text;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
+using SKR.Gameplay.Combat;
 using SKR.UI.Menus;
 using SKR.Universe;
+using SKR.Universe.Entities.Actor;
 using SKR.Universe.Entities.Actor.PC;
+using SKR.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.UI.Gameplay {
@@ -44,7 +47,9 @@ namespace SKR.UI.Gameplay {
                 return;
 
             Canvas.PrintString(1, 1, "*", new Pigment(ColorPresets.Red, Pigments[PigmentType.ViewNormal].Background));
-            Canvas.PrintString(3, 1, Message);
+            Canvas.Console.printRect(3, 1, Size.Width - 4, Size.Height - 2, Message);
+//            Canvas.PrintStringAligned(3, 1, Message, HorizontalAlignment.Left, VerticalAlignment.Top, new Size(Size.Width - 4, Size.Height - 2));           
+
         }
     }
 
@@ -105,7 +110,7 @@ namespace SKR.UI.Gameplay {
                                       };            
         }
 
-        protected override void OnKeyReleased(KeyboardData keyData) {
+        protected override void OnKeyPressed(KeyboardData keyData) {
             base.OnKeyPressed(keyData);
             MessagePanel.Clear();
             switch (keyData.KeyCode) {
@@ -148,12 +153,33 @@ namespace SKR.UI.Gameplay {
                                                                                              "Bite", "Kick", "Punch"
                                                                                      }, s => Logger.Info(s)));
                     } else if (keyData.Character == 'a') {
-//                        ParentApplication.Push(new TargetPrompt("Attack", player.Position, 
-//                            delegate (Point p)
-//                                                                                               {
-//
-//                                                                                                   ParentApplication.Push(new OptionsPrompt("Attacking ", ));
-//                                                                                               }, MapPanel));  
+                        Logger.Info("Pre push");
+                        ParentApplication.Push(
+                                new TargetPrompt("Attack", player.Position,
+                                                 delegate(Point p)
+                                                     {
+                                                         Person actor = player.Level.GetActorAtLocation(p);
+                                                         List<MeleeComponent> attacks = new List<MeleeComponent>
+                                                                                            {
+                                                                                                    player.Characteristics.Kick,
+                                                                                                    player.Characteristics.Punch
+                                                                                            };
+                                                         
+                                                         ParentApplication.Push(
+                                                             new OptionsPrompt(
+                                                                 String.Format("Attacking {0}", actor.Name), 
+                                                                 attacks.Select(attack => attack.Action).ToList(), 
+                                                                 delegate (int index)
+                                                                     {
+                                                                         var bps = actor.Characteristics.BodyPartsList.ToList();                                                                         
+                                                                         ParentApplication.Push(
+                                                                             new OptionsPrompt("Select location", 
+                                                                                 bps.Select(bp => bp.Name).ToList(), 
+                                                                                 i => MeleeCombat.AttackMeleeWithWeapon(player, actor, attacks[index], bps[i])));
+                                                                     }));
+                                                     }, 
+                                                     MapPanel));
+                        Logger.Info("Post push");
                     }
 
                     break;

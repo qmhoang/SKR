@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
+using SKR.Universe.Entities.Actor.NPC;
+using SKR.Universe.Entities.Actor.NPC.AI;
 using SKR.Universe.Entities.Actor.PC;
 using SKR.Universe.Location;
 
@@ -58,8 +60,14 @@ namespace SKR.Universe {
                     level.SetTile(x, y, Tile.Grass);
                 }
             }
+            Npc npc1 = new Npc("target1", level);
+            npc1.Position = new Point(3, 4);
+            npc1.Intelligence = new SimpleIntelligence(npc1);
+            level.Actors.Add(npc1);
+
             level.GenerateFov();
             instance = new World(new Player(level)) {Player = {Position = new Point(2, 2)}};
+            instance.AddUpdateableObject(npc1);
         }
 
         public void AddUpdateableObject(IEntity i) {
