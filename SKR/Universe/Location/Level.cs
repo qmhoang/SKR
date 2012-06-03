@@ -5,7 +5,7 @@ using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
 using SKR.Universe.Entities.Actor;
-using SKR.Universe.Entities.Item;
+using SKR.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.Universe.Location {
@@ -87,7 +87,7 @@ namespace SKR.Universe.Location {
 
         public long Guid { get; protected set; }
 
-        public List<RoguelikeActor> Actors { get; protected set; }
+        public List<Person> Actors { get; protected set; }
         public List<Item> Items { get; protected set; } 
 
         public Level(Size size) {
@@ -97,12 +97,12 @@ namespace SKR.Universe.Location {
             Map = new Tile[Width, Height];
             Fov = new TCODMap(Width, Height);
 
-            Actors = new List<RoguelikeActor>();
+            Actors = new List<Person>();
             Items = new List<Item>();
         }
 
-        public IEnumerable<RoguelikeActor> GetActorInRadius(Point origin, double length) {
-            List<RoguelikeActor> actors = new List<RoguelikeActor>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
+        public IEnumerable<Person> GetActorInRadius(Point origin, double length) {
+            List<Person> actors = new List<Person>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
             if (World.Instance.Player != null && World.Instance.Player.Position.IsInCircle(origin, length))
                 actors.Add(World.Instance.Player);
             return actors;
@@ -112,7 +112,7 @@ namespace SKR.Universe.Location {
         /// <summary>
         /// Returns the actor (including the player's) at a level's location, if no actor exist at location, null is returned
         /// </summary>
-        public RoguelikeActor GetActorAtLocation(Point location) {
+        public Person GetActorAtLocation(Point location) {
             if (!IsInBoundsOrBorder(location))
                 throw new ArgumentOutOfRangeException();
             if (World.Instance.Player != null && World.Instance.Player.Position == location)  // TODO FIX HACK

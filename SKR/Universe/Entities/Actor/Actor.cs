@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Item;
+using SKR.Universe.Entities.Items;
 using SKR.Universe.Location;
 using log4net;
 
@@ -22,7 +22,7 @@ namespace SKR.Universe.Entities.Actor {
     }
 
     public enum Skill {
-        Boxing,
+        Brawling,
         Knife
     }
 
@@ -66,12 +66,15 @@ namespace SKR.Universe.Entities.Actor {
 
             Skills = new Dictionary<Skill, SkillAttribute>
                          {
-                                 {Skill.Boxing, new SkillAttribute(0, Attributes[Attribute.Agility])},
+                                 {Skill.Brawling, new SkillAttribute(0, Attributes[Attribute.Agility], new List<Pair<ActorAttribute, int>>
+                                                                                                         {
+                                                                                                                 new Pair<ActorAttribute, int>(Attributes[Attribute.Agility], 2)
+                                                                                                         })},
                                  {Skill.Knife, new SkillAttribute(0, Attributes[Attribute.Agility])}
                          };
 
-            Punch = new MeleeComponent(Skill.Boxing, -1, -1, DamageType.Crush, 1, 100, 1, 0, 0, "punch");
-            Kick = new MeleeComponent(Skill.Boxing, 0, 1, DamageType.Crush, 1, 100, 1, 0, -100, "kick");
+            Punch = new MeleeComponent(Skill.Brawling, 0, -1, DamageType.Crush, 1, 100, 1, 0, 0, "punch");
+            Kick = new MeleeComponent(Skill.Brawling, -2, 1, DamageType.Crush, 1, 100, 1, 0, -100, "kick");
         }
 
 
@@ -90,7 +93,7 @@ namespace SKR.Universe.Entities.Actor {
         public IEnumerable<BodyPart> BodyPartsList { get { return BodyParts.Values; } } 
     }
 
-    public abstract class RoguelikeActor : AbstractActor {
+    public abstract class Person : AbstractActor {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public ActorCharacteristics Characteristics { get; private set; }
@@ -98,7 +101,18 @@ namespace SKR.Universe.Entities.Actor {
         public Level Level { get; private set; }
         public World World { get { return World.Instance; } }
 
-        protected RoguelikeActor(Level level) {
+        private string myName;
+
+        public override string Name {
+            get { return myName; }
+        }
+
+        public override bool Dead {
+            get { return Characteristics.Health <= 0; }
+        }
+
+        protected Person(string name, Level level) {
+            myName = name;
             Level = level;
             Characteristics = new ActorCharacteristics();
         }
@@ -118,7 +132,7 @@ namespace SKR.Universe.Entities.Actor {
                 return ActionResult.Aborted;
 
             if (Level.DoesActorExistAtLocation(nPos)) {
-                RoguelikeActor m = Level.GetActorAtLocation(nPos);
+                Person m = Level.GetActorAtLocation(nPos);
 
 //todo melee combat
             } else {

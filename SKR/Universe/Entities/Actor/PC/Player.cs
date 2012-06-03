@@ -5,13 +5,7 @@ using DEngine.Extensions;
 using SKR.Universe.Location;
 
 namespace SKR.Universe.Entities.Actor.PC {
-    public class Player : RoguelikeActor {
-        private string playerName;
-
-        public override string Name {
-            get { return playerName; }
-        }
-
+    public class Player : Person {
         public override ActionResult Move(int dx, int dy) {
             throw new NotImplementedException();
         }
@@ -45,8 +39,7 @@ namespace SKR.Universe.Entities.Actor.PC {
         }
 
         public Player(Level level)
-            : base(level) {
-            playerName = "player";
+            : base("player", level) {            
         }
     }
 }

@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\Combat\MeleeCombat.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
@@ -67,9 +68,13 @@
     <Compile Include="Universe\Entities\Actor\Actor.cs" />
     <Compile Include="Universe\Entities\Actor\ActorAttribute.cs" />
     <Compile Include="Universe\Entities\Actor\BodyPart.cs" />
+    <Compile Include="Universe\Entities\Actor\ItemContainer.cs" />
+    <Compile Include="Universe\Entities\Actor\NPC\AI\SimpleIntelligence.cs" />
+    <Compile Include="Universe\Entities\Actor\NPC\Npc.cs" />
+    <Compile Include="Universe\Entities\Actor\NPC\AI\NpcIntelligence.cs" />
     <Compile Include="Universe\Entities\Actor\PC\Player.cs" />
-    <Compile Include="Universe\Entities\Item\Item.cs" />
-    <Compile Include="Universe\Entities\Item\MeleeComponent.cs" />
+    <Compile Include="Universe\Entities\Items\Item.cs" />
+    <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
     <Compile Include="Universe\Factories\GuidFactory.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Location\Level.cs" />

@@ -302,13 +302,13 @@ namespace SKR.UI.Menus {
                 char c = 'a';
                 foreach (var option in options) {
                     sb.AppendFormat("{1}[{0}]", c, ColorPresets.Green.ForegroundCodeString);
-                    sb.Append(Pigments[PigmentType.ViewNormal].Foreground.ForegroundCodeString);
+                    sb.Append(Color.StopColorCode);
                     sb.Append(option);
                     sb.Append(" ");
                     c++;
                 }
 
-                return String.Format("{0}. {1}{2}[Esc]{3} to exit.", Message, sb.ToString(), ColorPresets.Red.ForegroundCodeString, Pigments[PigmentType.ViewNormal].Foreground.ForegroundCodeString);
+                return String.Format("{0}. {1}{2}[Esc]{3} to exit.", Message, sb.ToString(), ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
             }
         }
 
