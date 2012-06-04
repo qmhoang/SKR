@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using DEngine.Core;
 using SKR.Universe;
-using SKR.Universe.Entities.Actor;
+using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Items;
-using Attribute = SKR.Universe.Entities.Actor.Attribute;
+using Attribute = SKR.Universe.Entities.Actors.Attribute;
 
 namespace SKR.Gameplay.Combat {
     public static class MeleeCombat {
@@ -27,7 +27,7 @@ namespace SKR.Gameplay.Combat {
             Logger.InfoFormat("{0} (skill: {1} @ {2}) attacks {3} rolling {4} ({5} penalty for targetting {6})", attacker.Name, weapon.Skill, atkDiff, defender.Name, atkRoll, bodyPart.AttackPenalty, bodyPart.Name);
 
             if ((atkRoll - bodyPart.AttackPenalty) > atkDiff) {
-                world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescription, defender.Name, bodyPart.Name));
+                world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name));
                 return;
             }
 
@@ -60,7 +60,7 @@ namespace SKR.Gameplay.Combat {
 
             world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.", attacker.Name, weapon.Action, defender.Name, bodyPart.Name, "todo-description"));
 
-            // to do wounding
+            // todo wounding
         }
 
         private static Dice DamageTableThrust(int strength) {

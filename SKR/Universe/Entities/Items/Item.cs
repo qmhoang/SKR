@@ -12,7 +12,8 @@ namespace SKR.Universe.Entities.Items {
         TwoHandedWeapon,
         Armor,
         Shield,
-        Ammo
+        Ammo,
+        BodyPart,
     }
 
     public enum ItemAction {
@@ -23,13 +24,17 @@ namespace SKR.Universe.Entities.Items {
 
     public abstract class ItemComponent {
         public string ActionDescription { get; protected set; }
-        public ItemAction Action { get; protected set; }
+        public string ActionDescriptionPlural { get; protected set; }
+        public ItemAction Action { get; protected set; }     
+        public Item ParentItem { get; internal set; }
     }
 
-    public class Item : IGuid, IRefId, IObject {
+    public class Item : IUniqueId, IRefId, IObject {
+
+
         public string Name { get; private set; }
         public string RefId { get; private set; }
-        public long Guid { get; private set; }
+        public long UniqueId { get; private set; }
         public int Weight { get; private set; }
         public int Value { get; private set; }
 
@@ -56,12 +61,13 @@ namespace SKR.Universe.Entities.Items {
             Name = name;
             RefId = refId;
             Type = type;
-            Guid = guid;
+            UniqueId = guid;
             Weight = weight;
             Value = value;
             components = new Dictionary<ItemAction, ItemComponent>();            
 
             foreach (var comp in comps) {
+                comp.ParentItem = this;
                 components.Add(comp.Action, comp);
             }
         }

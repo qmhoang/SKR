@@ -40,5 +40,9 @@ namespace SKR.Universe {
         public void OnDeath() {
 
         }
+
+        public bool Updateable {
+            get { return ActionPoints > 0; }
+        }
     }
 }

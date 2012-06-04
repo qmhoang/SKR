@@ -6,8 +6,8 @@ using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
 using SKR.Universe;
-using SKR.Universe.Entities.Actor;
-using SKR.Universe.Entities.Actor.PC;
+using SKR.Universe.Entities.Actors;
+using SKR.Universe.Entities.Actors.PC;
 using SKR.Universe.Entities.Items;
 using libtcod;
 
@@ -15,7 +15,7 @@ namespace SKR.UI.Menus {
     public class ItemWindow : ListWindow<Item> {
         private readonly Action<Item> itemSelected;
         private readonly bool singleItem;        
-        private int displayIndex;
+        private int displayIndex;   //todo scrolling
         private Rect sizeList;
 
         protected override Rect ListRect {
