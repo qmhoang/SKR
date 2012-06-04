@@ -347,12 +347,12 @@ namespace SKR.Universe.Entities.Actor {
             return false;            
         }
 
-        public bool IsSlotFull(BodyPartType bpslot) {
+        public bool IsItemEquipped(BodyPartType bpslot) {
             return equippedItems.ContainsKey(bpslot);
         }
 
         public Item GetItemAtBodyPart(BodyPartType bpSlot) {
-            return IsSlotFull(bpSlot) ? equippedItems[bpSlot] : null;
+            return IsItemEquipped(bpSlot) ? equippedItems[bpSlot] : null;
         }
 
         public IEnumerable<Item> Items { get { return inventory; } } 

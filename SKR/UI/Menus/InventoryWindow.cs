@@ -99,7 +99,7 @@ namespace SKR.UI.Menus {
         }
 
         private void SelectIndex(BodyPart bodyPart) {
-            if (player.IsSlotFull(bodyPart.Type)) {
+            if (player.IsItemEquipped(bodyPart.Type)) {
                 if (!player.Unequip(bodyPart.Type))
                     World.Instance.InsertMessage("Unable to unequip item, maybe you are carrying too much.");
             } else {
@@ -127,7 +127,7 @@ namespace SKR.UI.Menus {
 
 
             if (keyData.KeyCode == TCODKeyCode.Escape) {
-                ParentApplication.RemoveWindow(this);
+                WindowState = WindowState.Quitting;
             }
         }
 
@@ -142,7 +142,7 @@ namespace SKR.UI.Menus {
             foreach (var bodyPartPair in Items) {
                 Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", bodyPartPair.Key, bodyPartPair.Value.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
                 Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
-                Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, player.IsSlotFull(bodyPartPair.Value.Type) ? player.GetItemAtBodyPart(bodyPartPair.Value.Type).Name : "-");
+                Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, player.IsItemEquipped(bodyPartPair.Value.Type) ? player.GetItemAtBodyPart(bodyPartPair.Value.Type).Name : "-");
 
                 for (int i = 0; i < rect.Size.Width; i++) {
                     if ((bodyPartPair.Key - 'A') == MouseOverIndex)
