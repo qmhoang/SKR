@@ -147,11 +147,12 @@ namespace SKR.UI.Gameplay {
                     break;
                 default:
                     if (keyData.Character == 'w') {
-                        ParentApplication.Push(new InventoryWindow(new WindowTemplate
+                        ParentApplication.Push(new InventoryWindow(new SelectableListTemplate<BodyPart>
                                                                        {
                                                                                Size = MapPanel.Size,
                                                                                IsPopup = true,
-                                                                               HasFrame = true,                                                                               
+                                                                               HasFrame = true,
+                                                                               Items = player.BodyParts.ToList(),
                                                                        }));
                     } else if (keyData.Character == 'a') {
                         Logger.Info("Pre push");

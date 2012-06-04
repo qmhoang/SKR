@@ -65,6 +65,7 @@
     <Compile Include="UI\Gameplay\MapPanel.cs" />
     <Compile Include="UI\Menus\InventoryWindow.cs" />
     <Compile Include="UI\Menus\PromptWindow.cs" />
+    <Compile Include="UI\Menus\ListWindow.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Actor\Actor.cs" />
     <Compile Include="Universe\Entities\Actor\ActorAttribute.cs" />
