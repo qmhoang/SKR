@@ -15,8 +15,8 @@ namespace SKR.Universe.Factories {
             switch (refId) {
                 case "knife":
                     return new Item("Large Knife", refId, ItemType.OneHandedWeapon, GuidFactory.Generate(), 10, 4000,
-                        new MeleeComponent(Skill.Knife, 0, -1, DamageType.Cut, 1, 100, 1, 6, -1, ItemAction.MeleeAttackSwing, "swing"),
-                        new MeleeComponent(Skill.Knife, -2, 0, DamageType.Impale, 1, 100, 1, 6, -1, ItemAction.MeleeAttackThrust, "thrust"));
+                        new MeleeComponent(Skill.Knife, 0, -1, DamageType.Cut, 1, 100, 1, 6, -1, ItemAction.MeleeAttackSwing, "slash knife"),
+                        new MeleeComponent(Skill.Knife, -2, 0, DamageType.Impale, 1, 100, 1, 6, -1, ItemAction.MeleeAttackThrust, "jab knife"));
             }
             return null;
         }

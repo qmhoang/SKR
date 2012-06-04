@@ -154,34 +154,39 @@ namespace SKR.UI.Gameplay {
                                                                                HasFrame = true,
                                                                                Items = player.BodyParts.ToList(),
                                                                        }));
-                    } else if (keyData.Character == 'a') {
-                        Logger.Info("Pre push");
+                    } else if (keyData.Character == 'a') {                        
                         ParentApplication.Push(
                                 new TargetPrompt("Attack", player.Position,
                                                  delegate(Point p)
                                                      {
-                                                         Person actor = player.Level.GetActorAtLocation(p);
+                                                         Person target = player.Level.GetActorAtLocation(p);
                                                          List<MeleeComponent> attacks = new List<MeleeComponent>
                                                                                             {
                                                                                                     player.Characteristics.Kick,
                                                                                                     player.Characteristics.Punch
                                                                                             };
+
+                                                         foreach (var bodyPart in player.BodyParts.Where(bodyPart => player.IsItemEquipped(bodyPart.Type))) {
+                                                             if (player.GetItemAtBodyPart(bodyPart.Type).ContainsAction(ItemAction.MeleeAttackSwing))
+                                                                 attacks.Add(player.GetItemAtBodyPart(bodyPart.Type).GetComponent(ItemAction.MeleeAttackSwing) as MeleeComponent);
+                                                             if (player.GetItemAtBodyPart(bodyPart.Type).ContainsAction(ItemAction.MeleeAttackThrust))
+                                                                 attacks.Add(player.GetItemAtBodyPart(bodyPart.Type).GetComponent(ItemAction.MeleeAttackThrust) as MeleeComponent);
+                                                         }
                                                          
                                                          ParentApplication.Push(
                                                              new OptionsPrompt(
-                                                                 String.Format("Attacking {0}", actor.Name), 
+                                                                 String.Format("Attacking {0}", target.Name), 
                                                                  attacks.Select(attack => attack.ActionDescription).ToList(), 
                                                                  delegate (int index)
                                                                      {
-                                                                         var bps = actor.Characteristics.BodyPartsList.ToList();                                                                         
+                                                                         var bps = target.Characteristics.BodyPartsList.ToList();                                                                         
                                                                          ParentApplication.Push(
                                                                              new OptionsPrompt("Select location", 
                                                                                  bps.Select(bp => bp.Name).ToList(), 
-                                                                                 i => MeleeCombat.AttackMeleeWithWeapon(player, actor, attacks[index], bps[i])));
+                                                                                 i => MeleeCombat.AttackMeleeWithWeapon(player, target, attacks[index], bps[i])));
                                                                      }));
                                                      }, 
                                                      MapPanel));
-                        Logger.Info("Post push");
                     }
 
                     break;

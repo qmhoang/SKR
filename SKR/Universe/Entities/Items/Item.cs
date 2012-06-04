@@ -41,8 +41,15 @@ namespace SKR.Universe.Entities.Items {
 
         private Dictionary<ItemAction, ItemComponent> components;
 
-        public bool CanItem(ItemAction action) {
+        public bool ContainsAction(ItemAction action) {
             return components.ContainsKey(action);
+        }
+
+        public ItemComponent GetComponent(ItemAction action) {
+            if (ContainsAction(action))
+                return components[action];
+            else
+                throw new ArgumentException("This item has no component for this", "action");
         }
         
         public Item(string name, string refId, ItemType type, long guid, int weight, int value, params ItemComponent[] comps) {
