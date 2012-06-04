@@ -29,12 +29,10 @@ namespace SKR.Universe.Entities.Items {
         public Item ParentItem { get; internal set; }
     }
 
-    public class Item : IUniqueId, IRefId, IObject {
-
-
+    public class Item : IObject {
         public string Name { get; private set; }
-        public string RefId { get; private set; }
-        public long UniqueId { get; private set; }
+        public RefId RefId { get; private set; }
+        public UniqueId UniqueId { get; private set; }
         public int Weight { get; private set; }
         public int Value { get; private set; }
 
@@ -57,11 +55,11 @@ namespace SKR.Universe.Entities.Items {
                 throw new ArgumentException("This item has no component for this", "action");
         }
         
-        public Item(string name, string refId, ItemType type, long guid, int weight, int value, params ItemComponent[] comps) {
+        public Item(string name, RefId refId, ItemType type, UniqueId uid, int weight, int value, params ItemComponent[] comps) {
             Name = name;
             RefId = refId;
             Type = type;
-            UniqueId = guid;
+            UniqueId = uid;
             Weight = weight;
             Value = value;
             components = new Dictionary<ItemAction, ItemComponent>();            

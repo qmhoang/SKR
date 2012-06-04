@@ -32,7 +32,7 @@ namespace SKR.UI.Gameplay {
                 for (int y = 0; y < Size.Height; y++) {
                     Point realPosition = ViewOffset.Shift(x, y);
 
-                    Cell c = Cell.GetCell(player.Level.GetTile(realPosition));
+                    Tile c = player.Level.GetTile(realPosition);
 #if DEBUG
                     if (!Program.SeeAll) {
 #endif

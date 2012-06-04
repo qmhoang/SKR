@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DEngine.Core;
 using SKR.Universe.Entities.Items;
@@ -62,17 +63,17 @@ namespace SKR.Universe.Entities.Actors {
                                  {
                                          Skill.Brawling,
                                          new SkillAttribute(0, Attributes[Attribute.Agility], "Everyone was kung-fu fighting",
-                                                            new List<Pair<ActorAttribute, int>>
+                                                            new List<Tuple<ActorAttribute, int>>
                                                                 {
-                                                                        new Pair<ActorAttribute, int>(Attributes[Attribute.Agility], 2),                                                                        
+                                                                        new Tuple<ActorAttribute, int>(Attributes[Attribute.Agility], 2),                                                                        
                                                                 })
                                          },
                                  {
                                          Skill.Knife, 
                                          new SkillAttribute(0, Attributes[Attribute.Agility], "Is that a knife in your pocket or are you happy to see me?",
-                                                            new List<Pair<ActorAttribute, int>>
+                                                            new List<Tuple<ActorAttribute, int>>
                                                                 {
-                                                                        new Pair<ActorAttribute, int>(Attributes[Attribute.Agility], 4),                                                                        
+                                                                        new Tuple<ActorAttribute, int>(Attributes[Attribute.Agility], 4),                                                                        
                                                                 })
                                          }
                          };
