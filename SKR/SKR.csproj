@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gameplay\Combat\MeleeCombat.cs" />
+    <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
@@ -67,14 +68,15 @@
     <Compile Include="UI\Menus\PromptWindow.cs" />
     <Compile Include="UI\Menus\ListWindow.cs" />
     <Compile Include="Universe\Calendar.cs" />
-    <Compile Include="Universe\Entities\Actor\Actor.cs" />
-    <Compile Include="Universe\Entities\Actor\ActorAttribute.cs" />
-    <Compile Include="Universe\Entities\Actor\BodyPart.cs" />
-    <Compile Include="Universe\Entities\Actor\ItemContainer.cs" />
-    <Compile Include="Universe\Entities\Actor\NPC\AI\SimpleIntelligence.cs" />
-    <Compile Include="Universe\Entities\Actor\NPC\Npc.cs" />
-    <Compile Include="Universe\Entities\Actor\NPC\AI\NpcIntelligence.cs" />
-    <Compile Include="Universe\Entities\Actor\PC\Player.cs" />
+    <Compile Include="Universe\Entities\Actors\Actor.cs" />
+    <Compile Include="Universe\Entities\Actors\ActorAttribute.cs" />
+    <Compile Include="Universe\Entities\Actors\ActorCharacteristics.cs" />
+    <Compile Include="Universe\Entities\Actors\BodyPart.cs" />
+    <Compile Include="Universe\Entities\Actors\ItemContainer.cs" />
+    <Compile Include="Universe\Entities\Actors\NPC\AI\SimpleIntelligence.cs" />
+    <Compile Include="Universe\Entities\Actors\NPC\Npc.cs" />
+    <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />
+    <Compile Include="Universe\Entities\Actors\PC\Player.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
     <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
     <Compile Include="Universe\Factories\GuidFactory.cs" />

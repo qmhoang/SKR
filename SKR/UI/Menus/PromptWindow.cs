@@ -8,7 +8,7 @@ using DEngine.Extensions;
 using DEngine.UI;
 using SKR.UI.Gameplay;
 using SKR.Universe;
-using SKR.Universe.Entities.Actor.PC;
+using SKR.Universe.Entities.Actors.PC;
 using libtcod;
 using log4net;
 
@@ -286,14 +286,16 @@ namespace SKR.UI.Menus {
         }
     }
 
-    public class OptionsPrompt : PromptWindow {
-        private readonly Action<int> actionCount;
-        private List<string> options;
+    public class OptionsPrompt<T> : PromptWindow {
+        private readonly Action<T> actionCount;
+        private List<T> options;
+        private Func<T, string> descriptorFunction;
 
-        public OptionsPrompt(string message, List<string> options, Action<int> actionCount)
+        public OptionsPrompt(string message, List<T> options, Func<T, string> descriptor, Action<T> actionCount)
             : base(message, popupTemplate) {
             this.actionCount = actionCount;
             this.options = options;
+            this.descriptorFunction = descriptor;
         }
 
         protected override string Text {
@@ -303,22 +305,24 @@ namespace SKR.UI.Menus {
                 foreach (var option in options) {
                     sb.AppendFormat("{1}[{0}]", c, ColorPresets.Green.ForegroundCodeString);
                     sb.Append(Color.StopColorCode);
-                    sb.Append(option);
+                    sb.Append(descriptorFunction(option));
                     sb.Append(" ");
                     c++;
-                }
+                }                
 
-                return String.Format("{0}. {1}{2}[Esc]{3} to exit.", Message, sb.ToString(), ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
+                return String.Format("{0}. {1}{2}[Esc]{3} to exit.", Message, sb, ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
             }
         }
 
         protected override void OnKeyPressed(KeyboardData keyData) {
             base.OnKeyPressed(keyData);
 
-            if (Char.IsLetter(keyData.Character)) {
+            if (Char.IsLetter(keyData.Character)) {                
                 int index = Char.ToLower(keyData.Character) - 'a';
-                actionCount(index);
-                Quit();
+                if (index < options.Count && index >= 0) {
+                    actionCount(options[index]);
+                    Quit();    
+                }                
             } else if (keyData.KeyCode == TCODKeyCode.Escape) {
                 Quit();
             }

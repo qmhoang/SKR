@@ -2,7 +2,7 @@ using System;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
-using SKR.Universe.Entities.Actor.PC;
+using SKR.Universe.Entities.Actors.PC;
 using SKR.Universe.Location;
 
 namespace SKR.UI.Gameplay {
@@ -36,7 +36,7 @@ namespace SKR.UI.Gameplay {
 #if DEBUG
                     if (!Program.SeeAll) {
 #endif
-                        if (player.Spot(realPosition)) {
+                        if (player.HasLineOfSight(realPosition)) {
                             player.Level.Vision[realPosition.X, realPosition.Y] = true;
                             Canvas.PrintChar(x, y, c.Ascii, c.Pigment);
                         } else if (player.Level.Vision[realPosition.X, realPosition.Y])
@@ -67,7 +67,7 @@ namespace SKR.UI.Gameplay {
 #if DEBUG
             if (!Program.SeeAll) {
 #endif
-                if (player.Spot(mapPosition)) {
+                if (player.HasLineOfSight(mapPosition)) {
                     Canvas.PrintChar(localPosition.X, localPosition.Y, ascii, directVision);
                 }
             }

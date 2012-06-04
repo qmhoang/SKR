@@ -4,7 +4,7 @@ using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
-using SKR.Universe.Entities.Actor;
+using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Items;
 using libtcod;
 
@@ -70,7 +70,7 @@ namespace SKR.Universe.Location {
         }
     }
 
-    public class Level : IGuid {
+    public class Level : IUniqueId {
         protected Tile[,] Map;
         public TCODMap Fov { get; protected set; }
 
@@ -85,7 +85,7 @@ namespace SKR.Universe.Location {
             get { return Size.Height; }
         }
 
-        public long Guid { get; protected set; }
+        public long UniqueId { get; protected set; }
 
         public List<Person> Actors { get; protected set; }
         public List<Item> Items { get; protected set; } 
