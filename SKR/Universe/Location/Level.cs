@@ -9,7 +9,7 @@ using SKR.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.Universe.Location {
-    public enum Tile {
+    public enum TileEnum {
         Unused = 0,
         Grass,
         WoodFloor,
@@ -28,49 +28,34 @@ namespace SKR.Universe.Location {
         Fence,
     }
 
-    public class Cell {
-        public Pigment Pigment { get; private set; }
+    public class Tile : ICopy<Tile> {
         public char Ascii { get; private set; }
-
-        public double WalkPenalty { get; private set; }
         public bool Transparent { get; private set; }
+        public bool Walkable { get; private set; }
+        public double WalkPenalty { get; private set; }
+        public Pigment Pigment { get; private set; }
 
-        private static Dictionary<Tile, Cell> cells =
-                new Dictionary<Tile, Cell>
-                    {
-                        {Tile.Unused, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
 
-                        {Tile.WoodFloor, new Cell(' ', new Pigment(ColorPresets.Black, ColorPresets.Black), 0.0, true)},
-                        {Tile.Grass, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.DarkerGreen, ColorPresets.LightGreen), 0.0, true)},
 
-                        {Tile.HorizWall, new Cell((char) TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.VertWall, new Cell((char) TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-
-                        {Tile.NEWall, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.NWWall, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.SEWall, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.SWWall, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-
-                        {Tile.TWallE, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.TWallW, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.TWallS, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},
-                        {Tile.TWallN, new Cell((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black), 0.0, false)},  
-
-                    };                                       
-
-        private Cell(char ascii, Pigment pigment, double walkPenalty, bool transparent) {
-            Pigment = pigment;
+        public Tile(char ascii, bool transparent, bool walkable, double walkPenalty, Pigment pigment) {
             Ascii = ascii;
-            WalkPenalty = walkPenalty;
             Transparent = transparent;
+            Walkable = walkable;
+            WalkPenalty = walkPenalty;
+            Pigment = pigment;
         }
 
-        public static Cell GetCell(Tile tile) {
-            return cells[tile];
+        public Tile Copy() {
+            var pigment = new Pigment(new Color(Pigment.Foreground.Red, Pigment.Foreground.Green, Pigment.Foreground.Blue),
+                                      new Color(Pigment.Background.Red, Pigment.Background.Green, Pigment.Background.Blue));
+
+            pigment.ReplaceBGFlag(Pigment.BackgroundFlag);
+
+            return new Tile(Ascii, Transparent, Walkable, WalkPenalty, pigment);
         }
     }
 
-    public class Level : IUniqueId {
+    public class Level {
         protected Tile[,] Map;
         public TCODMap Fov { get; protected set; }
 
@@ -85,20 +70,26 @@ namespace SKR.Universe.Location {
             get { return Size.Height; }
         }
 
-        public long UniqueId { get; protected set; }
+        public UniqueId Uid { get; protected set; }
 
         public List<Person> Actors { get; protected set; }
-        public List<Item> Items { get; protected set; } 
+        public List<Item> Items { get; protected set; }
 
-        public Level(Size size) {
+        public Level(UniqueId uid, Size size, Tile fill) {
+            Uid = uid;
             Size = size;
 
-            Vision = new bool[Width, Height];
-            Map = new Tile[Width, Height];
+            Vision = new bool[Width,Height];
+            Map = new Tile[Width,Height];
             Fov = new TCODMap(Width, Height);
 
             Actors = new List<Person>();
-            Items = new List<Item>();
+            Items = new List<Item>();            
+
+            for (int x = 0; x < Map.GetLength(0); x++)
+                for (int y = 0; y < Map.GetLength(1); y++) {
+                    Map[x, y] = fill.Copy();
+                }
         }
 
         public IEnumerable<Person> GetActorInRadius(Point origin, double length) {
@@ -144,12 +135,12 @@ namespace SKR.Universe.Location {
             Map[x, y] = t;
         }
 
-        public void SetTile(Point v, Tile t) {
-            Map[v.X, v.Y] = t;
+        public void SetTile(Point p, Tile t) {
+            SetTile(p.X, p.Y, t);
         }
 
-        public Tile GetTile(Point v) {
-            return Map[v.X, v.Y];
+        public Tile GetTile(Point p) {
+            return GetTile(p.X, p.Y);
         }
 
         public Tile GetTile(int x, int y) {
@@ -158,8 +149,8 @@ namespace SKR.Universe.Location {
             return Map[x, y];
         }
 
-        public bool IsVisible(Point v) {
-            return IsVisible(v.X, v.Y);
+        public bool IsVisible(Point p) {
+            return IsVisible(p.X, p.Y);
         }
 
         public bool IsVisible(int x, int y) {
@@ -183,10 +174,14 @@ namespace SKR.Universe.Location {
         /// </summary>
         public void GenerateFov() {
             // tiles
-            for (int i = 0; i < Map.GetLength(0); i++)
-                for (int j = 0; j < Map.GetLength(1); j++)
-                    if (Cell.GetCell(GetTile(i, j)).Transparent)
-                        Fov.setProperties(i, j, true, true);
+            for (int x = 0; x < Map.GetLength(0); x++)
+                for (int y = 0; y < Map.GetLength(1); y++) {
+                    var t = GetTile(x, y);
+                    if (t == null)
+                        Fov.setProperties(x, y, false, false);
+                    else
+                        Fov.setProperties(x, y, t.Transparent, t.Walkable);                    
+                }
 
             // features
         }

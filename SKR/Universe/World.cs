@@ -6,6 +6,7 @@ using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Actors.NPC;
 using SKR.Universe.Entities.Actors.NPC.AI;
 using SKR.Universe.Entities.Actors.PC;
+using SKR.Universe.Entities.Items;
 using SKR.Universe.Factories;
 using SKR.Universe.Location;
 
@@ -40,7 +41,9 @@ namespace SKR.Universe {
 
         public Player Player { get; set; }
 
-        public ItemFactory ItemFactory { get; private set; }
+        private Factory<RefId, UniqueId, Item> ItemFactory;
+        private Factory<UniqueId> IdFactory;
+        private Factory<TileEnum, Tile> TileFactory;
 
         public static World Instance { get; private set; }
 
@@ -52,7 +55,31 @@ namespace SKR.Universe {
             toRemove = new List<IEntity>();
             MessageBuffer = new List<string>();
 
+            IdFactory = new SourceUniqueIdFactory();
             ItemFactory = new SourceItemFactory();
+            TileFactory = new SourceTileFactory();
+
+            var level = new Level(IdFactory.Construct(), new Size(80, 60), TileFactory.Construct(TileEnum.Unused));
+            for (int x = 1; x < 10; x++) {
+                for (int y = 1; y < 10; y++) {
+                    level.SetTile(x, y, TileFactory.Construct(TileEnum.Grass));                    
+                }
+            }
+            Npc npc1 = new Npc("target1", level) {Position = new Point(3, 4)};
+            npc1.Intelligence = new SimpleIntelligence(npc1);
+            level.Actors.Add(npc1);
+            AddUpdateableObject(npc1);
+
+            level.GenerateFov();
+
+            Player = new Player(level) { Position = new Point(2, 2) };
+
+            Player.AddItem(CreateItem(new RefId { Id = "largeknife" }));
+
+            var i = CreateItem(new RefId { Id = "brassknuckles" });
+            Player.AddItem(i);
+            Player.Equip(BodyPartType.LeftHand, i);
+
         }
 
         public void InsertMessage(string message) {
@@ -61,29 +88,11 @@ namespace SKR.Universe {
         }
 
         public static void Create() {            
+            Instance = new World();            
+        }
 
-            var level = new Level(new Size(80, 60));
-            for (int x = 1; x < 10; x++) {
-                for (int y = 1; y < 10; y++) {
-                    level.SetTile(x, y, Tile.Grass);
-                }
-            }
-            Npc npc1 = new Npc("target1", level);
-            npc1.Position = new Point(3, 4);
-            npc1.Intelligence = new SimpleIntelligence(npc1);
-            level.Actors.Add(npc1);
-
-            level.GenerateFov();
-
-            Instance = new World();
-            Instance.Player = new Player(level) {Position = new Point(2, 2)};
-            Instance.AddUpdateableObject(npc1);
-
-            World.Instance.Player.AddItem(Instance.ItemFactory.CreateItem("largeknife"));
-
-            var i = Instance.ItemFactory.CreateItem("brassknuckles");
-            Instance.Player.AddItem(i);
-            Instance.Player.Equip(BodyPartType.LeftHand, i);
+        public Item CreateItem(RefId key) {
+            return ItemFactory.Construct(key, IdFactory.Construct());
         }
 
         public void AddUpdateableObject(IEntity i) {

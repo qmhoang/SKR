@@ -40,14 +40,14 @@ namespace SKR.Universe.Entities.Actors {
     }
 
     public class SkillAttribute : ActorAttribute {
-        public List<Pair<ActorAttribute, int>> Defaults { get; private set; }
+        public List<Tuple<ActorAttribute, int>> Defaults { get; private set; }
         public ActorAttribute Base { get; private set; }
         public string Information { get; private set; }
 
         public override int Current {
             get {
                 int max = base.Current == 0 ? Int32.MinValue : base.Current + Base.Current;
-                var list = Defaults.Select(d => d.First.Current - d.Second).Concat(new[] {max});
+                var list = Defaults.Select(d => d.Item1.Current - d.Item2).Concat(new[] {max});
                 max = list.Max();
 
                 return max;
@@ -57,7 +57,7 @@ namespace SKR.Universe.Entities.Actors {
             }
         }
 
-        public SkillAttribute(int value, ActorAttribute @base, string info, List<Pair<ActorAttribute, int>> defaults)
+        public SkillAttribute(int value, ActorAttribute @base, string info, List<Tuple<ActorAttribute, int>> defaults)
             : base(value) {
             Defaults = defaults;
             Information = info;
@@ -65,7 +65,7 @@ namespace SKR.Universe.Entities.Actors {
         }
 
         public SkillAttribute(int value, ActorAttribute @base, string info)
-            : this(value, @base, info, new List<Pair<ActorAttribute, int>>()) {            
+            : this(value, @base, info, new List<Tuple<ActorAttribute, int>>()) {            
         }
     }
 }

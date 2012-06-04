@@ -32,7 +32,7 @@ namespace SKR {
         public static readonly Size ScreenSize = new Size(80, 60);
 
 #if DEBUG
-        public static bool SeeAll = false;
+        public static bool SeeAll = true;
         public static bool GodMode = false;
 #endif
 
@@ -48,7 +48,8 @@ namespace SKR {
                 {
                     Title = "SKR",
                     ScreenSize = ScreenSize,
-                    Font = "Data/Font/lucida10x10_gs_tc.png",
+//                    Font = "Data/Font/lucida10x10_gs_tc.png",
+                    Font = "Data/Font/consolas12x12_gs_tc.png",
                     FpsLimit = FpsLimit,
                     InitialDelay = InitialDelay,
                     IntervalDelay = IntervalDelay,
