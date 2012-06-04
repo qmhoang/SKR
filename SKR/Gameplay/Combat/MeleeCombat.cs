@@ -15,6 +15,11 @@ namespace SKR.Gameplay.Combat {
         private static Dice dice = new Dice(3, 6);
         private static World world = World.Instance;
 
+        public static void AttackMelee(Person attacker, Person defender) {
+
+            MeleeComponent weapon;
+        }
+
         public static void AttackMeleeWithWeapon(Person attacker, Person defender, MeleeComponent weapon, BodyPart bodyPart) {
             int atkDiff = attacker.Characteristics.GetSkill(weapon.Skill);
             int atkRoll = dice.Roll();
@@ -22,12 +27,13 @@ namespace SKR.Gameplay.Combat {
             Logger.InfoFormat("{0} (skill: {1} @ {2}) attacks {3} rolling {4} ({5} penalty for targetting {6})", attacker.Name, weapon.Skill, atkDiff, defender.Name, atkRoll, bodyPart.AttackPenalty, bodyPart.Name);
 
             if ((atkRoll - bodyPart.AttackPenalty) > atkDiff) {
-                world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.Action, defender.Name, bodyPart.Name));
+                world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescription, defender.Name, bodyPart.Name));
                 return;
             }
 
-            // we hit
-            int damage = DamageTableSwing(attacker.Characteristics.GetAttribute(Attribute.Strength)).Roll() + weapon.Damage;
+            // we hit           
+            var strength = attacker.Characteristics.GetAttribute(Attribute.Strength);
+            int damage = (weapon.Action == ItemAction.MeleeAttackSwing ? DamageTableSwing(strength).Roll() : DamageTableThrust(strength).Roll()) + weapon.Damage;
 
             // todo get armor, etc
 

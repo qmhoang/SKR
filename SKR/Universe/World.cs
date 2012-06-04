@@ -5,6 +5,7 @@ using DEngine.Core;
 using SKR.Universe.Entities.Actor.NPC;
 using SKR.Universe.Entities.Actor.NPC.AI;
 using SKR.Universe.Entities.Actor.PC;
+using SKR.Universe.Factories;
 using SKR.Universe.Location;
 
 namespace SKR.Universe {
@@ -32,20 +33,23 @@ namespace SKR.Universe {
 
         public Player Player { get; set; }
 
+        public ItemFactory ItemFactory { get; private set; }
+
         public static World Instance {
             get {
                 return instance;
             }
         }
 
-        private World(Player player) {
+        private World() {
             Calendar = new Calendar();
 
             updateables = new List<IEntity> { Calendar };
             toAdds = new List<IEntity>();
             toRemove = new List<IEntity>();
             MessageBuffer = new List<string>();
-            Player = player;
+
+            ItemFactory = new SourceItemFactory();
         }
 
         public void InsertMessage(string message) {
@@ -53,7 +57,8 @@ namespace SKR.Universe {
             OnMessageAdded(new EventArgs<string>(message));
         }
 
-        public static void Create() {
+        public static void Create() {            
+
             var level = new Level(new Size(80, 60));
             for (int x = 1; x < 10; x++) {
                 for (int y = 1; y < 10; y++) {
@@ -66,8 +71,12 @@ namespace SKR.Universe {
             level.Actors.Add(npc1);
 
             level.GenerateFov();
-            instance = new World(new Player(level)) {Player = {Position = new Point(2, 2)}};
+
+            instance = new World();
+            instance.Player = new Player(level) {Position = new Point(2, 2)};
             instance.AddUpdateableObject(npc1);
+
+            World.instance.Player.AddItem(instance.ItemFactory.CreateItem("knife"));
         }
 
         public void AddUpdateableObject(IEntity i) {
