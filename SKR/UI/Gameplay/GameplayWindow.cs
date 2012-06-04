@@ -146,12 +146,13 @@ namespace SKR.UI.Gameplay {
                     player.Move(Point.Southeast);
                     break;
                 default:
-                    if (keyData.Character == 't') {
-//                        ParentApplication.Push(new BooleanPrompt("Test", true, b => Logger.Info(b)));
-                        ParentApplication.Push(new OptionsPrompt("Attack with ", new List<string>
-                                                                                     {
-                                                                                             "Bite", "Kick", "Punch"
-                                                                                     }, s => Logger.Info(s)));
+                    if (keyData.Character == 'w') {
+                        ParentApplication.Push(new InventoryWindow(new WindowTemplate
+                                                                       {
+                                                                               Size = MapPanel.Size,
+                                                                               IsPopup = true,
+                                                                               HasFrame = true,                                                                               
+                                                                       }));
                     } else if (keyData.Character == 'a') {
                         Logger.Info("Pre push");
                         ParentApplication.Push(
@@ -168,7 +169,7 @@ namespace SKR.UI.Gameplay {
                                                          ParentApplication.Push(
                                                              new OptionsPrompt(
                                                                  String.Format("Attacking {0}", actor.Name), 
-                                                                 attacks.Select(attack => attack.Action).ToList(), 
+                                                                 attacks.Select(attack => attack.ActionDescription).ToList(), 
                                                                  delegate (int index)
                                                                      {
                                                                          var bps = actor.Characteristics.BodyPartsList.ToList();                                                                         

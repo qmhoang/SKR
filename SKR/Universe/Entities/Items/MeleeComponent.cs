@@ -8,7 +8,7 @@ namespace SKR.Universe.Entities.Items {
         Crush,
     }
 
-    public class MeleeComponent {
+    public class MeleeComponent : ItemComponent {
         public Skill Skill { get; private set; }
         public int HitBonus { get; private set; }
         public int Damage { get; private set; }
@@ -18,9 +18,8 @@ namespace SKR.Universe.Entities.Items {
         public int Reach { get; private set; }
         public int Strength { get; private set; }
         public int Parry { get; private set; }
-        public string Action { get; private set; }
-
-        public MeleeComponent(Skill skill, int hitBonus, int damage, DamageType damageType, double penetration, int weaponSpeed, int reach, int strength, int parry, string action) {
+        
+        public MeleeComponent(Skill skill, int hitBonus, int damage, DamageType damageType, double penetration, int weaponSpeed, int reach, int strength, int parry, ItemAction action, string actionDesc) {
             Skill = skill;
             HitBonus = hitBonus;
             Damage = damage;
@@ -31,6 +30,7 @@ namespace SKR.Universe.Entities.Items {
             Strength = strength;
             Parry = parry;
             Action = action;
+            ActionDescription = actionDesc;
         }
     }
 }

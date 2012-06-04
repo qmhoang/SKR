@@ -21,7 +21,6 @@ namespace SKR.Universe.Entities.Actor {
             get { return items.Count; }
         }
 
-
         public void AddItemsFromContainer(ItemContainer container) {
             foreach (var item in container.items)
                 AddItem(item);
@@ -57,7 +56,7 @@ namespace SKR.Universe.Entities.Actor {
             items.Remove(item);
         }
 
-        public IEnumerator<Item> GetEnumerator() {
+        public IEnumerator<Item> GetEnumerator() {            
             return items.GetEnumerator();
         }
 

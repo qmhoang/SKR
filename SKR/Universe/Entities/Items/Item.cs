@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
@@ -14,6 +15,17 @@ namespace SKR.Universe.Entities.Items {
         Ammo
     }
 
+    public enum ItemAction {
+        MeleeAttackSwing,
+        MeleeAttackThrust,
+        Wear,
+    }
+
+    public abstract class ItemComponent {
+        public string ActionDescription { get; protected set; }
+        public ItemAction Action { get; protected set; }
+    }
+
     public class Item : IGuid, IRefId, IObject {
         public string Name { get; private set; }
         public string RefId { get; private set; }
@@ -26,22 +38,25 @@ namespace SKR.Universe.Entities.Items {
         public int Hardness { get; set; }
 
         public ItemType Type { get; private set; }
+
+        private Dictionary<ItemAction, ItemComponent> components;
+
+        public bool CanItem(ItemAction action) {
+            return components.ContainsKey(action);
+        }
         
-        public MeleeComponent MeleeThrustWeapon { get; set; }
-        public MeleeComponent MeleeSwingWeapon { get; set; }
-        
-        public bool IsSwing { get { return MeleeSwingWeapon != null; } }
-        public bool IsThrust { get { return MeleeThrustWeapon != null; } }
-        
-        public Item(string name, string refId, ItemType type, long guid, int weight, int value, MeleeComponent meleeSwingWeapon, MeleeComponent meleeThrustWeapon) {
+        public Item(string name, string refId, ItemType type, long guid, int weight, int value, params ItemComponent[] comps) {
             Name = name;
             RefId = refId;
             Type = type;
             Guid = guid;
             Weight = weight;
             Value = value;
-            MeleeThrustWeapon = meleeThrustWeapon;
-            MeleeSwingWeapon = meleeSwingWeapon;
+            components = new Dictionary<ItemAction, ItemComponent>();            
+
+            foreach (var comp in comps) {
+                components.Add(comp.Action, comp);
+            }
         }
         
         public Color Color {
