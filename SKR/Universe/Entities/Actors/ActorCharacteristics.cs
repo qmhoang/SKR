@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DEngine.Core;
+using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Items;
 
 namespace SKR.Universe.Entities.Actors {
@@ -15,11 +16,11 @@ namespace SKR.Universe.Entities.Actors {
         public MeleeComponent Kick;
 
         public int BasicDodge {
-            get { return Actor.GetRealRank(Skill.Agility) + Actor.GetRealRank(Skill.Cunning); }
+            get { return Actor.GetTalent<AttributeTalent>(Skill.Agility).Rank + Actor.GetTalent<AttributeTalent>(Skill.Cunning).Rank; }
         }
 
         public int Lift {
-            get { return Actor.GetRealRank(Skill.Strength) * Actor.GetRealRank(Skill.Strength) * 2; }
+            get { return Actor.GetTalent<AttributeTalent>(Skill.Strength).Rank * Actor.GetTalent<AttributeTalent>(Skill.Strength).Rank * 2; }
         }
 
         public ActorCharacteristics(Person actor) {

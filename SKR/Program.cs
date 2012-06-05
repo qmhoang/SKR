@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,13 +36,12 @@ namespace SKR {
         public const int IntervalDelay = 75;
         public static readonly Size ScreenSize = new Size(80, 60);
 
-#if DEBUG
-        public static bool SeeAll = true;
-        public static bool GodMode = false;
-#endif
+        public static BooleanSwitch Debug = new BooleanSwitch("Debug", "Enable debugging");
+        public static BooleanSwitch SeeAll = new BooleanSwitch("SeeAll", "No LOS/vision checking");
+               
 
         public static void Main(string[] args) {
-            XmlConfigurator.Configure(new FileInfo("Log.xml"));
+            XmlConfigurator.Configure(new FileInfo("Log.xml"));            
 
             Logger.InfoFormat("TCODConsole.root initialized {0}", ScreenSize);
             Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", InitialDelay,

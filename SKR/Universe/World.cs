@@ -46,7 +46,7 @@ namespace SKR.Universe {
         private Factory<RefId, UniqueId, Item> ItemFactory;
         private Factory<UniqueId> IdFactory;
         private Factory<TileEnum, Tile> TileFactory;
-        private Factory<Skill, Talent> TalentFactory; 
+        private Factory<Skill, Person, Talent> TalentFactory; 
 
         public static World Instance { get; private set; }
 
@@ -87,8 +87,8 @@ namespace SKR.Universe {
             Player.Equip(BodyPartType.LeftHand, i);
         }
 
-        public Talent GetTalent(Skill skill) {
-            return TalentFactory.Construct(skill);
+        public Talent GetTalent(Person actor, Skill skill) {
+            return TalentFactory.Construct(skill, actor);
         }
 
         public void InsertMessage(string message) {
