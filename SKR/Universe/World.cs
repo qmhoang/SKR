@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Utility;
 using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Actors.NPC;
 using SKR.Universe.Entities.Actors.NPC.AI;

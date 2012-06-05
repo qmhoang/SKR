@@ -4,7 +4,7 @@ using DEngine.Core;
 using DEngine.UI;
 
 namespace SKR.UI.Menus {
-    public class SelectableListTemplate<T> : WindowTemplate {        
+    public class ListWindowTemplate<T> : WindowTemplate {        
         public List<T> Items { get; set; }
     }
 
@@ -15,7 +15,7 @@ namespace SKR.UI.Menus {
 
         protected Dictionary<char, T> Items;
 
-        protected ListWindow(Action<T> selectItem, SelectableListTemplate<T> template)
+        protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
                 : base(template) {
             this.SelectItem = selectItem;
             HasFrame = template.HasFrame;            
