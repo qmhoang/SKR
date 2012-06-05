@@ -10,139 +10,113 @@ using SKR.Universe.Factories;
 
 namespace SKR.Gameplay.Talent {
 
-    public class Talent {
+    public abstract class Talent {
+        public Person Actor { get; private set; }
         public Skill Skill { get; private set; }
         public string Name { get; private set; }
-        public int RawRank { get; set; }
-        public int MaxRank { get; private set; }
-        public int Range { get; private set; }
-        public int Radius { get; private set; }        
-        public ITalentAction Action { get; private set; }
+        public virtual int Rank { get; set; }
 
-        public Talent(Skill skill, string name, int maxRank, int range, int radius, ITalentAction action) {
+        public Talent(Person actor, Skill skill, string name, int initialRank) {
+            Actor = actor;
             Skill = skill;
             Name = name;
-            RawRank = 0;
-            MaxRank = maxRank;
-            Range = range;
-            Radius = radius;
-            Action = action;                            
+            Rank = initialRank;    
         }
     }    
 
-    public interface ITalentAction {
-        
+    public class AttributeTalent : Talent {
+        public AttributeTalent(Person actor, Skill skill, string name, int initialRank = 10) : base(actor, skill, name, initialRank) {}
     }
 
-    public class PassiveSkillAction : ITalentAction {
-        public Func<Person, int> RealRank { get; private set; }
+    public class DerivedTalent : Talent {        
 
-        public PassiveSkillAction(Func<Person, int> rank) {
-            RealRank = rank;
+        public override int Rank {
+            get { return base.Rank + Derivation(Actor); }
+            set { base.Rank = value; }
+        }
+
+        public Func<Person, int> Derivation { get; private set; }
+
+        public DerivedTalent(Person actor, Skill skill, string name, int initialRank, Func<Person, int> derivation)
+            : base(actor, skill, name, initialRank) {
+            Derivation = derivation;
         }
     }
 
-    public class TargetItemAction: ITalentAction {
-        public Func<Person, Person, Item, bool> Action { get; private set; }         
-    }
+    public class ActiveTalent : Talent {
+        public ActiveTalent(Person actor, Skill skill, string name, int initialRank) : base(actor, skill, name, initialRank) {}
 
-    public class TargetBodyPartAction: ITalentAction {
-        public Func<Person, Person, BodyPart, bool> Action { get; private set; } 
-    }
-
-    public class TargetBodyPartWithWeaponAction : ITalentAction {
-        public Func<Person, Person, BodyPart, ItemComponent, bool> Action { get; private set; }
-
-        public TargetBodyPartWithWeaponAction(Func<Person, Person, BodyPart, ItemComponent, bool> action) {
-            Action = action;
+        public ActiveTalent(Person actor, Skill skill, string name, int initialRank, Func<Person, Person, bool> action) : base(actor, skill, name, initialRank) {
+            Action = action;            
         }
-    }
 
-    public class TargetPersonAction : ITalentAction {
-        public Func<Person, Person, bool> Action { get; private set; }
-
-        public TargetPersonAction(Func<Person, Person, bool> action) {
-            Action = action;
-        }
-    }
-
-    public class ActiveAction<T1> {
-        public Func<Person, Person, T1, bool> Action { get; private set; }
-
-        public ActiveAction(Func<Person, Person, T1, bool> action) {
-            Action = action;
-        }
-    }
-
-//    public interface IAction<out T1, out T2> {
-//        T1 Option1 { get; }
-//        T2 Option2 { get; }
-//        Func<T1, T2, bool> doSometh;
-//    }
-    public enum OptionMethods {
-        Options,        
-    }
-
-    public class ActiveAction<T1, T2> {
-        public OptionMethods OptionMethod1 { get; private set; }
-        public OptionMethods OptionMethod2 { get; private set; }
-
-        public Func<Person, Person, List<T1>> Options1;
-        public Func<Person, Person, List<T2>> Options2;
-        public Func<Person, Person, T1, T2, bool> Action { get; private set; }
-
-        public ActiveAction(Func<Person, Person, List<T1>> options1, Func<Person, Person, List<T2>> options2, OptionMethods optionMethod1, OptionMethods optionMethod2, Func<Person, Person, T1, T2, bool> action) {
-            Options1 = options1;
-            Options2 = options2;
-            OptionMethod1 = optionMethod1;
-            OptionMethod2 = optionMethod2;
-            Action = action;
-        }
-        
-    }
-
-    public class ActiveAction<T1, T2, T3, T4> {
-        public Func<T1> Option1;
-        public Func<T2> Option2;
-        public Func<T3> Option3;
-        public Func<T4> Option4;
-        public Func<T1, T2, T3, T4, bool> Action { get; private set; }
-
-        public ActiveAction(Func<T1, T2, T3, T4, bool> action) {
-            Action = action;
-        }
-    }
-
-//    public sealed class TalentFactory : Factory<Skill, Talent> {
-//        
-//        public override Talent Construct(Skill identifier) {        
-//
-//            switch (identifier) {
-//                case Skill.Attack:
-//                    break;
-////                    return new Talent(identifier, "Attack", 1, 1, 0,
-////                                      new ActiveAction<ItemComponent>(delegate(Person actor, Person target, )
-////                                                           {
-////                                                               return true;
-////                                                           }));
-//                case Skill.TargetAttack:
-//                    return new Talent(identifier, "Attack", 1, 1, 0,
-//                                      new ActiveAction<ItemComponent, BodyPart>(
-//                                              delegate(Person actor, Person target, ItemComponent weapon, BodyPart bodyPart)
-//                                                  {
-//
-//                                                  }));
-//                case Skill.Brawling:
-//                    break;
-//                case Skill.Knife:
-//                    break;
-//                case Skill.Axe:
-//                    break;
-//                case Skill.Longsword:
-//                    break;
-//                default:
-//                    throw new ArgumentOutOfRangeException("identifier");
-//            }
+//        public virtual bool Invoke(Person target, params ) {            
+//            return (bool) Action.DynamicInvoke(Actor, target);
 //        }
-//    } 
+
+        public Delegate Action { get; protected set; }        
+    }
+
+    public class ActiveTalent<TOption1> : ActiveTalent {
+        public Func<Person, Person, List<TOption1>> Option1List { get; private set; }
+
+
+        public ActiveTalent(Person actor, Skill skill, string name, int initialRank, Func<Person, Person, TOption1, bool> action, Func<Person, Person, List<TOption1>> option1List)
+            : base(actor, skill, name, initialRank) {
+                Action = action;
+            Option1List = option1List;
+        }
+
+    }
+
+    public class ActiveTalent<TOption1, TOption2> : ActiveTalent {
+        public Func<Person, Person, List<TOption1>> Option1List { get; private set; }
+        public Func<Person, Person, List<TOption2>> Option2List { get; private set; }
+        public ActiveTalent(Person actor, Skill skill, string name, int initialRank, Func<Person, Person, TOption1, TOption2, bool> action, Func<Person, Person, List<TOption1>> option1List, Func<Person, Person, List<TOption2>> option2List)
+            : base(actor, skill, name, initialRank) {
+            Action = action;
+            Option1List = option1List;
+            Option2List = option2List;
+        }
+    }
+
+//    public class TalentAction {
+//        public MulticastDelegate Act;
+//    }
+//
+//    public class TalentAction<T1> : TalentAction {
+//        public TalentAction(Func<Person, Person, T1> action) {
+//            Act = action;
+//        }
+//    }
+//
+//    public class PassiveSkillAction : TalentAction {       
+//        public PassiveSkillAction(Func<Person, int> rank) {
+//            Act = rank;
+//        }
+//    }
+//
+//    public class TargetItemAction: TalentAction {
+//        public Func<Person, Person, Item, bool> Action { get; private set; }         
+//    }
+//
+//    public class TargetBodyPartAction: TalentAction {
+//        public Func<Person, Person, BodyPart, bool> Action { get; private set; } 
+//    }
+
+//    public class TargetBodyPartWithWeaponAction : TalentAction {
+//        public Func<Person, Person, BodyPart, ItemComponent, bool> Action { get; private set; }
+//
+//        public TargetBodyPartWithWeaponAction(Func<Person, Person, BodyPart, ItemComponent, bool> action) {
+//            Action = action;
+//        }
+//    }
+//
+//    public class TargetPersonAction : TalentAction {
+//        public Func<Person, Person, bool> Action { get; private set; }
+//
+//        public TargetPersonAction(Func<Person, Person, bool> action) {
+//            Action = action;
+//        }
+//    }
 }

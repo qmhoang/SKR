@@ -11,16 +11,15 @@ using SKR.Universe.Entities.Items;
 using Attribute = SKR.Universe.Entities.Actors.Attribute;
 
 namespace SKR.Universe.Factories {
-    public class SourceTalentFactory : Factory<Skill, Talent> {
-        public override Talent Construct(Skill identifier) {
+    public class SourceTalentFactory : Factory<Skill, Person, Talent> {
+        public override Talent Construct(Skill identifier, Person actor) {
             switch (identifier) {
                 case Skill.Attack:
-                    return new Talent(identifier, "Attack body part", 1, 0, 0,
-                                      new TargetPersonAction(
+                    return new ActiveTalent(actor, identifier, "Attack body part", 1,
                                               delegate(Person self, Person target)
                                                   {
-                                                      Talent t = self.GetTalent(identifier);
-//
+                                                      Talent t = self.GetTalent<ActiveTalent>(identifier);
+
 //                                                      List<MeleeComponent> attacks = new List<MeleeComponent>
 //                                                                                         {
 //                                                                                                 self.Characteristics.Kick,
@@ -63,20 +62,19 @@ namespace SKR.Universe.Factories {
                                                       } else
                                                           melee = self.Characteristics.Punch;
 
-                                                      if (self.Position.DistanceTo(target.Position) > (t.Range + melee.Reach)) {
+                                                      if (self.Position.DistanceTo(target.Position) > melee.Reach) {
                                                           self.World.InsertMessage("Too far to attack.");
                                                           return false;
                                                       }
 
                                                       MeleeCombat.AttackMeleeWithWeapon(self, target, melee, MeleeCombat.GetRandomBodyPart(target));
                                                       return true;
-                                                  }));
+                                                  });
                 case Skill.TargetAttack:
-                    return new Talent(identifier, "Attack body part", 1, 0, 0,
-                                      new TargetBodyPartWithWeaponAction(
+                    return new ActiveTalent<BodyPart, ItemComponent>(actor, identifier, "Attack body part", 1,
                                               delegate(Person self, Person target, BodyPart targetBodyPart, ItemComponent weapon)
                                                   {
-                                                      Talent t = self.GetTalent(identifier);
+                                                      Talent t = self.GetTalent<ActiveTalent<BodyPart, ItemComponent>>(identifier);
                                                       if (!(weapon is MeleeComponent)) {
                                                           self.World.InsertMessage("Not a melee weapon.");
                                                           return false;
@@ -84,78 +82,65 @@ namespace SKR.Universe.Factories {
 
                                                       var melee = weapon as MeleeComponent;
 
-                                                      if (self.Position.DistanceTo(target.Position) > (t.Range + melee.Reach)) {
+                                                      if (self.Position.DistanceTo(target.Position) > melee.Reach) {
                                                           self.World.InsertMessage("Too far to attack.");
                                                           return false;
                                                       }
 
                                                       MeleeCombat.AttackMeleeWithWeapon(self, target, melee, targetBodyPart, true);
                                                       return true;
-                                                  }));
+                                                  }, delegate (Person self)
+                                                         {
+                                                             
+                                                         });
 
                 case Skill.Brawling:
-                    return new Talent(identifier, "Brawling", 10, 0, 0,
-                                      new PassiveSkillAction(self => CreateSkillWithBase(self, identifier, Skill.Agility)));
+                    return new DerivedTalent(actor, identifier, "Brawling", 0, self => self.GetTalent<AttributeTalent>(Skill.Agility).Rank);
                 case Skill.Sword:
-                    return new Talent(identifier, "Sword", 10, 0, 0,
-                                      new PassiveSkillAction(self => CreateSkillWithBase(self, identifier, Skill.Agility)));
+                    return new DerivedTalent(actor, identifier, "Sword", 10, self => self.GetTalent<AttributeTalent>(Skill.Agility).Rank);
                 case Skill.Knife:
-                    return new Talent(identifier, "Knife", 10, 0, 0,
-                                      new PassiveSkillAction(self => CreateSkillWithBase(self, identifier, Skill.Sword)));
+                    return new DerivedTalent(actor, identifier, "Knife", 10, self => self.GetTalent<AttributeTalent>(Skill.Sword).Rank);
 
 
                 case Skill.Strength:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString());
                 case Skill.Agility:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Constitution:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Intellect:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Cunning:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Resolve:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Presence:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Grace:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 case Skill.Composure:
-                    return new Talent(identifier, identifier.ToString(), 20, 0, 0,
-                                      new PassiveSkillAction(self => self.GetTalent(identifier).RawRank));
+                    return new AttributeTalent(actor, identifier, identifier.ToString(), 20);
                 default:
                     throw new ArgumentOutOfRangeException("identifier");
             }
         }
 
-        private int GetRealRank(Person actor, Skill skill) {
-            return ((PassiveSkillAction) actor.GetTalent(skill).Action).RealRank(actor);
-        }
-
-        /// <summary>
-        /// Creates a passive skill that adds another skill's rank to its calculated rank.
-        /// </summary>
-        /// <param name="actor"></param>
-        /// <param name="skill"></param>
-        /// <param name="base"></param>        
-        /// <returns></returns>
-        private int CreateSkillWithBase(Person actor, Skill skill, Skill @base) {
-            Talent t = actor.GetTalent(skill);
-            Talent governing = actor.GetTalent(@base);
-            if (!(governing.Action is PassiveSkillAction))
-                throw new InvalidEnumArgumentException("attrb is not a passive skill");
-
-            int governingRank = (governing.Action as PassiveSkillAction).RealRank(actor);            
-            return t.RawRank + governingRank;            
-        }
+//        /// <summary>
+//        /// Creates a passive skill that adds another skill's rank to its calculated rank.
+//        /// </summary>
+//        /// <param name="actor"></param>
+//        /// <param name="skill"></param>
+//        /// <param name="base"></param>        
+//        /// <returns></returns>
+//        private int CreateSkillWithBase(Person actor, Skill skill, Skill @base) {
+//            Talent t = actor.GetTalent(skill);
+//            Talent governing = actor.GetTalent(@base);
+//            if (!(governing.Action is PassiveSkillAction))
+//                throw new InvalidEnumArgumentException("attrb is not a passive skill");
+//
+//            int governingRank = (governing.Action as PassiveSkillAction).RealRank(actor);            
+//            return t.Rank + governingRank;            
+//        }
 
     }
 }

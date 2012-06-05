@@ -33,10 +33,10 @@ namespace SKR.UI.Gameplay {
         }
     }
 
-    public class MsgPanel : Panel {
+    public class LogPanel : Panel {
         public string Message { get; set; }
 
-        public MsgPanel(PanelTemplate template) : base(template) {
+        public LogPanel(PanelTemplate template) : base(template) {
         }
 
         public void Clear() {
@@ -61,7 +61,7 @@ namespace SKR.UI.Gameplay {
 
         public MapPanel MapPanel { get; private set; }
         public StatusPanel StatusPanel { get; private set; }
-        public MsgPanel MessagePanel { get; private set; }
+        public LogPanel MessagePanel { get; private set; }
 
 
         public GameplayWindow(WindowTemplate template)
@@ -112,7 +112,7 @@ namespace SKR.UI.Gameplay {
                                         talent.Name, player.Position,
                                         delegate(Point p)
                                         {
-                                            Person target = player.Level.GetActorAtLocation(p);
+                                            Person target = player.Level.GetActorAtLocation(p);                                            
                                             ((TargetPersonAction) talent.Action).Action(player, target);
                                         },
                                         MapPanel));
@@ -146,7 +146,7 @@ namespace SKR.UI.Gameplay {
 
             AddControl(StatusPanel);
 
-            MessagePanel = new MsgPanel(new PanelTemplate()
+            MessagePanel = new LogPanel(new PanelTemplate()
                                            {
                                                    HasFrame = true,
                                                    Size = new Size(Size.Width, Size.Height - mapTemplate.Size.Height),

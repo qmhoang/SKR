@@ -223,7 +223,7 @@ namespace SKR.UI.Menus {
         private void PanelDraw(object sender, EventArgs e) {
             if ((!(sender is MapPanel)))
                 return;
-            var panel = (MapPanel)sender;
+            var panel = (MapPanel) sender;
             var pointList = Bresenham.GeneratePointsFromLine(origin, selectedPosition);
 
             bool path = true;

@@ -26,28 +26,25 @@ namespace SKR.UI.Gameplay {
                                    Math.Min(Math.Max(player.Position.Y - Size.Height / 2, 0),
                                             player.Level.Height - Size.Height));
 
-            player.CalculateFov();
-
             for (int x = 0; x < Size.Width; x++)
                 for (int y = 0; y < Size.Height; y++) {
                     Point realPosition = ViewOffset.Shift(x, y);
 
                     Tile c = player.Level.GetTile(realPosition);
-#if DEBUG
-                    if (!Program.SeeAll) {
-#endif
+                    if (Program.Debug.Enabled && !Program.SeeAll.Enabled) {
+
                         if (player.HasLineOfSight(realPosition)) {
                             player.Level.Vision[realPosition.X, realPosition.Y] = true;
                             Canvas.PrintChar(x, y, c.Ascii, c.Pigment);
                         } else if (player.Level.Vision[realPosition.X, realPosition.Y])
                             if (IsPointWithinPanel(new Point(x, y)))
                                 Canvas.PrintChar(x, y, c.Ascii, new Pigment(c.Pigment.Foreground.ScaleValue(0.3f), c.Pigment.Background.ScaleValue(0.3f)));
-#if DEBUG
+
                     } else {
                         Canvas.PrintChar(x, y, c.Ascii, c.Pigment);
                         player.Level.Vision[realPosition.X, realPosition.Y] = true;
                     }
-#endif
+
                 }
 
             foreach (var actor in player.Level.Actors) {
@@ -64,17 +61,15 @@ namespace SKR.UI.Gameplay {
 
 
         private void DrawIndividual(Point localPosition, Point mapPosition, char ascii, Pigment directVision) {
-#if DEBUG
-            if (!Program.SeeAll) {
-#endif
+            if (Program.Debug.Enabled && !Program.SeeAll.Enabled) {
+
                 if (player.HasLineOfSight(mapPosition)) {
                     Canvas.PrintChar(localPosition.X, localPosition.Y, ascii, directVision);
                 }
             }
-#if DEBUG
             else if (IsPointWithinPanel(localPosition))
                 Canvas.PrintChar(localPosition.X, localPosition.Y, ascii, directVision);
-#endif
+
         }
 
         private bool IsPointWithinPanel(Point p) {
