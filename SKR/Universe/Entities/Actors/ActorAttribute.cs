@@ -39,6 +39,7 @@ namespace SKR.Universe.Entities.Actors {
         }
     }
 
+    // BUG - defaults may have circular dependency issues right now
     public class SkillAttribute : ActorAttribute {
         public List<Tuple<ActorAttribute, int>> Defaults { get; private set; }
         public ActorAttribute Base { get; private set; }
@@ -67,5 +68,5 @@ namespace SKR.Universe.Entities.Actors {
         public SkillAttribute(int value, ActorAttribute @base, string info)
             : this(value, @base, info, new List<Tuple<ActorAttribute, int>>()) {            
         }
-    }
+    }    
 }

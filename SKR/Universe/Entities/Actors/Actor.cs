@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
+using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Items;
 using SKR.Universe.Factories;
 using SKR.Universe.Location;
@@ -20,15 +21,37 @@ namespace SKR.Universe.Entities.Actors {
         Resolve,
         Presence,
         Grace,
-        Composure,
-        None
+        Composure,        
     }
 
     public enum Skill {
-        Brawling,
+        // basic attack
+        Attack,
+        TargetAttack,
+
+        //category - sword
+        Sword,
         Knife,
-        Axe,
         Longsword,
+
+        //category - brawling
+        Brawling,
+        Judo,
+
+        //category - impact weapon
+        ImpactWeapon,
+        Axe,
+
+        // attributes
+        Strength,
+        Agility,
+        Constitution,
+        Intellect,
+        Cunning,
+        Resolve,
+        Presence,
+        Grace,
+        Composure,
     }
 
 
@@ -68,6 +91,7 @@ namespace SKR.Universe.Entities.Actors {
         public ActorCharacteristics Characteristics { get; private set; }
         private ActorCondition conditionStatuses;
         private Dictionary<BodyPartType, Item> equippedItems;
+        private Dictionary<Skill, Talent> talents;
 
         public Level Level { get; private set; }
 
@@ -103,6 +127,25 @@ namespace SKR.Universe.Entities.Actors {
             conditionStatuses = new ActorCondition(this);
             inventory = new ItemContainer();
             equippedItems = new Dictionary<BodyPartType, Item>();
+            talents = new Dictionary<Skill, Talent>();
+
+            LearnTalent(Skill.Attack);
+            LearnTalent(Skill.TargetAttack);
+
+            LearnTalent(Skill.Strength, 10);
+            LearnTalent(Skill.Agility, 10);
+            LearnTalent(Skill.Constitution, 10);
+            LearnTalent(Skill.Intellect, 10);
+            LearnTalent(Skill.Cunning, 10);
+            LearnTalent(Skill.Resolve, 10);
+            LearnTalent(Skill.Presence, 10);
+            LearnTalent(Skill.Grace, 10);
+            LearnTalent(Skill.Composure, 10);
+
+            LearnTalent(Skill.Sword, 0);
+            LearnTalent(Skill.Knife, 0);
+
+            LearnTalent(Skill.Brawling, 0);
         }
 
         private void CheckEncumbrance() {
@@ -117,14 +160,6 @@ namespace SKR.Universe.Entities.Actors {
                 SetConditionStatus(Condition.Encrumbrance, 3);
             else if (weight > 6 * Lift)
                 SetConditionStatus(Condition.Encrumbrance, 4);
-        }
-
-        public int GetAttribute(Attribute attrb) {
-            return Characteristics.GetAttribute(attrb);
-        }
-
-        public int GetSkill(Skill skill) {
-            return Characteristics.GetSkill(skill);
         }
 
         public BodyPart GetBodyPart(BodyPartType bp) {
@@ -156,9 +191,9 @@ namespace SKR.Universe.Entities.Actors {
                 return ActionResult.Aborted;
 
             if (Level.DoesActorExistAtLocation(nPos)) {
-                Person m = Level.GetActorAtLocation(nPos);
+                Person target = Level.GetActorAtLocation(nPos);
 
-//todo melee combat
+                ((TargetPersonAction) GetTalent(Skill.Attack).Action).Action(this, target);                
             } else
                 Position = nPos;
 
@@ -174,6 +209,7 @@ namespace SKR.Universe.Entities.Actors {
 
         #endregion
 
+        #region Life
         public event EventHandler<EventArgs<Condition, int>> ConditionChanged;
 
         public void OnConditionChanged(EventArgs<Condition, int> e) {
@@ -222,6 +258,9 @@ namespace SKR.Universe.Entities.Actors {
         public int MaxHealth {
             get { return Characteristics.MaxHealth; }
         }
+        #endregion
+
+        #region Inventory
 
         /// <summary>
         /// Add item into inventory, return true if item was added, false if item couldn't for whatever reason
@@ -324,5 +363,50 @@ namespace SKR.Universe.Entities.Actors {
             if (handler != null)
                 handler(this, e);
         }
+        #endregion
+
+        #region Talents
+        public bool KnowTalent(Skill talent) {
+            return talents.ContainsKey(talent);
+        }
+
+        public bool CanLearnTalent(Skill talent) {
+            return false; // todo
+        }
+
+        public void LearnTalent(Skill skill, int rank = 1) {
+            Log.InfoFormat("{0} learned {1}", Name, skill.ToString());
+
+            if (!KnowTalent(skill)) {
+                // add talent
+                talents.Add(skill, World.GetTalent(skill));
+            }
+
+            Talent talent = GetTalent(skill);
+            talent.RawRank = Math.Min(talent.MaxRank, talent.RawRank + rank);
+            OnTalentLearned(new EventArgs<Talent, int>(talent, rank));
+        }
+
+        public bool UnlearnTalent(Skill talent, int rank = 1) {
+            return false;
+        }
+
+        public Talent GetTalent(Skill skill) {
+            return talents[skill];
+        }
+
+        public int GetRealRank(Skill skill) {
+            return ((PassiveSkillAction)GetTalent(skill).Action).RealRank(this);
+        }
+
+        public event EventHandler<EventArgs<Talent, int>> TalentLearned;
+
+        public void OnTalentLearned(EventArgs<Talent, int> e) {
+            EventHandler<EventArgs<Talent, int>> handler = TalentLearned;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        #endregion
     }
 }
