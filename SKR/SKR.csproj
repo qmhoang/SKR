@@ -79,7 +79,6 @@
     <Compile Include="Universe\Entities\Actors\PC\Player.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
     <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
-    <Compile Include="Universe\Factories\Factory.cs" />
     <Compile Include="Universe\Factories\SourceTileFactory.cs" />
     <Compile Include="Universe\Factories\UniqueIdFactory.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />

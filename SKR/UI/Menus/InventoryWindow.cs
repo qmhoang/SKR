@@ -22,7 +22,7 @@ namespace SKR.UI.Menus {
             get { return sizeList; }
         }
 
-        public ItemWindow(bool selectSingleItem, SelectableListTemplate<Item> template, Action<Item> itemSelected)
+        public ItemWindow(bool selectSingleItem, ListWindowTemplate<Item> template, Action<Item> itemSelected)
             : base(null, template) {
             this.itemSelected = itemSelected;
             singleItem = selectSingleItem;            
@@ -90,7 +90,7 @@ namespace SKR.UI.Menus {
             get { return sizeList; }
         }
 
-        public InventoryWindow(SelectableListTemplate<BodyPart> template)
+        public InventoryWindow(ListWindowTemplate<BodyPart> template)
             : base(null, template) {
             player = World.Instance.Player;
             bodyPartWidth = 25; // todo replace to code
@@ -106,7 +106,7 @@ namespace SKR.UI.Menus {
                 var items = player.Items.Where(bodyPart.CanUseItem).ToList();
                 if (items.Count > 0)
                     ParentApplication.Push(new ItemWindow(true,
-                                                          new SelectableListTemplate<Item>
+                                                          new ListWindowTemplate<Item>
                                                           {
                                                               Size = Size,
                                                               IsPopup = IsPopup,
