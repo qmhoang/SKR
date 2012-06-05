@@ -44,12 +44,12 @@ namespace SKR.Universe.Entities.Items {
 
         private Dictionary<ItemAction, ItemComponent> components;
 
-        public bool ContainsAction(ItemAction action) {
+        public bool ContainsComponent(ItemAction action) {
             return components.ContainsKey(action);
         }
 
         public ItemComponent GetComponent(ItemAction action) {
-            if (ContainsAction(action))
+            if (ContainsComponent(action))
                 return components[action];
             else
                 throw new ArgumentException("This item has no component for this", "action");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Utility;
+using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Actors.NPC;
 using SKR.Universe.Entities.Actors.NPC.AI;
@@ -45,6 +46,7 @@ namespace SKR.Universe {
         private Factory<RefId, UniqueId, Item> ItemFactory;
         private Factory<UniqueId> IdFactory;
         private Factory<TileEnum, Tile> TileFactory;
+        private Factory<Skill, Talent> TalentFactory; 
 
         public static World Instance { get; private set; }
 
@@ -57,16 +59,19 @@ namespace SKR.Universe {
             MessageBuffer = new List<string>();
 
             IdFactory = new SourceUniqueIdFactory();
+            TalentFactory = new SourceTalentFactory();
             ItemFactory = new SourceItemFactory();
             TileFactory = new SourceTileFactory();
+        }
 
+        private void Temp() {
             var level = new Level(IdFactory.Construct(), new Size(80, 60), TileFactory.Construct(TileEnum.Unused));
             for (int x = 1; x < 10; x++) {
                 for (int y = 1; y < 10; y++) {
-                    level.SetTile(x, y, TileFactory.Construct(TileEnum.Grass));                    
+                    level.SetTile(x, y, TileFactory.Construct(TileEnum.Grass));
                 }
             }
-            Npc npc1 = new Npc("target1", level) {Position = new Point(3, 4)};
+            Npc npc1 = new Npc("target1", level) { Position = new Point(3, 4) };
             npc1.Intelligence = new SimpleIntelligence(npc1);
             level.Actors.Add(npc1);
             AddUpdateableObject(npc1);
@@ -80,7 +85,10 @@ namespace SKR.Universe {
             var i = CreateItem(new RefId { Id = "brassknuckles" });
             Player.AddItem(i);
             Player.Equip(BodyPartType.LeftHand, i);
+        }
 
+        public Talent GetTalent(Skill skill) {
+            return TalentFactory.Construct(skill);
         }
 
         public void InsertMessage(string message) {
@@ -89,7 +97,8 @@ namespace SKR.Universe {
         }
 
         public static void Create() {            
-            Instance = new World();            
+            Instance = new World();     
+            Instance.Temp();
         }
 
         public Item CreateItem(RefId key) {

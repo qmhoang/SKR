@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
 using SKR.Gameplay.Combat;
+using SKR.Gameplay.Talent;
 using SKR.UI.Menus;
 using SKR.Universe;
 using SKR.Universe.Entities.Actors;
@@ -53,9 +55,7 @@ namespace SKR.UI.Gameplay {
         }
     }
 
-    public class GameplayWindow : Window {
-        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+    public class GameplayWindow : Window {       
         private readonly World world;
         private Player player;
 
@@ -63,10 +63,60 @@ namespace SKR.UI.Gameplay {
         public StatusPanel StatusPanel { get; private set; }
         public MsgPanel MessagePanel { get; private set; }
 
+
         public GameplayWindow(WindowTemplate template)
             : base(template) {                       
             player = World.Instance.Player;
             world = World.Instance;
+        }
+
+        private void HandleTalent(Talent talent) {
+            if (talent.Action is TargetBodyPartWithWeaponAction) {
+                ParentApplication.Push(
+                                new TargetPrompt(
+                                        talent.Name, player.Position,
+                                        delegate(Point p)
+                                        {
+                                            Person target = player.Level.GetActorAtLocation(p);
+                                            List<ItemComponent> attacks = new List<ItemComponent>
+                                                                                   {
+                                                                                           player.Characteristics.Kick,
+                                                                                           player.Characteristics.Punch,
+                                                                                   };
+
+                                            foreach (var bodyPart in player.BodyParts.Where(bodyPart => player.IsItemEquipped(bodyPart.Type))) {
+                                                var item = player.GetItemAtBodyPart(bodyPart.Type);
+                                                if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
+                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackSwing) as MeleeComponent);
+                                                if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
+                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackThrust) as MeleeComponent);
+                                            }
+
+                                            ParentApplication.Push(
+                                                    new OptionsPrompt<ItemComponent>(
+                                                            String.Format("Attacking {0}", target.Name),
+                                                            attacks,
+                                                            c => c.ParentItem != null
+                                                                    ? String.Format("{0} with {1}", c.ActionDescription, c.ParentItem.Name)
+                                                                    : c.ActionDescription,
+                                                            c => ParentApplication.Push(
+                                                                    new OptionsPrompt<BodyPart>("Select location",
+                                                                                                target.Characteristics.BodyPartsList.ToList(),
+                                                                                                bp => bp.Name,
+                                                                                                bp => ((TargetBodyPartWithWeaponAction) talent.Action).Action(player, target, bp, c)))));
+                                        },
+                                        MapPanel));
+            } else if (talent.Action is TargetPersonAction) {
+                ParentApplication.Push(
+                                new TargetPrompt(
+                                        talent.Name, player.Position,
+                                        delegate(Point p)
+                                        {
+                                            Person target = player.Level.GetActorAtLocation(p);
+                                            ((TargetPersonAction) talent.Action).Action(player, target);
+                                        },
+                                        MapPanel));
+            }
         }
 
         protected override void OnSettingUp() {
@@ -110,6 +160,8 @@ namespace SKR.UI.Gameplay {
                                       };            
         }
 
+
+
         protected override void OnKeyPressed(KeyboardData keyData) {
             base.OnKeyPressed(keyData);
             MessagePanel.Clear();
@@ -147,48 +199,21 @@ namespace SKR.UI.Gameplay {
                     break;
                 default:
                     if (keyData.Character == 'w') {
-                        ParentApplication.Push(new InventoryWindow(new SelectableListTemplate<BodyPart>
+                        ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<BodyPart>
                                                                        {
                                                                                Size = MapPanel.Size,
                                                                                IsPopup = true,
                                                                                HasFrame = true,
                                                                                Items = player.BodyParts.ToList(),
                                                                        }));
+                    } else if (keyData.Character == 'r') {
+//                        HandleTalent(shout);
+
+                    } else if (keyData.Character == 't') {
+//                        HandleTalent(attack);
+
                     } else if (keyData.Character == 'a') {
-                        ParentApplication.Push(
-                                new TargetPrompt(
-                                        "Attack", player.Position,
-                                        delegate(Point p)
-                                            {
-                                                Person target = player.Level.GetActorAtLocation(p);
-                                                List<MeleeComponent> attacks = new List<MeleeComponent>
-                                                                                   {
-                                                                                           player.Characteristics.Kick,
-                                                                                           player.Characteristics.Punch,
-                                                                                   };
-
-                                                foreach (var bodyPart in player.BodyParts.Where(bodyPart => player.IsItemEquipped(bodyPart.Type))) {
-                                                    var item = player.GetItemAtBodyPart(bodyPart.Type);
-                                                    if (item.ContainsAction(ItemAction.MeleeAttackSwing))
-                                                        attacks.Add(item.GetComponent(ItemAction.MeleeAttackSwing) as MeleeComponent);
-                                                    if (item.ContainsAction(ItemAction.MeleeAttackThrust))
-                                                        attacks.Add(item.GetComponent(ItemAction.MeleeAttackThrust) as MeleeComponent);
-                                                }
-
-                                                ParentApplication.Push(
-                                                        new OptionsPrompt<MeleeComponent>(
-                                                                String.Format("Attacking {0}", target.Name),
-                                                                attacks,
-                                                                c => c.ParentItem != null 
-                                                                        ? String.Format("{0} with {1}", c.ActionDescription, c.ParentItem.Name) 
-                                                                        : c.ActionDescription,
-                                                                c => ParentApplication.Push(
-                                                                        new OptionsPrompt<BodyPart>("Select location",
-                                                                                                    target.Characteristics.BodyPartsList.ToList(),
-                                                                                                    bp => bp.Name,
-                                                                                                    bp => MeleeCombat.AttackMeleeWithWeapon(player, target,c, bp)))));
-                                            },
-                                        MapPanel));
+                        HandleTalent(player.GetTalent(Skill.TargetAttack));
                     }
 
                     break;

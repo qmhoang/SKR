@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DEngine.Core;
+using SKR.Gameplay.Talent;
 using SKR.Universe;
 using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Items;
@@ -15,24 +16,50 @@ namespace SKR.Gameplay.Combat {
         private static Dice dice = new Dice(3, 6);
         private static World world = World.Instance;
 
-        public static void AttackMelee(Person attacker, Person defender) {
+        public static BodyPart GetRandomBodyPart(Person target) {
+            int roll = dice.Roll();
 
-            MeleeComponent weapon;
+            //todo unfinished
+            if (roll <= 4)
+                return target.GetBodyPart(BodyPartType.Head);
+            if (roll <= 5)
+                return target.GetBodyPart(BodyPartType.LeftHand);
+            if (roll <= 7)
+                return target.GetBodyPart(BodyPartType.Leg);            // left leg
+            if (roll <= 8)
+                return target.GetBodyPart(BodyPartType.LeftArm);
+            if (roll <= 11)
+                return target.GetBodyPart(BodyPartType.Body);
+            if (roll <= 12)
+                return target.GetBodyPart(BodyPartType.RightArm);
+            if (roll <= 14)
+                return target.GetBodyPart(BodyPartType.Leg);            // right leg
+            if (roll <= 15)
+                return target.GetBodyPart(BodyPartType.RightHand);
+            if (roll <= 16)
+                return target.GetBodyPart(BodyPartType.Feet);
+            else 
+                return target.GetBodyPart(BodyPartType.Head);
         }
 
-        public static void AttackMeleeWithWeapon(Person attacker, Person defender, MeleeComponent weapon, BodyPart bodyPart) {
-            int atkDiff = attacker.Characteristics.GetSkill(weapon.Skill);
+
+        public static void AttackMeleeWithWeapon(Person attacker, Person defender, MeleeComponent weapon, BodyPart bodyPart, bool targettingPenalty = false) {
+            int atkDiff = attacker.GetRealRank( weapon.Skill);
             int atkRoll = dice.Roll();
 
-            Logger.InfoFormat("{0} (skill: {1} @ {2}) attacks {3} rolling {4} ({5} penalty for targetting {6})", attacker.Name, weapon.Skill, atkDiff, defender.Name, atkRoll, bodyPart.AttackPenalty, bodyPart.Name);
+            if (targettingPenalty)
+                Logger.InfoFormat("{0} (skill: {1} @ {2}) attacks {3} rolling {4} ({5} penalty for targetting {6})", attacker.Name, weapon.Skill, atkDiff, defender.Name, atkRoll, bodyPart.AttackPenalty, bodyPart.Name);
+            else
+                Logger.InfoFormat("{0} (skill: {1} @ {2}) attacks {3} rolling {4}", attacker.Name, weapon.Skill, atkDiff, defender.Name, atkRoll);
 
-            if ((atkRoll - bodyPart.AttackPenalty) > atkDiff) {
+            if ((atkRoll - (targettingPenalty ? bodyPart.AttackPenalty : 0)) > atkDiff) {
                 world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name));
                 return;
             }
 
             // we hit           
-            var strength = attacker.Characteristics.GetAttribute(Attribute.Strength);
+//            var strength = attacker.Characteristics.GetAttribute(Attribute.Strength);
+            var strength = attacker.GetRealRank(Skill.Strength);
             int damage = (weapon.Action == ItemAction.MeleeAttackSwing ? DamageTableSwing(strength).Roll() : DamageTableThrust(strength).Roll()) + weapon.Damage;
 
             // todo get armor, etc

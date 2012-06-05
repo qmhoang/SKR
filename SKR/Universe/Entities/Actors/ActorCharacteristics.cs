@@ -5,10 +5,8 @@ using SKR.Universe.Entities.Items;
 
 namespace SKR.Universe.Entities.Actors {
     public class ActorCharacteristics {
-        private Person Actor;
-        private Dictionary<Attribute, ActorAttribute> Attributes;
-        private Dictionary<BodyPartType, BodyPart> BodyParts;
-        private Dictionary<Skill, SkillAttribute> Skills;
+        private Person Actor;        
+        private Dictionary<BodyPartType, BodyPart> BodyParts;        
 
         public int Health { get; set; }
         public int MaxHealth { get; protected set; }
@@ -17,28 +15,15 @@ namespace SKR.Universe.Entities.Actors {
         public MeleeComponent Kick;
 
         public int BasicDodge {
-            get { return Attributes[Attribute.Agility].Current + Attributes[Attribute.Cunning].Current; }
+            get { return Actor.GetRealRank(Skill.Agility) + Actor.GetRealRank(Skill.Cunning); }
         }
 
         public int Lift {
-            get { return Attributes[Attribute.Strength].Current * Attributes[Attribute.Strength].Current * 2; }
+            get { return Actor.GetRealRank(Skill.Strength) * Actor.GetRealRank(Skill.Strength) * 2; }
         }
 
         public ActorCharacteristics(Person actor) {
             Actor = actor;
-
-            Attributes = new Dictionary<Attribute, ActorAttribute>
-                             {
-                                     {Attribute.Strength, new ActorAttribute(10)},
-                                     {Attribute.Agility, new ActorAttribute(10)},
-                                     {Attribute.Constitution, new ActorAttribute(10)},
-                                     {Attribute.Intellect, new ActorAttribute(10)},
-                                     {Attribute.Cunning, new ActorAttribute(10)},
-                                     {Attribute.Resolve, new ActorAttribute(10)},
-                                     {Attribute.Presence, new ActorAttribute(10)},
-                                     {Attribute.Grace, new ActorAttribute(10)},
-                                     {Attribute.Composure, new ActorAttribute(10)},
-                             };
 
             BodyParts = new Dictionary<BodyPartType, BodyPart>
                             {
@@ -58,39 +43,12 @@ namespace SKR.Universe.Entities.Actors {
                                     {BodyPartType.Feet, new BodyPart("Feet", BodyPartType.Feet, Actor, Health / 3, -4)}
                             };
 
-            Skills = new Dictionary<Skill, SkillAttribute>
-                         {
-                                 {
-                                         Skill.Brawling,
-                                         new SkillAttribute(0, Attributes[Attribute.Agility], "Everyone was kung-fu fighting",
-                                                            new List<Tuple<ActorAttribute, int>>
-                                                                {
-                                                                        new Tuple<ActorAttribute, int>(Attributes[Attribute.Agility], 2),                                                                        
-                                                                })
-                                         },
-                                 {
-                                         Skill.Knife, 
-                                         new SkillAttribute(0, Attributes[Attribute.Agility], "Is that a knife in your pocket or are you happy to see me?",
-                                                            new List<Tuple<ActorAttribute, int>>
-                                                                {
-                                                                        new Tuple<ActorAttribute, int>(Attributes[Attribute.Agility], 4),                                                                        
-                                                                })
-                                         }
-                         };
 
             
             Punch = new MeleeComponent(Skill.Brawling, 0, -1, DamageType.Crush, 1, 100, 1, 0, 0, ItemAction.MeleeAttackThrust, "punch", "punches");
             Kick = new MeleeComponent(Skill.Brawling, -2, 1, DamageType.Crush, 1, 100, 1, 0, -100, ItemAction.MeleeAttackThrust, "kick", "kicks");
         }
 
-
-        public int GetAttribute(Attribute attrb) {
-            return Attributes[attrb].Current;
-        }
-
-        public int GetSkill(Skill skill) {
-            return Skills[skill].Current;
-        }
 
         public BodyPart GetBodyPart(BodyPartType bp) {
             return BodyParts[bp];
