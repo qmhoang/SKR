@@ -15,11 +15,11 @@ namespace SKR.Universe.Entities.Actors {
         public MeleeComponent Kick;
 
         public int BasicDodge {
-            get { return Actor.GetRealRank(Skill.Agility) + Actor.GetRealRank(Skill.Cunning); }
+            get { return Actor.GetTalent(Skill.Agility).RealRank + Actor.GetTalent(Skill.Cunning).RealRank; }
         }
 
         public int Lift {
-            get { return Actor.GetRealRank(Skill.Strength) * Actor.GetRealRank(Skill.Strength) * 2; }
+            get { return Actor.GetTalent(Skill.Strength).RealRank * Actor.GetTalent(Skill.Strength).RealRank * 2; }
         }
 
         public ActorCharacteristics(Person actor) {

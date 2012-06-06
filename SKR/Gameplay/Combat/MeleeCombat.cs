@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DEngine.Actor;
 using DEngine.Core;
 using SKR.Gameplay.Talent;
 using SKR.Universe;
@@ -43,8 +44,8 @@ namespace SKR.Gameplay.Combat {
         }
 
 
-        public static void AttackMeleeWithWeapon(Person attacker, Person defender, MeleeComponent weapon, BodyPart bodyPart, bool targettingPenalty = false) {
-            int atkDiff = attacker.GetRealRank( weapon.Skill);
+        public static void AttackMeleeWithWeapon(Person attacker, Person defender, MeleeComponent weapon, BodyPart bodyPart, bool targettingPenalty = false) {            
+            int atkDiff = attacker.GetTalent(weapon.Skill).RealRank;
             int atkRoll = dice.Roll();
 
             if (targettingPenalty)
@@ -59,7 +60,7 @@ namespace SKR.Gameplay.Combat {
 
             // we hit           
 //            var strength = attacker.Characteristics.GetAttribute(Attribute.Strength);
-            var strength = attacker.GetRealRank(Skill.Strength);
+            var strength = attacker.GetTalent(Skill.Strength).RealRank;
             int damage = (weapon.Action == ItemAction.MeleeAttackSwing ? DamageTableSwing(strength).Roll() : DamageTableThrust(strength).Roll()) + weapon.Damage;
 
             // todo get armor, etc

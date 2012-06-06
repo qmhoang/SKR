@@ -33,7 +33,7 @@ namespace SKR.Universe.Location {
         public TileEnum Type { get; private set; }        
         public bool Transparent { get; private set; }
         public bool Walkable { get; private set; }
-        public double WalkPenalty { get; private set; }
+        public double WalkPenalty { get; private set; }        
 
         public Image Image { get; set; }
 
@@ -42,13 +42,14 @@ namespace SKR.Universe.Location {
             Transparent = transparent;
             Walkable = walkable;
             WalkPenalty = walkPenalty;
+            RefId = Type.ToString();
         }
 
         public Tile Copy() {
             return new Tile(Type, Transparent, Walkable, WalkPenalty);
         }
 
-        public string RefId { get { return Type.ToString(); } }
+        public string RefId { get; private set; }
 
         public Point Position { get; set; }
     }

@@ -179,6 +179,7 @@ namespace SKR.Universe.Entities.Actors {
 
         public void CalculateFov() {
             Level.Fov.computeFov(Position.X, Position.Y, SightRadius);
+            RecalculateFov = false;
         }
 
         public override void Update() {            
@@ -213,8 +214,7 @@ namespace SKR.Universe.Entities.Actors {
 
             if (Level.DoesActorExistAtLocation(nPos)) {
                 Person target = Level.GetActorAtLocation(nPos);
-
-                ((TargetPersonAction) GetTalent(Skill.Attack).Action).Action(this, target);                
+                GetTalent(Skill.Attack).InvokeAction(target, null, null, null, null);                
             } else
                 Position = nPos;
 
@@ -403,11 +403,13 @@ namespace SKR.Universe.Entities.Actors {
 
             if (!KnowTalent(skill)) {
                 // add talent
-                talents.Add(skill, World.GetTalent(skill));
+                var t = World.GetTalent(skill);
+                t.Owner = this;
+                talents.Add(skill, t);
             }
 
             Talent talent = GetTalent(skill);
-            talent.RawRank = Math.Min(talent.MaxRank, talent.RawRank + rank);
+            talent.RawRank += rank;
             OnTalentLearned(new EventArgs<Talent, int>(talent, rank));
         }
 
@@ -417,10 +419,6 @@ namespace SKR.Universe.Entities.Actors {
 
         public Talent GetTalent(Skill skill) {
             return talents[skill];
-        }
-
-        public int GetRealRank(Skill skill) {
-            return ((PassiveSkillAction)GetTalent(skill).Action).RealRank(this);
         }
 
         public event EventHandler<EventArgs<Talent, int>> TalentLearned;
