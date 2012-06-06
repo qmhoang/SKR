@@ -196,7 +196,6 @@ namespace SKR.Universe.Entities.Actors {
 
         public override bool CanSpot(Actor actor) {
             throw new NotImplementedException();
-
             return HasLineOfSight(actor.Position);
         }
 

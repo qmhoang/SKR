@@ -38,10 +38,10 @@ namespace SKR {
 #if DEBUG
         public static bool SeeAll = false;
         public static bool GodMode = false;
-#endif
+#endif        
 
-        public static void Main(string[] args) {
-            XmlConfigurator.Configure(new FileInfo("Log.xml"));
+        public static void Main(string[] args) {                                        
+            XmlConfigurator.Configure(new FileInfo("Log.xml"));                       
 
             Logger.InfoFormat("TCODConsole.root initialized {0}", ScreenSize);
             Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", InitialDelay,

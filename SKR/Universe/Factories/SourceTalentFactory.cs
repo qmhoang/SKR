@@ -55,7 +55,7 @@ namespace SKR.Universe.Factories {
                     return new Talent(new TalentTemplate()
                                           {
                                                   Skill = identifier,
-                                                  Name = "Attack specific body part",
+                                                  Name = "Attack target specific body part.",
                                                   InitialRank = 1,
                                                   MaxRank = 1,
                                                   Radius = 0,
@@ -80,6 +80,13 @@ namespace SKR.Universe.Factories {
                                                                      return attacks;
                                                                  },
 
+                                                  Arg0Desciptor = delegate (Talent t, Person self, Person target, dynamic arg)
+                                                                      {
+                                                                          var weapon = (MeleeComponent) arg;
+                                                                          return weapon.Item == null
+                                                                                         ? weapon.ActionDescription
+                                                                                         : String.Format("{0} with {1}", weapon.ActionDescription, weapon.Item.Name);
+                                                                      },
                                                   Args1 = (t, self, target) => target.Characteristics.BodyPartsList,
 
                                                   Action = delegate(Talent t, Person self, Person target, dynamic weapon, dynamic targetBodyPart, dynamic notused1, dynamic notused2)
@@ -137,7 +144,7 @@ namespace SKR.Universe.Factories {
                                                   InitialRank = 0,
                                                   MaxRank = 10,
                                                   Range = 0,
-                                                  Radius = 0,
+                                                  Radius = 0,                                                  
                                                   CalculateRealRank = (t, self) => t.RawRank + self.GetTalent(Skill.Agility).RealRank
                                           });
 

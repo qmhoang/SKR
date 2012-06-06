@@ -20,14 +20,17 @@ namespace SKR.Gameplay.Talent {
         public int InitialRank { get; set; }        
         public int MaxRank { get; set; }
         public int Range { get; set; }
-        public int Radius { get; set; }
+        public int Radius { get; set; }        
 
         /// <summary>
         /// RealRank will call the this function to calculate this talent's modified rank, it can be anything
         /// from a simple adding another attribute to it or something much more complicated
         /// <b>If left null, it will default to simply return the raw rank</b>
-        /// </summary>
-        public Func<Talent, Person, int> CalculateRealRank { get; set; }
+        /// </summary>        
+        public delegate int CalculateRealRankFunction(Talent talent, Person self);
+        
+        public CalculateRealRankFunction CalculateRealRank { get; set; }
+
 
         /// <summary>
         /// This is our dynamic action that allows a talent to specify 4 different options when invoking it
@@ -36,28 +39,49 @@ namespace SKR.Gameplay.Talent {
         /// Arg1 (Person)       - The person that used this talent
         /// Arg2 (Person)       - The target that is at the end of this talent
         /// Arg3-7 (dynamic)    - These represent dynamic options that can be anything
-        /// ArgN (ActionResult) - This is the return signature for our function, it represents if the action was completed/aborted, etc
+        /// return              - This is the return signature for our function, it represents if the action was completed/aborted, etc
         /// </summary>
-        public Func<Talent, Person, Person, dynamic, dynamic, dynamic, dynamic, ActionResult> Action { get; set; }
+        public delegate ActionResult ActionFunction(Talent talent, Person self, Person target, dynamic arg0, dynamic arg1, dynamic arg2, dynamic arg3);
+
+        public ActionFunction Action { get; set; }
 
         /// <summary>
         /// These represent our functions that will generate a list of options for us to choose
+        /// <b>The args must be used in order, you can't set Args0 and Args3, leaving Args1 and Args2 null</b>        
         /// Arg0 (Talent)       - The talent of calling this action
         /// Arg1 (Person)       - The person that used this talent
         /// Arg2 (Person)       - The target that is at the end of this talent
-        /// ArgN (dynamic[])    - This is a IEnumerable list of options
+        /// returns (dynamic[]) - This is a IEnumerable list of options
         /// </summary>
-        public Func<Talent, Person, Person, IEnumerable<dynamic>> Args0 { get; set; }
-        public Func<Talent, Person, Person, IEnumerable<dynamic>> Args1 { get; set; }
-        public Func<Talent, Person, Person, IEnumerable<dynamic>> Args2 { get; set; }
-        public Func<Talent, Person, Person, IEnumerable<dynamic>> Args3 { get; set; }        
+        public delegate IEnumerable<dynamic> GenerateArgsListFunction(Talent talent, Person self, Person target);
+
+        public GenerateArgsListFunction Args0 { get; set; }
+        public GenerateArgsListFunction Args1 { get; set; }
+        public GenerateArgsListFunction Args2 { get; set; }
+        public GenerateArgsListFunction Args3 { get; set; }
+
+        /// <summary>
+        /// These are string transformation functions that will convert the display strings for our arguments, 
+        /// <b>If null, ToString will be called on the dynamic object</b>
+        /// Arg0 (Talent)       - The talent of calling this action
+        /// Arg1 (Person)       - The person that used this talent
+        /// Arg2 (Person)       - The target that is at the end of this talent
+        /// Arg3 (dynamic)      - The arg that needs to be named
+        /// returns (string)    - This is a IEnumerable list of options
+        /// </summary>
+        public delegate string ArgDesciptorFunction(Talent talent, Person self, Person target, dynamic arg);
+
+        public ArgDesciptorFunction Arg0Desciptor { get; set; }
+        public ArgDesciptorFunction Arg1Desciptor { get; set; }
+        public ArgDesciptorFunction Arg2Desciptor { get; set; }
+        public ArgDesciptorFunction Arg3Desciptor { get; set; }
 
         public static TalentTemplate CreateAttribute(Skill attrb) {
             return new TalentTemplate()
                        {
                                Skill = attrb,
                                Name = attrb.ToString(),
-                               InitialRank = 10,
+                               InitialRank = 0,
                                MaxRank = 20
                        };
         }
@@ -69,6 +93,7 @@ namespace SKR.Gameplay.Talent {
     public class Talent {
         public const int MaxOptions = 4;
 
+        #region Basic Stats
         public Person Owner { get; set; }
         public Skill Skill { get; private set; }
         public string Name { get; private set; }
@@ -85,16 +110,22 @@ namespace SKR.Gameplay.Talent {
         public int MaxRank { get; private set; }
         public int Range { get; private set; }
         public int Radius { get; private set; }
+        
+        #endregion
 
-        private readonly Func<Talent, Person, int> calculateRealRank;
+        private readonly TalentTemplate.CalculateRealRankFunction calculateRealRank;
 
-        private readonly Func<Talent, Person, Person, dynamic, dynamic, dynamic, dynamic, ActionResult> action;
+        private readonly TalentTemplate.ActionFunction action;
 
-        private readonly Func<Talent, Person, Person, IEnumerable<dynamic>> arg0Func;
-        private readonly Func<Talent, Person, Person, IEnumerable<dynamic>> arg1Func;
-        private readonly Func<Talent, Person, Person, IEnumerable<dynamic>> arg2Func;
-        private readonly Func<Talent, Person, Person, IEnumerable<dynamic>> arg3Func;
+        #region GenerateArgFunctions
+        private readonly TalentTemplate.GenerateArgsListFunction arg0Func;
+        private readonly TalentTemplate.GenerateArgsListFunction arg1Func;
+        private readonly TalentTemplate.GenerateArgsListFunction arg2Func;
+        private readonly TalentTemplate.GenerateArgsListFunction arg3Func;
 
+        /// <summary>
+        /// Does the talent need arguments?
+        /// </summary>
         public bool ContainsArg0 { get { return arg0Func != null; } }
         public bool ContainsArg1 { get { return arg1Func != null; } }
         public bool ContainsArg2 { get { return arg2Func != null; } }
@@ -113,6 +144,25 @@ namespace SKR.Gameplay.Talent {
             return false;
         }
 
+        public int NumberOfArgs {
+            get {
+                if (arg0Func == null)
+                    return 0;
+                if (arg1Func == null)
+                    return 1;
+                if (arg2Func == null)
+                    return 2;
+                if (arg3Func == null)
+                    return 3;
+
+                return 0;
+            }
+            
+        }
+
+        /// <summary>
+        /// Get the list of arguments for the action
+        /// </summary>
         public IEnumerable<dynamic> GetArg0Parameters(Person target) { return arg0Func(this, Owner, target); }
         public IEnumerable<dynamic> GetArg1Parameters(Person target) { return arg1Func(this, Owner, target); }
         public IEnumerable<dynamic> GetArg2Parameters(Person target) { return arg2Func(this, Owner, target); }
@@ -131,6 +181,32 @@ namespace SKR.Gameplay.Talent {
             }
             return null;
         }
+        #endregion
+
+        private readonly TalentTemplate.ArgDesciptorFunction arg0Desciptor;
+        private readonly TalentTemplate.ArgDesciptorFunction arg1Desciptor;
+        private readonly TalentTemplate.ArgDesciptorFunction arg2Desciptor;
+        private readonly TalentTemplate.ArgDesciptorFunction arg3Desciptor;
+
+        public string DescribeArg0(Person target, dynamic arg) { return arg0Desciptor(this, Owner, target, arg); }
+        public string DescribeArg1(Person target, dynamic arg) { return arg1Desciptor(this, Owner, target, arg); }
+        public string DescribeArg2(Person target, dynamic arg) { return arg2Desciptor(this, Owner, target, arg); }
+        public string DescribeArg3(Person target, dynamic arg) { return arg3Desciptor(this, Owner, target, arg); }
+
+        public string TransformArgToString(Person target, dynamic arg, int argNumber) {
+            switch (argNumber) {
+                case 0:
+                    return DescribeArg0(target, arg);
+                case 1:
+                    return DescribeArg1(target, arg);
+                case 2:
+                    return DescribeArg2(target, arg);
+                case 3:
+                    return DescribeArg3(target, arg);
+            }
+            return null;
+        }
+
 
         public ActionResult InvokeAction(Person target, dynamic arg0, dynamic arg1, dynamic arg2, dynamic arg3) {
             return action(this, Owner, target, arg0, arg1, arg2, arg3);
@@ -142,15 +218,33 @@ namespace SKR.Gameplay.Talent {
             RawRank = template.InitialRank;
             MaxRank = template.MaxRank;
             Range = template.Range;
-            Radius = template.Radius;
+            Radius = template.Radius;            
 
             action = template.Action;
             arg0Func = template.Args0;
             arg1Func = template.Args1;
             arg2Func = template.Args2;
-            arg3Func = template.Args3;
+            arg3Func = template.Args3;            
+            
+            arg0Desciptor = template.Arg0Desciptor;
+            arg1Desciptor = template.Arg1Desciptor;
+            arg2Desciptor = template.Arg2Desciptor;
+            arg3Desciptor = template.Arg3Desciptor;
 
-            calculateRealRank = (t, self) => t.RawRank;
+            if (arg0Desciptor == null)
+                arg0Desciptor = (t, self, target, arg) => arg.ToString();
+            if (arg1Desciptor == null)
+                arg1Desciptor = (t, self, target, arg) => arg.ToString();
+            if (arg2Desciptor == null)
+                arg2Desciptor = (t, self, target, arg) => arg.ToString();
+            if (arg3Desciptor == null)
+                arg3Desciptor = (t, self, target, arg) => arg.ToString();
+
+            calculateRealRank = template.CalculateRealRank;            
+
+            if (template.CalculateRealRank == null)
+                calculateRealRank = (t, self) => t.RawRank;
+
         }
     }
 }

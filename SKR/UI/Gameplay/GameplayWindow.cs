@@ -71,29 +71,30 @@ namespace SKR.UI.Gameplay {
         }
 
         private void HandleOptions(Talent t, Person target) {
-            RecursiveSelectOptionHelp(t, target, 0, new dynamic[Talent.MaxOptions]);
+            RecursiveSelectOptionHelper(t, target, 0, new dynamic[Talent.MaxOptions]);
         }
 
         /// <summary>
         /// This function will recursively check for options
+        /// 
         /// </summary>
         /// <param name="t">The talent being used</param>
         /// <param name="target">the target the talent is being used on</param>
         /// <param name="level"></param>
         /// <param name="args"></param>
-        private void RecursiveSelectOptionHelp(Talent t, Person target, int level, dynamic[] args) {
-            if (level > Talent.MaxOptions)
+        private void RecursiveSelectOptionHelper(Talent t, Person target, int level, dynamic[] args) {
+            if (level > t.NumberOfArgs)
                 throw new Exception("We have somehow recursed on more levels that there are options");
 
             ParentApplication.Push(
                 new OptionsPrompt<dynamic>("Options Arg" + level,
                                             t.GetArgParameters(target, level).ToList(),
-                                            o => o.ToString(),
+                                            o => t.TransformArgToString(target, o, level),
                                             delegate(dynamic arg)
                                                 {
                                                     args[level] = arg;
                                                     if (t.ContainsArg(level + 1)) {
-                                                        RecursiveSelectOptionHelp(t, target, level + 1, args);
+                                                        RecursiveSelectOptionHelper(t, target, level + 1, args);
                                                     } else
                                                         t.InvokeAction(target, args[0], args[1], args[2], args[3]);
                                                     
