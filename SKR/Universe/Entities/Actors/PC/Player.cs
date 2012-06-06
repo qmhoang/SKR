@@ -6,10 +6,6 @@ using SKR.Universe.Location;
 
 namespace SKR.Universe.Entities.Actors.PC {
     public class Player : Person {
-        public override ActionResult Move(int dx, int dy) {
-            throw new NotImplementedException();
-        }
-
         public override int SightRadius {
             get { return 10; }
         }
@@ -18,13 +14,9 @@ namespace SKR.Universe.Entities.Actors.PC {
             return Level.IsVisible(position);
         }
 
-        public override bool CanSpot(IObject @object) {
+        public override bool CanSpot(Actor actor) {
             throw new NotImplementedException();
         }
-
-        public override char Ascii { get { return '@'; } }
-
-        public override Color Color { get { return ColorPresets.White; } }
 
         public override int Speed {
             get { return 100; }
@@ -43,7 +35,8 @@ namespace SKR.Universe.Entities.Actors.PC {
         }
 
         public Player(Level level)
-            : base("player", level) {            
+            : base("player", level) {
+            RefId = "player";
         }
     }
 }

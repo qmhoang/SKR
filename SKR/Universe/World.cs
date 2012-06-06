@@ -43,7 +43,7 @@ namespace SKR.Universe {
 
         public Player Player { get; set; }
 
-        private Factory<RefId, UniqueId, Item> ItemFactory;
+        private Factory<string, UniqueId, Item> ItemFactory;
         private Factory<UniqueId> IdFactory;
         private Factory<TileEnum, Tile> TileFactory;
         private Factory<Skill, Talent> TalentFactory; 
@@ -80,9 +80,9 @@ namespace SKR.Universe {
 
             Player = new Player(level) { Position = new Point(2, 2) };
 
-            Player.AddItem(CreateItem(new RefId { Id = "largeknife" }));
+            Player.AddItem(CreateItem("largeknife"));
 
-            var i = CreateItem(new RefId { Id = "brassknuckles" });
+            var i = CreateItem("brassknuckles");
             Player.AddItem(i);
             Player.Equip(BodyPartType.LeftHand, i);
         }
@@ -101,7 +101,7 @@ namespace SKR.Universe {
             Instance.Temp();
         }
 
-        public Item CreateItem(RefId key) {
+        public Item CreateItem(string key) {
             return ItemFactory.Construct(key, IdFactory.Construct());
         }
 
