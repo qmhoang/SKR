@@ -2,11 +2,13 @@ using System;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
+using SKR.UI.Graphics;
 using SKR.Universe.Entities.Actors.PC;
 using SKR.Universe.Location;
 
 namespace SKR.UI.Gameplay {
     public class MapPanel : Panel {
+        private TCODGraphicsTransformer transformer;
         private readonly Player player;
 
         internal Point ViewOffset { get; private set; }
@@ -16,6 +18,7 @@ namespace SKR.UI.Gameplay {
         public MapPanel(PanelTemplate template, Player player) : base(template) {
             this.player = player;
             ViewOffset = new Point(0, 0);
+            transformer = new TCODGraphicsTransformer();
         }
 
         protected override void Redraw() {
@@ -25,8 +28,6 @@ namespace SKR.UI.Gameplay {
                                             player.Level.Width - Size.Width),
                                    Math.Min(Math.Max(player.Position.Y - Size.Height / 2, 0),
                                             player.Level.Height - Size.Height));
-
-            player.CalculateFov();
 
             for (int x = 0; x < Size.Width; x++)
                 for (int y = 0; y < Size.Height; y++) {
@@ -51,29 +52,29 @@ namespace SKR.UI.Gameplay {
                 }
 
             foreach (var actor in player.Level.Actors) {
-                Point localPosition = actor.Position - ViewOffset;
-
-                DrawIndividual(localPosition, actor.Position, actor.Ascii, new Pigment(actor.Color, backgroundColor));
+                Point localPosition = actor.Position - ViewOffset;                
+                DrawIndividual(localPosition, actor.Position, transformer.Transform(actor));
             }
 
             // drawing player
-            Canvas.PrintChar(player.Position - ViewOffset, player.Ascii, new Pigment(player.Color, backgroundColor));
+            var image = transformer.Transform(player);
+            Canvas.PrintChar(player.Position - ViewOffset, image.Ascii, image.Color);
         }
 
 
 
 
-        private void DrawIndividual(Point localPosition, Point mapPosition, char ascii, Pigment directVision) {
+        private void DrawIndividual(Point localPosition, Point mapPosition, TCODImage image) {
 #if DEBUG
             if (!Program.SeeAll) {
 #endif
                 if (player.HasLineOfSight(mapPosition)) {
-                    Canvas.PrintChar(localPosition.X, localPosition.Y, ascii, directVision);
+                    Canvas.PrintChar(localPosition.X, localPosition.Y, image.Ascii, image.Color);
                 }
             }
 #if DEBUG
             else if (IsPointWithinPanel(localPosition))
-                Canvas.PrintChar(localPosition.X, localPosition.Y, ascii, directVision);
+                Canvas.PrintChar(localPosition.X, localPosition.Y, image.Ascii, image.Color);
 #endif
         }
 

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
+using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
 using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Items;
 using SKR.Universe.Factories;
 using SKR.Universe.Location;
 using log4net;
+
 
 namespace SKR.Universe.Entities.Actors {
     public enum Attribute {
@@ -85,6 +88,8 @@ namespace SKR.Universe.Entities.Actors {
         }
     }
 
+
+
     public abstract class Person : Actor {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -98,6 +103,8 @@ namespace SKR.Universe.Entities.Actors {
         public World World {
             get { return World.Instance; }
         }
+
+        public override Image Image { get; set; }        
 
         private ItemContainer inventory;
         private int additionalWeight;
@@ -175,6 +182,7 @@ namespace SKR.Universe.Entities.Actors {
         }
 
         public override void Update() {
+            CalculateFov();
             CheckEncumbrance();
         }
 
@@ -197,13 +205,13 @@ namespace SKR.Universe.Entities.Actors {
             } else
                 Position = nPos;
 
-            ActionPoints -= Universe.World.DefaultTurnSpeed;
+            ActionPoints -= World.DefaultTurnSpeed;
 
             return ActionResult.Success;
         }
 
         public override ActionResult Wait() {
-            ActionPoints -= Universe.World.DefaultTurnSpeed;
+            ActionPoints -= World.DefaultTurnSpeed;
             return ActionResult.Success;
         }
 
@@ -288,8 +296,9 @@ namespace SKR.Universe.Entities.Actors {
         /// <summary>
         /// Equip item into body part, any item already in the slot will be unequipped
         /// </summary>        
-        /// <returns>returns true if it was successful, false if not</returns>
-        public bool Equip(BodyPartType bpslot, Item item) {
+        /// <returns>returns success if it was successful, aborted if item already equip couldn't fit in inventory</returns>
+        /// todo rethink this
+        public ActionResult Equip(BodyPartType bpslot, Item item) {
             var bp = GetBodyPart(bpslot);
             if (item == null)
                 throw new ArgumentException("item is null", "item");
@@ -298,7 +307,7 @@ namespace SKR.Universe.Entities.Actors {
 
             if (equippedItems.ContainsKey(bpslot))
                 if (!AddItem(equippedItems[bpslot]))
-                    return false;
+                    return ActionResult.Aborted;
 
             // we have enough space in your inventory for this                
             equippedItems[bpslot] = item;
@@ -306,20 +315,21 @@ namespace SKR.Universe.Entities.Actors {
             OnItemEquipped(new EventArgs<Item>(item));
 
             Log.InfoFormat("{0} is equipping {1} to {2}.", Name, item.Name, bpslot);
-            return true;
+            return ActionResult.Success;
         }
 
-        public bool Unequip(BodyPartType bpslot) {
+        // todo rethink this, abort = nothing happen, failed = couldn't fit in inventory to dropped?
+        public ActionResult Unequip(BodyPartType bpslot) {            
             if (!equippedItems.ContainsKey(bpslot))
-                return false;
+                return ActionResult.Aborted;
             if (AddItem(equippedItems[bpslot])) {
                 OnItemUnequipped(new EventArgs<Item>(equippedItems[bpslot]));
                 Log.InfoFormat("{0} is unequipping {1} from {2}.", Name, equippedItems[bpslot].Name, bpslot);
                 equippedItems.Remove(bpslot);
 
-                return true;
+                return ActionResult.Success;
             }
-            return false;
+            return ActionResult.Aborted;
         }
 
         public bool IsItemEquipped(BodyPartType bpslot) {

@@ -16,16 +16,8 @@ namespace SKR.Universe.Entities.Actors.NPC {
             return Level.IsVisible(position);
         }
 
-        public override bool CanSpot(IObject @object) {
+        public override bool CanSpot(Actor actor) {
             throw new System.NotImplementedException();
-        }
-
-        public override char Ascii {
-            get { return '@'; }
-        }
-
-        public override Color Color {
-            get { return ColorPresets.WhiteSmoke; }
         }
 
         public override int Speed {
@@ -40,7 +32,9 @@ namespace SKR.Universe.Entities.Actors.NPC {
         public override void OnDeath() {
         }
 
-        public Npc(string name, Level level) : base(name, level) {                        
+        public Npc(string name, Level level) : base(name, level) {       
+            //todo
+            RefId = "human";
         }
     }
 }

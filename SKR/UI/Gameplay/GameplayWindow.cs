@@ -96,8 +96,8 @@ namespace SKR.UI.Gameplay {
                                                     new OptionsPrompt<ItemComponent>(
                                                             String.Format("Attacking {0}", target.Name),
                                                             attacks,
-                                                            c => c.ParentItem != null
-                                                                    ? String.Format("{0} with {1}", c.ActionDescription, c.ParentItem.Name)
+                                                            c => c.Item != null
+                                                                    ? String.Format("{0} with {1}", c.ActionDescription, c.Item.Name)
                                                                     : c.ActionDescription,
                                                             c => ParentApplication.Push(
                                                                     new OptionsPrompt<BodyPart>("Select location",

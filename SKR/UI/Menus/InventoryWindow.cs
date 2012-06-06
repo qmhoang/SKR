@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
@@ -100,7 +101,7 @@ namespace SKR.UI.Menus {
 
         private void SelectIndex(BodyPart bodyPart) {
             if (player.IsItemEquipped(bodyPart.Type)) {
-                if (!player.Unequip(bodyPart.Type))
+                if (player.Unequip(bodyPart.Type) == ActionResult.Aborted)  //todo
                     World.Instance.InsertMessage("Unable to unequip item, maybe you are carrying too much.");
             } else {
                 var items = player.Items.Where(bodyPart.CanUseItem).ToList();
@@ -115,7 +116,7 @@ namespace SKR.UI.Menus {
                                                           },
                                                           delegate(Item i)
                                                           {
-                                                              if (!player.Equip(bodyPart.Type, i))
+                                                              if (player.Equip(bodyPart.Type, i) == ActionResult.Aborted) // todo
                                                                   World.Instance.InsertMessage("Unable to equip item.");
                                                           }));
             }

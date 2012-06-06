@@ -63,7 +63,7 @@ namespace SKR.Universe.Factories {
                                                       } else
                                                           melee = self.Characteristics.Punch;
 
-                                                      if (self.Position.DistanceTo(target.Position) > (t.Range + melee.Reach)) {
+                                                      if (self.Position.DistanceTo(target.Position) > (t.Range + melee.Reach + 1)) {
                                                           self.World.InsertMessage("Too far to attack.");
                                                           return false;
                                                       }
@@ -84,7 +84,7 @@ namespace SKR.Universe.Factories {
 
                                                       var melee = weapon as MeleeComponent;
 
-                                                      if (self.Position.DistanceTo(target.Position) > (t.Range + melee.Reach)) {
+                                                      if (self.Position.DistanceTo(target.Position) > (t.Range + melee.Reach + 1)) {
                                                           self.World.InsertMessage("Too far to attack.");
                                                           return false;
                                                       }

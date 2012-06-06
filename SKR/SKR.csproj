@@ -58,12 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity.cs" />
     <Compile Include="Gameplay\Combat\MeleeCombat.cs" />
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
     <Compile Include="UI\Gameplay\MapPanel.cs" />
+    <Compile Include="UI\Graphics\TCODGraphicsRenderer.cs" />
+    <Compile Include="UI\Graphics\TCODImage.cs" />
     <Compile Include="UI\Menus\InventoryWindow.cs" />
     <Compile Include="UI\Menus\PromptWindow.cs" />
     <Compile Include="UI\Menus\ListWindow.cs" />
@@ -77,6 +80,7 @@
     <Compile Include="Universe\Entities\Actors\NPC\Npc.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />
     <Compile Include="Universe\Entities\Actors\PC\Player.cs" />
+    <Compile Include="Universe\Entities\Actors\Person.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
     <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
     <Compile Include="Universe\Factories\SourceTalentFactory.cs" />
