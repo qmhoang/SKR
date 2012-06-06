@@ -11,25 +11,25 @@ using libtcod;
 namespace SKR.Universe.Factories {
     public class SourceTileFactory : Factory<TileEnum, Tile> {
         private static Dictionary<TileEnum, Tile> cells =
-            new Dictionary<TileEnum, Tile>
+                        new Dictionary<TileEnum, Tile>
                     {
-                        {TileEnum.Unused, new Tile((char) TCODSpecialCharacter.Block1, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                        {TileEnum.Unused, new Tile(TileEnum.Unused, false, false, 0.0)},
 
-                        {TileEnum.WoodFloor, new Tile(' ', true, true, 0.0, new Pigment(ColorPresets.Black, ColorPresets.Black))},
-                        {TileEnum.Grass, new Tile((char) TCODSpecialCharacter.Block1, true, true, 0.0, new Pigment(ColorPresets.DarkerGreen, ColorPresets.LightGreen))},
+                        {TileEnum.WoodFloor, new Tile(TileEnum.WoodFloor, true, true, 0.0)},
+                        {TileEnum.Grass, new Tile(TileEnum.Grass, true, true, 0.0)},
 
-                        {TileEnum.HorizWall, new Tile((char) TCODSpecialCharacter.HorzLine, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.VertWall, new Tile((char) TCODSpecialCharacter.VertLine, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                        {TileEnum.HorizWall, new Tile(TileEnum.HorizWall, false, false, 0.0)},
+                        {TileEnum.VertWall, new Tile(TileEnum.VertWall, false, false, 0.0)},
 
-                        {TileEnum.NEWall, new Tile((char) TCODSpecialCharacter.NE, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.NWWall, new Tile((char) TCODSpecialCharacter.NW, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.SEWall, new Tile((char) TCODSpecialCharacter.SE, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.SWWall, new Tile((char) TCODSpecialCharacter.SW, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                        {TileEnum.NEWall, new Tile(TileEnum.NEWall, false, false, 0.0)},
+                        {TileEnum.NWWall, new Tile(TileEnum.NWWall, false, false, 0.0)},
+                        {TileEnum.SEWall, new Tile(TileEnum.SEWall, false, false, 0.0)},
+                        {TileEnum.SWWall, new Tile(TileEnum.SWWall, false, false, 0.0)},
 
-                        {TileEnum.TWallE, new Tile((char) TCODSpecialCharacter.TeeEast, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.TWallW, new Tile((char) TCODSpecialCharacter.TeeWest, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.TWallS, new Tile((char) TCODSpecialCharacter.TeeSouth, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                        {TileEnum.TWallN, new Tile((char) TCODSpecialCharacter.TeeNorth, false, false, 0.0, new Pigment(ColorPresets.White, ColorPresets.Black))},  
+                        {TileEnum.TWallE, new Tile(TileEnum.TWallE, false, false, 0.0)},
+                        {TileEnum.TWallW, new Tile(TileEnum.TWallW, false, false, 0.0)},
+                        {TileEnum.TWallS, new Tile(TileEnum.TWallS, false, false, 0.0)},
+                        {TileEnum.TWallN, new Tile(TileEnum.TWallN, false, false, 0.0)},  
 
                     };
 

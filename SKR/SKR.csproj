@@ -65,7 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
     <Compile Include="UI\Gameplay\MapPanel.cs" />
-    <Compile Include="UI\Graphics\TCODGraphicsRenderer.cs" />
+    <Compile Include="UI\Graphics\TCODGraphicsTransformer.cs" />
     <Compile Include="UI\Graphics\TCODImage.cs" />
     <Compile Include="UI\Menus\InventoryWindow.cs" />
     <Compile Include="UI\Menus\PromptWindow.cs" />
