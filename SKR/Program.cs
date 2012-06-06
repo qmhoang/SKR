@@ -36,7 +36,7 @@ namespace SKR {
         public static readonly Size ScreenSize = new Size(80, 60);
 
 #if DEBUG
-        public static bool SeeAll = true;
+        public static bool SeeAll = false;
         public static bool GodMode = false;
 #endif
 
