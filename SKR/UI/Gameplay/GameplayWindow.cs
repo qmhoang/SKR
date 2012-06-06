@@ -70,53 +70,92 @@ namespace SKR.UI.Gameplay {
             world = World.Instance;
         }
 
+        private void HandleOptions(Talent t, Person target) {
+            RecursiveSelectOptionHelp(t, target, 0, new dynamic[Talent.MaxOptions]);
+        }
+
+        /// <summary>
+        /// This function will recursively check for options
+        /// </summary>
+        /// <param name="t">The talent being used</param>
+        /// <param name="target">the target the talent is being used on</param>
+        /// <param name="level"></param>
+        /// <param name="args"></param>
+        private void RecursiveSelectOptionHelp(Talent t, Person target, int level, dynamic[] args) {
+            if (level > Talent.MaxOptions)
+                throw new Exception("We have somehow recursed on more levels that there are options");
+
+            ParentApplication.Push(
+                new OptionsPrompt<dynamic>("Options Arg" + level,
+                                            t.GetArgParameters(target, level).ToList(),
+                                            o => o.ToString(),
+                                            delegate(dynamic arg)
+                                                {
+                                                    args[level] = arg;
+                                                    if (t.ContainsArg(level + 1)) {
+                                                        RecursiveSelectOptionHelp(t, target, level + 1, args);
+                                                    } else
+                                                        t.InvokeAction(target, args[0], args[1], args[2], args[3]);
+                                                    
+                                                }
+                                            ));
+        }
+
         private void HandleTalent(Talent talent) {
-            if (talent.Action is TargetBodyPartWithWeaponAction) {
-                ParentApplication.Push(
-                                new TargetPrompt(
-                                        talent.Name, player.Position,
-                                        delegate(Point p)
-                                        {
-                                            Person target = player.Level.GetActorAtLocation(p);
-                                            List<ItemComponent> attacks = new List<ItemComponent>
-                                                                                   {
-                                                                                           player.Characteristics.Kick,
-                                                                                           player.Characteristics.Punch,
-                                                                                   };
+            ParentApplication.Push(
+                new TargetPrompt(talent.Name, player.Position,
+                                                    delegate (Point p)
+                                                        {
+                                                            Person target = player.Level.GetActorAtLocation(p);
+                                                            HandleOptions(talent, target);
+                                                        }, MapPanel));
 
-                                            foreach (var bodyPart in player.BodyParts.Where(bodyPart => player.IsItemEquipped(bodyPart.Type))) {
-                                                var item = player.GetItemAtBodyPart(bodyPart.Type);
-                                                if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
-                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackSwing) as MeleeComponent);
-                                                if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
-                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackThrust) as MeleeComponent);
-                                            }
-
-                                            ParentApplication.Push(
-                                                    new OptionsPrompt<ItemComponent>(
-                                                            String.Format("Attacking {0}", target.Name),
-                                                            attacks,
-                                                            c => c.Item != null
-                                                                    ? String.Format("{0} with {1}", c.ActionDescription, c.Item.Name)
-                                                                    : c.ActionDescription,
-                                                            c => ParentApplication.Push(
-                                                                    new OptionsPrompt<BodyPart>("Select location",
-                                                                                                target.Characteristics.BodyPartsList.ToList(),
-                                                                                                bp => bp.Name,
-                                                                                                bp => ((TargetBodyPartWithWeaponAction) talent.Action).Action(player, target, bp, c)))));
-                                        },
-                                        MapPanel));
-            } else if (talent.Action is TargetPersonAction) {
-                ParentApplication.Push(
-                                new TargetPrompt(
-                                        talent.Name, player.Position,
-                                        delegate(Point p)
-                                        {
-                                            Person target = player.Level.GetActorAtLocation(p);
-                                            ((TargetPersonAction) talent.Action).Action(player, target);
-                                        },
-                                        MapPanel));
-            }
+//            if (talent.Action is TargetBodyPartWithWeaponAction) {
+//                ParentApplication.Push(
+//                                new TargetPrompt(
+//                                        talent.Name, player.Position,
+//                                        delegate(Point p)
+//                                        {
+//                                            Person target = player.Level.GetActorAtLocation(p);
+//                                            List<ItemComponent> attacks = new List<ItemComponent>
+//                                                                                   {
+//                                                                                           player.Characteristics.Kick,
+//                                                                                           player.Characteristics.Punch,
+//                                                                                   };
+//
+//                                            foreach (var bodyPart in player.BodyParts.Where(bodyPart => player.IsItemEquipped(bodyPart.Type))) {
+//                                                var item = player.GetItemAtBodyPart(bodyPart.Type);
+//                                                if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
+//                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackSwing) as MeleeComponent);
+//                                                if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
+//                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackThrust) as MeleeComponent);
+//                                            }
+//
+//                                            ParentApplication.Push(
+//                                                    new OptionsPrompt<ItemComponent>(
+//                                                            String.Format("Attacking {0}", target.Name),
+//                                                            attacks,
+//                                                            c => c.Item != null
+//                                                                    ? String.Format("{0} with {1}", c.ActionDescription, c.Item.Name)
+//                                                                    : c.ActionDescription,
+//                                                            c => ParentApplication.Push(
+//                                                                    new OptionsPrompt<BodyPart>("Select location",
+//                                                                                                target.Characteristics.BodyPartsList.ToList(),
+//                                                                                                bp => bp.Name,
+//                                                                                                bp => ((TargetBodyPartWithWeaponAction) talent.Action).Action(player, target, bp, c)))));
+//                                        },
+//                                        MapPanel));
+//            } else if (talent.Action is TargetPersonAction) {
+//                ParentApplication.Push(
+//                                new TargetPrompt(
+//                                        talent.Name, player.Position,
+//                                        delegate(Point p)
+//                                        {
+//                                            Person target = player.Level.GetActorAtLocation(p);
+//                                            ((TargetPersonAction) talent.Action).Action(player, target);
+//                                        },
+//                                        MapPanel));
+//            }
         }
 
         protected override void OnSettingUp() {
