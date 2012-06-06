@@ -86,7 +86,7 @@ namespace SKR.Gameplay.Combat {
             Logger.InfoFormat("Damage reduced to {0} because of {1}'s max health", damage, bodyPart.Name);            
             defender.Hurt(bodyPart.Type, damage);
 
-            world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.", attacker.Name, weapon.Action, defender.Name, bodyPart.Name, "todo-description"));
+            world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name, "todo-description"));
 
             // todo wounding
         }
