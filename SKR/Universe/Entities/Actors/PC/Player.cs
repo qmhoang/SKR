@@ -10,14 +10,6 @@ namespace SKR.Universe.Entities.Actors.PC {
             get { return 10; }
         }
 
-        public override bool HasLineOfSight(Point position) {
-            return Level.IsVisible(position);
-        }
-
-        public override bool CanSpot(Actor actor) {
-            throw new NotImplementedException();
-        }
-
         public override int Speed {
             get { return 100; }
         }

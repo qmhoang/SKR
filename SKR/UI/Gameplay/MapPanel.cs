@@ -33,19 +33,19 @@ namespace SKR.UI.Gameplay {
                 for (int y = 0; y < Size.Height; y++) {
                     Point realPosition = ViewOffset.Shift(x, y);
 
-                    Tile c = player.Level.GetTile(realPosition);
+                    var tileImage = transformer.Transform(player.Level.GetTile(realPosition));
 #if DEBUG
                     if (!Program.SeeAll) {
 #endif
                         if (player.HasLineOfSight(realPosition)) {
                             player.Level.Vision[realPosition.X, realPosition.Y] = true;
-                            Canvas.PrintChar(x, y, c.Ascii, c.Pigment);
+                            Canvas.PrintChar(x, y, tileImage.Ascii, tileImage.Color);
                         } else if (player.Level.Vision[realPosition.X, realPosition.Y])
                             if (IsPointWithinPanel(new Point(x, y)))
-                                Canvas.PrintChar(x, y, c.Ascii, new Pigment(c.Pigment.Foreground.ScaleValue(0.3f), c.Pigment.Background.ScaleValue(0.3f)));
+                                Canvas.PrintChar(x, y, tileImage.Ascii, new Pigment(tileImage.Color.Foreground.ScaleValue(0.3f), tileImage.Color.Background.ScaleValue(0.3f)));
 #if DEBUG
                     } else {
-                        Canvas.PrintChar(x, y, c.Ascii, c.Pigment);
+                        Canvas.PrintChar(x, y, tileImage.Ascii, tileImage.Color);
                         player.Level.Vision[realPosition.X, realPosition.Y] = true;
                     }
 #endif
@@ -57,8 +57,8 @@ namespace SKR.UI.Gameplay {
             }
 
             // drawing player
-            var image = transformer.Transform(player);
-            Canvas.PrintChar(player.Position - ViewOffset, image.Ascii, image.Color);
+            var playerImage = transformer.Transform(player);
+            Canvas.PrintChar(player.Position - ViewOffset, playerImage.Ascii, playerImage.Color);
         }
 
 

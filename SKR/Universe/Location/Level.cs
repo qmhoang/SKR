@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
+using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
 using DEngine.Extensions;
 using SKR.Universe.Entities.Actors;
@@ -28,31 +29,28 @@ namespace SKR.Universe.Location {
         Fence,
     }
 
-    public class Tile : ICopy<Tile> {
-        public char Ascii { get; private set; }
+    public class Tile : ICopy<Tile>, IObject {
+        public TileEnum Type { get; private set; }        
         public bool Transparent { get; private set; }
         public bool Walkable { get; private set; }
         public double WalkPenalty { get; private set; }
-        public Pigment Pigment { get; private set; }
 
+        public Image Image { get; set; }
 
-
-        public Tile(char ascii, bool transparent, bool walkable, double walkPenalty, Pigment pigment) {
-            Ascii = ascii;
+        public Tile(TileEnum type, bool transparent, bool walkable, double walkPenalty) {
+            Type = type;
             Transparent = transparent;
             Walkable = walkable;
             WalkPenalty = walkPenalty;
-            Pigment = pigment;
         }
 
         public Tile Copy() {
-            var pigment = new Pigment(new Color(Pigment.Foreground.Red, Pigment.Foreground.Green, Pigment.Foreground.Blue),
-                                      new Color(Pigment.Background.Red, Pigment.Background.Green, Pigment.Background.Blue));
-
-            pigment.ReplaceBGFlag(Pigment.BackgroundFlag);
-
-            return new Tile(Ascii, Transparent, Walkable, WalkPenalty, pigment);
+            return new Tile(Type, Transparent, Walkable, WalkPenalty);
         }
+
+        public string RefId { get { return Type.ToString(); } }
+
+        public Point Position { get; set; }
     }
 
     public class Level {
@@ -70,6 +68,7 @@ namespace SKR.Universe.Location {
             get { return Size.Height; }
         }
 
+        public string RefId { get; protected set; }
         public UniqueId Uid { get; protected set; }
 
         public List<Person> Actors { get; protected set; }

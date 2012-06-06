@@ -181,9 +181,22 @@ namespace SKR.Universe.Entities.Actors {
             Level.Fov.computeFov(Position.X, Position.Y, SightRadius);
         }
 
-        public override void Update() {
-            CalculateFov();
+        public override void Update() {            
             CheckEncumbrance();
+        }
+
+        protected bool RecalculateFov;
+
+        public override bool HasLineOfSight(Point position) {
+            if (RecalculateFov)
+                CalculateFov();
+            return Level.IsVisible(position);
+        }
+
+        public override bool CanSpot(Actor actor) {
+            throw new NotImplementedException();
+
+            return HasLineOfSight(actor.Position);
         }
 
         #region Move
@@ -207,6 +220,7 @@ namespace SKR.Universe.Entities.Actors {
 
             ActionPoints -= World.DefaultTurnSpeed;
 
+            RecalculateFov = true;
             return ActionResult.Success;
         }
 
