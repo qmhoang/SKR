@@ -5,7 +5,7 @@ using SKR.Universe.Entities.Actors.NPC.AI;
 using SKR.Universe.Location;
 
 namespace SKR.Universe.Entities.Actors.NPC {
-    public class Npc : Person {
+    public class Npc : Actor {
         public NpcIntelligence Intelligence { get; set; }
 
         public override int SightRadius {
@@ -16,7 +16,7 @@ namespace SKR.Universe.Entities.Actors.NPC {
             return Level.IsVisible(position);
         }
 
-        public override bool CanSpot(Actor actor) {
+        public override bool CanSpot(DEngine.Actor.Entity actor) {
             throw new System.NotImplementedException();
         }
 

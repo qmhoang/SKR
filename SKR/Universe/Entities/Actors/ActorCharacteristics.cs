@@ -5,7 +5,7 @@ using SKR.Universe.Entities.Items;
 
 namespace SKR.Universe.Entities.Actors {
     public class ActorCharacteristics {
-        private Person Actor;        
+        private Actor Actor;        
         private Dictionary<BodyPartType, BodyPart> BodyParts;        
 
         public int Health { get; set; }
@@ -19,10 +19,10 @@ namespace SKR.Universe.Entities.Actors {
         }
 
         public int Lift {
-            get { return Actor.GetTalent(Skill.Strength).RealRank * Actor.GetTalent(Skill.Strength).RealRank * 2; }
+            get { return (Actor.GetTalent(Skill.Strength).RealRank + 10) * (Actor.GetTalent(Skill.Strength).RealRank + 10) * 2; }
         }
 
-        public ActorCharacteristics(Person actor) {
+        public ActorCharacteristics(Actor actor) {
             Actor = actor;
 
             BodyParts = new Dictionary<BodyPartType, BodyPart>
@@ -45,8 +45,8 @@ namespace SKR.Universe.Entities.Actors {
 
 
             
-            Punch = new MeleeComponent(Skill.Brawling, 0, -1, DamageType.Crush, 1, 100, 1, 0, 0, ItemAction.MeleeAttackThrust, "punch", "punches");
-            Kick = new MeleeComponent(Skill.Brawling, -2, 1, DamageType.Crush, 1, 100, 1, 0, -100, ItemAction.MeleeAttackThrust, "kick", "kicks");
+            Punch = new MeleeComponent("punch", ItemAction.MeleeAttackThrust, "punch", "punches", Skill.Brawling, 0, -1, DamageType.Crush, 1, 100, 1, 0, 0);
+            Kick = new MeleeComponent("kick", ItemAction.MeleeAttackThrust, "kick", "kicks", Skill.Brawling, -2, 1, DamageType.Crush, 1, 100, 1, 0, -100);
         }
 
 

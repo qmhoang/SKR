@@ -119,6 +119,9 @@ namespace SKR.UI.Menus {
                                                               if (player.Equip(bodyPart.Type, i) == ActionResult.Aborted) // todo
                                                                   World.Instance.InsertMessage("Unable to equip item.");
                                                           }));
+                else
+                    World.Instance.InsertMessage("No items in inventory that go there.");
+
             }
 
         }

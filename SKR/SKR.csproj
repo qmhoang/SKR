@@ -81,8 +81,11 @@
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />
     <Compile Include="Universe\Entities\Actors\PC\Player.cs" />
     <Compile Include="Universe\Entities\Actors\Person.cs" />
+    <Compile Include="Universe\Entities\Items\FirearmComponent.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
     <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
+    <Compile Include="Universe\Entities\Items\WeaponComponent.cs" />
+    <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\SourceTalentFactory.cs" />
     <Compile Include="Universe\Factories\SourceTileFactory.cs" />
     <Compile Include="Universe\Factories\UniqueIdFactory.cs" />

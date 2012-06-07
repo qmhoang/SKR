@@ -31,6 +31,9 @@ namespace SKR.Universe.Entities.Actors {
         // basic attack
         Attack,
         TargetAttack,
+        RangeTargetAttack,
+        Reload,
+        LoadMagazine,
 
         //category - sword
         Sword,
@@ -44,6 +47,8 @@ namespace SKR.Universe.Entities.Actors {
         //category - impact weapon
         ImpactWeapon,
         Axe,
+
+        Pistol,
 
         // attributes
         Strength,
@@ -64,9 +69,9 @@ namespace SKR.Universe.Entities.Actors {
 
     public class ActorCondition {
         private Dictionary<Condition, int> myStatus;
-        private Person actor;
+        private Actor actor;
 
-        public ActorCondition(Person actor) {
+        public ActorCondition(Actor actor) {
             this.actor = actor;
             myStatus = new Dictionary<Condition, int>();
         }
@@ -90,7 +95,7 @@ namespace SKR.Universe.Entities.Actors {
 
 
 
-    public abstract class Person : Actor {
+    public abstract class Actor : DEngine.Actor.Entity {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public ActorCharacteristics Characteristics { get; private set; }
@@ -102,9 +107,7 @@ namespace SKR.Universe.Entities.Actors {
 
         public World World {
             get { return World.Instance; }
-        }
-
-        public override Image Image { get; set; }        
+        }               
 
         private ItemContainer inventory;
         private int additionalWeight;
@@ -127,7 +130,7 @@ namespace SKR.Universe.Entities.Actors {
             get { return Characteristics.Lift + additionalWeight; }
         }
 
-        protected Person(string name, Level level) {
+        protected Actor(string name, Level level) {
             myName = name;
             Level = level;
             Characteristics = new ActorCharacteristics(this);
@@ -138,19 +141,23 @@ namespace SKR.Universe.Entities.Actors {
 
             LearnTalent(Skill.Attack);
             LearnTalent(Skill.TargetAttack);
+            LearnTalent(Skill.RangeTargetAttack);
+            LearnTalent(Skill.Reload);
 
-            LearnTalent(Skill.Strength, 10);
-            LearnTalent(Skill.Agility, 10);
-            LearnTalent(Skill.Constitution, 10);
-            LearnTalent(Skill.Intellect, 10);
-            LearnTalent(Skill.Cunning, 10);
-            LearnTalent(Skill.Resolve, 10);
-            LearnTalent(Skill.Presence, 10);
-            LearnTalent(Skill.Grace, 10);
-            LearnTalent(Skill.Composure, 10);
+            LearnTalent(Skill.Strength, World.Mean);
+            LearnTalent(Skill.Agility, World.Mean);
+            LearnTalent(Skill.Constitution, World.Mean);
+            LearnTalent(Skill.Intellect, World.Mean);
+            LearnTalent(Skill.Cunning, World.Mean);
+            LearnTalent(Skill.Resolve, World.Mean);
+            LearnTalent(Skill.Presence, World.Mean);
+            LearnTalent(Skill.Grace, World.Mean);
+            LearnTalent(Skill.Composure, World.Mean);
 
             LearnTalent(Skill.Sword, 0);
             LearnTalent(Skill.Knife, 0);
+            
+            LearnTalent(Skill.Pistol, 0);
 
             LearnTalent(Skill.Brawling, 0);
         }
@@ -194,7 +201,7 @@ namespace SKR.Universe.Entities.Actors {
             return Level.IsVisible(position);
         }
 
-        public override bool CanSpot(Actor actor) {
+        public override bool CanSpot(DEngine.Actor.Entity actor) {
             throw new NotImplementedException();
             return HasLineOfSight(actor.Position);
         }
@@ -208,12 +215,18 @@ namespace SKR.Universe.Entities.Actors {
         public override ActionResult Move(Point p) {
             Point nPos = p + Position;
 
-            if (!Level.IsWalkable(nPos))
+            if (!Level.IsWalkable(nPos)) {
+                World.InsertMessage("There is something in the way");
+                return ActionResult.Aborted;                
+            }
+
+            if (!Level.IsInBoundsOrBorder(nPos)) {                
                 return ActionResult.Aborted;
+            }
 
             if (Level.DoesActorExistAtLocation(nPos)) {
-                Person target = Level.GetActorAtLocation(nPos);
-                GetTalent(Skill.Attack).InvokeAction(target, null, null, null, null);                
+                Actor target = Level.GetActorAtLocation(nPos);
+                GetTalent(Skill.Attack).InvokeAction(target);                
             } else
                 Position = nPos;
 

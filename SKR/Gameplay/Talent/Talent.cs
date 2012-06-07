@@ -19,15 +19,15 @@ namespace SKR.Gameplay.Talent {
         public string Name { get; set; }
         public int InitialRank { get; set; }        
         public int MaxRank { get; set; }
-        public int Range { get; set; }
-        public int Radius { get; set; }        
+//        public int Range { get; set; }
+//        public int Radius { get; set; }        
 
         /// <summary>
         /// RealRank will call the this function to calculate this talent's modified rank, it can be anything
         /// from a simple adding another attribute to it or something much more complicated
         /// <b>If left null, it will default to simply return the raw rank</b>
         /// </summary>        
-        public delegate int CalculateRealRankFunction(Talent talent, Person self);
+        public delegate int CalculateRealRankFunction(Talent talent, Actor self);
         
         public CalculateRealRankFunction CalculateRealRank { get; set; }
 
@@ -41,9 +41,10 @@ namespace SKR.Gameplay.Talent {
         /// Arg3-7 (dynamic)    - These represent dynamic options that can be anything
         /// return              - This is the return signature for our function, it represents if the action was completed/aborted, etc
         /// </summary>
-        public delegate ActionResult ActionFunction(Talent talent, Person self, Person target, dynamic arg0, dynamic arg1, dynamic arg2, dynamic arg3);
+        public delegate ActionResult ActionFunction(Talent talent, Actor self, Actor target, dynamic arg0, dynamic arg1, dynamic arg2, dynamic arg3);
 
-        public ActionFunction Action { get; set; }
+       
+        public ActionFunction ActionOnTargetFunction { get; set; }        
 
         /// <summary>
         /// These represent our functions that will generate a list of options for us to choose
@@ -53,7 +54,7 @@ namespace SKR.Gameplay.Talent {
         /// Arg2 (Person)       - The target that is at the end of this talent
         /// returns (dynamic[]) - This is a IEnumerable list of options
         /// </summary>
-        public delegate IEnumerable<dynamic> GenerateArgsListFunction(Talent talent, Person self, Person target);
+        public delegate IEnumerable<dynamic> GenerateArgsListFunction(Talent talent, Actor self, Actor target);
 
         public GenerateArgsListFunction Args0 { get; set; }
         public GenerateArgsListFunction Args1 { get; set; }
@@ -69,12 +70,18 @@ namespace SKR.Gameplay.Talent {
         /// Arg3 (dynamic)      - The arg that needs to be named
         /// returns (string)    - This is a IEnumerable list of options
         /// </summary>
-        public delegate string ArgDesciptorFunction(Talent talent, Person self, Person target, dynamic arg);
+        public delegate string ArgDesciptorFunction(Talent talent, Actor self, Actor target, dynamic arg);
 
         public ArgDesciptorFunction Arg0Desciptor { get; set; }
         public ArgDesciptorFunction Arg1Desciptor { get; set; }
         public ArgDesciptorFunction Arg2Desciptor { get; set; }
         public ArgDesciptorFunction Arg3Desciptor { get; set; }
+
+        public bool RequiresTarget { get; set; }
+
+        public delegate bool TalentPreUseCheck(Talent talent, Actor self, Actor target);
+
+        public TalentPreUseCheck OnPreUse { get; set; }
 
         public static TalentTemplate CreateAttribute(Skill attrb) {
             return new TalentTemplate()
@@ -94,7 +101,7 @@ namespace SKR.Gameplay.Talent {
         public const int MaxOptions = 4;
 
         #region Basic Stats
-        public Person Owner { get; set; }
+        public Actor Owner { get; set; }
         public Skill Skill { get; private set; }
         public string Name { get; private set; }
 
@@ -108,14 +115,14 @@ namespace SKR.Gameplay.Talent {
         /// </summary>
         public int RealRank { get { return calculateRealRank(this, Owner); } }
         public int MaxRank { get; private set; }
-        public int Range { get; private set; }
-        public int Radius { get; private set; }
+//        public int Range { get; private set; }
+//        public int Radius { get; private set; }
         
         #endregion
 
         private readonly TalentTemplate.CalculateRealRankFunction calculateRealRank;
 
-        private readonly TalentTemplate.ActionFunction action;
+        private readonly TalentTemplate.ActionFunction actionOnTargetFunc;        
 
         #region GenerateArgFunctions
         private readonly TalentTemplate.GenerateArgsListFunction arg0Func;
@@ -163,12 +170,12 @@ namespace SKR.Gameplay.Talent {
         /// <summary>
         /// Get the list of arguments for the action
         /// </summary>
-        public IEnumerable<dynamic> GetArg0Parameters(Person target) { return arg0Func(this, Owner, target); }
-        public IEnumerable<dynamic> GetArg1Parameters(Person target) { return arg1Func(this, Owner, target); }
-        public IEnumerable<dynamic> GetArg2Parameters(Person target) { return arg2Func(this, Owner, target); }
-        public IEnumerable<dynamic> GetArg3Parameters(Person target) { return arg3Func(this, Owner, target); } 
+        public IEnumerable<dynamic> GetArg0Parameters(Actor target) { return arg0Func(this, Owner, target); }
+        public IEnumerable<dynamic> GetArg1Parameters(Actor target) { return arg1Func(this, Owner, target); }
+        public IEnumerable<dynamic> GetArg2Parameters(Actor target) { return arg2Func(this, Owner, target); }
+        public IEnumerable<dynamic> GetArg3Parameters(Actor target) { return arg3Func(this, Owner, target); } 
 
-        public IEnumerable<dynamic> GetArgParameters(Person target, int argNumber) {
+        public IEnumerable<dynamic> GetArgParameters(Actor target, int argNumber) {
             switch (argNumber) {
                 case 0:
                     return GetArg0Parameters(target);
@@ -188,12 +195,12 @@ namespace SKR.Gameplay.Talent {
         private readonly TalentTemplate.ArgDesciptorFunction arg2Desciptor;
         private readonly TalentTemplate.ArgDesciptorFunction arg3Desciptor;
 
-        public string DescribeArg0(Person target, dynamic arg) { return arg0Desciptor(this, Owner, target, arg); }
-        public string DescribeArg1(Person target, dynamic arg) { return arg1Desciptor(this, Owner, target, arg); }
-        public string DescribeArg2(Person target, dynamic arg) { return arg2Desciptor(this, Owner, target, arg); }
-        public string DescribeArg3(Person target, dynamic arg) { return arg3Desciptor(this, Owner, target, arg); }
+        public string DescribeArg0(Actor target, dynamic arg) { return arg0Desciptor(this, Owner, target, arg); }
+        public string DescribeArg1(Actor target, dynamic arg) { return arg1Desciptor(this, Owner, target, arg); }
+        public string DescribeArg2(Actor target, dynamic arg) { return arg2Desciptor(this, Owner, target, arg); }
+        public string DescribeArg3(Actor target, dynamic arg) { return arg3Desciptor(this, Owner, target, arg); }
 
-        public string TransformArgToString(Person target, dynamic arg, int argNumber) {
+        public string TransformArgToString(Actor target, dynamic arg, int argNumber) {
             switch (argNumber) {
                 case 0:
                     return DescribeArg0(target, arg);
@@ -205,11 +212,19 @@ namespace SKR.Gameplay.Talent {
                     return DescribeArg3(target, arg);
             }
             return null;
+        }        
+
+
+        public ActionResult InvokeAction(Actor target, dynamic arg0 = null, dynamic arg1 = null, dynamic arg2 = null, dynamic arg3 = null) {
+            return actionOnTargetFunc(this, Owner, target, arg0, arg1, arg2, arg3);
         }
 
+        public bool RequiresTarget { get; private set; }
 
-        public ActionResult InvokeAction(Person target, dynamic arg0, dynamic arg1, dynamic arg2, dynamic arg3) {
-            return action(this, Owner, target, arg0, arg1, arg2, arg3);
+        private TalentTemplate.TalentPreUseCheck onPreUse;
+
+        public bool PreUseCheck(Actor target) {
+            return onPreUse(this, Owner, target);
         }
 
         public Talent(TalentTemplate template) {
@@ -217,10 +232,11 @@ namespace SKR.Gameplay.Talent {
             Name = template.Name;
             RawRank = template.InitialRank;
             MaxRank = template.MaxRank;
-            Range = template.Range;
-            Radius = template.Radius;            
+//            Range = template.Range;
+//            Radius = template.Radius;            
+            RequiresTarget = template.RequiresTarget;
 
-            action = template.Action;
+            actionOnTargetFunc = template.ActionOnTargetFunction;
             arg0Func = template.Args0;
             arg1Func = template.Args1;
             arg2Func = template.Args2;
@@ -240,7 +256,9 @@ namespace SKR.Gameplay.Talent {
             if (arg3Desciptor == null)
                 arg3Desciptor = (t, self, target, arg) => arg.ToString();
 
-            calculateRealRank = template.CalculateRealRank;            
+            calculateRealRank = template.CalculateRealRank;
+
+            onPreUse = template.OnPreUse;
 
             if (template.CalculateRealRank == null)
                 calculateRealRank = (t, self) => t.RawRank;

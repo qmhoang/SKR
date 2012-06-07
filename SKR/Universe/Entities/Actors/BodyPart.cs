@@ -20,13 +20,13 @@ namespace SKR.Universe.Entities.Actors {
     public class BodyPart {
         public string Name { get; private set; }
         public BodyPartType Type { get; private set; }
-        public Person Owner { get; private set; }
+        public Actor Owner { get; private set; }
         public int Health { get; set; }
         public int MaxHealth { get; protected set; }
         public int AttackPenalty { get; protected set; }
         private List<ItemType> acceptableItems;
         
-        public BodyPart(string name, BodyPartType type, Person owner, int health, int attackPenalty, params ItemType[] acceptableItemTypes) {
+        public BodyPart(string name, BodyPartType type, Actor owner, int health, int attackPenalty, params ItemType[] acceptableItemTypes) {
             Name = name;
             Type = type;
             Owner = owner;

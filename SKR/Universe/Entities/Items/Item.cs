@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DEngine.Actor;
 using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
@@ -21,13 +22,26 @@ namespace SKR.Universe.Entities.Items {
         MeleeAttackSwing,
         MeleeAttackThrust,
         Wear,
+        ReloadFirearm,
+        LoadMagazine,
+        Shoot,
     }
 
     public abstract class ItemComponent {
+        public string ComponentId { get; protected set; }
+        public ItemAction Action { get; protected set; }
+
+        public Item Item { get; set; }
+
         public string ActionDescription { get; protected set; }
         public string ActionDescriptionPlural { get; protected set; }
-        public ItemAction Action { get; protected set; }     
-        public Item Item { get; internal set; }
+
+        protected ItemComponent(string componentId, ItemAction action, string actionDescription, string actionDescriptionPlural) {
+            ComponentId = componentId;
+            Action = action;
+            ActionDescription = actionDescription;
+            ActionDescriptionPlural = actionDescriptionPlural;
+        }
     }
 
     public class Item : IObject {
@@ -49,9 +63,13 @@ namespace SKR.Universe.Entities.Items {
             return components.ContainsKey(action);
         }
 
-        public ItemComponent GetComponent(ItemAction action) {
+        public T GetComponent<T>() where T : ItemComponent {
+            return (T) components.Values.First(c => c is T);
+        }
+
+        public T GetComponent<T>(ItemAction action) where T : ItemComponent {
             if (ContainsComponent(action))
-                return components[action];
+                return (T)components[action];
             else
                 throw new ArgumentException("This item has no component for this", "action");
         }
@@ -70,8 +88,7 @@ namespace SKR.Universe.Entities.Items {
                 components.Add(comp.Action, comp);
             }
         }       
-
-        public Image Image { get; set; }
+        
         public Point Position { get; set; }      
     }
 }

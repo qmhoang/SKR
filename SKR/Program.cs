@@ -17,12 +17,18 @@ using log4net.Config;
 
 namespace SKR {
     public class RoguelikeApp : Application {
+        private World world;
         protected override void Setup(ApplicationInfo info) {
             base.Setup(info);
-            World.Create();
+            world = World.Create();            
             Push(new GameplayWindow(new WindowTemplate()));
             //            SetWindow(new CharGenWindow(windowTemplate));
             //            SetWindow(mainWindow);
+        }
+
+        protected override void Update() {
+            base.Update();
+            world.Update();            
         }
     }
 

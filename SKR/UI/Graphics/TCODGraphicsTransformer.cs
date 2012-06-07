@@ -11,6 +11,7 @@ using libtcod;
 
 namespace SKR.UI.Graphics {
     public class TCODGraphicsTransformer : IGraphicsTransformer<TCODImage> {
+        //todo make faster, probably should have each class contain an image and is set 
         private readonly Dictionary<string, TCODImage> images =
                 new Dictionary<string, TCODImage>
                     {
@@ -20,13 +21,13 @@ namespace SKR.UI.Graphics {
                             {"axe", new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
                             {"brassknuckles", new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
 
-
-
+                            
                             {TileEnum.Unused.ToString(), new TCODImage((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black))},
 
-                            {TileEnum.WoodFloor.ToString(), new TCODImage(' ', new Pigment(ColorPresets.Black, ColorPresets.Black))},
+                            {TileEnum.WoodFloor.ToString(), new TCODImage(' ', new Pigment(ColorPresets.Black, ColorPresets.SandyBrown))},
                             {TileEnum.Grass.ToString(), new TCODImage((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.DarkerGreen, ColorPresets.LightGreen))},
 
+                            {TileEnum.Wall.ToString(), new TCODImage('#', new Pigment(ColorPresets.DarkerGrey, ColorPresets.Black))},
                             {TileEnum.HorizWall.ToString(), new TCODImage((char) TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White, ColorPresets.Black))},
                             {TileEnum.VertWall.ToString(), new TCODImage((char) TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White, ColorPresets.Black))},
 
@@ -44,8 +45,6 @@ namespace SKR.UI.Graphics {
                     };
 
         public TCODImage Transform(IObject @object) {
-            if (!images.ContainsKey(@object.RefId))
-                throw new ArgumentException();
             return images[@object.RefId];
         }
     }

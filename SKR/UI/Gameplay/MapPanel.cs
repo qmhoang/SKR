@@ -12,8 +12,8 @@ namespace SKR.UI.Gameplay {
         private readonly Player player;
 
         internal Point ViewOffset { get; private set; }
-
-        private static Color backgroundColor = ColorPresets.Black;
+        
+        private static TCODImage unused = new TCODImage(' ', new Pigment(ColorPresets.Black, ColorPresets.Black));
 
         public MapPanel(PanelTemplate template, Player player) : base(template) {
             this.player = player;
@@ -32,8 +32,12 @@ namespace SKR.UI.Gameplay {
             for (int x = 0; x < Size.Width; x++)
                 for (int y = 0; y < Size.Height; y++) {
                     Point realPosition = ViewOffset.Shift(x, y);
+                    
+                    if (!player.Level.IsInBoundsOrBorder(realPosition))
+                        continue;
 
                     var tileImage = transformer.Transform(player.Level.GetTile(realPosition));
+
 #if DEBUG
                     if (!Program.SeeAll) {
 #endif

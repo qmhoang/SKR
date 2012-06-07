@@ -5,7 +5,7 @@ using DEngine.UI;
 
 namespace SKR.UI.Menus {
     public class ListWindowTemplate<T> : WindowTemplate {        
-        public List<T> Items { get; set; }
+        public IEnumerable<T> Items { get; set; }
     }
 
     public abstract class ListWindow<T> : Window {
