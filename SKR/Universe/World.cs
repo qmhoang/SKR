@@ -13,16 +13,23 @@ using SKR.Universe.Factories;
 using SKR.Universe.Location;
 
 namespace SKR.Universe {
-    public class World {        
-        public static readonly int DefaultTurnSpeed = 100;
-        public static readonly int TurnLengthInSeconds = 1;
+    public class World {
+        public const int DefaultTurnSpeed = 100;
+        public const int TurnLengthInSeconds = 1;
+        
+        public const int Mean = 0;
+        public const int StandardDeviation = 3;
 
         public static int SecondsToActionPoints(double seconds) {
             return TurnLengthInSeconds * (int) Math.Round(DefaultTurnSpeed / seconds);
         }
 
-        public static int SpeedToSeconds(int speed) {
-            return (DefaultTurnSpeed * TurnLengthInSeconds) / speed;
+        public static double SpeedToSeconds(int speed) {
+            return (DefaultTurnSpeed * TurnLengthInSeconds) / (double) speed;
+        }
+
+        public static int SecondsToSpeed(double seconds) {
+            return (int) ((DefaultTurnSpeed * TurnLengthInSeconds) / seconds);
         }
 
         public List<string> MessageBuffer { get; private set; }
@@ -43,10 +50,11 @@ namespace SKR.Universe {
 
         public Player Player { get; set; }
 
-        private Factory<string, UniqueId, Item> ItemFactory;
-        private Factory<UniqueId> IdFactory;
-        private Factory<TileEnum, Tile> TileFactory;
-        private Factory<Skill, Talent> TalentFactory; 
+        private readonly ItemFactory ItemFactory;
+        private readonly UniqueIdFactory IdFactory;
+        private readonly TileFactory TileFactory;
+        private readonly TalentFactory TalentFactory;
+        private readonly MapFactory MapFactory;
 
         public static World Instance { get; private set; }
 
@@ -58,19 +66,15 @@ namespace SKR.Universe {
             toRemove = new List<IEntity>();
             MessageBuffer = new List<string>();
 
-            IdFactory = new SourceUniqueIdFactory();
+            IdFactory = new SimpleSourceUniqueIdFactory();
             TalentFactory = new SourceTalentFactory();
-            ItemFactory = new SourceItemFactory();
+            ItemFactory = new SourceItemFactory(IdFactory);
             TileFactory = new SourceTileFactory();
+            MapFactory = new SourceMapFactory(TileFactory, IdFactory);
         }
 
         private void Temp() {
-            var level = new Level(IdFactory.Construct(), new Size(80, 60), TileFactory.Construct(TileEnum.Unused));
-            for (int x = 1; x < 10; x++) {
-                for (int y = 1; y < 10; y++) {
-                    level.SetTile(x, y, TileFactory.Construct(TileEnum.Grass));
-                }
-            }
+            var level = MapFactory.Construct("TestMap");
             Npc npc1 = new Npc("target1", level) { Position = new Point(3, 4) };
             npc1.Intelligence = new SimpleIntelligence(npc1);
             level.Actors.Add(npc1);
@@ -85,6 +89,9 @@ namespace SKR.Universe {
             var i = CreateItem("brassknuckles");
             Player.AddItem(i);
             Player.Equip(BodyPartType.LeftHand, i);
+
+            Player.AddItem(CreateItem("glock17"));
+            Player.AddItem(CreateItem("glock17magazine"));
         }
 
         public Talent GetTalent(Skill skill) {
@@ -96,13 +103,14 @@ namespace SKR.Universe {
             OnMessageAdded(new EventArgs<string>(message));
         }
 
-        public static void Create() {            
+        public static World Create() {            
             Instance = new World();     
             Instance.Temp();
+            return Instance;
         }
 
         public Item CreateItem(string key) {
-            return ItemFactory.Construct(key, IdFactory.Construct());
+            return ItemFactory.Construct(key);
         }
 
         public void AddUpdateableObject(IEntity i) {
@@ -136,6 +144,6 @@ namespace SKR.Universe {
             }
 
             entities.RemoveAll(actor => actor.Dead);
-        }    
+        }
     }
 }

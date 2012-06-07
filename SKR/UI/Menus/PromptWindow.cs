@@ -33,7 +33,7 @@ namespace SKR.UI.Menus {
             IsPopup = true;
         }
 
-        protected override void OnSettingUp() {
+        protected override void OnSettingUp() {            
             base.OnSettingUp();
 
             World.Instance.InsertMessage(Text);
@@ -296,6 +296,14 @@ namespace SKR.UI.Menus {
             this.actionCount = actionCount;
             this.options = options;
             this.descriptorFunction = descriptor;
+        }
+
+        protected override void OnSettingUp() {
+            base.OnSettingUp();
+            if (options.Count <= 0) {
+                player.World.InsertMessage("No options to select from.");
+                Quit();
+            }
         }
 
         protected override string Text {

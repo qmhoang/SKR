@@ -14,6 +14,7 @@ namespace SKR.Universe.Location {
         Unused = 0,
         Grass,
         WoodFloor,
+        Wall,
         HorizWall,
         VertWall,
         // ReSharper disable InconsistentNaming
@@ -33,9 +34,7 @@ namespace SKR.Universe.Location {
         public TileEnum Type { get; private set; }        
         public bool Transparent { get; private set; }
         public bool Walkable { get; private set; }
-        public double WalkPenalty { get; private set; }        
-
-        public Image Image { get; set; }
+        public double WalkPenalty { get; private set; }                
 
         public Tile(TileEnum type, bool transparent, bool walkable, double walkPenalty) {
             Type = type;
@@ -72,7 +71,7 @@ namespace SKR.Universe.Location {
         public string RefId { get; protected set; }
         public UniqueId Uid { get; protected set; }
 
-        public List<Person> Actors { get; protected set; }
+        public List<Actor> Actors { get; protected set; }
         public List<Item> Items { get; protected set; }
 
         public Level(UniqueId uid, Size size, Tile fill) {
@@ -83,7 +82,7 @@ namespace SKR.Universe.Location {
             Map = new Tile[Width,Height];
             Fov = new TCODMap(Width, Height);
 
-            Actors = new List<Person>();
+            Actors = new List<Actor>();
             Items = new List<Item>();            
 
             for (int x = 0; x < Map.GetLength(0); x++)
@@ -92,8 +91,8 @@ namespace SKR.Universe.Location {
                 }
         }
 
-        public IEnumerable<Person> GetActorInRadius(Point origin, double length) {
-            List<Person> actors = new List<Person>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
+        public IEnumerable<Actor> GetActorInRadius(Point origin, double length) {
+            List<Actor> actors = new List<Actor>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
             if (World.Instance.Player != null && World.Instance.Player.Position.IsInCircle(origin, length))
                 actors.Add(World.Instance.Player);
             return actors;
@@ -103,7 +102,7 @@ namespace SKR.Universe.Location {
         /// <summary>
         /// Returns the actor (including the player's) at a level's location, if no actor exist at location, null is returned
         /// </summary>
-        public Person GetActorAtLocation(Point location) {
+        public Actor GetActorAtLocation(Point location) {
             if (!IsInBoundsOrBorder(location))
                 throw new ArgumentOutOfRangeException();
             if (World.Instance.Player != null && World.Instance.Player.Position == location)  // TODO FIX HACK

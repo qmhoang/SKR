@@ -5,7 +5,7 @@ using DEngine.Extensions;
 using SKR.Universe.Location;
 
 namespace SKR.Universe.Entities.Actors.PC {
-    public class Player : Person {
+    public class Player : Actor {
         public override int SightRadius {
             get { return 10; }
         }

@@ -9,7 +9,10 @@ using SKR.Universe.Location;
 using libtcod;
 
 namespace SKR.Universe.Factories {
-    public class SourceTileFactory : Factory<TileEnum, Tile> {
+    public abstract class TileFactory : Factory<TileEnum, Tile> {
+        
+    }
+    public class SourceTileFactory : TileFactory {
         private static Dictionary<TileEnum, Tile> cells =
                         new Dictionary<TileEnum, Tile>
                     {
@@ -18,6 +21,7 @@ namespace SKR.Universe.Factories {
                         {TileEnum.WoodFloor, new Tile(TileEnum.WoodFloor, true, true, 0.0)},
                         {TileEnum.Grass, new Tile(TileEnum.Grass, true, true, 0.0)},
 
+                        {TileEnum.Wall, new Tile(TileEnum.Wall, false, false, 0.0)},
                         {TileEnum.HorizWall, new Tile(TileEnum.HorizWall, false, false, 0.0)},
                         {TileEnum.VertWall, new Tile(TileEnum.VertWall, false, false, 0.0)},
 
