@@ -38,21 +38,17 @@ namespace SKR.UI.Menus {
 
             World.Instance.InsertMessage(Text);
         }
-
-        protected override void OnDraw() {
-
-            
-        }
-        protected override void Redraw() {
-//            base.Redraw();
-//
-//            if (Text.Length > Size.Width) {
-//                int indexOfLastWord = Text.LastIndexOf(' ', Size.Width);
-//                Canvas.PrintString(0, 0, Text.Substring(0, indexOfLastWord));
-//                Canvas.PrintString(0, 1, Text.Substring(indexOfLastWord + 1));
-//            } else
-//                Canvas.PrintString(0, 0, Text);
-        }
+        
+//        protected override void Redraw() {
+////            base.Redraw();
+////
+////            if (Text.Length > Size.Width) {
+////                int indexOfLastWord = Text.LastIndexOf(' ', Size.Width);
+////                Canvas.PrintString(0, 0, Text.Substring(0, indexOfLastWord));
+////                Canvas.PrintString(0, 1, Text.Substring(indexOfLastWord + 1));
+////            } else
+////                Canvas.PrintString(0, 0, Text);
+//        }
     }
 
     public class BooleanPrompt : PromptWindow {

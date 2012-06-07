@@ -137,11 +137,11 @@ namespace SKR.Gameplay.Combat {
         }
 
         private static Dice DamageTableThrust(int strength) {
-            return new Dice(1, 6, (int) Math.Floor((strength - 13)/2.0));
+            return new Dice(1, 6, (int) Math.Floor((strength - 3)/2.0));
         }
 
         private static Dice DamageTableSwing(int strength) {
-            return new Dice(1, 6, strength - 10);
+            return new Dice(1, 6, strength);
         }
     }
 }

@@ -105,7 +105,7 @@ namespace SKR.Universe.Factories {
                 case "glock17magazine":
                     return new Item("Magazine, Glock 17", refId, ItemType.Ammo, idFactory.Construct(), 6, 3200,
                                     new MagazineComponent(refId + "magazine", ItemAction.ReloadFirearm, "reload", "reloads",
-                                                          shots: 1,
+                                                          shots: 17,
                                                           caliber: "9x19mm",
                                                           firearmId: "glock17"));
                 case "9x19mm":

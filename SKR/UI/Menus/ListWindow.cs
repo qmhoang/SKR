@@ -28,7 +28,6 @@ namespace SKR.UI.Menus {
             }
         }
 
-
         protected override void OnMouseMoved(MouseData mouseData) {
             base.OnMouseMoved(mouseData);
             MouseOverIndex = MouseToIndex(mouseData);
