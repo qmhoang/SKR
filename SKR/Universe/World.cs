@@ -50,8 +50,7 @@ namespace SKR.Universe {
 
         public Player Player { get; set; }
 
-        private readonly ItemFactory ItemFactory;
-        private readonly UniqueIdFactory IdFactory;
+        private readonly ItemFactory ItemFactory;        
         private readonly TileFactory TileFactory;
         private readonly TalentFactory TalentFactory;
         private readonly MapFactory MapFactory;
@@ -65,12 +64,11 @@ namespace SKR.Universe {
             toAdds = new List<IEntity>();
             toRemove = new List<IEntity>();
             MessageBuffer = new List<string>();
-
-            IdFactory = new SimpleSourceUniqueIdFactory();
+            
             TalentFactory = new SourceTalentFactory();
-            ItemFactory = new SourceItemFactory(IdFactory);
+            ItemFactory = new SourceItemFactory();
             TileFactory = new SourceTileFactory();
-            MapFactory = new SourceMapFactory(TileFactory, IdFactory);
+            MapFactory = new SourceMapFactory(TileFactory);
         }
 
         private void Temp() {
@@ -110,7 +108,7 @@ namespace SKR.Universe {
         }
 
         public Item CreateItem(string key) {
-            return ItemFactory.Construct(key);
+            return ItemFactory.Construct(new RefId(key));
         }
 
         public void AddUpdateableObject(IEntity i) {

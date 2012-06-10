@@ -12,18 +12,16 @@ namespace SKR.Universe.Factories {
     }
 
     public class SourceMapFactory : MapFactory {
-        private TileFactory tileFactory;
-        private UniqueIdFactory idFactory;
+        private TileFactory tileFactory;        
 
-        public SourceMapFactory(TileFactory tileFactory, UniqueIdFactory idFactory) {
-            this.tileFactory = tileFactory;
-            this.idFactory = idFactory;
+        public SourceMapFactory(TileFactory tileFactory) {
+            this.tileFactory = tileFactory;            
         }
 
         public override Level Construct(string identifier) {
             switch (identifier) {
                 case "TestMap":
-                    return FromString(idFactory.Construct(), 
+                    return FromString(
                                       new Dictionary<char, TileEnum>
                                           {
                                                   {'#', TileEnum.Wall},
@@ -58,10 +56,10 @@ namespace SKR.Universe.Factories {
             return null;
         }
 
-        private Level FromString(UniqueId id, Dictionary<char, TileEnum> charIdentifiers, params string[] definition) {
+        private Level FromString(Dictionary<char, TileEnum> charIdentifiers, params string[] definition) {
             int width = definition[0].Length;
             int height = definition.Count();
-            var map = new Level(id, new Size(width, height), tileFactory.Construct(TileEnum.Unused));
+            var map = new Level(new Size(width, height), tileFactory.Construct(TileEnum.Unused));
 
             for (int y = 0; y < height; y++) {
                 var s = definition[y];

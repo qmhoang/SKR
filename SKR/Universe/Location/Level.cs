@@ -31,24 +31,24 @@ namespace SKR.Universe.Location {
     }
 
     public class Tile : ICopy<Tile>, IObject {
-        public TileEnum Type { get; private set; }        
+        public TileEnum Type { get; private set; }
         public bool Transparent { get; private set; }
         public bool Walkable { get; private set; }
-        public double WalkPenalty { get; private set; }                
+        public double WalkPenalty { get; private set; }
 
         public Tile(TileEnum type, bool transparent, bool walkable, double walkPenalty) {
             Type = type;
             Transparent = transparent;
             Walkable = walkable;
             WalkPenalty = walkPenalty;
-            RefId = Type.ToString();
+            RefId = new RefId(Type.ToString());
         }
 
         public Tile Copy() {
             return new Tile(Type, Transparent, Walkable, WalkPenalty);
         }
 
-        public string RefId { get; private set; }
+        public RefId RefId { get; private set; }
 
         public Point Position { get; set; }
     }
@@ -74,8 +74,8 @@ namespace SKR.Universe.Location {
         public List<Actor> Actors { get; protected set; }
         public List<Item> Items { get; protected set; }
 
-        public Level(UniqueId uid, Size size, Tile fill) {
-            Uid = uid;
+        public Level(Size size, Tile fill) {
+            Uid = new UniqueId();
             Size = size;
 
             Vision = new bool[Width,Height];

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using DEngine.Actor;
+using DEngine.Core;
 using DEngine.Utility;
 using SKR.Gameplay.Combat;
 using SKR.Gameplay.Talent;
@@ -27,8 +28,9 @@ namespace SKR.Universe.Factories {
                                               MaxRank = 1,
                                               RequiresTarget = true,
                                               ActionOnTargetFunction =
-                                                      delegate(Talent t, Actor self, Actor target, dynamic o1, dynamic o2, dynamic o3, dynamic o4)
+                                                      delegate(Talent t, Actor self, Point point, dynamic[] args)
                                                           {
+                                                              Actor target = self.Level.GetActorAtLocation(point);
                                                               MeleeComponent melee;
                                                               // if we have something in our right hand, probably want to use that
                                                               if (self.IsItemEquipped(BodyPartType.RightHand)) {
@@ -61,48 +63,60 @@ namespace SKR.Universe.Factories {
                                                   InitialRank = 1,
                                                   MaxRank = 1,
                                                   RequiresTarget = true,
-                                                  Args0 =
-                                                          delegate(Talent t, Actor self, Actor target)
-                                                              {
-                                                                  List<MeleeComponent> attacks = new List<MeleeComponent>
-                                                                                                     {
-                                                                                                             self.Characteristics.Kick,
-                                                                                                             self.Characteristics.Punch,
-                                                                                                     };
+                                                  Args = new List<TalentTemplate.GenerateArgsListFunction>()
+                                                             {
+                                                                     delegate(Talent t, Actor self, Point p)
+                                                                         {
+                                                                             List<MeleeComponent> attacks = new List<MeleeComponent>
+                                                                                                                {
+                                                                                                                        self.Characteristics.Kick,
+                                                                                                                        self.Characteristics.Punch,
+                                                                                                                };
 
-                                                                  foreach (var item in from bp in self.BodyParts
-                                                                                       where self.IsItemEquipped(bp.Type)
-                                                                                       select self.GetItemAtBodyPart(bp.Type)) {
-                                                                      if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
-                                                                          attacks.Add(item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackSwing));
-                                                                      if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
-                                                                          attacks.Add(item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackThrust));
-                                                                  }
+                                                                             foreach (var item in from bp in self.BodyParts
+                                                                                                  where self.IsItemEquipped(bp.Type)
+                                                                                                  select self.GetItemAtBodyPart(bp.Type)) {
+                                                                                 if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
+                                                                                     attacks.Add(item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackSwing));
+                                                                                 if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
+                                                                                     attacks.Add(item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackThrust));
+                                                                             }
 
-                                                                  return attacks;
-                                                              },
+                                                                             return attacks;
+                                                                         },
+                                                                     delegate(Talent t, Actor self, Point p)
+                                                                         {
+                                                                             if (!self.Level.DoesActorExistAtLocation(p))
+                                                                                 return null;
 
-                                                  Arg0Desciptor =
-                                                          delegate(Talent t, Actor self, Actor target, dynamic arg)
-                                                              {
-                                                                  var weapon = (MeleeComponent) arg;
-                                                                  return weapon.Item == null
-                                                                                 ? weapon.ActionDescription
-                                                                                 : String.Format("{0} with {1}", weapon.ActionDescription, weapon.Item.Name);
-                                                              },
-                                                  Args1 = (t, self, target) => target.Characteristics.BodyPartsList,
+                                                                             return self.Level.GetActorAtLocation(p).Characteristics.BodyPartsList;
+                                                                         },
+                                                             },
+
+                                                  ArgsDesciptor = new List<TalentTemplate.ArgDesciptorFunction>()
+                                                                      {
+                                                                              delegate(Talent t, Actor self, Point target, dynamic arg)
+                                                                                  {
+                                                                                      var weapon = (MeleeComponent) arg;
+                                                                                      return weapon.Item == null
+                                                                                                     ? weapon.ActionDescription
+                                                                                                     : String.Format("{0} with {1}", weapon.ActionDescription, weapon.Item.Name);
+                                                                                  },
+                                                                              (t, self, target, arg) => arg.ToString(),
+                                                                      },
 
                                                   ActionOnTargetFunction =
-                                                          delegate(Talent t, Actor self, Actor target, dynamic weapon, dynamic targetBodyPart, dynamic notused1, dynamic notused2)
+                                                          delegate(Talent t, Actor self, Point p, dynamic[] args)
                                                               {
-                                                                  if (!(weapon is MeleeComponent)) {
+                                                                  Actor target = self.Level.GetActorAtLocation(p);
+                                                                  if (!(args[0] is MeleeComponent)) {
                                                                       self.World.InsertMessage("Not a melee weapon.");
                                                                       return ActionResult.Aborted;
                                                                   }
 
-                                                                  var melee = weapon as MeleeComponent;
+                                                                  var melee = args[0] as MeleeComponent;
 
-                                                                  if (!(targetBodyPart is BodyPart)) {
+                                                                  if (!(args[1] is BodyPart)) {
                                                                       self.World.InsertMessage("Not a body part.");
                                                                       return ActionResult.Aborted;
                                                                   }
@@ -113,7 +127,7 @@ namespace SKR.Universe.Factories {
                                                                       return ActionResult.Aborted;
                                                                   }
 
-                                                                  MeleeCombat.AttackMeleeWithWeapon(self, target, melee, targetBodyPart, true);
+                                                                  MeleeCombat.AttackMeleeWithWeapon(self, target, melee, args[1], true);
                                                                   return ActionResult.Success;
                                                               }
                                           });
@@ -125,47 +139,53 @@ namespace SKR.Universe.Factories {
                                                   InitialRank = 1,
                                                   MaxRank = 1,
                                                   RequiresTarget = true,
-//                                                  OnPreUse = delegate (Talent t, Actor self, Actor target)
-//                                                                 {
-//                                                                     return (from bp in self.BodyParts
-//                                                                             where self.IsItemEquipped(bp.Type)
-//                                                                             select self.GetItemAtBodyPart(bp.Type)
-//                                                                             into item
-//                                                                             where item.ContainsComponent(ItemAction.Shoot)
-//                                                                             select item.GetComponent<FirearmComponent>(ItemAction.Shoot)).Count() > 0;
-//                                                                 },
-                                                  Args0 =
-                                                          delegate(Talent t, Actor self, Actor target)
-                                                              {
-                                                                  return (from bp in self.BodyParts
-                                                                          where self.IsItemEquipped(bp.Type)
-                                                                          select self.GetItemAtBodyPart(bp.Type)
-                                                                          into item
-                                                                          where item.ContainsComponent(ItemAction.Shoot)
-                                                                              select item.GetComponent<FirearmComponent>(ItemAction.Shoot)).ToList();
-                                                              },
 
-                                                  Arg0Desciptor =
-                                                          delegate(Talent t, Actor self, Actor target, dynamic arg)
-                                                              {
-                                                                  var weapon = (FirearmComponent) arg;
-                                                                  return weapon.Item == null
-                                                                                 ? weapon.ActionDescription
-                                                                                 : String.Format("{0} with {1}", weapon.ActionDescription, weapon.Item.Name);
-                                                              },
-                                                  Args1 = (t, self, target) => target.Characteristics.BodyPartsList,
+                                                  Args = new List<TalentTemplate.GenerateArgsListFunction>()
+                                                             {
+                                                                     delegate(Talent t, Actor self, Point p)
+                                                                         {
+                                                                             return (from bp in self.BodyParts
+                                                                                     where self.IsItemEquipped(bp.Type)
+                                                                                     select self.GetItemAtBodyPart(bp.Type)
+                                                                                     into item
+                                                                                     where item.ContainsComponent(ItemAction.Shoot)
+                                                                                     select item.GetComponent<FirearmComponent>(ItemAction.Shoot)).ToList();
+                                                                         },
+                                                                     delegate(Talent t, Actor self, Point p)
+                                                                         {
+                                                                             if (!self.Level.DoesActorExistAtLocation(p))
+                                                                                 return null;
+
+                                                                             return self.Level.GetActorAtLocation(p).Characteristics.BodyPartsList;
+                                                                         },
+                                                             },
+
+                                                  ArgsDesciptor = new List<TalentTemplate.ArgDesciptorFunction>()
+                                                                      {
+                                                                              delegate(Talent t, Actor self, Point p, dynamic arg)
+                                                                                  {
+                                                                                      var weapon = (FirearmComponent) arg;
+                                                                                      return weapon.Item == null
+                                                                                                     ? weapon.ActionDescription
+                                                                                                     : String.Format("{0} with {1}", weapon.ActionDescription, weapon.Item.Name);
+                                                                                  },
+                                                                              (t, self, target, arg) => arg.ToString()
+
+                                                                      },
 
                                                   ActionOnTargetFunction =
-                                                          delegate(Talent t, Actor self, Actor target, dynamic weapon, dynamic targetBodyPart, dynamic notused1, dynamic notused2)
+                                                          delegate(Talent t, Actor self, Point p, dynamic[] args)
                                                               {
-                                                                  if (!(weapon is FirearmComponent)) {
+                                                                  Actor target = self.Level.GetActorAtLocation(p);
+
+                                                                  if (!(args[0] is FirearmComponent)) {
                                                                       self.World.InsertMessage("Not a firearm.");
                                                                       return ActionResult.Aborted;
                                                                   }
 
-                                                                  var gun = weapon as FirearmComponent;
+                                                                  var gun = args[0] as FirearmComponent;
 
-                                                                  if (!(targetBodyPart is BodyPart)) {
+                                                                  if (!(args[1] is BodyPart)) {
                                                                       self.World.InsertMessage("Not a body part.");
                                                                       return ActionResult.Aborted;
                                                                   }
@@ -174,14 +194,14 @@ namespace SKR.Universe.Factories {
                                                                       self.World.InsertMessage("Too far to attack.");
                                                                       return ActionResult.Aborted;
                                                                   }
-                                                                  
+
                                                                   if (gun.Magazine == null || gun.Magazine.GetComponent<MagazineComponent>(ItemAction.ReloadFirearm).Shots <= 0) {
                                                                       self.World.InsertMessage("You squeeze the trigger only the hear the sound of nothing happening...");
                                                                       self.ActionPoints -= gun.WeaponSpeed;
                                                                       return ActionResult.Failed;
                                                                   }
 
-                                                                  MeleeCombat.AttackRangeWithGun(self, target, gun, targetBodyPart, true);
+                                                                  MeleeCombat.AttackRangeWithGun(self, target, gun, args[1], true);
                                                                   return ActionResult.Success;
                                                               }
                                           });
@@ -193,9 +213,10 @@ namespace SKR.Universe.Factories {
                                               InitialRank = 1,
                                               MaxRank = 1,
                                               RequiresTarget = false,
-                                              Args0 = 
-                                              delegate(Talent t, Actor self, Actor target) // what gun are we reloading, return an empty list should cause optionsprompt to quit
-                                                          {
+                                              Args = new List<TalentTemplate.GenerateArgsListFunction>()
+                                                             {
+                                                                     delegate(Talent t, Actor self, Point p) // what gun are we reloading, return an empty list should cause optionsprompt to quit
+                                                          {                                                              
                                                               var weapons = new List<FirearmComponent>();
 
                                                               if (self.IsItemEquipped(BodyPartType.LeftHand) && self.GetItemAtBodyPart(BodyPartType.LeftHand).ContainsComponent(ItemAction.Shoot))
@@ -206,8 +227,7 @@ namespace SKR.Universe.Factories {
 
                                                               return weapons;
                                                           },
-                                                          Arg0Desciptor = (t, self, target, arg) => ((FirearmComponent) arg).Item.Name,
-                                              Args1 = delegate(Talent t, Actor self, Actor target)
+                                                                     delegate(Talent t, Actor self, Point p)
                                                           {
                                                               List<MagazineComponent> mags = new List<MagazineComponent>();
                                                               foreach (Item i in self.Items)
@@ -215,22 +235,29 @@ namespace SKR.Universe.Factories {
                                                                       mags.Add(i.GetComponent<MagazineComponent>(ItemAction.ReloadFirearm));
                                                               return mags;
                                                           },
-                                              Arg1Desciptor = (t, self, target, arg) => ((MagazineComponent) arg).Item.Name,                                              
-                                              ActionOnTargetFunction = delegate(Talent t, Actor self, Actor target, dynamic weapon, dynamic magazine, dynamic notused1, dynamic notused2)
-                                                           {
-                                                               if (!(weapon is FirearmComponent)) {
+                                                             },
+
+                                              ArgsDesciptor = new List<TalentTemplate.ArgDesciptorFunction>()
+                                                                      {
+                                                                              (t, self, target, arg) => ((FirearmComponent) arg).Item.Name,
+                                                                              (t, self, target, arg) => ((MagazineComponent) arg).Item.Name,
+
+                                                                      },                                            
+                                              ActionOnTargetFunction = delegate(Talent t, Actor self, Point p, dynamic[] args)
+                                                           {                                                             
+                                                               if (!(args[0] is FirearmComponent)) {
                                                                    self.World.InsertMessage("Not a firearm.");
                                                                    return ActionResult.Aborted;
                                                                }
 
-                                                               var gun = weapon as FirearmComponent;
+                                                               var gun = args[0] as FirearmComponent;
 
-                                                               if (!(magazine is MagazineComponent)) {
+                                                               if (!(args[1] is MagazineComponent)) {
                                                                    self.World.InsertMessage("Not a magazine.");
                                                                    return ActionResult.Aborted;
                                                                }
 
-                                                               var mag = magazine as MagazineComponent;
+                                                               var mag = args[1] as MagazineComponent;
 
                                                                if (!mag.FirearmId.Equals(gun.Item.RefId)) {
                                                                    self.World.InsertMessage("Magazine doesn't work with this gun.");
@@ -247,6 +274,19 @@ namespace SKR.Universe.Factories {
 
                                                                return ActionResult.Success;
                                                            }
+                                          });
+                case Skill.OpenDoor:
+                    return new Talent(new TalentTemplate()
+                                          {
+                                              Skill = identifier,
+                                              Name = "Open door",
+                                              InitialRank = 1,
+                                              MaxRank = 1,
+                                              RequiresTarget = false,
+                                              ActionOnTargetFunction = delegate(Talent t, Actor self, Point p, dynamic[] arg0)
+                                                                           {
+                                                                               return ActionResult.Success;
+                                                                           }
                                           });
                 case Skill.Brawling:
                     return new Talent(new TalentTemplate()

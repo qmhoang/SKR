@@ -28,7 +28,7 @@ namespace SKR.Universe.Entities.Actors.PC {
 
         public Player(Level level)
             : base("player", level) {
-            RefId = "player";
+            RefId = new RefId("player");
         }
     }
 }
