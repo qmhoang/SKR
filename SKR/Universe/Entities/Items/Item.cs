@@ -27,8 +27,18 @@ namespace SKR.Universe.Entities.Items {
         Shoot,
     }
 
+    public abstract class ItemComponentTemplate {
+        public RefId ComponentId { get; set; }
+        public ItemAction Action { get; set; }
+
+        public string ActionDescription { get; set; }
+        public string ActionDescriptionPlural { get; set; }
+
+        public Item Item { get; set; }
+    }
+
     public abstract class ItemComponent {
-        public string ComponentId { get; protected set; }
+        public RefId ComponentId { get; protected set; }
         public ItemAction Action { get; protected set; }
 
         public Item Item { get; set; }
@@ -36,7 +46,7 @@ namespace SKR.Universe.Entities.Items {
         public string ActionDescription { get; protected set; }
         public string ActionDescriptionPlural { get; protected set; }
 
-        protected ItemComponent(string componentId, ItemAction action, string actionDescription, string actionDescriptionPlural) {
+        protected ItemComponent(RefId componentId, ItemAction action, string actionDescription, string actionDescriptionPlural) {
             ComponentId = componentId;
             Action = action;
             ActionDescription = actionDescription;
@@ -46,7 +56,7 @@ namespace SKR.Universe.Entities.Items {
 
     public class Item : IObject {
         public string Name { get; private set; }
-        public string RefId { get; private set; }
+        public RefId RefId { get; private set; }
         public UniqueId UniqueId { get; private set; }
         public int Weight { get; private set; }
         public int Value { get; private set; }
@@ -72,23 +82,35 @@ namespace SKR.Universe.Entities.Items {
                 return (T)components[action];
             else
                 throw new ArgumentException("This item has no component for this", "action");
-        }
-        
-        public Item(string name, string refId, ItemType type, UniqueId uid, int weight, int value, params ItemComponent[] comps) {
-            Name = name;
-            RefId = refId;
-            Type = type;
-            UniqueId = uid;
-            Weight = weight;
-            Value = value;
-            components = new Dictionary<ItemAction, ItemComponent>();            
+        }  
+   
+        public Item(ItemTemplate template) {
+            Name = template.Name;
+            RefId = new RefId(template.RefId);
 
-            foreach (var comp in comps) {
+            Type = template.Type;
+            UniqueId = new UniqueId();
+            Weight = template.Weight;
+            Value = template.Value;
+            components = new Dictionary<ItemAction, ItemComponent>();
+
+            foreach (var comp in template.Components) {
                 comp.Item = this;
                 components.Add(comp.Action, comp);
             }
-        }       
+        }
         
         public Point Position { get; set; }      
+    }
+
+
+    public class ItemTemplate {
+        public string Name { get; set; }
+        public RefId RefId { get; set; }
+        public ItemType Type { get; set; }
+        public int Weight { get; set; }
+        public int Value { get; set; }
+
+        public IEnumerable<ItemComponent> Components { set; get; }
     }
 }

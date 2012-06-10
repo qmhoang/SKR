@@ -55,7 +55,7 @@ namespace SKR.Gameplay.Combat {
             double difficulty = 0.0;
 
             if (targettingPenalty)
-                difficulty -= bodyPart.AttackPenalty;
+                difficulty += bodyPart.AttackPenalty;
 
             var pointsOnPath = Bresenham.GeneratePointsFromLine(attacker.Position, defender.Position);
 
@@ -70,11 +70,12 @@ namespace SKR.Gameplay.Combat {
 
                 var targetAtLocation = attacker.Level.GetActorAtLocation(location);
 
-                double rangePenalty = 2 * Math.Log(targetAtLocation.Position.DistanceTo(attacker.Position));
+                double rangePenalty = Math.Min(0, -2 * Math.Log(targetAtLocation.Position.DistanceTo(attacker.Position) * .4));
 
                 rangePenalty -= location == defender.Position ? 0 : World.StandardDeviation;        // not being targetted gives a sigma (std dev) penalty
+                difficulty += skillBonus + rangePenalty;
 
-                var hit = Attack(attacker, targetAtLocation, weapon, 0, bodyPart, skillBonus - difficulty - (targettingPenalty ? bodyPart.AttackPenalty : 0));
+                var hit = Attack(attacker, targetAtLocation, weapon, 0, bodyPart, difficulty);
                 if (hit)
                     break;
 
@@ -85,7 +86,7 @@ namespace SKR.Gameplay.Combat {
 
         public static bool Attack(Actor attacker, Actor defender, WeaponComponent weapon, int damageBonus, BodyPart bodyPart, double difficulty) {          
             double atkRoll = RandomExtentions.Random.NextDouble();
-            double chanceToHit = GaussianDistribution.CumulativeTo(difficulty);
+            double chanceToHit = ChanceOfSuccess(difficulty);
 
             Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0}", attacker.Name, defender.Name, chanceToHit, atkRoll, difficulty);
 
@@ -133,7 +134,7 @@ namespace SKR.Gameplay.Combat {
             var strength = attacker.GetTalent(Skill.Strength).RealRank;
             int damage = (weapon.Action == ItemAction.MeleeAttackSwing ? DamageTableSwing(strength).Roll() : DamageTableThrust(strength).Roll());
 
-            Attack(attacker, defender, weapon, damage, bodyPart, (hitBonus - (targettingPenalty ? bodyPart.AttackPenalty : 0)));
+            Attack(attacker, defender, weapon, damage, bodyPart, (hitBonus + (targettingPenalty ? bodyPart.AttackPenalty : 0)));
         }
 
         private static Dice DamageTableThrust(int strength) {

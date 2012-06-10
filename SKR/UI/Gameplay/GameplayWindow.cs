@@ -70,7 +70,7 @@ namespace SKR.UI.Gameplay {
             world = World.Instance;
         }
 
-        private void HandleOptions(Talent t, Actor target) {
+        private void HandleOptions(Talent t, Point target) {
             RecursiveSelectOptionHelper(t, target, 0, new dynamic[Talent.MaxOptions]);
         }
 
@@ -80,30 +80,37 @@ namespace SKR.UI.Gameplay {
         /// </summary>
         /// <param name="t">The talent being used</param>
         /// <param name="target">the target the talent is being used on</param>
-        /// <param name="level"></param>
+        /// <param name="index"></param>
         /// <param name="args"></param>
-        private void RecursiveSelectOptionHelper(Talent t, Actor target, int level, dynamic[] args) {
-            if (level > t.NumberOfArgs)
+        private void RecursiveSelectOptionHelper(Talent t, Point target, int index, dynamic[] args) {
+            if (index > t.NumberOfArgs)
                 throw new Exception("We have somehow recursed on more levels that there are options");
 
-            var options = t.GetArgParameters(target, level).ToList();
-            if (options.Count > 0)  // todo talent needs a failure delegate to say that we failed on options
-                ParentApplication.Push(
-                        new OptionsPrompt<dynamic>("Options Arg" + level,
-                                                   options,
-                                                   o => t.TransformArgToString(target, o, level),
-                                                   delegate(dynamic arg)
+            var options = t.GetArgsParameters(target, index);            
+            if (options == null)
+                player.World.InsertMessage("no");
+            else {
+                var optionsList = options.ToList();
+
+                if (optionsList.Count > 0)  // todo talent needs a failure delegate to say that we failed on options
+                    ParentApplication.Push(
+                            new OptionsPrompt<dynamic>("Options Arg" + index,
+                                                       optionsList,
+                                                       o => t.TransformArgToString(target, o, index),
+                                                       delegate(dynamic arg)
                                                        {
-                                                           args[level] = arg;
-                                                           if (t.ContainsArg(level + 1)) {
-                                                               RecursiveSelectOptionHelper(t, target, level + 1, args);
+                                                           args[index] = arg;
+                                                           if (t.ContainsArg(index + 1)) {
+                                                               RecursiveSelectOptionHelper(t, target, index + 1, args);
                                                            } else
                                                                t.InvokeAction(target, args[0], args[1], args[2], args[3]);
 
                                                        }
-                                ));
-            else 
-                player.World.InsertMessage("No options possible in arg" + level);
+                                    ));
+                else
+                    player.World.InsertMessage("No options possible in arg" + index);
+            }
+            
         }
 
         private void HandleTalent(Talent talent) {
@@ -111,12 +118,11 @@ namespace SKR.UI.Gameplay {
                 ParentApplication.Push(
                     new TargetPrompt(talent.Name, player.Position,
                                                     delegate (Point p)
-                                                        {
-                                                            Actor target = player.Level.GetActorAtLocation(p);
-                                                            HandleOptions(talent, target);
+                                                        {                                                            
+                                                            HandleOptions(talent, p);
                                                         }, MapPanel));
             else
-                HandleOptions(talent, player);
+                HandleOptions(talent, player.Position);
 
 //            if (talent.Action is TargetBodyPartWithWeaponAction) {
 //                ParentApplication.Push(

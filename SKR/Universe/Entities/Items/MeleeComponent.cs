@@ -1,4 +1,5 @@
-﻿using SKR.Universe.Entities.Actors;
+﻿using DEngine.Actor;
+using SKR.Universe.Entities.Actors;
 
 namespace SKR.Universe.Entities.Items {
     public enum DamageType {
@@ -8,6 +9,16 @@ namespace SKR.Universe.Entities.Items {
         Pierce,
         PierceLarge,
     }
+    public class MeleeComponentTemplate : WeaponComponentTemplate {
+        public int HitBonus {get; set;} 
+        public int Damage {get; set;} 
+        public DamageType DamageType {get; set;} 
+        public double Penetration {get; set;} 
+        public int WeaponSpeed {get; set;} 
+        public int Reach {get; set;} 
+        public int Parry { get; set; }
+    }
+
     public class MeleeComponent : WeaponComponent {
         public int HitBonus { get; protected set; }
         private int damage;
@@ -28,15 +39,14 @@ namespace SKR.Universe.Entities.Items {
         public int Strength { get; protected set; }
         public int Parry { get; protected set; }
 
-        public MeleeComponent(string componentId, ItemAction action, string actionDescription, string actionDescriptionPlural, Skill skill, int hitBonus, int damage, DamageType damageType, double penetration, int weaponSpeed, int reach, int strength, int parry) : base(componentId, action, actionDescription, actionDescriptionPlural, skill) {            
-            HitBonus = hitBonus;
-            this.damage = damage;
-            this.damageType = damageType;
-            this.penetration = penetration;
-            this.weaponSpeed = weaponSpeed;
-            Reach = reach;
-            Strength = strength;
-            Parry = parry;
+        public MeleeComponent(MeleeComponentTemplate template) : base(template.ComponentId, template.Action, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
+            HitBonus = template.HitBonus;
+            damage = template.Damage;
+            damageType = template.DamageType;
+            penetration = template.Penetration;
+            weaponSpeed = template.WeaponSpeed;
+            Reach = template.Reach;            
+            Parry = template.Parry;
         }
 
         public override string ToString() {

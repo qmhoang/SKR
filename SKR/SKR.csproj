@@ -88,7 +88,6 @@
     <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\SourceTalentFactory.cs" />
     <Compile Include="Universe\Factories\SourceTileFactory.cs" />
-    <Compile Include="Universe\Factories\UniqueIdFactory.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Location\Level.cs" />
     <Compile Include="Universe\World.cs" />

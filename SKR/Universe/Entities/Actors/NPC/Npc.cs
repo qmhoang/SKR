@@ -34,7 +34,7 @@ namespace SKR.Universe.Entities.Actors.NPC {
 
         public Npc(string name, Level level) : base(name, level) {       
             //todo
-            RefId = "human";
+            RefId = new RefId("human");
         }
     }
 }

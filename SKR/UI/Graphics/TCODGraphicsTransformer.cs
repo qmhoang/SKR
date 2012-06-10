@@ -12,34 +12,34 @@ using libtcod;
 namespace SKR.UI.Graphics {
     public class TCODGraphicsTransformer : IGraphicsTransformer<TCODImage> {
         //todo make faster, probably should have each class contain an image and is set 
-        private readonly Dictionary<string, TCODImage> images =
-                new Dictionary<string, TCODImage>
+        private readonly Dictionary<RefId, TCODImage> images =
+                new Dictionary<RefId, TCODImage>
                     {
-                            {"player", new TCODImage('@', new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {"human", new TCODImage('@', new Pigment(ColorPresets.LightGray, ColorPresets.Black))},
-                            {"largeknife", new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
-                            {"axe", new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
-                            {"brassknuckles", new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
+                            {new RefId("player"), new TCODImage('@', new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId("human"), new TCODImage('@', new Pigment(ColorPresets.LightGray, ColorPresets.Black))},
+                            {new RefId("largeknife"), new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
+                            {new RefId("axe"), new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
+                            {new RefId("brassknuckles"), new TCODImage('(', new Pigment(ColorPresets.Gray, ColorPresets.Black))},
 
                             
-                            {TileEnum.Unused.ToString(), new TCODImage((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.Unused.ToString()), new TCODImage((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black))},
 
-                            {TileEnum.WoodFloor.ToString(), new TCODImage(' ', new Pigment(ColorPresets.Black, ColorPresets.SandyBrown))},
-                            {TileEnum.Grass.ToString(), new TCODImage((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.DarkerGreen, ColorPresets.LightGreen))},
+                            {new RefId(TileEnum.WoodFloor.ToString()), new TCODImage(' ', new Pigment(ColorPresets.Black, ColorPresets.SandyBrown))},
+                            {new RefId(TileEnum.Grass.ToString()), new TCODImage((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.DarkerGreen, ColorPresets.LightGreen))},
 
-                            {TileEnum.Wall.ToString(), new TCODImage('#', new Pigment(ColorPresets.DarkerGrey, ColorPresets.Black))},
-                            {TileEnum.HorizWall.ToString(), new TCODImage((char) TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.VertWall.ToString(), new TCODImage((char) TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.Wall.ToString()), new TCODImage('#', new Pigment(ColorPresets.DarkerGrey, ColorPresets.Black))},
+                            {new RefId(TileEnum.HorizWall.ToString()), new TCODImage((char) TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.VertWall.ToString()), new TCODImage((char) TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White, ColorPresets.Black))},
 
-                            {TileEnum.NEWall.ToString(), new TCODImage((char) TCODSpecialCharacter.NE, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.NWWall.ToString(), new TCODImage((char) TCODSpecialCharacter.NW, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.SEWall.ToString(), new TCODImage((char) TCODSpecialCharacter.SE, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.SWWall.ToString(), new TCODImage((char) TCODSpecialCharacter.SW, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.NEWall.ToString()), new TCODImage((char) TCODSpecialCharacter.NE, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.NWWall.ToString()), new TCODImage((char) TCODSpecialCharacter.NW, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.SEWall.ToString()), new TCODImage((char) TCODSpecialCharacter.SE, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.SWWall.ToString()), new TCODImage((char) TCODSpecialCharacter.SW, new Pigment(ColorPresets.White, ColorPresets.Black))},
 
-                            {TileEnum.TWallE.ToString(), new TCODImage((char) TCODSpecialCharacter.TeeEast, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.TWallW.ToString(), new TCODImage((char) TCODSpecialCharacter.TeeWest, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.TWallS.ToString(), new TCODImage((char) TCODSpecialCharacter.TeeSouth, new Pigment(ColorPresets.White, ColorPresets.Black))},
-                            {TileEnum.TWallN.ToString(), new TCODImage((char) TCODSpecialCharacter.TeeNorth, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.TWallE.ToString()), new TCODImage((char) TCODSpecialCharacter.TeeEast, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.TWallW.ToString()), new TCODImage((char) TCODSpecialCharacter.TeeWest, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.TWallS.ToString()), new TCODImage((char) TCODSpecialCharacter.TeeSouth, new Pigment(ColorPresets.White, ColorPresets.Black))},
+                            {new RefId(TileEnum.TWallN.ToString()), new TCODImage((char) TCODSpecialCharacter.TeeNorth, new Pigment(ColorPresets.White, ColorPresets.Black))},
 
 
                     };

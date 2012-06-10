@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DEngine.Actor;
 using DEngine.Core;
 using SKR.Universe.Entities.Items;
 
@@ -36,7 +37,7 @@ namespace SKR.Universe.Entities.Actors {
                                             new BodyPart("Right Hand", BodyPartType.RightHand, Actor, Health / 3, -4, ItemType.OneHandedWeapon, ItemType.TwoHandedWeapon, ItemType.Shield)
                                             },
                                     {
-                                            BodyPartType.LeftHand, 
+                                            BodyPartType.LeftHand,
                                             new BodyPart("Left Hand", BodyPartType.LeftHand, Actor, Health / 3, -4, ItemType.OneHandedWeapon, ItemType.TwoHandedWeapon, ItemType.Shield)
                                             },
                                     {BodyPartType.Leg, new BodyPart("Leg", BodyPartType.Leg, Actor, Health / 2, -2)},
@@ -44,9 +45,41 @@ namespace SKR.Universe.Entities.Actors {
                             };
 
 
-            
-            Punch = new MeleeComponent("punch", ItemAction.MeleeAttackThrust, "punch", "punches", Skill.Brawling, 0, -1, DamageType.Crush, 1, 100, 1, 0, 0);
-            Kick = new MeleeComponent("kick", ItemAction.MeleeAttackThrust, "kick", "kicks", Skill.Brawling, -2, 1, DamageType.Crush, 1, 100, 1, 0, -100);
+
+            Punch = new MeleeComponent(new MeleeComponentTemplate
+                                           {
+                                                   ComponentId = new RefId("punch"),
+                                                   Action = ItemAction.MeleeAttackThrust,
+                                                   ActionDescription = "punch",
+                                                   ActionDescriptionPlural = "punches",
+                                                   Skill = Skill.Brawling,
+                                                   HitBonus = 0,
+                                                   Damage = -1,
+                                                   DamageType = DamageType.Crush,
+                                                   Penetration = 1,
+                                                   WeaponSpeed = 100,
+                                                   Reach = 1,
+                                                   Strength = 0,
+                                                   Parry = 0
+                                           });
+            Kick = new MeleeComponent(new MeleeComponentTemplate
+                                          {
+                                              ComponentId = new RefId("kick"),
+                                              Action = ItemAction.MeleeAttackThrust,
+                                              ActionDescription = "kick",
+                                              ActionDescriptionPlural = "kicks",
+                                              Skill = Skill.Brawling,
+                                              HitBonus = -2,
+                                              Damage = 1,
+                                              DamageType = DamageType.Crush,
+                                              Penetration = 1,
+                                              WeaponSpeed = 100,
+                                              Reach = 1,
+                                              Strength = 0,
+                                              Parry = -100
+                                          });
+
+ 
         }
 
 

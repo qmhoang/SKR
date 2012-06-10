@@ -35,6 +35,9 @@ namespace SKR.Universe.Entities.Actors {
         Reload,
         LoadMagazine,
 
+        OpenDoor,
+        CloseDoor,
+
         //category - sword
         Sword,
         Knife,
@@ -224,9 +227,8 @@ namespace SKR.Universe.Entities.Actors {
                 return ActionResult.Aborted;
             }
 
-            if (Level.DoesActorExistAtLocation(nPos)) {
-                Actor target = Level.GetActorAtLocation(nPos);
-                GetTalent(Skill.Attack).InvokeAction(target);                
+            if (Level.DoesActorExistAtLocation(nPos)) {                
+                GetTalent(Skill.Attack).InvokeAction(nPos);                
             } else
                 Position = nPos;
 
