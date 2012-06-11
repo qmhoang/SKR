@@ -15,17 +15,17 @@ using log4net;
 
 
 namespace SKR.Universe.Entities.Actors {
-    public enum Attribute {
-        Strength,
-        Agility,
-        Constitution,
-        Intellect,
-        Cunning,
-        Resolve,
-        Presence,
-        Grace,
-        Composure,        
-    }
+//    public enum Attribute {
+//        Strength,
+//        Agility,
+//        Constitution,
+//        Intellect,
+//        Cunning,
+//        Resolve,
+//        Presence,
+//        Grace,
+//        Composure,        
+//    }
 
     public enum Skill {
         // basic attack
@@ -34,9 +34,7 @@ namespace SKR.Universe.Entities.Actors {
         RangeTargetAttack,
         Reload,
         LoadMagazine,
-
-        OpenDoor,
-        CloseDoor,
+        UseFeature,        
 
         //category - sword
         Sword,
@@ -113,13 +111,7 @@ namespace SKR.Universe.Entities.Actors {
         }               
 
         private ItemContainer inventory;
-        private int additionalWeight;
-
-        private string myName;
-
-        public override string Name {
-            get { return myName; }
-        }
+        private int additionalWeight;        
 
         public override bool Dead {
             get { return Characteristics.Health <= 0; }
@@ -133,9 +125,9 @@ namespace SKR.Universe.Entities.Actors {
             get { return Characteristics.Lift + additionalWeight; }
         }
 
-        protected Actor(string name, Level level) {
-            myName = name;
+        protected Actor(string refId, string asset, Level level) {            
             Level = level;
+            RefId = refId;
             Characteristics = new ActorCharacteristics(this);
             conditionStatuses = new ActorCondition(this);
             inventory = new ItemContainer();
@@ -163,6 +155,7 @@ namespace SKR.Universe.Entities.Actors {
             LearnTalent(Skill.Pistol, 0);
 
             LearnTalent(Skill.Brawling, 0);
+            Asset = asset;
         }
 
         private void CheckEncumbrance() {
@@ -216,7 +209,7 @@ namespace SKR.Universe.Entities.Actors {
         }
 
         public override ActionResult Move(Point p) {
-            Point nPos = p + Position;
+            Point nPos = p + Position;           
 
             if (!Level.IsWalkable(nPos)) {
                 World.InsertMessage("There is something in the way");
@@ -227,10 +220,16 @@ namespace SKR.Universe.Entities.Actors {
                 return ActionResult.Aborted;
             }
 
-            if (Level.DoesActorExistAtLocation(nPos)) {                
-                GetTalent(Skill.Attack).InvokeAction(nPos);                
-            } else
+            if (Level.DoesActorExistAtLocation(nPos)) {
+                GetTalent(Skill.Attack).InvokeAction(nPos);
+            } else {
                 Position = nPos;
+                var features = Level.Features.Where(f => f.Position == Position);
+                
+//                foreach (var feature in features.Where(f => f.Is<WalkOverable>())) {
+//                    feature.As<WalkOverable>().OnWalkOver(this);
+//                }
+            }
 
             ActionPoints -= World.DefaultTurnSpeed;
 

@@ -20,8 +20,8 @@ namespace SKR.Gameplay.Talent {
         public string Name { get; set; }
         public int InitialRank { get; set; }        
         public int MaxRank { get; set; }
-//        public int Range { get; set; }
-//        public int Radius { get; set; }        
+        public int Range { get; set; }
+        public int Radius { get; set; }        
 
 
 
@@ -76,14 +76,6 @@ namespace SKR.Gameplay.Talent {
 
         public bool RequiresTarget { get; set; }
 
-        public enum TargetType {
-            None,
-            Boolean,
-            Integer,
-            Direction,
-            Position,
-        }
-
         public delegate bool TalentPreUseCheck(Talent talent, Actor self);
 
         public TalentPreUseCheck OnPreUse { get; set; }
@@ -120,8 +112,8 @@ namespace SKR.Gameplay.Talent {
         /// </summary>
         public int RealRank { get { return calculateRealRank(this, Owner); } }
         public int MaxRank { get; private set; }
-//        public int Range { get; private set; }
-//        public int Radius { get; private set; }
+        public int Range { get; private set; }
+        public int Radius { get; private set; }
         
         #endregion
 
@@ -179,8 +171,8 @@ namespace SKR.Gameplay.Talent {
             Name = template.Name;
             RawRank = template.InitialRank;
             MaxRank = template.MaxRank;
-//            Range = template.Range;
-//            Radius = template.Radius;            
+            Range = template.Range;
+            Radius = template.Radius;            
             RequiresTarget = template.RequiresTarget;
 
             actionOnTargetFunc = template.ActionOnTargetFunction;

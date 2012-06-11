@@ -48,7 +48,7 @@ namespace SKR.Universe.Entities.Actors {
 
             Punch = new MeleeComponent(new MeleeComponentTemplate
                                            {
-                                                   ComponentId = new RefId("punch"),
+                                                   ComponentId = "punch",
                                                    Action = ItemAction.MeleeAttackThrust,
                                                    ActionDescription = "punch",
                                                    ActionDescriptionPlural = "punches",
@@ -58,13 +58,13 @@ namespace SKR.Universe.Entities.Actors {
                                                    DamageType = DamageType.Crush,
                                                    Penetration = 1,
                                                    WeaponSpeed = 100,
-                                                   Reach = 1,
+                                                   Reach = 0,
                                                    Strength = 0,
                                                    Parry = 0
                                            });
             Kick = new MeleeComponent(new MeleeComponentTemplate
                                           {
-                                              ComponentId = new RefId("kick"),
+                                              ComponentId = "kick",
                                               Action = ItemAction.MeleeAttackThrust,
                                               ActionDescription = "kick",
                                               ActionDescriptionPlural = "kicks",

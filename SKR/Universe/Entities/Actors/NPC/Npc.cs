@@ -1,4 +1,5 @@
 using DEngine.Actor;
+using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
 using DEngine.Extensions;
 using SKR.Universe.Entities.Actors.NPC.AI;
@@ -32,9 +33,8 @@ namespace SKR.Universe.Entities.Actors.NPC {
         public override void OnDeath() {
         }
 
-        public Npc(string name, Level level) : base(name, level) {       
-            //todo
-            RefId = new RefId("human");
+        public Npc(Level level) : base("npc", "npc", level) {
+            RefId = Name = "npc";            
         }
     }
 }
