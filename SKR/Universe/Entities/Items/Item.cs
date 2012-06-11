@@ -28,7 +28,7 @@ namespace SKR.Universe.Entities.Items {
     }
 
     public abstract class ItemComponentTemplate {
-        public RefId ComponentId { get; set; }
+        public string ComponentId { get; set; }
         public ItemAction Action { get; set; }
 
         public string ActionDescription { get; set; }
@@ -38,7 +38,7 @@ namespace SKR.Universe.Entities.Items {
     }
 
     public abstract class ItemComponent {
-        public RefId ComponentId { get; protected set; }
+        public string ComponentId { get; protected set; }
         public ItemAction Action { get; protected set; }
 
         public Item Item { get; set; }
@@ -46,7 +46,7 @@ namespace SKR.Universe.Entities.Items {
         public string ActionDescription { get; protected set; }
         public string ActionDescriptionPlural { get; protected set; }
 
-        protected ItemComponent(RefId componentId, ItemAction action, string actionDescription, string actionDescriptionPlural) {
+        protected ItemComponent(string componentId, ItemAction action, string actionDescription, string actionDescriptionPlural) {
             ComponentId = componentId;
             Action = action;
             ActionDescription = actionDescription;
@@ -54,9 +54,11 @@ namespace SKR.Universe.Entities.Items {
         }
     }
 
-    public class Item : IObject {
+    public class Item {
         public string Name { get; private set; }
-        public RefId RefId { get; private set; }
+
+        public IImage Image { get; private set; }
+        public string RefId { get; private set; }
         public UniqueId UniqueId { get; private set; }
         public int Weight { get; private set; }
         public int Value { get; private set; }
@@ -86,7 +88,7 @@ namespace SKR.Universe.Entities.Items {
    
         public Item(ItemTemplate template) {
             Name = template.Name;
-            RefId = new RefId(template.RefId);
+            RefId = template.RefId;
 
             Type = template.Type;
             UniqueId = new UniqueId();
@@ -106,11 +108,11 @@ namespace SKR.Universe.Entities.Items {
 
     public class ItemTemplate {
         public string Name { get; set; }
-        public RefId RefId { get; set; }
+        public string RefId { get; set; }
         public ItemType Type { get; set; }
         public int Weight { get; set; }
         public int Value { get; set; }
 
-        public IEnumerable<ItemComponent> Components { set; get; }
+        public IEnumerable<ItemComponent> Components { set; get; }        
     }
 }

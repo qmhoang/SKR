@@ -116,60 +116,9 @@ namespace SKR.UI.Gameplay {
         private void HandleTalent(Talent talent) {
             if (talent.RequiresTarget)
                 ParentApplication.Push(
-                    new TargetPrompt(talent.Name, player.Position,
-                                                    delegate (Point p)
-                                                        {                                                            
-                                                            HandleOptions(talent, p);
-                                                        }, MapPanel));
+                    new TargetPrompt(talent.Name, player.Position, p => HandleOptions(talent, p), MapPanel));
             else
                 HandleOptions(talent, player.Position);
-
-//            if (talent.Action is TargetBodyPartWithWeaponAction) {
-//                ParentApplication.Push(
-//                                new TargetPrompt(
-//                                        talent.Name, player.Position,
-//                                        delegate(Point p)
-//                                        {
-//                                            Person target = player.Level.GetActorAtLocation(p);
-//                                            List<ItemComponent> attacks = new List<ItemComponent>
-//                                                                                   {
-//                                                                                           player.Characteristics.Kick,
-//                                                                                           player.Characteristics.Punch,
-//                                                                                   };
-//
-//                                            foreach (var bodyPart in player.BodyParts.Where(bodyPart => player.IsItemEquipped(bodyPart.Type))) {
-//                                                var item = player.GetItemAtBodyPart(bodyPart.Type);
-//                                                if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
-//                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackSwing) as MeleeComponent);
-//                                                if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
-//                                                    attacks.Add(item.GetComponent(ItemAction.MeleeAttackThrust) as MeleeComponent);
-//                                            }
-//
-//                                            ParentApplication.Push(
-//                                                    new OptionsPrompt<ItemComponent>(
-//                                                            String.Format("Attacking {0}", target.Name),
-//                                                            attacks,
-//                                                            c => c.Item != null
-//                                                                    ? String.Format("{0} with {1}", c.ActionDescription, c.Item.Name)
-//                                                                    : c.ActionDescription,
-//                                                            c => ParentApplication.Push(
-//                                                                    new OptionsPrompt<BodyPart>("Select location",
-//                                                                                                target.Characteristics.BodyPartsList.ToList(),
-//                                                                                                bp => bp.Name,
-//                                                                                                bp => ((TargetBodyPartWithWeaponAction) talent.Action).Action(player, target, bp, c)))));
-//                                        },
-//                                        MapPanel));
-//            } else if (talent.Action is TargetPersonAction) {
-//                ParentApplication.Push(
-//                                new TargetPrompt(
-//                                        talent.Name, player.Position,
-//                                        delegate(Point p)
-//                                        {
-//                                            Person target = player.Level.GetActorAtLocation(p);
-//                                            ((TargetPersonAction) talent.Action).Action(player, target);
-//                                        },
-//                                        MapPanel));
-//            }
         }
 
         protected override void OnSettingUp() {

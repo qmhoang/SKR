@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Extensions;
 using DEngine.Utility;
 using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Actors;
@@ -51,7 +52,7 @@ namespace SKR.Universe {
         public Player Player { get; set; }
 
         private readonly ItemFactory ItemFactory;        
-        private readonly TileFactory TileFactory;
+        private readonly FeatureFactory FeatureFactory;
         private readonly TalentFactory TalentFactory;
         private readonly MapFactory MapFactory;
 
@@ -67,20 +68,20 @@ namespace SKR.Universe {
             
             TalentFactory = new SourceTalentFactory();
             ItemFactory = new SourceItemFactory();
-            TileFactory = new SourceTileFactory();
-            MapFactory = new SourceMapFactory(TileFactory);
+            FeatureFactory = new SourceFeatureFactory();
+            MapFactory = new SourceMapFactory(FeatureFactory);
         }
 
         private void Temp() {
             var level = MapFactory.Construct("TestMap");
-            Npc npc1 = new Npc("target1", level) { Position = new Point(3, 4) };
+            Npc npc1 = new Npc(level) { Position = new Point(3, 4) };            
             npc1.Intelligence = new SimpleIntelligence(npc1);
-            level.Actors.Add(npc1);
+            level.AddActor(npc1);
             AddUpdateableObject(npc1);
 
             level.GenerateFov();
 
-            Player = new Player(level) { Position = new Point(2, 2) };
+            Player = new Player(level) { Position = new Point(2, 2) };            
 
             Player.AddItem(CreateItem("largeknife"));
 
@@ -108,7 +109,7 @@ namespace SKR.Universe {
         }
 
         public Item CreateItem(string key) {
-            return ItemFactory.Construct(new RefId(key));
+            return ItemFactory.Construct(key);
         }
 
         public void AddUpdateableObject(IEntity i) {

@@ -10,7 +10,6 @@ using SKR.Gameplay.Talent;
 using SKR.Universe;
 using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Items;
-using Attribute = SKR.Universe.Entities.Actors.Attribute;
 
 namespace SKR.Gameplay.Combat {
     public static class MeleeCombat {

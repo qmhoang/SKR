@@ -10,51 +10,163 @@ using SKR.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.Universe.Location {
-    public enum TileEnum {
-        Unused = 0,
-        Grass,
-        WoodFloor,
-        Wall,
-        HorizWall,
-        VertWall,
-        // ReSharper disable InconsistentNaming
-        NEWall,
-        NWWall,
-        SEWall,
-        SWWall,
-        TWallE,
-        TWallW,
-        TWallS,
-        TWallN,
-        // ReSharper restore InconsistentNaming
-        Fence,
-    }
+//    public enum TileEnum {
+//        Unused = 0,
+//        Grass,
+//        WoodFloor,
+//        Wall,
+//        HorizWall,
+//        VertWall,
+//        // ReSharper disable InconsistentNaming
+//        NEWall,
+//        NWWall,
+//        SEWall,
+//        SWWall,
+//        TWallE,
+//        TWallW,
+//        TWallS,
+//        TWallN,
+//        // ReSharper restore InconsistentNaming
+//        Fence,
+//    }
 
-    public class Tile : ICopy<Tile>, IObject {
-        public TileEnum Type { get; private set; }
-        public bool Transparent { get; private set; }
-        public bool Walkable { get; private set; }
-        public double WalkPenalty { get; private set; }
+    /// <summary>
+    /// Tiles represent entities that are (normally immovable, but interactive with actors)
+    /// </summary>
+    public class Terrain {
+        public string Definition { get; protected set; }
+        public string Asset { get; protected set; }
+        public bool Transparent { get; protected set; }
+        public bool Walkable { get; protected set; }
+        public double WalkPenalty { get; protected set; }
 
-        public Tile(TileEnum type, bool transparent, bool walkable, double walkPenalty) {
-            Type = type;
+        public Terrain(string definition, string asset, bool transparent, bool walkable, double walkPenalty) {
+            Definition = definition;
+            Asset = asset;
             Transparent = transparent;
             Walkable = walkable;
             WalkPenalty = walkPenalty;
-            RefId = new RefId(Type.ToString());
+        }
+    }   
+ 
+    public class Feature {
+        public Feature(string refid, string asset) {            
+            RefId = refid;    
+            components = new Dictionary<Type, IFeatureComponent>();
+            Asset = asset;
+            Uid = new UniqueId();
+            Transparent = true;
+            Walkable = true;
         }
 
-        public Tile Copy() {
-            return new Tile(Type, Transparent, Walkable, WalkPenalty);
-        }
+        public string Asset { get; set; }
+        public Level Level { get; set; }
 
-        public RefId RefId { get; private set; }
-
+        public string RefId { get; private set; }
+        public UniqueId Uid { get; private set; }
         public Point Position { get; set; }
+
+        public bool Transparent { get; set; }
+        public bool Walkable { get; set; }
+        public double WalkPenalty { get; set; }        
+
+        private Dictionary<Type, IFeatureComponent> components;
+
+        public Feature Add(IFeatureComponent component) {
+            component.Owner = this;
+            components.Add(component.GetType(), component);
+            return this;
+        }
+
+        public Feature Remove(IFeatureComponent component) {
+            component.Owner = null;
+            components.Remove(component.GetType());
+            return this;
+        }
+
+        public bool Is<T>() where T : IFeatureComponent {            
+            return components.ContainsKey(typeof (T));
+        }
+
+        public T As<T>() where T : IFeatureComponent {
+            IFeatureComponent c;
+            components.TryGetValue(typeof (T), out c);
+            return (T) c;
+        }       
     }
 
+    public interface IFeatureComponent {
+        Feature Owner { get; set; }
+    }
+
+    public class Trigger : IFeatureComponent {
+        public Feature Owner { get; set; }
+        public bool Value { get; set; }
+    }
+
+
+//    public class DoorComponent : IFeatureComponent {
+//
+//        public Feature Owner { get; set; }
+//
+//        private IImage open, closed;
+//
+//        public bool Transparent { get { return DoorState == State.Open; } }
+//        public bool Walkable { get { return DoorState == State.Open; } }
+//        public double WalkPenalty { get { return 0.0; } }
+//
+//        public event EventHandler<EventArgs<State>> Trigger;
+//
+//        public void OnTrigger(EventArgs<State> e) {
+//            EventHandler<EventArgs<State>> handler = Trigger;
+//            if (handler != null)
+//                handler(this, e);
+//        }
+//
+//        public void Use(Actor user) {
+//            DoorState = DoorState == State.Closed ? State.Open : State.Closed;
+//        }
+//
+//        public DoorComponent(IImage open, IImage closed) {
+//            this.open = open;
+//            this.closed = closed;            
+//        }
+//    }
+
+//    public class WalkOverable : IFeatureComponent {
+//        public Feature Owner { get; set; }
+//
+//        public Action<Actor> WalkOver;
+//
+//        public void OnWalkOver(Actor actor) {
+//            if (WalkOver != null)
+//                WalkOver(actor);
+//        }
+//
+//        public WalkOverable(Action<Actor> walkOver) {
+//            WalkOver = walkOver;
+//        }
+//    }
+//
+//    public class AnotherWalk : WalkOverable {
+//        public AnotherWalk(Action<Actor> walkOver) : base(walkOver) {
+//            
+//        }
+//    }
+//
+//    public class BlockComponent : IFeatureComponent {
+//        public Feature Owner { get; set; }
+//
+//        public bool Transparent { get { return false; } }
+//        public bool Walkable { get { return false; } }
+//        public double WalkPenalty { get { return 0; } }
+//    }
+
+
+
     public class Level {
-        protected Tile[,] Map;
+        protected string[,] Map;
+        protected Dictionary<string, Terrain> TerrainDefinitions; 
         public TCODMap Fov { get; protected set; }
 
         public Size Size { get; protected set; }
@@ -71,23 +183,30 @@ namespace SKR.Universe.Location {
         public string RefId { get; protected set; }
         public UniqueId Uid { get; protected set; }
 
-        public List<Actor> Actors { get; protected set; }
-        public List<Item> Items { get; protected set; }
+        private List<Actor> actors;
+        private List<Item> items;
+        private List<Feature> features;
 
-        public Level(Size size, Tile fill) {
+        public IEnumerable<Actor> Actors { get { return actors; } }
+        public IEnumerable<Item> Items { get { return items; } }
+        public IEnumerable<Feature> Features { get { return features; } }        
+
+        public Level(Size size, string fill) {
             Uid = new UniqueId();
             Size = size;
 
             Vision = new bool[Width,Height];
-            Map = new Tile[Width,Height];
+            Map = new string[Width,Height];
             Fov = new TCODMap(Width, Height);
+            TerrainDefinitions = new Dictionary<string, Terrain>();
 
-            Actors = new List<Actor>();
-            Items = new List<Item>();            
+            actors = new List<Actor>();
+            items = new List<Item>();   
+            features = new List<Feature>();
 
             for (int x = 0; x < Map.GetLength(0); x++)
                 for (int y = 0; y < Map.GetLength(1); y++) {
-                    Map[x, y] = fill.Copy();
+                    Map[x, y] = fill;
                 }
         }
 
@@ -107,7 +226,7 @@ namespace SKR.Universe.Location {
                 throw new ArgumentOutOfRangeException();
             if (World.Instance.Player != null && World.Instance.Player.Position == location)  // TODO FIX HACK
                 return World.Instance.Player;
-            return Actors.Find(m => m.Position == location);
+            return actors.Find(m => m.Position == location);
         }
 
         /// <summary>
@@ -125,27 +244,29 @@ namespace SKR.Universe.Location {
                 throw new ArgumentOutOfRangeException();
             if (World.Instance.Player != null && World.Instance.Player.Position.X == x && World.Instance.Player.Position.Y == y)  // TODO FIX HACK
                 return true;
-            return Actors.Exists(m => m.Position.X == x && m.Position.Y == y);
+            return actors.Exists(m => m.Position.X == x && m.Position.Y == y);
         }
 
-        public void SetTile(int x, int y, Tile t) {
+        public void SetTerrain(int x, int y, string t) {
             if (!IsInBoundsOrBorder(x, y))
                 throw new ArgumentOutOfRangeException();
             Map[x, y] = t;
+            var terrain = GetTerrain(x, y);
+            Fov.setProperties(x, y, terrain.Transparent, terrain.Walkable);
         }
 
-        public void SetTile(Point p, Tile t) {
-            SetTile(p.X, p.Y, t);
+        public void SetTerrain(Point p, string t) {
+            SetTerrain(p.X, p.Y, t);
         }
 
-        public Tile GetTile(Point p) {
-            return GetTile(p.X, p.Y);
+        public Terrain GetTerrain(Point p) {
+            return GetTerrain(p.X, p.Y);
         }
 
-        public Tile GetTile(int x, int y) {
+        public Terrain GetTerrain(int x, int y) {
             if (!IsInBoundsOrBorder(x, y))
                 throw new ArgumentOutOfRangeException();
-            return Map[x, y];
+            return TerrainDefinitions[Map[x, y]];
         }
 
         public bool IsVisible(Point p) {
@@ -164,7 +285,7 @@ namespace SKR.Universe.Location {
 
         public bool IsWalkable(int x, int y) {
             if (!IsInBoundsOrBorder(x, y))
-                throw new ArgumentOutOfRangeException();
+                return false;
             return Fov.isWalkable(x, y);
         }
 
@@ -175,14 +296,33 @@ namespace SKR.Universe.Location {
             // tiles
             for (int x = 0; x < Map.GetLength(0); x++)
                 for (int y = 0; y < Map.GetLength(1); y++) {
-                    var t = GetTile(x, y);
+                    var t = GetTerrain(x, y);
                     if (t == null)
                         Fov.setProperties(x, y, false, false);
                     else
                         Fov.setProperties(x, y, t.Transparent, t.Walkable);                    
                 }
 
-            // features
+            // features           
+            Features.Each(feature => Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable));
+        }
+
+        public void AddTerrain(Terrain t) {
+            TerrainDefinitions.Add(t.Definition, t);
+        }
+
+        public void AddFeature(Feature feature) {
+            features.Add(feature);
+            feature.Level = this;
+            Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+        }
+
+        public void AddActor(Actor actor) {
+            actors.Add(actor);
+        }
+
+        public void AddItem(Item item) {
+            items.Add(item);
         }
 
         #region Guards

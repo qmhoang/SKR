@@ -15,7 +15,8 @@ namespace SKR.Universe.Entities.Items {
         public abstract int WeaponSpeed { get; }
         public int Strength { get; protected set; }
 
-        protected WeaponComponent(RefId componentId, ItemAction action, string actionDescription, string actionDescriptionPlural, Skill skill, int strength) : base(componentId, action, actionDescription, actionDescriptionPlural) {
+        protected WeaponComponent(string componentId, ItemAction action, string actionDescription, string actionDescriptionPlural, Skill skill, int strength)
+            : base(componentId, action, actionDescription, actionDescriptionPlural) {
             Skill = skill;
             Strength = strength;
         }

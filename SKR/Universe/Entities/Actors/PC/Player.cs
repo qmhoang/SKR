@@ -1,5 +1,6 @@
 ﻿using System;
 using DEngine.Actor;
+using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
 using DEngine.Extensions;
 using SKR.Universe.Location;
@@ -26,9 +27,8 @@ namespace SKR.Universe.Entities.Actors.PC {
             
         }
 
-        public Player(Level level)
-            : base("player", level) {
-            RefId = new RefId("player");
+        public Player(Level level) : base("player", "player", level) {
+            Name = "player";            
         }
     }
 }

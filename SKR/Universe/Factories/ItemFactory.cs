@@ -9,21 +9,18 @@ using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Items;
 
 namespace SKR.Universe.Factories {
-    public abstract class ItemFactory :  Factory<RefId, Item> {
-        
-    }
-    // ReSharper disable RedundantArgumentName
-    public sealed class SourceItemFactory: ItemFactory {
+    public abstract class ItemFactory : Factory<string, Item> { }
 
-        private Dictionary<RefId, ItemTemplate> templates;        
+    // ReSharper disable RedundantArgumentName
+    public sealed class SourceItemFactory : ItemFactory {
+        private Dictionary<string, ItemTemplate> templates;
 
         public SourceItemFactory() {
-            templates = new Dictionary<RefId, ItemTemplate>();            
+            templates = new Dictionary<string, ItemTemplate>();
 
-            Create(new RefId("largeknife"),
+            Create("largeknife",
                    new ItemTemplate
                        {
-
                                Name = "Large Knife",
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
@@ -33,7 +30,7 @@ namespace SKR.Universe.Factories {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
-                                                                            ComponentId = new RefId("largeknifeslash"),
+                                                                            ComponentId = "largeknifeslash",
                                                                             Action = ItemAction.MeleeAttackSwing,
                                                                             ActionDescription = "slash",
                                                                             ActionDescriptionPlural = "slashes",
@@ -48,230 +45,227 @@ namespace SKR.Universe.Factories {
                                                                             Parry = -1
                                                                     }
                                                                 )
-
                                                 }
                        });
 
 
-            Create(new RefId("smallknife"),
+            Create("smallknife",
                    new ItemTemplate
                        {
-
                                Name = "Small Knife",
                                Type = ItemType.OneHandedWeapon,
                                Value = 3000,
                                Weight = 5,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new MeleeComponent(new MeleeComponentTemplate
-                                                                               {
-                                                                                       ComponentId = new RefId("smallknifethrust"),
-                                                                                       Action = ItemAction.MeleeAttackThrust,
-                                                                                       ActionDescription = "jab",
-                                                                                       ActionDescriptionPlural = "jabs",
-                                                                                       Skill = Skill.Knife,
-                                                                                       HitBonus = 0,
-                                                                                       Damage = 0,
-                                                                                       DamageType = DamageType.Impale,
-                                                                                       Penetration = 1,
-                                                                                       WeaponSpeed = 100,
-                                                                                       Reach = 1,
-                                                                                       Strength = 6,
-                                                                                       Parry = -1
-                                                                               })
-
+                                                        new MeleeComponent(
+                                                                new MeleeComponentTemplate
+                                                                    {
+                                                                            ComponentId = "smallknifethrust",
+                                                                            Action = ItemAction.MeleeAttackThrust,
+                                                                            ActionDescription = "jab",
+                                                                            ActionDescriptionPlural = "jabs",
+                                                                            Skill = Skill.Knife,
+                                                                            HitBonus = 0,
+                                                                            Damage = 0,
+                                                                            DamageType = DamageType.Impale,
+                                                                            Penetration = 1,
+                                                                            WeaponSpeed = 100,
+                                                                            Reach = 1,
+                                                                            Strength = 6,
+                                                                            Parry = -1
+                                                                    })
                                                 }
                        });
 
-            Create(new RefId("axe"),
+            Create("axe",
                    new ItemTemplate
                        {
-
                                Name = "Axe",
                                Type = ItemType.OneHandedWeapon,
                                Value = 5000,
                                Weight = 40,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new MeleeComponent(new MeleeComponentTemplate
-                                                                               {
-                                                                                       ComponentId = new RefId("axeswing"),
-                                                                                       Action = ItemAction.MeleeAttackSwing,
-                                                                                       ActionDescription = "hack",
-                                                                                       ActionDescriptionPlural = "hacks",
-                                                                                       Skill = Skill.Axe,
-                                                                                       HitBonus = 0,
-                                                                                       Damage = 2,
-                                                                                       DamageType = DamageType.Cut,
-                                                                                       Penetration = 1,
-                                                                                       WeaponSpeed = 90,
-                                                                                       Reach = 1,
-                                                                                       Strength = 11,
-                                                                                       Parry = 0
-                                                                               })
-
+                                                        new MeleeComponent(
+                                                                new MeleeComponentTemplate
+                                                                    {
+                                                                            ComponentId = "axeswing",
+                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            ActionDescription = "hack",
+                                                                            ActionDescriptionPlural = "hacks",
+                                                                            Skill = Skill.Axe,
+                                                                            HitBonus = 0,
+                                                                            Damage = 2,
+                                                                            DamageType = DamageType.Cut,
+                                                                            Penetration = 1,
+                                                                            WeaponSpeed = 90,
+                                                                            Reach = 1,
+                                                                            Strength = 11,
+                                                                            Parry = 0
+                                                                    })
                                                 }
                        });
-            Create(new RefId("hatchet"),
+            Create("hatchet",
                    new ItemTemplate
                        {
-
                                Name = "Hatchet",
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 20,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new MeleeComponent(new MeleeComponentTemplate
-                                                                               {
-                                                                                       ComponentId = new RefId("hatchetswing"),
-                                                                                       Action = ItemAction.MeleeAttackSwing,
-                                                                                       ActionDescription = "hack",
-                                                                                       ActionDescriptionPlural = "hacks",
-                                                                                       Skill = Skill.Axe,
-                                                                                       HitBonus = 0,
-                                                                                       Damage = 0,
-                                                                                       DamageType = DamageType.Cut,
-                                                                                       Penetration = 1,
-                                                                                       WeaponSpeed = 92,
-                                                                                       Reach = 1,
-                                                                                       Strength = 8,
-                                                                                       Parry = 0
-                                                                               })
+                                                        new MeleeComponent(
+                                                                new MeleeComponentTemplate
+                                                                    {
+                                                                            ComponentId = "hatchetswing",
+                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            ActionDescription = "hack",
+                                                                            ActionDescriptionPlural = "hacks",
+                                                                            Skill = Skill.Axe,
+                                                                            HitBonus = 0,
+                                                                            Damage = 0,
+                                                                            DamageType = DamageType.Cut,
+                                                                            Penetration = 1,
+                                                                            WeaponSpeed = 92,
+                                                                            Reach = 1,
+                                                                            Strength = 8,
+                                                                            Parry = 0
+                                                                    })
                                                 }
                        });
 
-            Create(new RefId("brassknuckles"),
+            Create("brassknuckles",
                    new ItemTemplate
                        {
-
                                Name = "Brass Knuckles",
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 20,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new MeleeComponent(new MeleeComponentTemplate
-                                                                               {
-                                                                                       ComponentId = new RefId("brassknucklesswing"),
-                                                                                       Action = ItemAction.MeleeAttackThrust,
-                                                                                       ActionDescription = "punch",
-                                                                                       ActionDescriptionPlural = "punches",
-                                                                                       Skill = Skill.Brawling,
-                                                                                       HitBonus = 0,
-                                                                                       Damage = 0,
-                                                                                       DamageType = DamageType.Crush,
-                                                                                       Penetration = 1,
-                                                                                       WeaponSpeed = 100,
-                                                                                       Reach = 0,
-                                                                                       Strength = 1,
-                                                                                       Parry = -1
-                                                                               })
+                                                        new MeleeComponent(
+                                                                new MeleeComponentTemplate
+                                                                    {
+                                                                            ComponentId = "brassknucklesswing",
+                                                                            Action = ItemAction.MeleeAttackThrust,
+                                                                            ActionDescription = "punch",
+                                                                            ActionDescriptionPlural = "punches",
+                                                                            Skill = Skill.Brawling,
+                                                                            HitBonus = 0,
+                                                                            Damage = 0,
+                                                                            DamageType = DamageType.Crush,
+                                                                            Penetration = 1,
+                                                                            WeaponSpeed = 100,
+                                                                            Reach = 0,
+                                                                            Strength = 1,
+                                                                            Parry = -1
+                                                                    })
                                                 }
                        });
-            Create(new RefId("glock17"),
+            Create("glock17",
                    new ItemTemplate
                        {
-
                                Name = "Glock 17",
                                Type = ItemType.OneHandedWeapon,
                                Value = 60000,
                                Weight = 19,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new MeleeComponent(new MeleeComponentTemplate
-                                                                               {
-                                                                                       ComponentId = new RefId("glock17swing"),
-                                                                                       Action = ItemAction.MeleeAttackSwing,
-                                                                                       ActionDescription = "pistol whip",
-                                                                                       ActionDescriptionPlural = "pistol whips",
-                                                                                       Skill = Skill.Brawling,
-                                                                                       HitBonus = -1,
-                                                                                       Damage = -1,
-                                                                                       DamageType = DamageType.Crush,
-                                                                                       Penetration = 1,
-                                                                                       WeaponSpeed = 85,
-                                                                                       Reach = 0,
-                                                                                       Strength = 8,
-                                                                                       Parry = -2
-                                                                               }),
-                                                        new FirearmComponent(new FirearmComponentTemplate
-                                                                                 {
-                                                                                         ComponentId = new RefId("glock17shoot"),
-                                                                                         Action = ItemAction.Shoot,
-                                                                                         ActionDescription = "shoot",
-                                                                                         ActionDescriptionPlural = "shoots",
-                                                                                         Skill = Skill.Pistol,
-                                                                                         Accuracy = 2,
-                                                                                         DamageRange = new Dice(2, 2, 2),
-                                                                                         DamageType = DamageType.Pierce,
-                                                                                         Penetration = 1,
-                                                                                         Range = 160,
-                                                                                         RoF = 17,
-                                                                                         ReloadSpeed = 3,
-                                                                                         Recoil = 2,
-                                                                                         Bulk = 2,
-                                                                                         Reliability = 18,
-                                                                                         Strength = 8,
-                                                                                         Caliber = "9x19mm"
-                                                                                 })
+                                                        new MeleeComponent(
+                                                                new MeleeComponentTemplate
+                                                                    {
+                                                                            ComponentId = "glock17swing",
+                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            ActionDescription = "pistol whip",
+                                                                            ActionDescriptionPlural = "pistol whips",
+                                                                            Skill = Skill.Brawling,
+                                                                            HitBonus = -1,
+                                                                            Damage = -1,
+                                                                            DamageType = DamageType.Crush,
+                                                                            Penetration = 1,
+                                                                            WeaponSpeed = 85,
+                                                                            Reach = 0,
+                                                                            Strength = 8,
+                                                                            Parry = -2
+                                                                    }),
+                                                        new FirearmComponent(
+                                                                new FirearmComponentTemplate
+                                                                    {
+                                                                            ComponentId = "glock17shoot",
+                                                                            Action = ItemAction.Shoot,
+                                                                            ActionDescription = "shoot",
+                                                                            ActionDescriptionPlural = "shoots",
+                                                                            Skill = Skill.Pistol,
+                                                                            Accuracy = 2,
+                                                                            DamageRange = new Dice(2, 2, 2),
+                                                                            DamageType = DamageType.Pierce,
+                                                                            Penetration = 1,
+                                                                            Range = 160,
+                                                                            RoF = 17,
+                                                                            ReloadSpeed = 3,
+                                                                            Recoil = 2,
+                                                                            Bulk = 2,
+                                                                            Reliability = 18,
+                                                                            Strength = 8,
+                                                                            Caliber = "9x19mm"
+                                                                    })
                                                 }
                        });
-            Create(new RefId("glock17magazine"),
+            Create("glock17magazine",
                    new ItemTemplate
                        {
-
                                Name = "Magazine, Glock 17",
                                Type = ItemType.OneHandedWeapon,
                                Value = 3200,
                                Weight = 6,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new MagazineComponent(new MagazineComponentTemplate
-                                                                                  {
-                                                                                          ComponentId = new RefId("glock17magazine"),
-                                                                                          Action = ItemAction.ReloadFirearm,
-                                                                                          ActionDescription = "reload",
-                                                                                          ActionDescriptionPlural = "reloads",
-                                                                                          Shots = 17,
-                                                                                          Caliber = "9x19mm",
-                                                                                          FirearmId = new RefId("glock17")
-                                                                                  })
+                                                        new MagazineComponent(
+                                                                new MagazineComponentTemplate
+                                                                    {
+                                                                            ComponentId = "glock17magazine",
+                                                                            Action = ItemAction.ReloadFirearm,
+                                                                            ActionDescription = "reload",
+                                                                            ActionDescriptionPlural = "reloads",
+                                                                            Shots = 17,
+                                                                            Caliber = "9x19mm",
+                                                                            FirearmId = "glock17",
+                                                                    })
                                                 }
                        });
-            Create(new RefId("9x19mm"),
+            Create("9x19mm",
                    new ItemTemplate
                        {
-
                                Name = "9x19mm Parabellum",
                                Type = ItemType.OneHandedWeapon,
                                Value = 30,
                                Weight = 0,
                                Components = new List<ItemComponent>
                                                 {
-                                                        new BulletComponent(new BulletComponentTemplate
-                                                                                {
-                                                                                        ComponentId = new RefId("9x9mmbullet"),
-                                                                                        Action = ItemAction.LoadMagazine,
-                                                                                        ActionDescription = "load",
-                                                                                        ActionDescriptionPlural = "loads",
-                                                                                        Used = false,
-                                                                                        Caliber = "9x19mm"
-                                                                                })
+                                                        new BulletComponent(
+                                                                new BulletComponentTemplate
+                                                                    {
+                                                                            ComponentId = "9x9mmbullet",
+                                                                            Action = ItemAction.LoadMagazine,
+                                                                            ActionDescription = "load",
+                                                                            ActionDescriptionPlural = "loads",
+                                                                            Used = false,
+                                                                            Caliber = "9x19mm",
+                                                                    })
                                                 }
                        });
-
         }
 
-        private void Create(RefId id, ItemTemplate template) {
+        private void Create(string id, ItemTemplate template) {
             template.RefId = id;
             templates.Add(id, template);
-        }        
-
-        public override Item Construct(RefId refId) {
-            return new Item(templates[refId]);
         }
 
+        public override Item Construct(string refId) {
+            return new Item(templates[refId]);
+        }
     }
 }
+
 // ReSharper restore RedundantArgumentName
