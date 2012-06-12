@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
-using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
 using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Items;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
-using DEngine.Actor.Components.Graphics;
 using DEngine.Core;
 
 namespace SKR.Universe.Entities.Items {
@@ -56,7 +55,7 @@ namespace SKR.Universe.Entities.Items {
     public class Item {
         public string Name { get; private set; }
 
-        public IImage Image { get; private set; }
+        public string Asset { get; private set; }
         public string RefId { get; private set; }
         public UniqueId UniqueId { get; private set; }
         public int Weight { get; private set; }
@@ -70,16 +69,16 @@ namespace SKR.Universe.Entities.Items {
 
         private Dictionary<ItemAction, ItemComponent> components;
 
-        public bool ContainsComponent(ItemAction action) {
+        public bool Is(ItemAction action) {
             return components.ContainsKey(action);
         }
 
-        public T GetComponent<T>() where T : ItemComponent {
+        public T As<T>() where T : ItemComponent {
             return (T) components.Values.First(c => c is T);
         }
 
-        public T GetComponent<T>(ItemAction action) where T : ItemComponent {
-            if (ContainsComponent(action))
+        public T As<T>(ItemAction action) where T : ItemComponent {
+            if (Is(action))
                 return (T)components[action];
             else
                 throw new ArgumentException("This item has no component for this", "action");
