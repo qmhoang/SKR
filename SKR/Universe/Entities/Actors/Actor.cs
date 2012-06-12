@@ -113,7 +113,7 @@ namespace SKR.Universe.Entities.Actors {
         private int additionalWeight;        
 
         public override bool Dead {
-            get { return Characteristics.Health <= 0; }
+            get { return Characteristics.Health < 0; }
         }
 
         public int Dodge {

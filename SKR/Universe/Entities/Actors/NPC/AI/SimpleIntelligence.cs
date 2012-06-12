@@ -9,7 +9,7 @@ namespace SKR.Universe.Entities.Actors.NPC.AI {
         
         public SimpleIntelligence(Npc monster)
                 : base(monster) {
-            pf = new TCODPath(monster.Level.Width, monster.Level.Height, this, 1.0f);
+            pf = new TCODPath(monster.Level.Width, monster.Level.Height, this, 1.41f);
         }
 
         public override void Update() {
