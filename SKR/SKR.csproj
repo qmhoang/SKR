@@ -87,6 +87,7 @@
     <Compile Include="Universe\Factories\SourceTalentFactory.cs" />
     <Compile Include="Universe\Factories\SourceTileFactory.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
+    <Compile Include="Universe\Location\Feature.cs" />
     <Compile Include="Universe\Location\Level.cs" />
     <Compile Include="Universe\World.cs" />
   </ItemGroup>

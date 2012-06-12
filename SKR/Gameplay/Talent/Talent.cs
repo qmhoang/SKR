@@ -10,11 +10,12 @@ using SKR.Universe.Entities.Items;
 using SKR.Universe.Factories;
 
 namespace SKR.Gameplay.Talent {    
-    public enum TalentType {
-        Passive,
-        TargetPerson,
-        TargetPersonBodyPartWithItemComponent,
+    public enum TargetType {
+        None,
+        Directional,
+        Positional,
     }
+
     public class TalentTemplate {
         public Skill Skill { get; set; }
         public string Name { get; set; }
@@ -74,7 +75,7 @@ namespace SKR.Gameplay.Talent {
 
         public IEnumerable<ArgDesciptorFunction> ArgsDesciptor { get; set; }
 
-        public bool RequiresTarget { get; set; }
+        public TargetType RequiresTarget { get; set; }
 
         public delegate bool TalentPreUseCheck(Talent talent, Actor self);
 
@@ -158,7 +159,7 @@ namespace SKR.Gameplay.Talent {
             return actionOnTargetFunc(this, Owner, target, args);
         }
 
-        public bool RequiresTarget { get; private set; }
+        public TargetType RequiresTarget { get; private set; }
 
         private TalentTemplate.TalentPreUseCheck onPreUse;
 

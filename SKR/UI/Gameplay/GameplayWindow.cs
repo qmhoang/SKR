@@ -88,11 +88,16 @@ namespace SKR.UI.Gameplay {
 
             var options = t.GetArgsParameters(target, index);            
             if (options == null)
-                player.World.InsertMessage("no");
+                player.World.InsertMessage("no possible options");                
             else {
                 var optionsList = options.ToList();
-
-                if (optionsList.Count > 0)  // todo talent needs a failure delegate to say that we failed on options
+                if (optionsList.Count == 1) {   // only one option, select it automatically
+                    args[index] = optionsList[0];
+                    if (t.ContainsArg(index + 1)) {
+                        RecursiveSelectOptionHelper(t, target, index + 1, args);
+                    } else
+                        t.InvokeAction(target, args);
+                } else if (optionsList.Count > 0)  // todo talent needs a failure delegate to say that we failed on options
                     ParentApplication.Push(
                             new OptionsPrompt<dynamic>("Options Arg" + index,
                                                        optionsList,
@@ -103,7 +108,7 @@ namespace SKR.UI.Gameplay {
                                                            if (t.ContainsArg(index + 1)) {
                                                                RecursiveSelectOptionHelper(t, target, index + 1, args);
                                                            } else
-                                                               t.InvokeAction(target, args[0], args[1], args[2], args[3]);
+                                                               t.InvokeAction(target, args);
 
                                                        }
                                     ));
@@ -114,10 +119,13 @@ namespace SKR.UI.Gameplay {
         }
 
         private void HandleTalent(Talent talent) {
-            if (talent.RequiresTarget)
+            if (talent.RequiresTarget == TargetType.Positional)
                 ParentApplication.Push(
                     new TargetPrompt(talent.Name, player.Position, p => HandleOptions(talent, p), MapPanel));
-            else
+            else if (talent.RequiresTarget == TargetType.Directional) {
+                ParentApplication.Push(
+                    new DirectionalPrompt(talent.Name, player.Position, p => HandleOptions(talent, p)));
+            } else
                 HandleOptions(talent, player.Position);
         }
 
@@ -212,17 +220,18 @@ namespace SKR.UI.Gameplay {
                         HandleTalent(player.GetTalent(Skill.Reload));
 
                     } else if (keyData.Character == 'f') {
-//                        HandleTalent(attack);
                         HandleTalent(player.GetTalent(Skill.RangeTargetAttack));
 
                     } else if (keyData.Character == 'a') {
                         HandleTalent(player.GetTalent(Skill.TargetAttack));
+                    } else if (keyData.Character == 'u') {
+                        HandleTalent(player.GetTalent(Skill.UseFeature));
                     } else if (keyData.Character == 'i') {
                         ParentApplication.Push(new ItemWindow(false, new ListWindowTemplate<Item>
                                                                          {
                                                                              Size = MapPanel.Size,
                                                                              IsPopup = true,
-                                                                             HasFrame = true,   
+                                                                             HasFrame = true,
                                                                              Items = player.Items,
                                                                          }, i => player.World.InsertMessage(String.Format("This is a {0}, it weights {1}", i.Name, i.Weight))));
                     }

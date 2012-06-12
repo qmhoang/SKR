@@ -48,121 +48,6 @@ namespace SKR.Universe.Location {
             WalkPenalty = walkPenalty;
         }
     }   
- 
-    public class Feature {
-        public Feature(string refid, string asset) {            
-            RefId = refid;    
-            components = new Dictionary<Type, IFeatureComponent>();
-            Asset = asset;
-            Uid = new UniqueId();
-            Transparent = true;
-            Walkable = true;
-        }
-
-        public string Asset { get; set; }
-        public Level Level { get; set; }
-
-        public string RefId { get; private set; }
-        public UniqueId Uid { get; private set; }
-        public Point Position { get; set; }
-
-        public bool Transparent { get; set; }
-        public bool Walkable { get; set; }
-        public double WalkPenalty { get; set; }        
-
-        private Dictionary<Type, IFeatureComponent> components;
-
-        public Feature Add(IFeatureComponent component) {
-            component.Owner = this;
-            components.Add(component.GetType(), component);
-            return this;
-        }
-
-        public Feature Remove(IFeatureComponent component) {
-            component.Owner = null;
-            components.Remove(component.GetType());
-            return this;
-        }
-
-        public bool Is<T>() where T : IFeatureComponent {            
-            return components.ContainsKey(typeof (T));
-        }
-
-        public T As<T>() where T : IFeatureComponent {
-            IFeatureComponent c;
-            components.TryGetValue(typeof (T), out c);
-            return (T) c;
-        }       
-    }
-
-    public interface IFeatureComponent {
-        Feature Owner { get; set; }
-    }
-
-    public class Trigger : IFeatureComponent {
-        public Feature Owner { get; set; }
-        public bool Value { get; set; }
-    }
-
-
-//    public class DoorComponent : IFeatureComponent {
-//
-//        public Feature Owner { get; set; }
-//
-//        private IImage open, closed;
-//
-//        public bool Transparent { get { return DoorState == State.Open; } }
-//        public bool Walkable { get { return DoorState == State.Open; } }
-//        public double WalkPenalty { get { return 0.0; } }
-//
-//        public event EventHandler<EventArgs<State>> Trigger;
-//
-//        public void OnTrigger(EventArgs<State> e) {
-//            EventHandler<EventArgs<State>> handler = Trigger;
-//            if (handler != null)
-//                handler(this, e);
-//        }
-//
-//        public void Use(Actor user) {
-//            DoorState = DoorState == State.Closed ? State.Open : State.Closed;
-//        }
-//
-//        public DoorComponent(IImage open, IImage closed) {
-//            this.open = open;
-//            this.closed = closed;            
-//        }
-//    }
-
-//    public class WalkOverable : IFeatureComponent {
-//        public Feature Owner { get; set; }
-//
-//        public Action<Actor> WalkOver;
-//
-//        public void OnWalkOver(Actor actor) {
-//            if (WalkOver != null)
-//                WalkOver(actor);
-//        }
-//
-//        public WalkOverable(Action<Actor> walkOver) {
-//            WalkOver = walkOver;
-//        }
-//    }
-//
-//    public class AnotherWalk : WalkOverable {
-//        public AnotherWalk(Action<Actor> walkOver) : base(walkOver) {
-//            
-//        }
-//    }
-//
-//    public class BlockComponent : IFeatureComponent {
-//        public Feature Owner { get; set; }
-//
-//        public bool Transparent { get { return false; } }
-//        public bool Walkable { get { return false; } }
-//        public double WalkPenalty { get { return 0; } }
-//    }
-
-
 
     public class Level {
         protected string[,] Map;
@@ -208,6 +93,12 @@ namespace SKR.Universe.Location {
                 for (int y = 0; y < Map.GetLength(1); y++) {
                     Map[x, y] = fill;
                 }
+        }
+
+        public Feature GetFeatureAtLocation(Point location) {
+            if (!IsInBoundsOrBorder(location))
+                throw new ArgumentOutOfRangeException();
+            return Features.ToList().Find(f => f.Position == location);
         }
 
         public IEnumerable<Actor> GetActorInRadius(Point origin, double length) {
@@ -314,7 +205,24 @@ namespace SKR.Universe.Location {
         public void AddFeature(Feature feature) {
             features.Add(feature);
             feature.Level = this;
-            Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+            feature.TransparencyChanged += FeatureTransparencyChanged;
+            feature.WalkableChanged += FeatureWalkableChanged;
+            Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);            
+        }
+
+        void FeatureWalkableChanged(object sender, EventArgs<bool> e) {
+            if (sender is Feature) {
+                var feature = sender as Feature;
+                Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+            }
+        }
+
+        void  FeatureTransparencyChanged(object sender, EventArgs<bool> e)
+        {
+            if (sender is Feature) {
+                var feature = sender as Feature;
+                Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+            }
         }
 
         public void AddActor(Actor actor) {
@@ -324,6 +232,7 @@ namespace SKR.Universe.Location {
         public void AddItem(Item item) {
             items.Add(item);
         }
+        
 
         #region Guards
         public bool IsInBounds(Point v) {

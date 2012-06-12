@@ -144,16 +144,17 @@ namespace SKR.UI.Menus {
 
     public class DirectionalPrompt : PromptWindow {
         private readonly Action<Point> actionPosition;
+        private Point origin;
 
         /// <summary>
         /// The action is done on a local position case.  North = 0, -1.  West = -1, 0
         /// </summary>
         /// <param name="message"></param>
         /// <param name="actionPosition"></param>
-
-        public DirectionalPrompt(string message, Action<Point> actionPosition)
+        public DirectionalPrompt(string message, Point from, Action<Point> actionPosition)
             : base(message, popupTemplate) {
             this.actionPosition = actionPosition;
+            this.origin = from;
         }
 
         protected override string Text {
@@ -164,28 +165,28 @@ namespace SKR.UI.Menus {
             base.OnKeyPressed(key);
 
             if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
-                actionPosition(Point.North);
+                actionPosition(origin + Point.North);
 
             if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
-                actionPosition(Point.South);
+                actionPosition(origin + Point.South);
 
             if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
-                actionPosition(Point.West);
+                actionPosition(origin + Point.West);
 
             if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
-                actionPosition(Point.East);
+                actionPosition(origin + Point.East);
 
             if (key.KeyCode == TCODKeyCode.KeypadSeven)
-                actionPosition(Point.Northwest);
+                actionPosition(origin + Point.Northwest);
 
             if (key.KeyCode == TCODKeyCode.KeypadNine)
-                actionPosition(Point.Northeast);
+                actionPosition(origin + Point.Northeast);
 
             if (key.KeyCode == TCODKeyCode.KeypadOne)
-                actionPosition(Point.Southwest);
+                actionPosition(origin + Point.Southwest);
 
             if (key.KeyCode == TCODKeyCode.KeypadThree)
-                actionPosition(Point.Southeast);
+                actionPosition(origin + Point.Southeast);
 
             Quit();
         }

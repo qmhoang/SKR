@@ -26,7 +26,7 @@ namespace SKR.Universe.Factories {
                                               Name = "Attack",
                                               InitialRank = 1,
                                               MaxRank = 1,
-                                              RequiresTarget = true,
+                                              RequiresTarget = TargetType.Directional,
                                               ActionOnTargetFunction =
                                                       delegate(Talent t, Actor self, Point point, dynamic[] args)
                                                           {
@@ -62,7 +62,7 @@ namespace SKR.Universe.Factories {
                                                   Name = "Attack target specific body part.",
                                                   InitialRank = 1,
                                                   MaxRank = 1,
-                                                  RequiresTarget = true,
+                                                  RequiresTarget = TargetType.Directional,
                                                   Args = new List<TalentTemplate.GenerateArgsListFunction>()
                                                              {
                                                                      delegate(Talent t, Actor self, Point p)
@@ -138,8 +138,7 @@ namespace SKR.Universe.Factories {
                                                   Name = "Shoot target specific body part.",
                                                   InitialRank = 1,
                                                   MaxRank = 1,
-                                                  RequiresTarget = true,
-
+                                                  RequiresTarget = TargetType.Positional,
                                                   Args = new List<TalentTemplate.GenerateArgsListFunction>()
                                                              {
                                                                      delegate(Talent t, Actor self, Point p)
@@ -212,7 +211,7 @@ namespace SKR.Universe.Factories {
                                                   Name = "Reload firearm",
                                                   InitialRank = 1,
                                                   MaxRank = 1,
-                                                  RequiresTarget = false,
+                                                  RequiresTarget = TargetType.None,
                                                   Args = new List<TalentTemplate.GenerateArgsListFunction>()
                                                              {
                                                                      delegate(Talent t, Actor self, Point p) // what gun are we reloading, return an empty list should cause optionsprompt to quit
@@ -274,6 +273,8 @@ namespace SKR.Universe.Factories {
                                                                                    gun.Magazine = mag.Item;
                                                                                    self.ActionPoints -= gun.ReloadSpeed;
 
+                                                                                   self.World.InsertMessage(String.Format("{0} reloads {1} with a {2}", self.Name, gun.Item.Name, mag.Item.Name));
+
                                                                                    return ActionResult.Success;
                                                                                }
                                           });
@@ -284,23 +285,23 @@ namespace SKR.Universe.Factories {
                                                   Name = "Use feature",
                                                   InitialRank = 1,
                                                   MaxRank = 1,
-                                                  RequiresTarget = true,
+                                                  RequiresTarget = TargetType.Directional,
                                                   Args = new List<TalentTemplate.GenerateArgsListFunction>()
                                                              {
                                                                      delegate(Talent t, Actor self, Point p) // what gun are we reloading, return an empty list should cause optionsprompt to quit
                                                                          {
-                                                                             return self.Level.Features.Where(feature => feature.Position == p).ToList();
+                                                                             return self.Level.GetFeatureAtLocation(p).ActiveUsages;
                                                                          },
                                                              },
 
                                                   ArgsDesciptor = new List<TalentTemplate.ArgDesciptorFunction>()
                                                                       {
-                                                                              (t, self, target, arg) => ((Feature) arg).RefId,                                                                              
+                                                                              (t, self, target, arg) => arg,
 
                                                                       },
                                                   ActionOnTargetFunction = delegate(Talent t, Actor self, Point p, dynamic[] args)
                                                                                {
-//                                                                                   ((Feature) args[0]);
+                                                                                   self.Level.GetFeatureAtLocation(p).Use(self, args[0]);
                                                                                    return ActionResult.Success;
                                                                                }
                                           });
