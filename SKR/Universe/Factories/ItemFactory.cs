@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Utility;
 using SKR.Universe.Entities.Actors;
 using SKR.Universe.Entities.Items;
 
@@ -36,7 +35,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "slashes",
                                                                             Skill = Skill.Knife,
                                                                             HitBonus = 0,
-                                                                            Damage = -1,
+                                                                            Damage = new Constant(-1),
                                                                             DamageType = DamageType.Cut,
                                                                             Penetration = 1,
                                                                             WeaponSpeed = 100,
@@ -67,7 +66,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "jabs",
                                                                             Skill = Skill.Knife,
                                                                             HitBonus = 0,
-                                                                            Damage = 0,
+                                                                            Damage = new Constant(0),
                                                                             DamageType = DamageType.Impale,
                                                                             Penetration = 1,
                                                                             WeaponSpeed = 100,
@@ -96,7 +95,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "hacks",
                                                                             Skill = Skill.Axe,
                                                                             HitBonus = 0,
-                                                                            Damage = 2,
+                                                                            Damage = new Constant(2),
                                                                             DamageType = DamageType.Cut,
                                                                             Penetration = 1,
                                                                             WeaponSpeed = 90,
@@ -124,7 +123,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "hacks",
                                                                             Skill = Skill.Axe,
                                                                             HitBonus = 0,
-                                                                            Damage = 0,
+                                                                            Damage = new Constant(0),
                                                                             DamageType = DamageType.Cut,
                                                                             Penetration = 1,
                                                                             WeaponSpeed = 92,
@@ -153,7 +152,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "punches",
                                                                             Skill = Skill.Brawling,
                                                                             HitBonus = 0,
-                                                                            Damage = 0,
+                                                                            Damage = new Constant(0),
                                                                             DamageType = DamageType.Crush,
                                                                             Penetration = 1,
                                                                             WeaponSpeed = 100,
@@ -181,7 +180,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "pistol whips",
                                                                             Skill = Skill.Brawling,
                                                                             HitBonus = -1,
-                                                                            Damage = -1,
+                                                                            Damage = new Constant(-1),
                                                                             DamageType = DamageType.Crush,
                                                                             Penetration = 1,
                                                                             WeaponSpeed = 85,
@@ -216,7 +215,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Magazine, Glock 17",
-                               Type = ItemType.OneHandedWeapon,
+                               Type = ItemType.Ammo,
                                Value = 3200,
                                Weight = 6,
                                Components = new List<ItemComponent>

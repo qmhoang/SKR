@@ -58,10 +58,6 @@ namespace SKR.Universe.Entities.Items {
     public class FirearmComponent : WeaponComponent {
         public int Accuracy { get; protected set; }
         public IRand DamageRange { get; protected set; }
-        public override int Damage {
-            get { return DamageRange.Roll(); }            
-        }
-
         private DamageType damageType;
         public override DamageType DamageType { get { return damageType; } }
 

@@ -5,7 +5,6 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
-using DEngine.Utility;
 using SKR.Gameplay.Talent;
 using SKR.Universe;
 using SKR.Universe.Entities.Actors;
@@ -49,8 +48,7 @@ namespace SKR.Gameplay.Combat {
             return GaussianDistribution.CumulativeTo(difficulty + World.Mean, World.Mean, World.StandardDeviation);
         }
         public static void AttackRangeWithGun(Actor attacker, Actor defender, FirearmComponent weapon, BodyPart bodyPart, bool targettingPenalty = false) {
-            double skillBonus = attacker.GetTalent(weapon.Skill).RealRank;
-            double atkRoll = RandomExtentions.Random.NextDouble();
+            double skillBonus = attacker.GetTalent(weapon.Skill).RealRank;            
             double difficulty = 0.0;
 
             if (targettingPenalty)
@@ -58,7 +56,7 @@ namespace SKR.Gameplay.Combat {
 
             var pointsOnPath = Bresenham.GeneratePointsFromLine(attacker.Position, defender.Position);
 
-            weapon.Magazine.GetComponent<MagazineComponent>().Shots--;
+            weapon.Magazine.As<MagazineComponent>().Shots--;
 
             foreach (var location in pointsOnPath) {
                 if (!attacker.Level.IsWalkable(location))
@@ -94,7 +92,7 @@ namespace SKR.Gameplay.Combat {
                 return false;                
             }
 
-            int damage = damageBonus + weapon.Damage;
+            int damage = damageBonus + weapon.Damage.Roll();
 
             switch (weapon.DamageType) {
                 case DamageType.Cut:

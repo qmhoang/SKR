@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Utility;
 using SKR.Gameplay.Combat;
 using SKR.Gameplay.Talent;
 using SKR.Universe.Entities.Actors;
@@ -35,14 +34,14 @@ namespace SKR.Universe.Factories {
                                                               // if we have something in our right hand, probably want to use that
                                                               if (self.IsItemEquipped(BodyPartType.RightHand)) {
                                                                   var item = self.GetItemAtBodyPart(BodyPartType.RightHand);
-                                                                  melee = (item.ContainsComponent(ItemAction.MeleeAttackSwing)
-                                                                                   ? item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackSwing)
-                                                                                   : item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackThrust));
+                                                                  melee = (item.Is(ItemAction.MeleeAttackSwing)
+                                                                                   ? item.As<MeleeComponent>(ItemAction.MeleeAttackSwing)
+                                                                                   : item.As<MeleeComponent>(ItemAction.MeleeAttackThrust));
                                                               } else if (self.IsItemEquipped(BodyPartType.LeftHand)) {
                                                                   var item = self.GetItemAtBodyPart(BodyPartType.LeftHand);
-                                                                  melee = (item.ContainsComponent(ItemAction.MeleeAttackSwing)
-                                                                                   ? item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackSwing)
-                                                                                   : item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackThrust));
+                                                                  melee = (item.Is(ItemAction.MeleeAttackSwing)
+                                                                                   ? item.As<MeleeComponent>(ItemAction.MeleeAttackSwing)
+                                                                                   : item.As<MeleeComponent>(ItemAction.MeleeAttackThrust));
                                                               } else
                                                                   melee = self.Characteristics.Punch;
 
@@ -76,10 +75,10 @@ namespace SKR.Universe.Factories {
                                                                              foreach (var item in from bp in self.BodyParts
                                                                                                   where self.IsItemEquipped(bp.Type)
                                                                                                   select self.GetItemAtBodyPart(bp.Type)) {
-                                                                                 if (item.ContainsComponent(ItemAction.MeleeAttackSwing))
-                                                                                     attacks.Add(item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackSwing));
-                                                                                 if (item.ContainsComponent(ItemAction.MeleeAttackThrust))
-                                                                                     attacks.Add(item.GetComponent<MeleeComponent>(ItemAction.MeleeAttackThrust));
+                                                                                 if (item.Is(ItemAction.MeleeAttackSwing))
+                                                                                     attacks.Add(item.As<MeleeComponent>(ItemAction.MeleeAttackSwing));
+                                                                                 if (item.Is(ItemAction.MeleeAttackThrust))
+                                                                                     attacks.Add(item.As<MeleeComponent>(ItemAction.MeleeAttackThrust));
                                                                              }
 
                                                                              return attacks;
@@ -147,8 +146,8 @@ namespace SKR.Universe.Factories {
                                                                                      where self.IsItemEquipped(bp.Type)
                                                                                      select self.GetItemAtBodyPart(bp.Type)
                                                                                      into item
-                                                                                     where item.ContainsComponent(ItemAction.Shoot)
-                                                                                     select item.GetComponent<FirearmComponent>(ItemAction.Shoot)).ToList();
+                                                                                     where item.Is(ItemAction.Shoot)
+                                                                                     select item.As<FirearmComponent>(ItemAction.Shoot)).ToList();
                                                                          },
                                                                      delegate(Talent t, Actor self, Point p)
                                                                          {
@@ -194,7 +193,7 @@ namespace SKR.Universe.Factories {
                                                                       return ActionResult.Aborted;
                                                                   }
 
-                                                                  if (gun.Magazine == null || gun.Magazine.GetComponent<MagazineComponent>(ItemAction.ReloadFirearm).Shots <= 0) {
+                                                                  if (gun.Magazine == null || gun.Magazine.As<MagazineComponent>(ItemAction.ReloadFirearm).Shots <= 0) {
                                                                       self.World.InsertMessage("You squeeze the trigger only the hear the sound of nothing happening...");
                                                                       self.ActionPoints -= gun.WeaponSpeed;
                                                                       return ActionResult.Failed;
@@ -219,12 +218,12 @@ namespace SKR.Universe.Factories {
                                                                              var weapons = new List<FirearmComponent>();
 
                                                                              if (self.IsItemEquipped(BodyPartType.LeftHand) &&
-                                                                                 self.GetItemAtBodyPart(BodyPartType.LeftHand).ContainsComponent(ItemAction.Shoot))
-                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.LeftHand).GetComponent<FirearmComponent>(ItemAction.Shoot));
+                                                                                 self.GetItemAtBodyPart(BodyPartType.LeftHand).Is(ItemAction.Shoot))
+                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.LeftHand).As<FirearmComponent>(ItemAction.Shoot));
 
                                                                              if (self.IsItemEquipped(BodyPartType.RightHand) &&
-                                                                                 self.GetItemAtBodyPart(BodyPartType.RightHand).ContainsComponent(ItemAction.Shoot))
-                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.RightHand).GetComponent<FirearmComponent>(ItemAction.Shoot));
+                                                                                 self.GetItemAtBodyPart(BodyPartType.RightHand).Is(ItemAction.Shoot))
+                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.RightHand).As<FirearmComponent>(ItemAction.Shoot));
 
                                                                              return weapons;
                                                                          },
@@ -232,8 +231,8 @@ namespace SKR.Universe.Factories {
                                                                          {
                                                                              List<MagazineComponent> mags = new List<MagazineComponent>();
                                                                              foreach (Item i in self.Items)
-                                                                                 if (i.ContainsComponent(ItemAction.ReloadFirearm))
-                                                                                     mags.Add(i.GetComponent<MagazineComponent>(ItemAction.ReloadFirearm));
+                                                                                 if (i.Is(ItemAction.ReloadFirearm))
+                                                                                     mags.Add(i.As<MagazineComponent>(ItemAction.ReloadFirearm));
                                                                              return mags;
                                                                          },
                                                              },

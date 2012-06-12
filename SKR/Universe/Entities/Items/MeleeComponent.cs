@@ -1,4 +1,5 @@
 ﻿using DEngine.Actor;
+using DEngine.Core;
 using SKR.Universe.Entities.Actors;
 
 namespace SKR.Universe.Entities.Items {
@@ -11,7 +12,7 @@ namespace SKR.Universe.Entities.Items {
     }
     public class MeleeComponentTemplate : WeaponComponentTemplate {
         public int HitBonus {get; set;} 
-        public int Damage {get; set;} 
+        public IRand Damage {get; set;} 
         public DamageType DamageType {get; set;} 
         public double Penetration {get; set;} 
         public int WeaponSpeed {get; set;} 
@@ -21,10 +22,6 @@ namespace SKR.Universe.Entities.Items {
 
     public class MeleeComponent : WeaponComponent {
         public int HitBonus { get; protected set; }
-        private int damage;
-        public override int Damage {
-            get { return damage; }            
-        }
 
         private DamageType damageType;
         public override DamageType DamageType { get { return damageType; } }
@@ -41,7 +38,7 @@ namespace SKR.Universe.Entities.Items {
 
         public MeleeComponent(MeleeComponentTemplate template) : base(template.ComponentId, template.Action, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
             HitBonus = template.HitBonus;
-            damage = template.Damage;
+            Damage = template.Damage;
             damageType = template.DamageType;
             penetration = template.Penetration;
             weaponSpeed = template.WeaponSpeed;
