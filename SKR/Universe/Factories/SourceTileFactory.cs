@@ -6,6 +6,7 @@ using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.Utility;
+using SKR.Universe.Entities.Actors;
 using SKR.Universe.Location;
 using libtcod;
 
@@ -44,10 +45,17 @@ namespace SKR.Universe.Factories {
                     return new Feature(key, "Wall");
 //                case "TestTrap":
 //                    return new Feature(key, "Trap").Add(new AnotherWalk(a => a.World.InsertMessage("The tile squeaks")));
-//                case "Door":
-//                    return new Feature(key, "OpenDoor").Add(new DoorComponent(
-//                                                                                                                            new TCODImage('/', new Pigment(ColorPresets.Gray, ColorPresets.Black)), 
-//                                                                                                                            new TCODImage('+', new Pigment(ColorPresets.Gray, ColorPresets.Black))));                
+                case "Door":
+                    return new Feature(key, "OpenedDoor").Add(new ActiveFeatureComponent("Open door", delegate(Feature f, Actor user)
+                                                                                                    {
+                                                                                                        f.Asset = "OpenedDoor";
+                                                                                                        f.Transparent = f.Walkable = true;
+                                                                                                    }),
+                                                              new ActiveFeatureComponent("Close door", delegate(Feature f, Actor user)
+                                                                                                     {
+                                                                                                         f.Asset = "ClosedDoor";
+                                                                                                         f.Transparent = f.Walkable = false;
+                                                                                                     }));
             }
 
             return null;

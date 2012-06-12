@@ -33,8 +33,8 @@ namespace SKR.Universe.Factories {
                                           {
                                                   {'#', new Tuple<string, string>("StoneFloor", "BlockWall")},
                                                   {'.', new Tuple<string, string>("StoneFloor", null)},
+                                                  {'/', new Tuple<string, string>("StoneFloor", "Door")},
                                                   {'+', new Tuple<string, string>("StoneFloor", null)},
-                                                  {'/', new Tuple<string, string>("StoneFloor", null)},
                                                   {'^', new Tuple<string, string>("StoneFloor", null)},
                                           },
                                       "############################################################", 

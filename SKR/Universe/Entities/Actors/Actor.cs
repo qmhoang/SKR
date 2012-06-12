@@ -138,6 +138,7 @@ namespace SKR.Universe.Entities.Actors {
             LearnTalent(Skill.TargetAttack);
             LearnTalent(Skill.RangeTargetAttack);
             LearnTalent(Skill.Reload);
+            LearnTalent(Skill.UseFeature);
 
             LearnTalent(Skill.Strength, World.Mean);
             LearnTalent(Skill.Agility, World.Mean);
