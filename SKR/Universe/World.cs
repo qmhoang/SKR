@@ -72,15 +72,15 @@ namespace SKR.Universe {
         }
 
         private void Temp() {
-            var level = MapFactory.Construct("TestMap");
+            var level = MapFactory.Construct("TestHouse");
             Npc npc1 = new Npc(level) { Position = new Point(3, 4) };            
             npc1.Intelligence = new SimpleIntelligence(npc1);
-            level.AddActor(npc1);
-            AddUpdateableObject(npc1);
+//            level.AddActor(npc1);
+//            AddUpdateableObject(npc1);
 
             level.GenerateFov();
 
-            Player = new Player(level) { Position = new Point(2, 2) };            
+            Player = new Player(level) { Position = new Point(0, 0) };            
 
             Player.AddItem(CreateItem("largeknife"));
 

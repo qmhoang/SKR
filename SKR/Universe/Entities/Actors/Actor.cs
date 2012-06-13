@@ -192,7 +192,7 @@ namespace SKR.Universe.Entities.Actors {
         protected bool RecalculateFov;
 
         public override bool HasLineOfSight(Point position) {
-            if (RecalculateFov)
+//            if (RecalculateFov)
                 CalculateFov();
             return Level.IsVisible(position);
         }
@@ -224,11 +224,11 @@ namespace SKR.Universe.Entities.Actors {
                 GetTalent(Skill.Attack).InvokeAction(nPos);
             } else {
                 Position = nPos;
-                var features = Level.Features.Where(f => f.Position == Position);
                 
-//                foreach (var feature in features.Where(f => f.Is<WalkOverable>())) {
-//                    feature.As<WalkOverable>().OnWalkOver(this);
-//                }
+                foreach (var feature in Level.Features)
+                {
+                    feature.Near(this);
+                }
             }
 
             ActionPoints -= World.DefaultTurnSpeed;

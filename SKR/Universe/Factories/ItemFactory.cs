@@ -197,7 +197,7 @@ namespace SKR.Universe.Factories {
                                                                             ActionDescriptionPlural = "shoots",
                                                                             Skill = Skill.Pistol,
                                                                             Accuracy = 2,
-                                                                            DamageRange = new Dice(2, 2, 2),
+                                                                            DamageRange = new Dice(2, 6, 2),
                                                                             DamageType = DamageType.Pierce,
                                                                             Penetration = 1,
                                                                             Range = 160,

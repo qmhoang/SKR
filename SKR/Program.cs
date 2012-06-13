@@ -34,6 +34,7 @@ namespace SKR {
 
     public class Program {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public const double Epsilon = 0.001;
         public const int FpsLimit = 60;
         public const int GameUpdatePerSecond = 30;
         public const int GameUpdateHz = 1000 / GameUpdatePerSecond;
