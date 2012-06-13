@@ -10,13 +10,17 @@ namespace SKR.Universe.Location {
     /// Features are useable "items" that reside on the map, they contain the logic in themselves on how to use them
     /// </summary>
     public class Feature {
-        public Feature(string refid, string asset) {            
-            RefId = refid;
-            components = new List<ActiveFeatureComponent>();
+        public Feature(string refid, string asset) : this(refid, asset, true, true) {            
+        }
+
+        public Feature(string refId, string asset, bool walkable, bool transparent) {
+            RefId = refId;
             Asset = asset;
+            this.walkable = walkable;
+            this.transparent = transparent;
+            components = new List<FeatureComponent>();
             Uid = new UniqueId();
-            Transparent = true;
-            Walkable = true;
+
         }
 
         public string Asset { get; set; }
@@ -63,9 +67,10 @@ namespace SKR.Universe.Location {
                 handler(this, e);
         }
 
-        private List<ActiveFeatureComponent> components;       
+        private List<FeatureComponent> components;
 
-        public Feature Add(params ActiveFeatureComponent[] comps) {
+        public Feature Add(params FeatureComponent[] comps)
+        {
             foreach (var comp in comps) {
                 comp.Owner = this;
                 components.Add(comp);
@@ -74,7 +79,8 @@ namespace SKR.Universe.Location {
             return this;
         }
 
-        public Feature Remove(ActiveFeatureComponent component) {
+        public Feature Remove(FeatureComponent component)
+        {
             component.Owner = null;
             components.Remove(component);
             return this;
@@ -82,12 +88,20 @@ namespace SKR.Universe.Location {
 
         public void Use(Actor user, string action) {
             foreach (var component in components) {
-                if (component.Action == action)
-                    component.Use(this, user);
+                if (component is ActiveFeatureComponent)
+                    if (((ActiveFeatureComponent)component).Action == action)
+                        ((ActiveFeatureComponent)component).Use(component as ActiveFeatureComponent, user);
             }
         }
 
-        public IEnumerable<string> ActiveUsages { get { return components.Select(fc => fc.Action); } }
+        public void Near(Actor user) {
+            foreach (var component in components) {
+                if (component is PassiveFeatureComponent)
+                    ((PassiveFeatureComponent) component).Near(component as PassiveFeatureComponent, user, user.Position.DistanceTo(Position));
+            }
+        }
+
+        public IEnumerable<string> ActiveUsages { get { return components.Where(fc => fc is ActiveFeatureComponent).Select(fc => ((ActiveFeatureComponent)fc).Action); } }
     }
 
 
@@ -103,14 +117,35 @@ namespace SKR.Universe.Location {
         }
     }
 
-    public class ActiveFeatureComponent {
+    public abstract class FeatureComponent {
         public Feature Owner { get; set; }
-        public string Action { get; set; }
-        public Action<Feature, Actor> Use;
 
-        public ActiveFeatureComponent(string action, Action<Feature, Actor> use) {
+    }
+
+    public class ActiveFeatureComponent : FeatureComponent {        
+        public string Action { get; set; }
+        public Action<ActiveFeatureComponent, Actor> Use { get; set; }
+
+        public ActiveFeatureComponent(string action, Action<ActiveFeatureComponent, Actor> use)
+        {
             Use = use;
             Action = action;
+        }
+    }
+
+    public class PassiveFeatureComponent : FeatureComponent {
+        public Action<PassiveFeatureComponent, Actor, double> Near { get; set; }        
+
+        public PassiveFeatureComponent(Action<PassiveFeatureComponent, Actor, double> near) {
+            Near = near;            
+        }
+    }
+
+    public class SwitchFeaturecomponent : FeatureComponent {
+        public bool Switch { get; set; }
+
+        public SwitchFeaturecomponent(bool @switch = false) {
+            Switch = @switch;
         }
     }
 }

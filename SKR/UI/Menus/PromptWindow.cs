@@ -192,6 +192,18 @@ namespace SKR.UI.Menus {
         }
     }
 
+    public class LookWindow : Window {
+
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly WindowTemplate popupTemplate = new WindowTemplate()
+        {
+            HasFrame = false,
+            Size = new Size(1, 1)
+        };
+
+        public LookWindow() : base(popupTemplate) { }
+    }
+
     public class TargetPrompt : PromptWindow {
         private readonly Action<Point> actionPosition;
         private Point selectedPosition;
