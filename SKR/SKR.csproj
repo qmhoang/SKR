@@ -63,6 +63,7 @@
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Universe\AssetsManager.cs" />
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
     <Compile Include="UI\Gameplay\MapPanel.cs" />
     <Compile Include="UI\Menus\InventoryWindow.cs" />
@@ -95,7 +96,16 @@
     <Content Include="Data\Font\consolas12x12_gs_tc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Font\consolas_unicode_10x10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Font\consolas_unicode_12x12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Font\lucida10x10_gs_tc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Font\terminal12x12_gs_ro.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="libtcod-net-unmanaged.dll">

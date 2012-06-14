@@ -79,7 +79,7 @@ namespace SKR.Universe.Entities.Actors {
                                               Parry = -100
                                           });
 
- 
+            MaxHealth = Health = Actor.GetTalent(Skill.Constitution).RealRank + 10;
         }
 
 

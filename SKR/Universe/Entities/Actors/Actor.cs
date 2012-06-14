@@ -127,8 +127,7 @@ namespace SKR.Universe.Entities.Actors {
         protected Actor(string refId, string asset, Level level) {            
             Level = level;
             RefId = refId;
-            Characteristics = new ActorCharacteristics(this);
-            conditionStatuses = new ActorCondition(this);
+
             inventory = new ItemContainer();
             equippedItems = new Dictionary<BodyPartType, Item>();
             talents = new Dictionary<Skill, Talent>();
@@ -156,6 +155,9 @@ namespace SKR.Universe.Entities.Actors {
 
             LearnTalent(Skill.Brawling, 0);
             Asset = asset;
+
+            Characteristics = new ActorCharacteristics(this);
+            conditionStatuses = new ActorCondition(this);
         }
 
         private void CheckEncumbrance() {

@@ -15,7 +15,7 @@ namespace SKR.Gameplay.Combat {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static Dice dice = new Dice(3, 6);
-        private static World world = World.Instance;
+//        private static World world = World.Instance;
 
 
         public static BodyPart GetRandomBodyPart(Actor target) {
@@ -88,8 +88,16 @@ namespace SKR.Gameplay.Combat {
             Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0}", attacker.Name, defender.Name, chanceToHit, atkRoll, difficulty);
 
             if (atkRoll > chanceToHit) {
-                world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name));
+                attacker.World.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name));
                 return false;                
+            }
+
+            double defRoll = RandomExtentions.Random.NextDouble();
+            double chanceToDodge;
+            Logger.InfoFormat("{0} attempts to dodge {1}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0}", attacker.Name, defender.Name, chanceToHit, atkRoll, difficulty);
+            if (defRoll < defender.Dodge) {
+                attacker.World.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and misses.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name));
+                return false; 
             }
 
             int damage = damageBonus + weapon.Damage.Roll();
@@ -115,7 +123,7 @@ namespace SKR.Gameplay.Combat {
             Logger.InfoFormat("Damage reduced to {0} because of {1}'s max health", damage, bodyPart.Name);
             defender.Hurt(bodyPart.Type, damage);
 
-            world.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name, "todo-description"));
+            attacker.World.InsertMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.", attacker.Name, weapon.ActionDescriptionPlural, defender.Name, bodyPart.Name, "todo-description"));
 
             // todo get armor, defenses, parries, etc
 

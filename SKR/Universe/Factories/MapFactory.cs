@@ -22,11 +22,14 @@ namespace SKR.Universe.Factories {
 
             terrainDefinitions.Add(new Terrain("Grass", "Grass", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("StoneFloor", "StoneFloor", true, true, 1.0));
+            terrainDefinitions.Add(new Terrain("ROAD", "ROAD", true, true, 1.0));
+            terrainDefinitions.Add(new Terrain("ROAD_DIVIDER", "ROAD_DIVIDER", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("PAVEMENT", "PAVEMENT", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("FLOOR_WOOD_TWO", "FLOOR_WOOD_TWO", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("GRASS_DARK", "GRASS_DARK", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("CARPET_GREY", "CARPET_GREY", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("FLOOR_TILE", "FLOOR_TILE", true, true, 1.0));
+            terrainDefinitions.Add(new Terrain("FLOOR_TILE_PATTERN_TWO", "FLOOR_TILE_PATTERN_TWO", true, true, 1.0));
         }
 
         public override Level Construct(string identifier) {
@@ -73,18 +76,22 @@ namespace SKR.Universe.Factories {
                 case "TestHouse":
                     return FromString(new Dictionary<char, Tuple<string, string>>()
                                           {
+                                                  {'R', new Tuple<string, string>("ROAD_DIVIDER", null)},
+                                                  {'r', new Tuple<string, string>("ROAD", null)},
                                                   {'p', new Tuple<string, string>("PAVEMENT", null)},
                                                   {'#', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK")},
                                                   {'=', new Tuple<string, string>("FLOOR_WOOD_TWO", "COUNTER_WOOD_RED")},
                                                   {',', new Tuple<string, string>("FLOOR_WOOD_TWO", null)},
                                                   {'.', new Tuple<string, string>("FLOOR_TILE", null)},
                                                   {'+', new Tuple<string, string>("FLOOR_WOOD_TWO", "SINK")},
-                                                  {'D', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_DOOR")},
-                                                  {'O', new Tuple<string, string>("FLOOR_WOOD_TWO", "WINDOW_BRICK_DARK")},
-                                                  {'W', new Tuple<string, string>("FLOOR_WOOD_TWO", "TOILET")},
+                                                  {'D', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_DOOR_VERT")},
+                                                  {'d', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_DOOR_HORZ")},
+                                                  {'O', new Tuple<string, string>("FLOOR_WOOD_TWO", "WINDOW_BRICK_DARK_VERT")},
+                                                  {'o', new Tuple<string, string>("FLOOR_WOOD_TWO", "WINDOW_BRICK_DARK_HORZ")},
+                                                  {'W', new Tuple<string, string>("FLOOR_TILE", "TOILET")},
                                                   {'~', new Tuple<string, string>("GRASS_DARK", null)},
-                                                  {'N', new Tuple<string, string>("FLOOR_WOOD_TWO", "BATHROOMSINK")},
-                                                  {'H', new Tuple<string, string>("FLOOR_WOOD_TWO", "SHOWER")},
+                                                  {'N', new Tuple<string, string>("FLOOR_TILE", "BATHROOMSINK")},
+                                                  {'H', new Tuple<string, string>("FLOOR_TILE", "SHOWER")},
                                                   {'C', new Tuple<string, string>("FLOOR_WOOD_TWO", "CHAIR_WOODEN")},
                                                   {'T', new Tuple<string, string>("FLOOR_WOOD_TWO", "TABLE_WOODEN")},
                                                   {'B', new Tuple<string, string>("FLOOR_WOOD_TWO", "BED_WOODEN")},
@@ -104,24 +111,38 @@ namespace SKR.Universe.Factories {
                                                   {'a', new Tuple<string, string>("FLOOR_WOOD_TWO", "BATH")},
                                                   {'G', new Tuple<string, string>("FLOOR_WOOD_TWO", "DOOR_GARAGE")},
                                                   {'u', new Tuple<string, string>("FLOOR_WOOD_TWO", "DESK_WOODEN")},
-                                                  {'-', new Tuple<string, string>("FLOOR_WOOD_TWO", "FENCE_WOODEN")},
+                                                  {'-', new Tuple<string, string>("GRASS_DARK", "FENCE_WOODEN")},
                                                   {'t', new Tuple<string, string>("FLOOR_WOOD_TWO", "LAMP_STANDARD")},
                                                   {'v', new Tuple<string, string>("FLOOR_WOOD_TWO", "PLANTPOT_FIXED")},
+                                                  {'0', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_HORZ")},
+                                                  {'1', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_SOUTHWEST")},
+                                                  {'8', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_T_SOUTH")},
+                                                  {'3', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_SOUTHEAST")},
+                                                  {'6', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_T_WEST")},
+                                                  {'5', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_VERT")},
+                                                  {'4', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_T_EAST")},
+                                                  {'7', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_NORTHWEST")},
+                                                  {'2', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_T_NORTH")},
+                                                  {'9', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_NORTHEAST")},
+
                                           },
+                                      "RRRRRRRRRRRRRRR",
+                                      "rrrrrrrrrrrrrrr",
                                       "ppppppppppppppp",
-                                      "p------~------p",
-                                      "p-~#O#~~~#O#~-p",
-                                      "p###,##D##,###p",
-                                      "p#,,,,#,#,,X,#p",
+                                      "p------p------p",
+                                      "p-~~~~~p~~~~~-p",
+                                      "p-~7o9ppp7o9~-p",
+                                      "p703,18d83,109p",
+                                      "p5,,,,5,5,,X,5p",
                                       "pOCTC,D,D,,,,Op",
-                                      "p#v,,,#,#Ss,t#p",
-                                      "p######,######p",
-                                      "p#+==F,,,,<#ppp",
-                                      "pO,,,,,,#####p~",
-                                      "p#t,,,,,D..A#p~",
-                                      "p##O##O##..AOp~",
-                                      "pppppppp#WNv#p~",
-                                      "~~~~~~~p#####p~",
+                                      "p5v,,,5,5Ss,t5p",
+                                      "p500003,100803p",
+                                      "p5+==F,,,,<5ppp",
+                                      "pO,,,,,,70029p~",
+                                      "p5t,,,,,D..A5p~",
+                                      "p10o00o09..AOp~",
+                                      "pppppppp5WNv5p~",
+                                      "~~~~~~~p10003p~",
                                       "~~~~~~~ppppppp~");
                 #endregion
                 case "TestMotel":
