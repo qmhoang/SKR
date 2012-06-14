@@ -62,12 +62,13 @@ namespace SKR.UI.Gameplay {
         public MapPanel MapPanel { get; private set; }
         public StatusPanel StatusPanel { get; private set; }
         public MsgPanel MessagePanel { get; private set; }
-
+        public AssetsManager AssetsManager { get; private set; }
 
         public GameplayWindow(WindowTemplate template)
             : base(template) {                       
             player = World.Instance.Player;
             world = World.Instance;
+            AssetsManager = new AssetsManager();
         }
 
         private void HandleOptions(Talent t, Point target) {
@@ -140,7 +141,7 @@ namespace SKR.UI.Gameplay {
                 TopLeftPos = new Point(0, 0),
             };
 
-            MapPanel = new MapPanel(mapTemplate, player);
+            MapPanel = new MapPanel(mapTemplate, player, AssetsManager);
 
             AddControl(MapPanel);
 

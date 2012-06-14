@@ -67,6 +67,8 @@ namespace SKR.Universe.Location {
         public string RefId { get; protected set; }
         public UniqueId Uid { get; protected set; }
 
+        public World World { get; set; }
+
         private List<Actor> actors;
         private List<Item> items;
         private List<Feature> features;
@@ -102,8 +104,8 @@ namespace SKR.Universe.Location {
 
         public IEnumerable<Actor> GetActorInRadius(Point origin, double length) {
             List<Actor> actors = new List<Actor>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
-            if (World.Instance.Player != null && World.Instance.Player.Position.IsInCircle(origin, length))
-                actors.Add(World.Instance.Player);
+            if (World.Player != null && World.Player.Position.IsInCircle(origin, length))
+                actors.Add(World.Player);
             return actors;
         }
 
@@ -114,8 +116,8 @@ namespace SKR.Universe.Location {
         public Actor GetActorAtLocation(Point location) {
             if (!IsInBoundsOrBorder(location))
                 throw new ArgumentOutOfRangeException();
-            if (World.Instance.Player != null && World.Instance.Player.Position == location)  // TODO FIX HACK
-                return World.Instance.Player;
+            if (World.Player != null && World.Player.Position == location)  // TODO FIX HACK
+                return World.Player;
             return actors.Find(m => m.Position == location);
         }
 
@@ -132,7 +134,7 @@ namespace SKR.Universe.Location {
         public bool DoesActorExistAtLocation(int x, int y) {
             if (!IsInBoundsOrBorder(x, y))
                 throw new ArgumentOutOfRangeException();
-            if (World.Instance.Player != null && World.Instance.Player.Position.X == x && World.Instance.Player.Position.Y == y)  // TODO FIX HACK
+            if (World.Player != null && World.Player.Position.X == x && World.Player.Position.Y == y)  // TODO FIX HACK
                 return true;
             return actors.Exists(m => m.Position.X == x && m.Position.Y == y);
         }
