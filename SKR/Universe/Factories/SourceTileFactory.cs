@@ -145,6 +145,98 @@ namespace SKR.Universe.Factories {
 
                                 }
                             }));
+                case "WINDOW_HOUSE_VERT":
+                    return new Feature(key, "WINDOW_HOUSE_VERT", false, false).Add(
+                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
+                            {
+                                if (f.Action == "Open window")
+                                {
+                                    f.Owner.Asset = "WINDOW_HOUSE_HORZ";
+                                    f.Action = "Close window";
+                                    f.Owner.Transparent = true;
+                                    user.World.InsertMessage(
+                                            String.Format("{0} opens the window.", user.Name));
+                                }
+                                else
+                                {
+                                    f.Owner.Asset = "WINDOW_HOUSE_VERT";
+                                    f.Action = "Open window";
+                                    f.Owner.Transparent = false;
+                                    user.World.InsertMessage(
+                                            String.Format("{0} closes the window.", user.Name));
+
+                                }
+                            }));
+                case "WINDOW_HOUSE_HORZ":
+                    return new Feature(key, "WINDOW_HOUSE_HORZ", false, false).Add(
+                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
+                            {
+                                if (f.Action == "Open window")
+                                {
+                                    f.Owner.Asset = "WINDOW_HOUSE_VERT";
+                                    f.Action = "Close window";
+                                    f.Owner.Transparent = true;
+                                    user.World.InsertMessage(
+                                            String.Format("{0} opens the window.", user.Name));
+                                }
+                                else
+                                {
+                                    f.Owner.Asset = "WINDOW_HOUSE_HORZ";
+                                    f.Action = "Open window";
+                                    f.Owner.Transparent = false;
+                                    user.World.InsertMessage(
+                                            String.Format("{0} closes the window.", user.Name));
+
+                                }
+                            }));
+                case "DOOR_APART_1_VERT":
+                    return new Feature(key, "DOOR_APART_1_VERT", false, false).Add(
+                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
+                            {
+                                if (f.Action == "Open window")
+                                {
+                                    f.Owner.Asset = "DOOR_APART_1_HORZ";
+                                    f.Action = "Close window";
+                                    f.Owner.Transparent = f.Owner.Walkable = true;
+
+                                    user.World.InsertMessage(
+                                            String.Format("{0} opens the window.", user.Name));
+                                }
+                                else
+                                {
+                                    f.Owner.Asset = "DOOR_APART_1_VERT";
+                                    f.Action = "Open window";
+                                    f.Owner.Transparent = f.Owner.Walkable = false;
+
+                                    user.World.InsertMessage(
+                                            String.Format("{0} closes the window.", user.Name));
+
+                                }
+                            }));
+                case "DOOR_APART_1_HORZ":
+                    return new Feature(key, "DOOR_APART_1_HORZ", false, false).Add(
+                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
+                            {
+                                if (f.Action == "Open window")
+                                {
+                                    f.Owner.Asset = "DOOR_APART_1_VERT";
+                                    f.Action = "Close window";
+                                    f.Owner.Transparent = f.Owner.Walkable = true;
+
+                                    user.World.InsertMessage(
+                                            String.Format("{0} opens the window.", user.Name));
+                                }
+                                else
+                                {
+                                    f.Owner.Asset = "DOOR_APART_1_HORZ";
+                                    f.Action = "Open window";
+                                    f.Owner.Transparent = f.Owner.Walkable = false;
+
+                                    user.World.InsertMessage(
+                                            String.Format("{0} closes the window.", user.Name));
+
+                                }
+                            }));
                 #endregion
 
                 #region House Features
@@ -218,6 +310,8 @@ namespace SKR.Universe.Factories {
                     return new Feature(key, "LAMP_STANDARD", true, true);
                 case "TABLE_WOODEN":
                     return new Feature(key, "TABLE_WOODEN", true, true);
+                case "SAFE_SIMPLE":
+                    return new Feature(key, "SAFE_SIMPLE", true, true);
                 #endregion
                 #region Walls
                 case "WALL_BRICK_DARK":

@@ -59,8 +59,9 @@ namespace SKR {
                 {
                     Title = "SKR",
                     ScreenSize = ScreenSize,
-                    Font = "Data/Font/lucida10x10_gs_tc.png",
+//                    Font = "Data/Font/lucida10x10_gs_tc.png",
 //                    Font = "Data/Font/consolas12x12_gs_tc.png",
+                    Font = "Data/Font/terminal12x12_gs_ro.png",
                     FpsLimit = FpsLimit,
                     InitialDelay = InitialDelay,
                     IntervalDelay = IntervalDelay,
@@ -80,7 +81,7 @@ namespace SKR {
                                                              {PigmentType.ViewSelected, new Pigment(ColorPresets.Green, ColorPresets.Black)}
 
                                                      },
-                    FontFlags = TCODFontFlags.Greyscale | TCODFontFlags.LayoutTCOD
+                    FontFlags = TCODFontFlags.Greyscale | TCODFontFlags.LayoutAsciiInRow
                 });
             }      
         }
