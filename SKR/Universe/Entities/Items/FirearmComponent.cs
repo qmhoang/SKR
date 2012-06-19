@@ -48,6 +48,7 @@ namespace SKR.Universe.Entities.Items {
         public double Penetration { get; set; }
         public int Range { get; set; }
         public int RoF { get; set; }
+        public int Chamber { get; set; }
         public int ReloadSpeed { get; set; }
         public int Recoil { get; set; }
         public int Bulk { get; set; }
@@ -66,6 +67,7 @@ namespace SKR.Universe.Entities.Items {
 
         public int Range { get; protected set; }        
         public int RoF { get; protected set; }
+        public int Chamber { get; protected set; }
         public int ReloadSpeed { get; protected set; }        
         public override int WeaponSpeed {
             get { return World.SecondsToSpeed(1.0 / RoF); }            
@@ -84,6 +86,7 @@ namespace SKR.Universe.Entities.Items {
             this.penetration = template.Penetration;
             Range = template.Range;
             RoF = template.RoF;
+            Chamber = template.Chamber;
             ReloadSpeed = template.ReloadSpeed;
             Recoil = template.Recoil;
             Bulk = template.Bulk;

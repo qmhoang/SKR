@@ -14,6 +14,7 @@ namespace SKR.UI.Gameplay {
 
         internal Point ViewOffset { get; private set; }
         private AssetsManager assets;
+
         
         public MapPanel(PanelTemplate template, Player player, AssetsManager assetsManager) : base(template) {
             this.player = player;

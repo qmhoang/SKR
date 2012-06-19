@@ -201,7 +201,8 @@ namespace SKR.Universe.Factories {
                                                                             DamageType = DamageType.Pierce,
                                                                             Penetration = 1,
                                                                             Range = 160,
-                                                                            RoF = 17,
+                                                                            RoF = 3,
+                                                                            Chamber = 1,
                                                                             ReloadSpeed = 3,
                                                                             Recoil = 2,
                                                                             Bulk = 2,
@@ -254,6 +255,100 @@ namespace SKR.Universe.Factories {
                                                                     })
                                                 }
                        });
+
+            Create("glock22",
+                   new ItemTemplate
+                   {
+                       Name = "Glock 22",
+                       Type = ItemType.OneHandedWeapon,
+                       Value = 40000,
+                       Weight = 21,
+                       Components = new List<ItemComponent>
+                                                {
+                                                        new MeleeComponent(
+                                                                new MeleeComponentTemplate
+                                                                    {
+                                                                            ComponentId = "glock22swing",
+                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            ActionDescription = "pistol whip",
+                                                                            ActionDescriptionPlural = "pistol whips",
+                                                                            Skill = Skill.Brawling,
+                                                                            HitBonus = -1,
+                                                                            Damage = new Constant(-1),
+                                                                            DamageType = DamageType.Crush,
+                                                                            Penetration = 1,
+                                                                            WeaponSpeed = 85,
+                                                                            Reach = 0,
+                                                                            Strength = 8,
+                                                                            Parry = -2
+                                                                    }),
+                                                        new FirearmComponent(
+                                                                new FirearmComponentTemplate
+                                                                    {
+                                                                            ComponentId = "glock22shoot",
+                                                                            Action = ItemAction.Shoot,
+                                                                            ActionDescription = "shoot",
+                                                                            ActionDescriptionPlural = "shoots",
+                                                                            Skill = Skill.Pistol,
+                                                                            Accuracy = 2,
+                                                                            DamageRange = new Dice(2, 6, 2),
+                                                                            DamageType = DamageType.PierceLarge,
+                                                                            Penetration = 1,
+                                                                            Range = 160,
+                                                                            RoF = 3,
+                                                                            Chamber = 1,
+                                                                            ReloadSpeed = 3,
+                                                                            Recoil = 2,
+                                                                            Bulk = 2,
+                                                                            Reliability = 18,
+                                                                            Strength = 8,
+                                                                            Caliber = ".40S&W"
+                                                                    })
+                                                }
+                   });
+            Create("glock22magazine",
+                   new ItemTemplate
+                   {
+                       Name = "Magazine, Glock 22",
+                       Type = ItemType.Ammo,
+                       Value = 3200,
+                       Weight = 7,
+                       Components = new List<ItemComponent>
+                                                {
+                                                        new MagazineComponent(
+                                                                new MagazineComponentTemplate
+                                                                    {
+                                                                            ComponentId = "glock22magazine",
+                                                                            Action = ItemAction.ReloadFirearm,
+                                                                            ActionDescription = "reload",
+                                                                            ActionDescriptionPlural = "reloads",
+                                                                            Shots = 15,
+                                                                            Caliber = ".40S&W",
+                                                                            FirearmId = "glock22",
+                                                                    })
+                                                }
+                   });
+            Create(".40S&W",
+                   new ItemTemplate
+                   {
+                       Name = "9x19mm Parabellum",
+                       Type = ItemType.OneHandedWeapon,
+                       Value = 30,
+                       Weight = 0,
+                       Components = new List<ItemComponent>
+                                                {
+                                                        new BulletComponent(
+                                                                new BulletComponentTemplate
+                                                                    {
+                                                                            ComponentId = ".40S&Wbullet",
+                                                                            Action = ItemAction.LoadMagazine,
+                                                                            ActionDescription = "load",
+                                                                            ActionDescriptionPlural = "loads",
+                                                                            Used = false,
+                                                                            Caliber = ".40S&W",
+                                                                    })
+                                                }
+                   });
         }
 
         private void Create(string id, ItemTemplate template) {

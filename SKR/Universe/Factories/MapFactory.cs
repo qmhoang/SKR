@@ -30,6 +30,11 @@ namespace SKR.Universe.Factories {
             terrainDefinitions.Add(new Terrain("CARPET_GREY", "CARPET_GREY", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("FLOOR_TILE", "FLOOR_TILE", true, true, 1.0));
             terrainDefinitions.Add(new Terrain("FLOOR_TILE_PATTERN_TWO", "FLOOR_TILE_PATTERN_TWO", true, true, 1.0));
+
+            terrainDefinitions.Add(new Terrain("GRASS_ONE", "GRASS_ONE", true, true, 1.0));
+            terrainDefinitions.Add(new Terrain("FLOOR_TILE_YORKSTONE", "FLOOR_TILE_YORKSTONE", true, true, 1.0));
+            terrainDefinitions.Add(new Terrain("CONCRETE_FLOOR", "CONCRETE_FLOOR", true, true, 1.0));
+            terrainDefinitions.Add(new Terrain("CONCRETE_CRACK_1", "CONCRETE_CRACK_1", true, true, 1.0));
         }
 
         public override Level Construct(string identifier) {
@@ -126,6 +131,7 @@ namespace SKR.Universe.Factories {
                                                   {'9', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK_NORTHEAST")},
 
                                           },
+                                      "rrrrrrrrrrrrrrr",
                                       "RRRRRRRRRRRRRRR",
                                       "rrrrrrrrrrrrrrr",
                                       "ppppppppppppppp",
@@ -149,21 +155,24 @@ namespace SKR.Universe.Factories {
                     return FromString(new Dictionary<char, Tuple<string, string>>()
                                           {
                                                   {'p', new Tuple<string, string>("PAVEMENT", null)},
-                                                  {'8', new Tuple<string, string>("WALL_BRICK_DARK", null)},
-                                                  {'#', new Tuple<string, string>("WALL_DRY", null)},
-                                                  {'=', new Tuple<string, string>("COUNTER_WOOD_RED", null)},
+                                                  {'8', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_BRICK_DARK")},
+                                                  {'#', new Tuple<string, string>("FLOOR_WOOD_TWO", "WALL_DRY")},
+                                                  {'=', new Tuple<string, string>("FLOOR_WOOD_TWO", "COUNTER_WOOD_RED")},
                                                   {',', new Tuple<string, string>("FLOOR_WOOD_TWO", null)},
                                                   {'.', new Tuple<string, string>("FLOOR_TILE_YORKSTONE", null)},
                                                   {';', new Tuple<string, string>("CARPET_GREY", null)},
                                                   {'c', new Tuple<string, string>("CONCRETE_FLOOR", null)},
                                                   {'x', new Tuple<string, string>("CONCRETE_CRACK_1", null)},
                                                   {'+', new Tuple<string, string>("CARPET_GREY", "SINK")},
-                                                  {'D', new Tuple<string, string>("CARPET_GREY", "WALL_BRICK_DARK_DOOR")},
-                                                  {'d', new Tuple<string, string>("WALL_DRY", "DOOR_APART_1")},
-                                                  {'O', new Tuple<string, string>("WINDOW_HOUSE", "WALL_BRICK_DARK")},
-                                                  {'W', new Tuple<string, string>("CARPET_GREY", "WC")},
-                                                  {'~', new Tuple<string, string>("CARPET_GREY", "GRASS_ONE")},
-                                                  {'N', new Tuple<string, string>("CARPET_GREY", "WHB")},
+                                                  {'Q', new Tuple<string, string>("CARPET_GREY", "WALL_BRICK_DARK_DOOR_HORZ")},
+                                                  {'q', new Tuple<string, string>("CARPET_GREY", "WALL_BRICK_DARK_DOOR_VERT")},
+                                                  {'D', new Tuple<string, string>("CARPET_GREY", "DOOR_APART_1_HORZ")},
+                                                  {'d', new Tuple<string, string>("CARPET_GREY", "DOOR_APART_1_VERT")},
+                                                  {'O', new Tuple<string, string>("FLOOR_WOOD_TWO", "WINDOW_HOUSE_HORZ")},
+                                                  {'o', new Tuple<string, string>("FLOOR_WOOD_TWO", "WINDOW_HOUSE_VERT")},
+                                                  {'W', new Tuple<string, string>("CARPET_GREY", "TOILET")},
+                                                  {'~', new Tuple<string, string>("GRASS_ONE", null)},
+                                                  {'N', new Tuple<string, string>("CARPET_GREY", "BATHROOMSINK")},
                                                   {'H', new Tuple<string, string>("CARPET_GREY", "SHOWER")},
                                                   {'C', new Tuple<string, string>("CARPET_GREY", "CHAIR_WOODEN")},
                                                   {'T', new Tuple<string, string>("GRASS_ONE", "TREE_SMALL")},
@@ -179,27 +188,28 @@ namespace SKR.Universe.Factories {
                                                   {'?', new Tuple<string, string>("CARPET_GREY", "CASH_REGISTER")},
                                                   {']', new Tuple<string, string>("CARPET_GREY", "SAFE_SIMPLE")},
                                           },
+                                      // 012345678901234567890123456789012345
                                       "ppppppppppppppppppppppppppppppppppp",
                                       "p88888888888OO888OO888OO888OO88~~~p",
                                       "p8Bb;#HW#+#;;;E#E;;;#;;;E#E;;;8~~~p",
-                                      "pO;;;#.N#.#uC;e#e;Cu#uC;e#e;Cu8~~Tp",
-                                      "pO;C;#d##d#;;;;#;;;;#;;;;#;;;;8~~~p",
+                                      "po;;;#.N#.#uC;e#e;Cu#uC;e#e;Cu8~~Tp",
+                                      "po;C;#D##D#;;;;#;;;;#;;;;#;;;;8~~~p",
                                       "p8;u;;;;d,#;#######;#;#######;8~~~p",
                                       "p8#######,#;d.N#N.d;#;d.N#N.d;8T~~p",
                                       "p8Bb;#HW#,#;#WH#HW#;#;#WH#HW#;8~~~p",
-                                      "pO;;;#.N#,#d#######d#d#######d8~~~p",
-                                      "pO;C;#d##,,,,,,,,,,,,,,,,,,,,,O~T~p",
+                                      "po;;;#.N#,#D#######D#D#######D8~~~p",
+                                      "po;C;#D##,,,,,,,,,,,,,,,,,,,,,o~T~p",
                                       "p8;u;;;;d,88OO888OO888OO888OO88~~~p",
-                                      "p88888888D8~~~T~~~~~T~~~~~~~~T~~~~p",
+                                      "p88888888Q8~~~T~~~~~T~~~~~~~~T~~~~p",
                                       "pccccccccccccccxccccccccccccccccccp",
                                       "p88O8888O88cccccccccccccccccccccccp",
-                                      "p8WN.H#,,,Dcc~~~~cccccccccxcccxcccp",
-                                      "p8##d##,?=8cc~TT~ccccccxccccccccccp",
-                                      "pOBb;X#,,+Occ~~~~ccccccccccccxccccp",
+                                      "p8WN.H#,,,qcc~~~~cccccccccxcccxcccp",
+                                      "p8##D##,?=8cc~TT~ccccccxccccccccccp",
+                                      "poBb;X#,,+occ~~~~ccccccccccccxccccp",
                                       "p8];;;d,,F8ccccccccccccxccccccccccp",
                                       "p88O8O88O88cccccccccccccccccccccccp",
                                       "ppppppppppppppppppppppppppppppppppp");
-                    ;
+
             }
             return null;
         }

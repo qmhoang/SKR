@@ -8,10 +8,10 @@ namespace SKR.Universe {
     public class AssetsManager {
         private Dictionary<string, Tuple<char, Pigment>> assets;
 
-        private static Pigment Brick = new Pigment(new Color(146, 68, 35), ColorPresets.Black);
+        private static Pigment Brick = new Pigment(ColorPresets.Firebrick, ColorPresets.Black);
 
         public AssetsManager() {
-            assets = new Dictionary<string, Tuple<char, Pigment>>();
+            assets = new Dictionary<string, Tuple<char, Pigment>>();            
 
             assets.Add("player", new Tuple<char, Pigment>('@', new Pigment(ColorPresets.White, ColorPresets.Black)));
             assets.Add("npc", new Tuple<char, Pigment>('@', new Pigment(ColorPresets.GhostWhite, ColorPresets.Black)));
@@ -30,7 +30,10 @@ namespace SKR.Universe {
             assets.Add("GRASS_DARK", new Tuple<char, Pigment>((char)TCODSpecialCharacter.Block3, new Pigment(ColorPresets.Green, ColorPresets.DarkGreen)));
             assets.Add("CARPET_GREY", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.LightSlateGray, ColorPresets.LightGray)));
             assets.Add("FLOOR_TILE", new Tuple<char, Pigment>((char)TCODSpecialCharacter.Block2, new Pigment(ColorPresets.White, ColorPresets.Black)));
-
+            assets.Add("FLOOR_TILE_YORKSTONE", new Tuple<char, Pigment>((char)TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.Black)));
+            assets.Add("CONCRETE_FLOOR", new Tuple<char, Pigment>(' ', new Pigment(ColorPresets.White, ColorPresets.DarkerGrey)));
+            assets.Add("CONCRETE_CRACK_1", new Tuple<char, Pigment>((char)TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.DarkerGrey)));
+            assets.Add("GRASS_ONE", new Tuple<char, Pigment>((char)TCODSpecialCharacter.Block3, new Pigment(ColorPresets.DarkGreen, ColorPresets.Green)));
             
             assets.Add("WALL_BRICK_DARK", new Tuple<char, Pigment>('#', Brick));
             assets.Add("WALL_BRICK_DARK_VERT", new Tuple<char, Pigment>((char) TCODSpecialCharacter.DoubleVertLine, Brick));
@@ -52,7 +55,7 @@ namespace SKR.Universe {
             assets.Add("TOILET", new Tuple<char, Pigment>('p', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black)));
             assets.Add("BATHROOMSINK", new Tuple<char, Pigment>('n', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black)));
             assets.Add("SINK", new Tuple<char, Pigment>('n', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black)));
-            assets.Add("BATH", new Tuple<char, Pigment>('D', Brick));
+            assets.Add("BATH", new Tuple<char, Pigment>('D', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black)));
             assets.Add("SHOWER", new Tuple<char, Pigment>('H', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black)));
             assets.Add("TREE_SMALL", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Spade, new Pigment(ColorPresets.Green, ColorPresets.Black)));
             assets.Add("BED_WOODEN", new Tuple<char, Pigment>('B', new Pigment(new Color(145, 104, 58), ColorPresets.Black)));
@@ -72,6 +75,15 @@ namespace SKR.Universe {
             assets.Add("LAMP_STANDARD", new Tuple<char, Pigment>('P', new Pigment(ColorPresets.Beige, ColorPresets.Black)));
             assets.Add("TABLE_WOODEN", new Tuple<char, Pigment>('m', new Pigment(new Color(145, 104, 58), ColorPresets.Black)));
             assets.Add("PLANTPOT_FIXED", new Tuple<char, Pigment>('t', new Pigment(ColorPresets.Green, ColorPresets.Black)));
+
+            assets.Add("DOOR_APART_1_HORZ", new Tuple<char, Pigment>((char)TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White.ScaleValue(0.5f), ColorPresets.Black)));
+            assets.Add("DOOR_APART_1_VERT", new Tuple<char, Pigment>((char)TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White.ScaleValue(0.5f), ColorPresets.Black)));
+            assets.Add("WINDOW_HOUSE_VERT", new Tuple<char, Pigment>((char)TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White.ScaleSaturation(0.5f), ColorPresets.Black)));
+            assets.Add("WINDOW_HOUSE_HORZ", new Tuple<char, Pigment>((char)TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White.ScaleSaturation(0.5f), ColorPresets.Black)));
+
+            assets.Add("SAFE_SIMPLE", new Tuple<char, Pigment>('+', new Pigment(ColorPresets.DarkGray, ColorPresets.Black)));
+
+            assets.Add("WALL_DRY", new Tuple<char, Pigment>('#', new Pigment(ColorPresets.White, ColorPresets.Black)));
         }
 
         public Tuple<char, Pigment> this[string asset] {

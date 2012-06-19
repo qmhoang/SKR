@@ -289,7 +289,8 @@ namespace SKR.Universe.Factories {
                                                              {
                                                                      delegate(Talent t, Actor self, Point p) // what gun are we reloading, return an empty list should cause optionsprompt to quit
                                                                          {
-                                                                             return self.Level.GetFeatureAtLocation(p).ActiveUsages;
+                                                                             var feature = self.Level.GetFeatureAtLocation(p);
+                                                                             return feature == null ? null : feature.ActiveUsages;
                                                                          },
                                                              },
 

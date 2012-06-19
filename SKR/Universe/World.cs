@@ -72,7 +72,7 @@ namespace SKR.Universe {
         }
 
         private void Temp() {
-            var level = MapFactory.Construct("TestHouse");
+            var level = MapFactory.Construct("TestMotel");
             level.World = this;
             Npc npc1 = new Npc(level) { Position = new Point(3, 4) };            
             npc1.Intelligence = new SimpleIntelligence(npc1);
