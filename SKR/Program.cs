@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
-using SKR.Gameplay.Combat;
-using SKR.Gameplay.Talent;
 using SKR.UI.Gameplay;
 using SKR.Universe;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Items;
 using libtcod;
 using log4net.Config;
 
@@ -23,8 +16,6 @@ namespace SKR {
             base.Setup(info);
             world = World.Create();            
             Push(new GameplayWindow(new WindowTemplate()));
-            //            SetWindow(new CharGenWindow(windowTemplate));
-            //            SetWindow(mainWindow);
         }
 
         protected override void Update() {
@@ -47,7 +38,7 @@ namespace SKR {
 #if DEBUG
         public static bool SeeAll = false;
         public static bool GodMode = false;
-#endif        
+#endif
 
         public static void Main(string[] args) {                                        
             XmlConfigurator.Configure(new FileInfo("Log.xml"));

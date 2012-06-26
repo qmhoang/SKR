@@ -9,26 +9,6 @@ using SKR.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.Universe.Location {
-//    public enum TileEnum {
-//        Unused = 0,
-//        Grass,
-//        WoodFloor,
-//        Wall,
-//        HorizWall,
-//        VertWall,
-//        // ReSharper disable InconsistentNaming
-//        NEWall,
-//        NWWall,
-//        SEWall,
-//        SWWall,
-//        TWallE,
-//        TWallW,
-//        TWallS,
-//        TWallN,
-//        // ReSharper restore InconsistentNaming
-//        Fence,
-//    }
-
     /// <summary>
     /// Tiles represent entities that are (normally immovable, but interactive with actors)
     /// </summary>
@@ -137,6 +117,16 @@ namespace SKR.Universe.Location {
             if (World.Player != null && World.Player.Position.X == x && World.Player.Position.Y == y)  // TODO FIX HACK
                 return true;
             return actors.Exists(m => m.Position.X == x && m.Position.Y == y);
+        }
+
+        public bool DoesFeatureExistAtLocation(Point location) {
+            return DoesFeaturExistAtLocation(location.X, location.Y);
+        }
+
+        public bool DoesFeaturExistAtLocation(int x, int y) {
+            if (!IsInBoundsOrBorder(x, y))
+                throw new ArgumentOutOfRangeException();
+            return features.Exists(f => f.Position.X == x && f.Position.Y == y);
         }
 
         public void SetTerrain(int x, int y, string t) {
