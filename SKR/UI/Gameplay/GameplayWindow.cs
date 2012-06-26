@@ -223,8 +223,38 @@ namespace SKR.UI.Gameplay {
                     } else if (keyData.Character == 'f') {
                         HandleTalent(player.GetTalent(Skill.RangeTargetAttack));
 
+                    } else if (keyData.Character == 'l') {
+                        ParentApplication.Push(new LookWindow(player.Position));
                     } else if (keyData.Character == 'a') {
                         HandleTalent(player.GetTalent(Skill.TargetAttack));
+                    } else if (keyData.Character == 'd') {
+                        ParentApplication.Push(new ItemWindow(false,
+                                                              new ListWindowTemplate<Item>()
+                                                                  {
+                                                                          Size = MapPanel.Size,
+                                                                          IsPopup = true,
+                                                                          HasFrame = true,
+                                                                          Items = player.Items,
+                                                                  },
+                                                              delegate(Item i)
+                                                                  {
+                                                                      player.RemoveItem(i);
+                                                                      player.Level.AddItem(i, player.Position);
+                                                                  }));
+                    } else if (keyData.Character == 'g') {
+                        ParentApplication.Push(new ItemWindow(false,
+                                                              new ListWindowTemplate<Item>()
+                                                              {
+                                                                  Size = MapPanel.Size,
+                                                                  IsPopup = true,
+                                                                  HasFrame = true,
+                                                                  Items = player.Level.Items.Where(i => i.Position == player.Position),
+                                                              },
+                                                              delegate(Item i)
+                                                              {
+                                                                  player.Level.RemoveItem(i);
+                                                                  player.AddItem(i);                                                                  
+                                                              }));
                     } else if (keyData.Character == 'u') {
                         HandleTalent(player.GetTalent(Skill.UseFeature));
                     } else if (keyData.Character == 'i') {

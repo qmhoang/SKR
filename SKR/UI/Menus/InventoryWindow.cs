@@ -13,8 +13,7 @@ using SKR.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.UI.Menus {
-    public class ItemWindow : ListWindow<Item> {
-        private readonly Action<Item> itemSelected;
+    public class ItemWindow : ListWindow<Item> {        
         private readonly bool singleItem;        
         private int displayIndex;   //todo scrolling
         private Rect sizeList;
@@ -24,10 +23,8 @@ namespace SKR.UI.Menus {
         }
 
         public ItemWindow(bool selectSingleItem, ListWindowTemplate<Item> template, Action<Item> itemSelected)
-            : base(null, template) {
-            this.itemSelected = itemSelected;
+            : base(itemSelected, template) {                       
             singleItem = selectSingleItem;            
-            SelectItem = SelectAndQuit;
             sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
         }
 
@@ -64,8 +61,8 @@ namespace SKR.UI.Menus {
             }
         }
 
-        private void SelectAndQuit(Item item) {
-            itemSelected(item);
+        protected override void OnSelectItem(Item item) {
+            base.OnSelectItem(item);
             if (singleItem)
                 Quit();
         }
@@ -94,8 +91,7 @@ namespace SKR.UI.Menus {
         public InventoryWindow(ListWindowTemplate<BodyPart> template)
             : base(null, template) {
             player = World.Instance.Player;
-            bodyPartWidth = 25; // todo replace to code
-            this.SelectItem = SelectIndex;
+            bodyPartWidth = 25; // todo replace to code            
             sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
         }
 

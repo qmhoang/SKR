@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using DEngine.Core;
 using DEngine.UI;
@@ -9,16 +10,22 @@ namespace SKR.UI.Menus {
     }
 
     public abstract class ListWindow<T> : Window {
-        protected Action<T> SelectItem;
+        private readonly Action<T> selectItem;
         protected int MouseOverIndex;
+
+        /// <summary>
+        /// The rectangle in which the list will be drawn
+        /// </summary>
         protected abstract Rect ListRect { get; }
 
         protected Dictionary<char, T> Items;
+        protected IEnumerable<T> List; 
 
         protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
                 : base(template) {
-            this.SelectItem = selectItem;
-            HasFrame = template.HasFrame;            
+            this.selectItem = selectItem;
+            HasFrame = template.HasFrame;
+            List = template.Items;
             Items = new Dictionary<char, T>();
 
             int count = 0;
@@ -41,14 +48,14 @@ namespace SKR.UI.Menus {
             int index = MouseToIndex(mouseData);
             if (index >= 0 && index < Items.Count && Items.ContainsKey((char)(index + 'A'))) {
                 var t = Items[(char)(index + 'A')];
-                SelectItem(t);
+                OnSelectItem(t);
             }
         }
 
         protected override void OnKeyPressed(KeyboardData keyData) {
             char c = Char.ToUpper(keyData.Character);
             if (Items.ContainsKey(c))
-                SelectItem(Items[c]);
+                OnSelectItem(Items[c]);
         }
 
         protected override void Redraw() {
@@ -58,5 +65,21 @@ namespace SKR.UI.Menus {
         }
 
         protected abstract void CustomDraw(Rect rect);
+
+        protected virtual void OnSelectItem(T item) {
+            selectItem(item);
+
+            if (List.Count() <= 0)
+                Quit();
+            else {
+                Items.Clear();
+
+                int count = 0;
+                foreach (var i in List) {
+                    Items.Add((char)('A' + count), i);
+                    count++;
+                }
+            }                       
+        } 
     }
 }

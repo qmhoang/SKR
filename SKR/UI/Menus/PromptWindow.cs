@@ -15,7 +15,7 @@ using log4net;
 namespace SKR.UI.Menus {
     public abstract class PromptWindow : Window {
         protected abstract string Text { get; }
-        protected string Message { get; set; }
+        
 
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected static readonly WindowTemplate popupTemplate = new WindowTemplate()
@@ -26,9 +26,8 @@ namespace SKR.UI.Menus {
 
         protected Player player;
 
-        protected PromptWindow(string message, WindowTemplate template)
-            : base(template) {
-            this.Message = message;
+        protected PromptWindow(WindowTemplate template)
+            : base(template) {            
             player = World.Instance.Player;
             IsPopup = true;
         }
@@ -54,15 +53,17 @@ namespace SKR.UI.Menus {
     public class BooleanPrompt : PromptWindow {
         private readonly Action<bool> actionBoolean;
         private readonly bool defaultBooleanAction;
+        private string message;
 
         public BooleanPrompt(string message, bool defaultBooleanAction, Action<bool> actionBoolean)
-            : base(message, popupTemplate) {
+            : base(popupTemplate) {
             this.defaultBooleanAction = defaultBooleanAction;
-            this.actionBoolean = actionBoolean;            
+            this.actionBoolean = actionBoolean;
+            this.message = message;
         }
 
         protected override string Text {
-            get { return string.Format("{0}{1}, [Space] for default. Any other key = Abort.", Message, (defaultBooleanAction ? " [Y/n]" : " [y/N]")); }
+            get { return string.Format("{0}{1}, [Space] for default. Any other key = Abort.", message, (defaultBooleanAction ? " [Y/n]" : " [y/N]")); }
         }
 
         protected override void OnKeyPressed(KeyboardData keyData) {
@@ -86,12 +87,14 @@ namespace SKR.UI.Menus {
         private int value;
         private bool negative;      // this is used to store negative when you have a 0 since there is no negative 0
         private bool firstUse;
+        private string message;
 
         public CountPrompt(string message, Action<int> actionCount, int maxValue, int minValue, int initialValue)
-            : base(message, popupTemplate) {
+            : base(popupTemplate) {
             this.actionCount = actionCount;
             this.maxValue = maxValue;
             this.minValue = minValue;
+            this.message = message;
 
             initialValue = initialValue > maxValue ? maxValue : initialValue;
             initialValue = initialValue < minValue ? minValue : initialValue;
@@ -104,7 +107,7 @@ namespace SKR.UI.Menus {
         }
 
         protected override string Text {
-            get { return String.Format("{0}. How many ({1}-{2}): {3}, Press enter when done. Esc to exit.", Message, minValue, maxValue, value); }
+            get { return String.Format("{0}. How many ({1}-{2}): {3}, Press enter when done. Esc to exit.", message, minValue, maxValue, value); }
         }
 
         protected override void OnKeyPressed(KeyboardData key) {
@@ -145,6 +148,7 @@ namespace SKR.UI.Menus {
     public class DirectionalPrompt : PromptWindow {
         private readonly Action<Point> actionPosition;
         private Point origin;
+        private string message;
 
         /// <summary>
         /// The action is done on a local position case.  North = 0, -1.  West = -1, 0
@@ -152,13 +156,14 @@ namespace SKR.UI.Menus {
         /// <param name="message"></param>
         /// <param name="actionPosition"></param>
         public DirectionalPrompt(string message, Point from, Action<Point> actionPosition)
-            : base(message, popupTemplate) {
+            : base(popupTemplate) {
             this.actionPosition = actionPosition;
             this.origin = from;
+            this.message = message;
         }
 
         protected override string Text {
-            get { return string.Format("{0} Which direction? [789456123], Any other key = Abort.", Message); }
+            get { return string.Format("{0} Which direction? [789456123], Any other key = Abort.", message); }
         }
 
         protected override void OnKeyPressed(KeyboardData key) {
@@ -192,16 +197,48 @@ namespace SKR.UI.Menus {
         }
     }
 
-    public class LookWindow : Window {
+    public class LookWindow : PromptWindow {
+        private Point selectedPosition;
 
-        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected static readonly WindowTemplate popupTemplate = new WindowTemplate()
+        public LookWindow(Point origin) : base(popupTemplate) {
+            selectedPosition = origin;
+        }
+
+        protected override string Text {
+            get { return String.Format("Use [789456123] to look around.\n{0}", World.Instance.Player.Level.GetTerrain(selectedPosition).Definition); }
+        }
+
+        protected override void OnKeyPressed(KeyboardData key)
         {
-            HasFrame = false,
-            Size = new Size(1, 1)
-        };
+            base.OnKeyPressed(key);
 
-        public LookWindow() : base(popupTemplate) { }
+            if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
+                selectedPosition += Point.North;
+
+            if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
+                selectedPosition += Point.South;
+
+            if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
+                selectedPosition += Point.West;
+
+            if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
+                selectedPosition += Point.East;
+
+            if (key.KeyCode == TCODKeyCode.KeypadSeven)
+                selectedPosition += Point.Northwest;
+
+            if (key.KeyCode == TCODKeyCode.KeypadNine)
+                selectedPosition += Point.Northeast;
+
+            if (key.KeyCode == TCODKeyCode.KeypadOne)
+                selectedPosition += Point.Southwest;
+
+            if (key.KeyCode == TCODKeyCode.KeypadThree)
+                selectedPosition += Point.Southeast;
+
+            if (key.KeyCode == TCODKeyCode.Escape)
+                Quit();
+        }
     }
 
     public class TargetPrompt : PromptWindow {
@@ -209,13 +246,15 @@ namespace SKR.UI.Menus {
         private Point selectedPosition;
         private Point origin;
         private MapPanel panel;
+        private string message;
 
         public TargetPrompt(string message, Point origin, Action<Point> actionPosition, MapPanel panel)
-            : base(message, popupTemplate) {
+            : base(popupTemplate) {
             this.actionPosition = actionPosition;
             selectedPosition = origin;
             this.origin = origin;
             this.panel = panel;
+            this.message = message;
         }
 
         protected override void OnAdded() {
@@ -255,7 +294,7 @@ namespace SKR.UI.Menus {
         }
 
         protected override string Text {
-            get { return string.Format("{0} Select position. [Enter] to select. [Esc] to exit.", Message); }
+            get { return string.Format("{0} Select position. [Enter] to select. [Esc] to exit.", message); }
         }
 
         protected override void OnKeyPressed(KeyboardData key) {
@@ -299,12 +338,14 @@ namespace SKR.UI.Menus {
         private readonly Action<T> actionCount;
         private List<T> options;
         private Func<T, string> descriptorFunction;
+        private string message;
 
         public OptionsPrompt(string message, List<T> options, Func<T, string> descriptor, Action<T> actionCount)
-            : base(message, popupTemplate) {
+            : base(popupTemplate) {
             this.actionCount = actionCount;
             this.options = options;
             this.descriptorFunction = descriptor;
+            this.message = message;
         }
 
         protected override void OnSettingUp() {
@@ -327,7 +368,7 @@ namespace SKR.UI.Menus {
                     c++;
                 }                
 
-                return String.Format("{0}. {1}{2}[Esc]{3} to exit.", Message, sb, ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
+                return String.Format("{0}. {1}{2}[Esc]{3} to exit.", message, sb, ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
             }
         }
 

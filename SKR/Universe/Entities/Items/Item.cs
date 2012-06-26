@@ -88,6 +88,7 @@ namespace SKR.Universe.Entities.Items {
         public Item(ItemTemplate template) {
             Name = template.Name;
             RefId = template.RefId;
+            Asset = template.Asset;
 
             Type = template.Type;
             UniqueId = new UniqueId();
@@ -111,6 +112,7 @@ namespace SKR.Universe.Entities.Items {
         public ItemType Type { get; set; }
         public int Weight { get; set; }
         public int Value { get; set; }
+        public string Asset { get; set; }
 
         public IEnumerable<ItemComponent> Components { set; get; }        
     }
