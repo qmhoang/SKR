@@ -224,7 +224,7 @@ namespace SKR.UI.Gameplay {
                         HandleTalent(player.GetTalent(Skill.RangeTargetAttack));
 
                     } else if (keyData.Character == 'l') {
-                        ParentApplication.Push(new LookWindow(player.Position));
+                        ParentApplication.Push(new LookWindow(player.Position, MapPanel));
                     } else if (keyData.Character == 'a') {
                         HandleTalent(player.GetTalent(Skill.TargetAttack));
                     } else if (keyData.Character == 'd') {

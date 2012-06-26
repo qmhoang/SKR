@@ -199,13 +199,48 @@ namespace SKR.UI.Menus {
 
     public class LookWindow : PromptWindow {
         private Point selectedPosition;
+        private MapPanel panel;
 
-        public LookWindow(Point origin) : base(popupTemplate) {
+        public LookWindow(Point origin, MapPanel panel) : base(popupTemplate) {
+            this.panel = panel;
             selectedPosition = origin;
         }
 
         protected override string Text {
-            get { return String.Format("Use [789456123] to look around.\n{0}", World.Instance.Player.Level.GetTerrain(selectedPosition).Definition); }
+            get {
+                var level = World.Instance.Player.Level;
+                return String.Format("Use [789456123] to look around.\n{0}\n{1}", level.GetTerrain(selectedPosition).Definition, 
+                    level.DoesFeatureExistAtLocation(selectedPosition) ? level.GetFeatureAtLocation(selectedPosition).Asset : "");
+            }
+        }
+
+        protected override void OnAdded() {
+            base.OnSettingUp();
+
+            panel.Draw += PanelDraw;
+        }
+
+        protected override void OnRemoved() {
+            base.OnRemoved();
+            panel.Draw -= PanelDraw;
+        }
+
+        private void PanelDraw(object sender, EventArgs e) {
+            if ((!(sender is MapPanel)))
+                return;
+            var mapPanel = (MapPanel)sender;
+
+            var adjusted = selectedPosition - mapPanel.ViewOffset;
+
+            mapPanel.Canvas.Console.setCharBackground(adjusted.X, adjusted.Y,
+                                                      ColorPresets.Green.TCODColor,
+                                                      TCODSystem.getElapsedMilli() % 1000 > 500 ? TCODBackgroundFlag.Lighten : TCODBackgroundFlag.None);
+
+        }
+
+        private void MovePosition(Point direction) {
+            selectedPosition += direction;
+            World.Instance.InsertMessage(Text);
         }
 
         protected override void OnKeyPressed(KeyboardData key)
@@ -213,28 +248,28 @@ namespace SKR.UI.Menus {
             base.OnKeyPressed(key);
 
             if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
-                selectedPosition += Point.North;
+                MovePosition(Point.North);
 
             if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
-                selectedPosition += Point.South;
+                MovePosition(Point.South);
 
             if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
-                selectedPosition += Point.West;
+                MovePosition(Point.West);
 
             if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
-                selectedPosition += Point.East;
+                MovePosition(Point.East);
 
             if (key.KeyCode == TCODKeyCode.KeypadSeven)
-                selectedPosition += Point.Northwest;
+                MovePosition(Point.Northwest);
 
             if (key.KeyCode == TCODKeyCode.KeypadNine)
-                selectedPosition += Point.Northeast;
+                MovePosition(Point.Northeast);
 
             if (key.KeyCode == TCODKeyCode.KeypadOne)
-                selectedPosition += Point.Southwest;
+                MovePosition(Point.Southwest);
 
             if (key.KeyCode == TCODKeyCode.KeypadThree)
-                selectedPosition += Point.Southeast;
+                MovePosition(Point.Southeast);
 
             if (key.KeyCode == TCODKeyCode.Escape)
                 Quit();
@@ -271,7 +306,7 @@ namespace SKR.UI.Menus {
         private void PanelDraw(object sender, EventArgs e) {
             if ((!(sender is MapPanel)))
                 return;
-            var panel = (MapPanel)sender;
+            var mapPanel = (MapPanel)sender;
             var pointList = Bresenham.GeneratePointsFromLine(origin, selectedPosition);
 
             bool path = true;
@@ -281,13 +316,13 @@ namespace SKR.UI.Menus {
                 if (path)
                     path = player.Level.IsWalkable(point);
 
-                var adjusted = point - panel.ViewOffset;
+                var adjusted = point - mapPanel.ViewOffset;
                 if (i == pointList.Count - 1)
-                    panel.Canvas.Console.setCharBackground(adjusted.X, adjusted.Y,
+                    mapPanel.Canvas.Console.setCharBackground(adjusted.X, adjusted.Y,
                                                            path ? ColorPresets.Green.TCODColor : ColorPresets.Red.TCODColor,
                                                            TCODSystem.getElapsedMilli() % 1000 > 500 ? TCODBackgroundFlag.Lighten : TCODBackgroundFlag.None);
                 else
-                    panel.Canvas.Console.setCharBackground(adjusted.X, adjusted.Y,
+                    mapPanel.Canvas.Console.setCharBackground(adjusted.X, adjusted.Y,
                                                            path ? ColorPresets.Green.TCODColor : ColorPresets.Red.TCODColor,
                                                            TCODBackgroundFlag.Lighten);
             }
