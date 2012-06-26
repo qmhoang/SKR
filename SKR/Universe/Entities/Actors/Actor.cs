@@ -269,22 +269,22 @@ namespace SKR.Universe.Entities.Actors {
             Characteristics.GetBodyPart(bp).Health -= amount;
             Characteristics.Health -= amount;
             Log.InfoFormat("{0}'s {1} was hurt ({2} damage)", Name, GetBodyPart(bp).Name, amount);
-            OnHealthChange(new EventArgs<int>(-amount));
+            OnHealthChange();
         }
 
         public void Heal(int amount) {
             amount = Math.Min(amount, Characteristics.MaxHealth - Characteristics.Health);
             Characteristics.Health -= amount;
             Log.InfoFormat("{0} was healed {1} health", Name, amount);
-            OnHealthChange(new EventArgs<int>(amount));
+            OnHealthChange();
         }
 
-        public event EventHandler<EventArgs<int>> HealthChanged;
+        public event EventHandler<EventArgs> HealthChanged;
 
-        protected void OnHealthChange(EventArgs<int> e) {
+        protected void OnHealthChange() {
             var handler = HealthChanged;
             if (handler != null)
-                handler(this, e);
+                handler(this, EventArgs.Empty);
         }
 
         public int Health {
@@ -414,7 +414,7 @@ namespace SKR.Universe.Entities.Actors {
         }
 
         public void LearnTalent(Skill skill, int rank = 1) {
-            Log.InfoFormat("{0} learned {1}", Name, skill.ToString());
+            Log.InfoFormat("{0} learned {1}", Name, skill);
 
             if (!KnowTalent(skill)) {
                 // add talent

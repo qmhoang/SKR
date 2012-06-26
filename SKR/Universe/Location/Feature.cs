@@ -37,7 +37,7 @@ namespace SKR.Universe.Location {
             get { return transparent; }
             set { 
                 transparent = value; 
-                OnTransparencyChanged(new EventArgs<bool>(Transparent));
+                OnTransparencyChanged();
             }
         }
 
@@ -45,26 +45,26 @@ namespace SKR.Universe.Location {
             get { return walkable; }
             set {
                 walkable = value;
-                OnWalkableChanged(new EventArgs<bool>(Walkable));
+                OnWalkableChanged();
             }
         }
 
         public double WalkPenalty { get; set; }
 
-        public event EventHandler<EventArgs<bool>> TransparencyChanged;
-        public event EventHandler<EventArgs<bool>> WalkableChanged;
+        public event EventHandler<EventArgs> TransparencyChanged;
+        public event EventHandler<EventArgs> WalkableChanged;
 
-        public void OnTransparencyChanged(EventArgs<bool> e) {
-            EventHandler<EventArgs<bool>> handler = TransparencyChanged;
+        public void OnTransparencyChanged() {
+            EventHandler<EventArgs> handler = TransparencyChanged;            
             if (handler != null)
-                handler(this, e);
+                handler(this, EventArgs.Empty);
         }
 
 
-        public void OnWalkableChanged(EventArgs<bool> e) {
-            EventHandler<EventArgs<bool>> handler = WalkableChanged;
+        public void OnWalkableChanged() {
+            EventHandler<EventArgs> handler = WalkableChanged;
             if (handler != null)
-                handler(this, e);
+                handler(this, EventArgs.Empty);
         }
 
         private List<FeatureComponent> components;

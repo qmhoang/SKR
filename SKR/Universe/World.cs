@@ -69,6 +69,8 @@ namespace SKR.Universe {
             ItemFactory = new SourceItemFactory();
             FeatureFactory = new SourceFeatureFactory();
             MapFactory = new SourceMapFactory(FeatureFactory);
+
+            Rng.Seed(0);
         }
 
         private void Temp() {

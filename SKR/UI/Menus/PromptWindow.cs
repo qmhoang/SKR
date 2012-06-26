@@ -154,11 +154,12 @@ namespace SKR.UI.Menus {
         /// The action is done on a local position case.  North = 0, -1.  West = -1, 0
         /// </summary>
         /// <param name="message"></param>
+        /// <param name = "origin"></param>
         /// <param name="actionPosition"></param>
-        public DirectionalPrompt(string message, Point from, Action<Point> actionPosition)
+        public DirectionalPrompt(string message, Point origin, Action<Point> actionPosition)
             : base(popupTemplate) {
             this.actionPosition = actionPosition;
-            this.origin = from;
+            this.origin = origin;
             this.message = message;
         }
 

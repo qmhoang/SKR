@@ -49,9 +49,9 @@ namespace SKR.Universe.Location {
 
         public World World { get; set; }
 
-        private List<Actor> actors;
-        private List<Item> items;
-        private List<Feature> features;
+        private readonly List<Actor> actors;
+        private readonly List<Item> items;
+        private readonly List<Feature> features;
 
         public IEnumerable<Actor> Actors { get { return actors; } }
         public IEnumerable<Item> Items { get { return items; } }
@@ -83,10 +83,10 @@ namespace SKR.Universe.Location {
         }
 
         public IEnumerable<Actor> GetActorInRadius(Point origin, double length) {
-            List<Actor> actors = new List<Actor>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
+            List<Actor> actorsInRadius = new List<Actor>(Actors.Where(m => m.Position.IsInCircle(origin, length)));
             if (World.Player != null && World.Player.Position.IsInCircle(origin, length))
-                actors.Add(World.Player);
-            return actors;
+                actorsInRadius.Add(World.Player);
+            return actorsInRadius;
         }
 
 
@@ -201,14 +201,14 @@ namespace SKR.Universe.Location {
             Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);            
         }
 
-        void FeatureWalkableChanged(object sender, EventArgs<bool> e) {
+        void FeatureWalkableChanged(object sender, EventArgs e) {
             if (sender is Feature) {
                 var feature = sender as Feature;
                 Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
             }
         }
 
-        void  FeatureTransparencyChanged(object sender, EventArgs<bool> e)
+        void  FeatureTransparencyChanged(object sender, EventArgs e)
         {
             if (sender is Feature) {
                 var feature = sender as Feature;
