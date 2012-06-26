@@ -230,8 +230,13 @@ namespace SKR.Universe.Location {
             actors.Add(actor);
         }
 
-        public void AddItem(Item item) {
+        public void AddItem(Item item, Point position) {
             items.Add(item);
+            item.Position = position;
+        }
+
+        public void RemoveItem(Item item) {
+            items.Remove(item);
         }
         
 

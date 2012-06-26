@@ -78,12 +78,26 @@ namespace SKR.Universe {
 
             assets.Add("DOOR_APART_1_HORZ", new Tuple<char, Pigment>((char)TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White.ScaleValue(0.5f), ColorPresets.Black)));
             assets.Add("DOOR_APART_1_VERT", new Tuple<char, Pigment>((char)TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White.ScaleValue(0.5f), ColorPresets.Black)));
-            assets.Add("WINDOW_HOUSE_VERT", new Tuple<char, Pigment>((char)TCODSpecialCharacter.VertLine, new Pigment(ColorPresets.White.ScaleSaturation(0.5f), ColorPresets.Black)));
-            assets.Add("WINDOW_HOUSE_HORZ", new Tuple<char, Pigment>((char)TCODSpecialCharacter.HorzLine, new Pigment(ColorPresets.White.ScaleSaturation(0.5f), ColorPresets.Black)));
+            assets.Add("WINDOW_HOUSE_VERT", new Tuple<char, Pigment>('|', new Pigment(ColorPresets.White.ScaleSaturation(0.5f), ColorPresets.Black)));
+            assets.Add("WINDOW_HOUSE_HORZ", new Tuple<char, Pigment>('-', new Pigment(ColorPresets.White.ScaleSaturation(0.5f), ColorPresets.Black)));
 
             assets.Add("SAFE_SIMPLE", new Tuple<char, Pigment>('+', new Pigment(ColorPresets.DarkGray, ColorPresets.Black)));
 
             assets.Add("WALL_DRY", new Tuple<char, Pigment>('#', new Pigment(ColorPresets.White, ColorPresets.Black)));
+
+            #region Items
+            assets.Add("LARGE_KNIFE", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("SMALL_KNIFE", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("AXE", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("HATCHET", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("BRASS_KNUCKLES", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("GLOCK17", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("MAGAZINE_GLOCK17", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("BULLET_9x19MM", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("GLOCK22", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("MAGAZINE_GLOCK22", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            assets.Add("BULLET_.40S&W", new Tuple<char, Pigment>('[', new Pigment(ColorPresets.SteelBlue, ColorPresets.Black)));
+            #endregion
         }
 
         public Tuple<char, Pigment> this[string asset] {

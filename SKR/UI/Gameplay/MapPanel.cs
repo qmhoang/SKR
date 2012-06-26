@@ -72,6 +72,20 @@ namespace SKR.UI.Gameplay {
                 }
             }
 
+            foreach (var item in player.Level.Items) {
+                Point localPosition = item.Position - ViewOffset;
+#if DEBUG
+                if (!Program.SeeAll) {
+#endif
+                    var texture = assets[item.Asset];
+                    if (player.HasLineOfSight(item.Position))
+                        Canvas.PrintChar(localPosition.X, localPosition.Y, texture.Item1, texture.Item2);
+                    else if (player.Level.Vision[item.Position.X, item.Position.Y])
+                        if (IsPointWithinPanel(localPosition))
+                            Canvas.PrintChar(localPosition.X, localPosition.Y, texture.Item1, new Pigment(texture.Item2.Foreground.ScaleValue(0.3f), texture.Item2.Background.ScaleValue(0.3f)));
+                }
+            }
+
             foreach (var actor in player.Level.Actors) {
                 Point localPosition = actor.Position - ViewOffset;
                 var texture = assets[actor.Asset];

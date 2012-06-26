@@ -21,6 +21,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Large Knife",
+                               Asset = "LARGE_KNIFE",
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 10,
@@ -52,6 +53,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Small Knife",
+                               Asset = "SMALL_KNIFE",
                                Type = ItemType.OneHandedWeapon,
                                Value = 3000,
                                Weight = 5,
@@ -81,6 +83,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Axe",
+                               Asset = "AXE",
                                Type = ItemType.OneHandedWeapon,
                                Value = 5000,
                                Weight = 40,
@@ -109,6 +112,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Hatchet",
+                               Asset = "HATCHET",
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 20,
@@ -138,6 +142,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Brass Knuckles",
+                               Asset = "BRASS_KNUCKLES",
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 20,
@@ -166,6 +171,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Glock 17",
+                               Asset = "GLOCK17",
                                Type = ItemType.OneHandedWeapon,
                                Value = 60000,
                                Weight = 19,
@@ -216,6 +222,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "Magazine, Glock 17",
+                               Asset = "MAGAZINE_GLOCK17",
                                Type = ItemType.Ammo,
                                Value = 3200,
                                Weight = 6,
@@ -238,6 +245,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                        {
                                Name = "9x19mm Parabellum",
+                               Asset = "BULLET_9x19MM",
                                Type = ItemType.OneHandedWeapon,
                                Value = 30,
                                Weight = 0,
@@ -260,6 +268,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                    {
                        Name = "Glock 22",
+                       Asset = "GLOCK22",
                        Type = ItemType.OneHandedWeapon,
                        Value = 40000,
                        Weight = 21,
@@ -310,6 +319,7 @@ namespace SKR.Universe.Factories {
                    new ItemTemplate
                    {
                        Name = "Magazine, Glock 22",
+                       Asset = "MAGAZINE_GLOCK22",
                        Type = ItemType.Ammo,
                        Value = 3200,
                        Weight = 7,
@@ -331,7 +341,8 @@ namespace SKR.Universe.Factories {
             Create(".40S&W",
                    new ItemTemplate
                    {
-                       Name = "9x19mm Parabellum",
+                       Name = ".40 Smith & Wesson",
+                       Asset = "BULLET_.40S&W",
                        Type = ItemType.OneHandedWeapon,
                        Value = 30,
                        Weight = 0,
