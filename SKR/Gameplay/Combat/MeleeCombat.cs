@@ -14,7 +14,7 @@ namespace SKR.Gameplay.Combat {
     public static class MeleeCombat {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static Dice dice = new Dice(3, 6);
+        private static Rand dice = Rand.Dice(3, 6);
 //        private static World world = World.Instance;
 
 
@@ -82,7 +82,7 @@ namespace SKR.Gameplay.Combat {
         }
 
         public static bool Attack(Actor attacker, Actor defender, WeaponComponent weapon, int damageBonus, BodyPart bodyPart, double difficulty) {          
-            double atkRoll = RandomExtentions.Random.NextDouble();
+            double atkRoll = Rng.Double();
             double chanceToHit = ChanceOfSuccess(difficulty);
 
             Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0}", attacker.Name, defender.Name, chanceToHit, atkRoll, difficulty);
@@ -92,7 +92,7 @@ namespace SKR.Gameplay.Combat {
                 return false;                
             }
 
-            double defRoll = RandomExtentions.Random.NextDouble();
+            double defRoll = Rng.Double();
             double chanceToDodge;
             Logger.InfoFormat("{0} attempts to dodge {1}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0}", attacker.Name, defender.Name, chanceToHit, atkRoll, difficulty);
             if (defRoll < defender.Dodge) {
@@ -142,12 +142,14 @@ namespace SKR.Gameplay.Combat {
             Attack(attacker, defender, weapon, damage, bodyPart, (hitBonus + (targettingPenalty ? bodyPart.AttackPenalty : 0)));
         }
 
-        private static Dice DamageTableThrust(int strength) {
-            return new Dice(1, 6, (int) Math.Floor((strength - 3)/2.0));
+        private static Rand DamageTableThrust(int strength) {
+            return Rand.Dice(1, 6) + Rand.Constant((int)Math.Floor((strength - 3) / 2.0));
+//            Rand.Dice(1, 6) + Rand.Fixed((int) Math.Floor((strength - 3) / 2.0));
+//            return new Dice(1, 6, (int) Math.Floor((strength - 3)/2.0));
         }
 
-        private static Dice DamageTableSwing(int strength) {
-            return new Dice(1, 6, strength);
+        private static Rand DamageTableSwing(int strength) {
+            return Rand.Dice(1, 6) + Rand.Constant(strength);
         }
     }
 }

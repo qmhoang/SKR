@@ -43,7 +43,7 @@ namespace SKR.Universe.Entities.Items {
 
     public class FirearmComponentTemplate : WeaponComponentTemplate {
         public int Accuracy { get; set; }
-        public IRand DamageRange { get; set; }
+        public Rand DamageRange { get; set; }
         public DamageType DamageType { get; set; }
         public double Penetration { get; set; }
         public int Range { get; set; }
@@ -58,7 +58,7 @@ namespace SKR.Universe.Entities.Items {
 
     public class FirearmComponent : WeaponComponent {
         public int Accuracy { get; protected set; }
-        public IRand DamageRange { get; protected set; }
+        public Rand DamageRange { get; protected set; }
         private DamageType damageType;
         public override DamageType DamageType { get { return damageType; } }
 

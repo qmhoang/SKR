@@ -12,7 +12,7 @@ namespace SKR.Universe.Entities.Items {
     }
     public class MeleeComponentTemplate : WeaponComponentTemplate {
         public int HitBonus {get; set;} 
-        public IRand Damage {get; set;} 
+        public Rand Damage {get; set;} 
         public DamageType DamageType {get; set;} 
         public double Penetration {get; set;} 
         public int WeaponSpeed {get; set;} 

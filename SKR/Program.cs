@@ -1,11 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
 using DEngine.UI;
+using SKR.Gameplay.Combat;
+using SKR.Gameplay.Talent;
 using SKR.UI.Gameplay;
 using SKR.Universe;
+using SKR.Universe.Entities.Actors;
+using SKR.Universe.Entities.Items;
 using libtcod;
 using log4net.Config;
 
