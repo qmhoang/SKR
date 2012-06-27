@@ -129,6 +129,10 @@
       <Project>{FAA2CEF2-1844-4043-A582-AD4CDE346ADD}</Project>
       <Name>DEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LibTCODUI\LibTCODUI.csproj">
+      <Project>{08BCC46C-7FFA-4781-AEA8-0C280754DF61}</Project>
+      <Name>LibTCODUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\Graphics\" />
