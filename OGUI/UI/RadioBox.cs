@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using DEngine.Core;
+using OGUI.Core;
 
-
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region RadioGroup Helper Classes
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     /// <summary>
     /// This object builds on ButtonTemplate, providing Speed and StartEmittingDelay

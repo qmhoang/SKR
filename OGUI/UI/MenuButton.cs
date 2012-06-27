@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DEngine.Core;
 
-namespace DEngine.UI {
+namespace OGUI.UI {
     public class MenuButtonTemplate : ButtonTemplate {
 
         public List<string> Items { get; set; }

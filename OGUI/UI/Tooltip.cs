@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using DEngine.Core;
-using libtcod;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     /// <summary>
     /// Used in TooltipEvent.  Test property can be set to

@@ -19,11 +19,10 @@
 //THE SOFTWARE.
 //
 
-using System;
-using System.Collections.Generic;
 using DEngine.Core;
+using OGUI.Core;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region PanelInfo Class
     /// <summary>

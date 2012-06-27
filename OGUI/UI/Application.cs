@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using DEngine.Core;
 using libtcod;
 
-
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region ApplicationInfo
     /// <summary>

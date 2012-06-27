@@ -30,6 +30,8 @@ namespace SKR.Universe.Location {
         public UniqueId Uid { get; private set; }
         public Point Position { get; set; }
 
+        public string Description { get; set; }
+
         private bool transparent;
         private bool walkable;
 

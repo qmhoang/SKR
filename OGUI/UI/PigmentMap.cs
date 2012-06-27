@@ -19,11 +19,11 @@
 //THE SOFTWARE.
 //
 
-using System;
 using System.Collections.Generic;
 using DEngine.Core;
+using OGUI.Core;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     /// <summary>
     /// The various UI Pigment types used by the framework.

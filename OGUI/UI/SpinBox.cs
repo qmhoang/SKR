@@ -22,7 +22,7 @@
 using System;
 using DEngine.Core;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     public class SpinBoxTemplate : ControlTemplate
     {

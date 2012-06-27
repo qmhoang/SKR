@@ -20,11 +20,10 @@
 //
 
 using System;
-using System.Collections.Generic;
 using DEngine.Core;
 using libtcod;
 
-namespace DEngine.UI {
+namespace OGUI.UI {
     /// <summary>
     /// Base class used for Entry template classes.
     /// </summary>
