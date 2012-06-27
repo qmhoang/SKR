@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using libtcod;
 
-namespace DEngine.Core {
+namespace OGUI.Core {
     /// <summary>
     /// Stores forground color, background color, and background flag in a convenient
     /// single immutable data type

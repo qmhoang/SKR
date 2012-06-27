@@ -24,8 +24,7 @@ using System.Collections.Generic;
 using DEngine.Core;
 using libtcod;
 
-
-namespace DEngine.UI {
+namespace OGUI.UI {
     /// <summary>
     /// A callback method for the Schedule object must conform to this delegate.
     /// </summary>

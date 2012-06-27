@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using libtcod;
 
-namespace DEngine.Core {
+namespace OGUI.Core {
     /// <summary>
     /// This class wraps a TCODColor in an immutable data type.  Provides nearly identical
     /// functionality as TCODColor.

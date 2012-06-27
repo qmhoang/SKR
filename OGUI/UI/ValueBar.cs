@@ -1,7 +1,7 @@
 ﻿using System;
-using DEngine.Core;
+using OGUI.Core;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     public class ValueBarTemplate : ProgressBarTemplate {
         public float MinimumBGIntensity { get; set; }

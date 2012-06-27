@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using DEngine.Core;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region Menu Helper Classes
     /// <summary>

@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKR", "SKR\SKR.csproj", "{D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEngineTests", "DEngineTests\DEngineTests.csproj", "{21DD431C-2866-4252-A502-A1D723C6036E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibTCODUI", "LibTCODUI\LibTCODUI.csproj", "{08BCC46C-7FFA-4781-AEA8-0C280754DF61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGUI", "OGUI\OGUI.csproj", "{08BCC46C-7FFA-4781-AEA8-0C280754DF61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,7 +59,8 @@ Global
 		{08BCC46C-7FFA-4781-AEA8-0C280754DF61}.Debug|x86.Build.0 = Debug|x86
 		{08BCC46C-7FFA-4781-AEA8-0C280754DF61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08BCC46C-7FFA-4781-AEA8-0C280754DF61}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08BCC46C-7FFA-4781-AEA8-0C280754DF61}.Release|x86.ActiveCfg = Release|Any CPU
+		{08BCC46C-7FFA-4781-AEA8-0C280754DF61}.Release|x86.ActiveCfg = Release|x86
+		{08BCC46C-7FFA-4781-AEA8-0C280754DF61}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,12 +20,12 @@
 //
 
 using System;
-using System.Collections.Generic;
 using DEngine.Core;
+using OGUI.Core;
 using libtcod;
 using System.Text;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region Enums
     /// <summary>

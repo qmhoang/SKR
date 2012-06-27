@@ -21,10 +21,9 @@
 
 using System;
 using DEngine.Core;
-using libtcod;
+using OGUI.Core;
 
-
-namespace DEngine.UI {
+namespace OGUI.UI {
 
     #region Layout Direction Enum
 

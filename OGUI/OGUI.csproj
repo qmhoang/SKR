@@ -8,8 +8,8 @@
     <ProjectGuid>{08BCC46C-7FFA-4781-AEA8-0C280754DF61}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LibTCODUI</RootNamespace>
-    <AssemblyName>LibTCODUI</AssemblyName>
+    <RootNamespace>OGUI</RootNamespace>
+    <AssemblyName>OGUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>

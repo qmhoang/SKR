@@ -21,9 +21,8 @@
 
 using System;
 using DEngine.Core;
-using libtcod;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     /// <summary>
     /// Contains the data needed to construct a CheckBox object.  A CheckBox will, by default, automatically

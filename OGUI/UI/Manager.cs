@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DEngine.UI
+﻿namespace OGUI.UI
 {
     /// <summary>
     /// A Manager is basically a Coomponent that can be instatiated and added to a Window.

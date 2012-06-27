@@ -1,6 +1,7 @@
 using DEngine.Core;
+using OGUI.Core;
 
-namespace DEngine.UI {
+namespace OGUI.UI {
     /// <summary>
     /// Base abstract class for all progress bars
     /// </summary>

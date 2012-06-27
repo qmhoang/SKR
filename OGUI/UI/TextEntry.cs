@@ -21,9 +21,8 @@
 
 using System;
 using DEngine.Core;
-using libtcod;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region Public Enums
     

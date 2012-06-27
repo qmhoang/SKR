@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using DEngine.Core;
-using libtcod;
 using System.Collections.ObjectModel;
+using OGUI.Core;
 
-
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region Window Template Class
     /// <summary>

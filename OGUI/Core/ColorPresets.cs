@@ -1,9 +1,4 @@
-﻿using System;
-using System.Xml;
-using DEngine.Core;
-using libtcod;
-
-namespace DEngine.Extensions {
+﻿namespace OGUI.Core {
     public static class ColorPresets {
         /// <summary>
         ///   The color AliceBlue; RGB (240, 248, 255)

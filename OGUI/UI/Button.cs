@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using DEngine.Core;
-using libtcod;
+using OGUI.Core;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region Button Template class
 

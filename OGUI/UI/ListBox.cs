@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using DEngine.Core;
+using OGUI.Core;
 using libtcod;
 
-
-namespace DEngine.UI
+namespace OGUI.UI
 {
     #region ListBox Helper Classes
     /// <summary>

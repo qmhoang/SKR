@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using DEngine.Core;
 using libtcod;
 
-namespace DEngine.Core {
+namespace OGUI.Core {
     public static class Bresenham {
         public static List<Point> GeneratePointsFromLine(Point origin, Point end) {
             var list = new List<Point>();

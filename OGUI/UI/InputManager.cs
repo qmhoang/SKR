@@ -2,7 +2,7 @@ using System;
 using DEngine.Core;
 using libtcod;
 
-namespace DEngine.UI
+namespace OGUI.UI
 {
 	/// <summary>
 	/// Handles all the input polling and message dispatch to the attached
