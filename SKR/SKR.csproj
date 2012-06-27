@@ -58,7 +58,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity.cs" />
     <Compile Include="Gameplay\Combat\MeleeCombat.cs" />
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Program.cs" />
