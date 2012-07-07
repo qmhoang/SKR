@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Extensions;
-using OGUI.Core;
-using SKR.Gameplay.Talent;
-using SKR.Universe;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Items;
+using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Gameplay.Combat {
+namespace SkrGame.Gameplay.Combat {
     public static class MeleeCombat {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

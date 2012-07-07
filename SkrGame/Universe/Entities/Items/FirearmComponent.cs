@@ -1,8 +1,6 @@
-using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors;
 
-namespace SKR.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items {
     public class BulletComponentTemplate : ItemComponentTemplate {
         public bool Used { get; set; }
         public string Caliber { get; set; }

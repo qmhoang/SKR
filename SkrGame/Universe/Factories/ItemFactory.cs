@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DEngine.Actor;
+﻿using System.Collections.Generic;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Universe.Factories {
+namespace SkrGame.Universe.Factories {
     public abstract class ItemFactory : Factory<string, Item> { }
 
     // ReSharper disable RedundantArgumentName

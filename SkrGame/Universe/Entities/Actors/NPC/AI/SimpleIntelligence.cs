@@ -1,9 +1,8 @@
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors.PC;
-using libtcod;
+using SkrGame.Universe.Entities.Actors.PC;
 
-namespace SKR.Universe.Entities.Actors.NPC.AI {
+namespace SkrGame.Universe.Entities.Actors.NPC.AI {
     class SimpleIntelligence : NpcIntelligence {
         private TCODPath pf;
         

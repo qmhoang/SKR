@@ -4,11 +4,10 @@ using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Items;
-using libtcod;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Universe.Location {
+namespace SkrGame.Universe.Location {
     /// <summary>
     /// Tiles represent entities that are (normally immovable, but interactive with actors)
     /// </summary>

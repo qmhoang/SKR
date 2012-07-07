@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Gameplay.Talent;
-using SKR.Universe.Entities.Items;
-using SKR.Universe.Factories;
-using SKR.Universe.Location;
+using SkrGame.Gameplay.Talent;
+using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Location;
 using log4net;
 
-
-namespace SKR.Universe.Entities.Actors {
+namespace SkrGame.Universe.Entities.Actors {
 //    public enum Attribute {
 //        Strength,
 //        Agility,

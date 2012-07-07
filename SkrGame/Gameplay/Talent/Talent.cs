@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Items;
-using SKR.Universe.Factories;
+using SkrGame.Universe.Entities.Actors;
 
-namespace SKR.Gameplay.Talent {    
+namespace SkrGame.Gameplay.Talent {    
     public enum TargetType {
         None,
         Directional,

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Extensions;
-using SKR.Universe.Location;
-using libtcod;
+using SkrGame.Universe.Location;
 
-namespace SKR.Universe.Factories {
+namespace SkrGame.Universe.Factories {
     public abstract class MapFactory : Factory<string, Level> {
     }
 

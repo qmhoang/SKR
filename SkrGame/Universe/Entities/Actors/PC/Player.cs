@@ -1,10 +1,6 @@
-﻿using System;
-using DEngine.Actor;
-using DEngine.Core;
-using DEngine.Extensions;
-using SKR.Universe.Location;
+﻿using SkrGame.Universe.Location;
 
-namespace SKR.Universe.Entities.Actors.PC {
+namespace SkrGame.Universe.Entities.Actors.PC {
     public class Player : Actor {
         public override int SightRadius {
             get { return 10; }

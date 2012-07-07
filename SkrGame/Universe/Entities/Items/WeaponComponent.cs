@@ -1,8 +1,7 @@
-using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Actors;
 
-namespace SKR.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items {
     public enum DamageType {
         Cut,
         Impale,

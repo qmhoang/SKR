@@ -1,10 +1,8 @@
-using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Extensions;
-using SKR.Universe.Entities.Actors.NPC.AI;
-using SKR.Universe.Location;
+using SkrGame.Universe.Entities.Actors.NPC.AI;
+using SkrGame.Universe.Location;
 
-namespace SKR.Universe.Entities.Actors.NPC {
+namespace SkrGame.Universe.Entities.Actors.NPC {
     public class Npc : Actor {
         public NpcIntelligence Intelligence { get; set; }
 
