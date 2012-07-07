@@ -7,13 +7,13 @@ using DEngine.Core;
 using DEngine.Extensions;
 using OGUI.Core;
 using OGUI.UI;
-using SKR.Gameplay.Combat;
-using SKR.Gameplay.Talent;
 using SKR.UI.Menus;
 using SKR.Universe;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Actors.PC;
-using SKR.Universe.Entities.Items;
+using SkrGame.Gameplay.Talent;
+using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Actors.PC;
+using SkrGame.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.UI.Gameplay {

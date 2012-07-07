@@ -5,8 +5,7 @@ using DEngine.Extensions;
 using OGUI.Core;
 using OGUI.UI;
 using SKR.Universe;
-using SKR.Universe.Entities.Actors.PC;
-using SKR.Universe.Location;
+using SkrGame.Universe.Entities.Actors.PC;
 using libtcod;
 
 namespace SKR.UI.Gameplay {

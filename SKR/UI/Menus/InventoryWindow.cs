@@ -8,9 +8,10 @@ using DEngine.Extensions;
 using OGUI.Core;
 using OGUI.UI;
 using SKR.Universe;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Actors.PC;
-using SKR.Universe.Entities.Items;
+using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Actors.PC;
+using SkrGame.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.UI.Menus {
