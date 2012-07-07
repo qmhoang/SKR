@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
-using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Universe.Entities.Actors {
+namespace SkrGame.Universe.Entities.Actors {
     public class ActorCharacteristics {
         private Actor Actor;        
         private Dictionary<BodyPartType, BodyPart> BodyParts;        

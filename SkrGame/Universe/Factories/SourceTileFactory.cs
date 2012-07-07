@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Extensions;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Location;
-using libtcod;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Location;
 
-namespace SKR.Universe.Factories {
+namespace SkrGame.Universe.Factories {
     public abstract class FeatureFactory : Factory<string, Feature> {
         
     }

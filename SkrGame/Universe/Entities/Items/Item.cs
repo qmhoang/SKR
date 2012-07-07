@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors;
 
-namespace SKR.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items {
 
     public enum ItemType {
         // weapons

@@ -1,8 +1,6 @@
-﻿using DEngine.Actor;
-using DEngine.Core;
-using SKR.Universe.Entities.Actors;
+﻿using DEngine.Core;
 
-namespace SKR.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items {
     public class MeleeComponentTemplate : WeaponComponentTemplate {
         public int HitBonus {get; set;} 
         public Rand Damage {get; set;} 

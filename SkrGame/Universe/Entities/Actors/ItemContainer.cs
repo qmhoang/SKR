@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using SKR.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Universe.Entities.Actors {
+namespace SkrGame.Universe.Entities.Actors {
     public class ItemContainer : IEnumerable<Item> {
         protected List<Item> Items;
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

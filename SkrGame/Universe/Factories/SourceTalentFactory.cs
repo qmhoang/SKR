@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Gameplay.Combat;
-using SKR.Gameplay.Talent;
-using SKR.Universe.Entities.Actors;
-using SKR.Universe.Entities.Items;
-using SKR.Universe.Location;
+using SkrGame.Gameplay.Combat;
+using SkrGame.Gameplay.Talent;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Universe.Factories {
+namespace SkrGame.Universe.Factories {
     public abstract class TalentFactory : Factory<Skill, Talent> {
         
     }

@@ -1,6 +1,4 @@
-using libtcod;
-
-namespace SKR.Universe.Entities.Actors.NPC.AI {
+namespace SkrGame.Universe.Entities.Actors.NPC.AI {
     public abstract class NpcIntelligence : ITCODPathCallback {
         protected Npc Actor;
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
-using SKR.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Actors;
 
-namespace SKR.Universe.Location {
+namespace SkrGame.Universe.Location {
     /// <summary>
     /// Features are useable "items" that reside on the map, they contain the logic in themselves on how to use them
     /// </summary>

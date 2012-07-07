@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
-using SKR.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items;
 
-namespace SKR.Universe.Entities.Actors {
+namespace SkrGame.Universe.Entities.Actors {
     public enum BodyPartType {
         Body,
         Head,
