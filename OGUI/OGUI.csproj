@@ -80,7 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Bresenham.cs" />
     <Compile Include="Core\Color.cs" />
     <Compile Include="Core\ColorPresets.cs" />
     <Compile Include="Core\Pigment.cs" />
