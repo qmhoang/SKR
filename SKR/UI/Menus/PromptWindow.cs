@@ -9,7 +9,8 @@ using OGUI.Core;
 using OGUI.UI;
 using SKR.UI.Gameplay;
 using SKR.Universe;
-using SKR.Universe.Entities.Actors.PC;
+using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors.PC;
 using libtcod;
 using log4net;
 
