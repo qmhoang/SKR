@@ -75,14 +75,14 @@ namespace SKR.UI.Gameplay {
                 }
             }
 
-            foreach (var item in player.Level.Items) {
-                Point localPosition = item.Position - ViewOffset;
+            foreach (var tuple in player.Level.Items) {
+                Point localPosition = tuple.Item1 - ViewOffset;
 #if DEBUG
                 if (!Program.SeeAll) {
 #endif
                     if (IsPointWithinPanel(localPosition)) {
-                        var texture = assets[item.Asset];
-                        if (player.HasLineOfSight(item.Position))
+                        var texture = assets[tuple.Item2.Asset];
+                        if (player.HasLineOfSight(tuple.Item1))
                             Canvas.PrintChar(localPosition.X, localPosition.Y, texture.Item1, texture.Item2);
                     }
 

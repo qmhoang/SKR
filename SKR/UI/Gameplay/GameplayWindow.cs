@@ -249,7 +249,7 @@ namespace SKR.UI.Gameplay {
                                                                   Size = MapPanel.Size,
                                                                   IsPopup = true,
                                                                   HasFrame = true,
-                                                                  Items = player.Level.Items.Where(i => i.Position == player.Position),
+                                                                  Items = player.Level.Items.Where(tuple => tuple.Item1 == player.Position).Select(tuple => tuple.Item2),
                                                               },
                                                               delegate(Item i)
                                                               {
