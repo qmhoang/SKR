@@ -4,11 +4,11 @@ using SkrGame.Universe.Entities.Actors.PC;
 
 namespace SkrGame.Universe.Entities.Actors.NPC.AI {
     class SimpleIntelligence : NpcIntelligence {
-        private TCODPath pf;
+        private AStarPathFinder pf;
         
         public SimpleIntelligence(Npc monster)
                 : base(monster) {
-            pf = new TCODPath(monster.Level.Width, monster.Level.Height, this, 1.41f);
+            pf = new AStarPathFinder(monster.Level, 1.41f);
         }
 
         public override void Update() {
@@ -21,11 +21,11 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
                 {
                     
                 } else {
-                    pf.compute(Actor.Position.X, Actor.Position.Y, player.Position.X, player.Position.Y);
+                    pf.Compute(Actor.Position.X, Actor.Position.Y, player.Position.X, player.Position.Y);
                     int nx = Actor.Position.X, ny = Actor.Position.Y;
 
 
-                    if (pf.walk(ref nx, ref ny, false)) {
+                    if (pf.Walk(ref nx, ref ny, false)) {
                         Point dir = new Point(nx, ny) - Actor.Position;
                         if (Actor.Move(dir) == ActionResult.Success) {
                         }

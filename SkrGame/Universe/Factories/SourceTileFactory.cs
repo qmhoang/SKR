@@ -215,7 +215,7 @@ namespace SkrGame.Universe.Factories {
                     return new Feature(key, "TOILET", true, true).Add(
                             new PassiveFeatureComponent(delegate(PassiveFeatureComponent f, Actor actor, double distance)
                                                             {
-                                                                if (Math.Abs(distance - 0) < Program.Epsilon)
+                                                                if (Math.Abs(distance - 0) < Double.Epsilon)
                                                                     actor.World.InsertMessage(String.Format("{0} stands on top of the toilet.  Ew.",
                                                                                                             actor.Name));
                                                             }));
@@ -227,7 +227,7 @@ namespace SkrGame.Universe.Factories {
                     return new Feature(key, "BATH", true, true).Add(
                             new PassiveFeatureComponent(delegate(PassiveFeatureComponent f, Actor actor, double distance)
                                                             {
-                                                                if (Math.Abs(distance - 0) < Program.Epsilon)
+                                                                if (Math.Abs(distance - 0) < Double.Epsilon)
                                                                     actor.World.InsertMessage(String.Format("{0} steps into the bathtub.", actor.Name));
                                                             }));
                 case "SHOWER":
@@ -239,8 +239,8 @@ namespace SkrGame.Universe.Factories {
                 case "BED_WOODEN":
                     return new Feature(key, "BED_WOODEN", true, true).Add(
                             new PassiveFeatureComponent(delegate(PassiveFeatureComponent f, Actor actor, double distance)
-                                                            {
-                                                                if (Math.Abs(distance - 0) < Program.Epsilon)
+                                                            {    
+                                                                if (Math.Abs(distance - 0) < Double.Epsilon)
                                                                     actor.World.InsertMessage(String.Format("{0} jumps on the bed.", actor.Name));
                                                             }));
                 case "SHELF_WOOD":
@@ -265,7 +265,7 @@ namespace SkrGame.Universe.Factories {
                     return new Feature(key, "SOFA", true, true).Add(
                             new PassiveFeatureComponent(delegate(PassiveFeatureComponent f, Actor actor, double distance)
                                                             {
-                                                                if (Math.Abs(distance - 0) < Program.Epsilon)
+                                                                if (Math.Abs(distance - 0) < Double.Epsilon)
                                                                     actor.World.InsertMessage(String.Format("{0} jumps on the sofa.  Whee!!", actor.Name));
                                                             }));
                 case "OVEN":
