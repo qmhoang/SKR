@@ -91,7 +91,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 
-    public abstract class Actor : DEngine.Actor.Entity {
+    public abstract class Actor : Entity {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public ActorCharacteristics Characteristics { get; private set; }

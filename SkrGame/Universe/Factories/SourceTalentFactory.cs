@@ -12,6 +12,7 @@ namespace SkrGame.Universe.Factories {
     public abstract class TalentFactory : Factory<Skill, Talent> {
         
     }
+
     public class SourceTalentFactory : TalentFactory {
         public override Talent Construct(Skill identifier) {
             switch (identifier) {
