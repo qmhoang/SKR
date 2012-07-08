@@ -99,9 +99,7 @@ namespace SkrGame.Universe.Entities.Items {
                 comp.Item = this;
                 components.Add(comp.Action, comp);
             }
-        }
-        
-        public Point Position { get; set; }      
+        }               
     }
 
 

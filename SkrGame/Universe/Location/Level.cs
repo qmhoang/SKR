@@ -6,6 +6,7 @@ using DEngine.Core;
 using DEngine.Extensions;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
+using libtcod;
 
 namespace SkrGame.Universe.Location {
     /// <summary>
@@ -25,23 +26,14 @@ namespace SkrGame.Universe.Location {
             Walkable = walkable;
             WalkPenalty = walkPenalty;
         }
-    }   
+    }
 
-    public class Level {
+    public class Level : Map {
         protected string[,] Map;
         protected Dictionary<string, Terrain> TerrainDefinitions; 
         public TCODMap Fov { get; protected set; }
 
-        public Size Size { get; protected set; }
         public bool[,] Vision { get; protected set; }
-
-        public int Width {
-            get { return Size.Width; }
-        }
-
-        public int Height {
-            get { return Size.Height; }
-        }
 
         public string RefId { get; protected set; }
         public UniqueId Uid { get; protected set; }
@@ -49,11 +41,11 @@ namespace SkrGame.Universe.Location {
         public World World { get; set; }
 
         private readonly List<Actor> actors;
-        private readonly List<Item> items;
+        private readonly List<Tuple<Point, Item>> items;
         private readonly List<Feature> features;
 
         public IEnumerable<Actor> Actors { get { return actors; } }
-        public IEnumerable<Item> Items { get { return items; } }
+        public IEnumerable<Tuple<Point, Item>> Items { get { return items; } }
         public IEnumerable<Feature> Features { get { return features; } }        
 
         public Level(Size size, string fill) {
@@ -66,7 +58,7 @@ namespace SkrGame.Universe.Location {
             TerrainDefinitions = new Dictionary<string, Terrain>();
 
             actors = new List<Actor>();
-            items = new List<Item>();   
+            items = new List<Tuple<Point, Item>>();   
             features = new List<Feature>();
 
             for (int x = 0; x < Map.GetLength(0); x++)
@@ -150,21 +142,13 @@ namespace SkrGame.Universe.Location {
             return TerrainDefinitions[Map[x, y]];
         }
 
-        public bool IsVisible(Point p) {
-            return IsVisible(p.X, p.Y);
-        }
-
-        public bool IsVisible(int x, int y) {
+        public override bool IsVisible(int x, int y) {
             if (!IsInBoundsOrBorder(x, y))
                 throw new ArgumentOutOfRangeException();
             return Fov.isInFov(x, y);
         }
 
-        public bool IsWalkable(Point v) {
-            return IsWalkable(v.X, v.Y);
-        }
-
-        public bool IsWalkable(int x, int y) {
+        public override bool IsWalkable(int x, int y) {
             if (!IsInBoundsOrBorder(x, y))
                 return false;
             return Fov.isWalkable(x, y);
@@ -173,7 +157,7 @@ namespace SkrGame.Universe.Location {
         /// <summary>
         /// Generate FOV from tiles and features
         /// </summary>
-        public void GenerateFov() {
+        public void GenerateFov() {                        
             // tiles
             for (int x = 0; x < Map.GetLength(0); x++)
                 for (int y = 0; y < Map.GetLength(1); y++) {
@@ -207,7 +191,7 @@ namespace SkrGame.Universe.Location {
             }
         }
 
-        void  FeatureTransparencyChanged(object sender, EventArgs e)
+        void FeatureTransparencyChanged(object sender, EventArgs e)
         {
             if (sender is Feature) {
                 var feature = sender as Feature;
@@ -220,39 +204,16 @@ namespace SkrGame.Universe.Location {
         }
 
         public void AddItem(Item item, Point position) {
-            items.Add(item);
-            item.Position = position;
+            items.Add(new Tuple<Point, Item>(position, item));            
         }
 
         public void RemoveItem(Item item) {
-            items.Remove(item);
+            items.RemoveAll(t => t.Item2 == item);
         }
         
 
         #region Guards
-        public bool IsInBounds(Point v) {
-            return IsInBounds(v.X, v.Y);
-        }
 
-        public bool IsInBoundsOrBorder(Point v) {
-            return IsInBoundsOrBorder(v.X, v.Y);
-        }
-
-        public bool IsOnBorder(Point v) {
-            return IsOnBorder(v.X, v.Y);
-        }
-
-        public bool IsInBounds(int x, int y) {
-            return x >= 1 && y >= 1 && x < Size.Width - 1 && y < Size.Height - 1;
-        }
-
-        public bool IsInBoundsOrBorder(int x, int y) {
-            return x >= 0 && y >= 0 && x < Size.Width && y < Size.Height;
-        }
-
-        public bool IsOnBorder(int x, int y) {
-            return x == 0 || y == 0 || x == Size.Width - 1 && y == Size.Height - 1;
-        }
         #endregion
     }
 }
