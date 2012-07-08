@@ -94,6 +94,7 @@
     <Compile Include="Universe\Entities\Actors\Person.cs" />
     <Compile Include="Universe\Entities\Items\FirearmComponent.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
+    <Compile Include="Universe\Entities\Items\ItemComponent.cs" />
     <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
     <Compile Include="Universe\Entities\Items\WeaponComponent.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />

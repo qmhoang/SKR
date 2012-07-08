@@ -25,36 +25,10 @@ namespace SkrGame.Universe.Entities.Items {
         Shoot,
     }
 
-    public abstract class ItemComponentTemplate {
-        public string ComponentId { get; set; }
-        public ItemAction Action { get; set; }
-
-        public string ActionDescription { get; set; }
-        public string ActionDescriptionPlural { get; set; }
-
-        public Item Item { get; set; }
-    }
-
-    public abstract class ItemComponent {
-        public string ComponentId { get; protected set; }
-        public ItemAction Action { get; protected set; }
-
-        public Item Item { get; set; }
-
-        public string ActionDescription { get; protected set; }
-        public string ActionDescriptionPlural { get; protected set; }
-
-        protected ItemComponent(string componentId, ItemAction action, string actionDescription, string actionDescriptionPlural) {
-            ComponentId = componentId;
-            Action = action;
-            ActionDescription = actionDescription;
-            ActionDescriptionPlural = actionDescriptionPlural;
-        }
-    }
-
     public class Item {
         public string Name { get; private set; }
 
+        // Asset string is a unique string that represents what each item looks like.  A GUI uses this to draw the item depending on each item
         public string Asset { get; private set; }
         public string RefId { get; private set; }
         public UniqueId UniqueId { get; private set; }
@@ -73,6 +47,11 @@ namespace SkrGame.Universe.Entities.Items {
             return components.ContainsKey(action);
         }
 
+        /// <summary>
+        /// Get Item's Component
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T As<T>() where T : ItemComponent {
             return (T) components.Values.First(c => c is T);
         }
