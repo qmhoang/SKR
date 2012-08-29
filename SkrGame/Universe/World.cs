@@ -89,8 +89,8 @@ namespace SkrGame.Universe {
             Player.AddItem(i);
             Player.Equip(BodyPartType.LeftHand, i);
 
-            Player.AddItem(CreateItem("glock17"));
-            Player.AddItem(CreateItem("glock17magazine"));
+            Player.AddItem(CreateItem("glock22"));
+            Player.AddItem(CreateItem(".40S&W"));
         }
 
         public Talent GetTalent(Skill skill) {

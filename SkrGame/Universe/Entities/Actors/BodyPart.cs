@@ -16,6 +16,13 @@ namespace SkrGame.Universe.Entities.Actors {
         Groin,
     }
 
+    public enum BodyPartSlot {
+        Inner,
+        Outer,
+        Armor,
+        Over
+    }
+
     public class BodyPart {
         public string Name { get; private set; }
         public BodyPartType Type { get; private set; }

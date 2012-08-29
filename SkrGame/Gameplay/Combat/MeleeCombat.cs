@@ -41,7 +41,7 @@ namespace SkrGame.Gameplay.Combat {
         private static double ChanceOfSuccess(double difficulty) {
             return GaussianDistribution.CumulativeTo(difficulty + World.Mean, World.Mean, World.StandardDeviation);
         }
-        public static void AttackRangeWithGun(Actor attacker, Actor defender, FirearmComponent weapon, BodyPart bodyPart, bool targettingPenalty = false) {
+        public static void AttackRangeWithGun(Actor attacker, Actor defender, GunComponent weapon, BodyPart bodyPart, bool targettingPenalty = false) {
             double skillBonus = attacker.GetTalent(weapon.Skill).RealRank;            
             double difficulty = 0.0;
 
@@ -131,19 +131,19 @@ namespace SkrGame.Gameplay.Combat {
             int hitBonus = attacker.GetTalent(weapon.Skill).RealRank;            
                
             var strength = attacker.GetTalent(Skill.Strength).RealRank;
-            int damage = (weapon.Action == ItemAction.MeleeAttackSwing ? DamageTableSwing(strength).Roll() : DamageTableThrust(strength).Roll());
+            int damage = Rand.Dice(1, 6).Roll() + Rand.Constant(strength).Roll();
 
             Attack(attacker, defender, weapon, damage, bodyPart, (hitBonus + (targettingPenalty ? bodyPart.AttackPenalty : 0)));
         }
 
-        private static Rand DamageTableThrust(int strength) {
-            return Rand.Dice(1, 6) + Rand.Constant((int)Math.Floor((strength - 3) / 2.0));
-//            Rand.Dice(1, 6) + Rand.Fixed((int) Math.Floor((strength - 3) / 2.0));
-//            return new Dice(1, 6, (int) Math.Floor((strength - 3)/2.0));
-        }
-
-        private static Rand DamageTableSwing(int strength) {
-            return Rand.Dice(1, 6) + Rand.Constant(strength);
-        }
+//        private static Rand DamageTableThrust(int strength) {
+//            return Rand.Dice(1, 6) + Rand.Constant((int)Math.Floor((strength - 3) / 2.0));
+////            Rand.Dice(1, 6) + Rand.Fixed((int) Math.Floor((strength - 3) / 2.0));
+////            return new Dice(1, 6, (int) Math.Floor((strength - 3)/2.0));
+//        }
+//
+//        private static Rand DamageTableSwing(int strength) {
+//            return Rand.Dice(1, 6) + Rand.Constant(strength);
+//        }
     }
 }

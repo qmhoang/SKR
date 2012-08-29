@@ -17,8 +17,7 @@ namespace SkrGame.Universe.Entities.Items {
     }
 
     public enum ItemAction {
-        MeleeAttackSwing,
-        MeleeAttackThrust,
+        MeleeAttack,        
         Wear,
         ReloadFirearm,
         LoadMagazine,

@@ -24,11 +24,13 @@ namespace SkrGame.Universe.Entities.Actors {
 
     public enum Skill {
         // basic attack
+//        TargetAttack,
+//        RangeTargetAttack,
+//        DetailedReload,
+//        LoadMagazine,
         Attack,
-        TargetAttack,
-        RangeTargetAttack,
+        Range,
         Reload,
-        LoadMagazine,
         UseFeature,        
 
         //category - sword
@@ -45,6 +47,11 @@ namespace SkrGame.Universe.Entities.Actors {
         Axe,
 
         Pistol,
+        Shotgun,
+        Rifle,
+
+        Bow,
+        Crossbow,
 
         // attributes
         Strength,
@@ -129,8 +136,7 @@ namespace SkrGame.Universe.Entities.Actors {
             talents = new Dictionary<Skill, Talent>();
 
             LearnTalent(Skill.Attack);
-            LearnTalent(Skill.TargetAttack);
-            LearnTalent(Skill.RangeTargetAttack);
+            LearnTalent(Skill.Range);            
             LearnTalent(Skill.Reload);
             LearnTalent(Skill.UseFeature);
 

@@ -47,7 +47,7 @@ namespace SkrGame.Universe.Entities.Actors {
             Punch = new MeleeComponent(new MeleeComponentTemplate
                                            {
                                                    ComponentId = "punch",
-                                                   Action = ItemAction.MeleeAttackThrust,
+                                                   Action = ItemAction.MeleeAttack,
                                                    ActionDescription = "punch",
                                                    ActionDescriptionPlural = "punches",
                                                    Skill = Skill.Brawling,
@@ -60,22 +60,22 @@ namespace SkrGame.Universe.Entities.Actors {
                                                    Strength = 0,
                                                    Parry = 0
                                            });
-            Kick = new MeleeComponent(new MeleeComponentTemplate
-                                          {
-                                              ComponentId = "kick",
-                                              Action = ItemAction.MeleeAttackThrust,
-                                              ActionDescription = "kick",
-                                              ActionDescriptionPlural = "kicks",
-                                              Skill = Skill.Brawling,
-                                              HitBonus = -2,
-                                              Damage = Rand.Constant(1),
-                                              DamageType = DamageType.Crush,
-                                              Penetration = 1,
-                                              WeaponSpeed = 100,
-                                              Reach = 1,
-                                              Strength = 0,
-                                              Parry = -100
-                                          });
+//            Kick = new MeleeComponent(new MeleeComponentTemplate
+//                                          {
+//                                              ComponentId = "kick",
+//                                              Action = ItemAction.MeleeAttackThrust,
+//                                              ActionDescription = "kick",
+//                                              ActionDescriptionPlural = "kicks",
+//                                              Skill = Skill.Brawling,
+//                                              HitBonus = -2,
+//                                              Damage = Rand.Constant(1),
+//                                              DamageType = DamageType.Crush,
+//                                              Penetration = 1,
+//                                              WeaponSpeed = 100,
+//                                              Reach = 1,
+//                                              Strength = 0,
+//                                              Parry = -100
+//                                          });
 
             MaxHealth = Health = Actor.GetTalent(Skill.Constitution).RealRank + 10;
         }

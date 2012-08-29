@@ -4,7 +4,9 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Universe.Factories {
-    public abstract class ItemFactory : Factory<string, Item> { }
+    public abstract class ItemFactory : Factory<string, Item> {
+        
+    }
 
     // ReSharper disable RedundantArgumentName
     public sealed class SourceItemFactory : ItemFactory {
@@ -27,7 +29,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "largeknifeslash",
-                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "slash",
                                                                             ActionDescriptionPlural = "slashes",
                                                                             Skill = Skill.Knife,
@@ -59,7 +61,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "smallknifethrust",
-                                                                            Action = ItemAction.MeleeAttackThrust,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "jab",
                                                                             ActionDescriptionPlural = "jabs",
                                                                             Skill = Skill.Knife,
@@ -89,7 +91,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "axeswing",
-                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "hack",
                                                                             ActionDescriptionPlural = "hacks",
                                                                             Skill = Skill.Axe,
@@ -118,7 +120,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "hatchetswing",
-                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "hack",
                                                                             ActionDescriptionPlural = "hacks",
                                                                             Skill = Skill.Axe,
@@ -148,7 +150,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "brassknucklesswing",
-                                                                            Action = ItemAction.MeleeAttackThrust,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "punch",
                                                                             ActionDescriptionPlural = "punches",
                                                                             Skill = Skill.Brawling,
@@ -163,6 +165,9 @@ namespace SkrGame.Universe.Factories {
                                                                     })
                                                 }
                        });
+
+
+            #region Old Firearms
             Create("glock17",
                    new ItemTemplate
                        {
@@ -177,7 +182,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "glock17swing",
-                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "pistol whip",
                                                                             ActionDescriptionPlural = "pistol whips",
                                                                             Skill = Skill.Brawling,
@@ -190,8 +195,8 @@ namespace SkrGame.Universe.Factories {
                                                                             Strength = 8,
                                                                             Parry = -2
                                                                     }),
-                                                        new FirearmComponent(
-                                                                new FirearmComponentTemplate
+                                                        new GunComponent(
+                                                                new GunComponentTemplate
                                                                     {
                                                                             ComponentId = "glock17shoot",
                                                                             Action = ItemAction.Shoot,
@@ -202,9 +207,9 @@ namespace SkrGame.Universe.Factories {
                                                                             DamageRange = Rand.Dice(2, 6) + Rand.Constant(2),
                                                                             DamageType = DamageType.Pierce,
                                                                             Penetration = 1,
+                                                                            Shots = 17,
                                                                             Range = 160,
-                                                                            RoF = 3,
-                                                                            Chamber = 1,
+                                                                            RoF = 3,                                                                            
                                                                             ReloadSpeed = 3,
                                                                             Recoil = 2,
                                                                             Bulk = 2,
@@ -214,29 +219,29 @@ namespace SkrGame.Universe.Factories {
                                                                     })
                                                 }
                        });
-            Create("glock17magazine",
-                   new ItemTemplate
-                       {
-                               Name = "Magazine, Glock 17",
-                               Asset = "MAGAZINE_GLOCK17",
-                               Type = ItemType.Ammo,
-                               Value = 3200,
-                               Weight = 6,
-                               Components = new List<ItemComponent>
-                                                {
-                                                        new MagazineComponent(
-                                                                new MagazineComponentTemplate
-                                                                    {
-                                                                            ComponentId = "glock17magazine",
-                                                                            Action = ItemAction.ReloadFirearm,
-                                                                            ActionDescription = "reload",
-                                                                            ActionDescriptionPlural = "reloads",
-                                                                            Shots = 17,
-                                                                            Caliber = "9x19mm",
-                                                                            FirearmId = "glock17",
-                                                                    })
-                                                }
-                       });
+//            Create("glock17magazine",
+//                   new ItemTemplate
+//                       {
+//                               Name = "Magazine, Glock 17",
+//                               Asset = "MAGAZINE_GLOCK17",
+//                               Type = ItemType.Ammo,
+//                               Value = 3200,
+//                               Weight = 6,
+//                               Components = new List<ItemComponent>
+//                                                {
+//                                                        new MagazineComponent(
+//                                                                new MagazineComponentTemplate
+//                                                                    {
+//                                                                            ComponentId = "glock17magazine",
+//                                                                            Action = ItemAction.ReloadFirearm,
+//                                                                            ActionDescription = "reload",
+//                                                                            ActionDescriptionPlural = "reloads",
+//                                                                            Shots = 17,
+//                                                                            Caliber = "9x19mm",
+//                                                                            FirearmId = "glock17",
+//                                                                    })
+//                                                }
+//                       });
             Create("9x19mm",
                    new ItemTemplate
                        {
@@ -253,8 +258,7 @@ namespace SkrGame.Universe.Factories {
                                                                             ComponentId = "9x9mmbullet",
                                                                             Action = ItemAction.LoadMagazine,
                                                                             ActionDescription = "load",
-                                                                            ActionDescriptionPlural = "loads",
-                                                                            Used = false,
+                                                                            ActionDescriptionPlural = "loads",                                                                            
                                                                             Caliber = "9x19mm",
                                                                     })
                                                 }
@@ -274,7 +278,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "glock22swing",
-                                                                            Action = ItemAction.MeleeAttackSwing,
+                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "pistol whip",
                                                                             ActionDescriptionPlural = "pistol whips",
                                                                             Skill = Skill.Brawling,
@@ -287,8 +291,8 @@ namespace SkrGame.Universe.Factories {
                                                                             Strength = 8,
                                                                             Parry = -2
                                                                     }),
-                                                        new FirearmComponent(
-                                                                new FirearmComponentTemplate
+                                                        new GunComponent(
+                                                                new GunComponentTemplate()
                                                                     {
                                                                             ComponentId = "glock22shoot",
                                                                             Action = ItemAction.Shoot,
@@ -299,9 +303,9 @@ namespace SkrGame.Universe.Factories {
                                                                             DamageRange = Rand.Dice(2, 6) + Rand.Constant(2),
                                                                             DamageType = DamageType.PierceLarge,
                                                                             Penetration = 1,
+                                                                            Shots = 15,
                                                                             Range = 160,
-                                                                            RoF = 3,
-                                                                            Chamber = 1,
+                                                                            RoF = 3,                                                                            
                                                                             ReloadSpeed = 3,
                                                                             Recoil = 2,
                                                                             Bulk = 2,
@@ -311,29 +315,29 @@ namespace SkrGame.Universe.Factories {
                                                                     })
                                                 }
                    });
-            Create("glock22magazine",
-                   new ItemTemplate
-                   {
-                       Name = "Magazine, Glock 22",
-                       Asset = "MAGAZINE_GLOCK22",
-                       Type = ItemType.Ammo,
-                       Value = 3200,
-                       Weight = 7,
-                       Components = new List<ItemComponent>
-                                                {
-                                                        new MagazineComponent(
-                                                                new MagazineComponentTemplate
-                                                                    {
-                                                                            ComponentId = "glock22magazine",
-                                                                            Action = ItemAction.ReloadFirearm,
-                                                                            ActionDescription = "reload",
-                                                                            ActionDescriptionPlural = "reloads",
-                                                                            Shots = 15,
-                                                                            Caliber = ".40S&W",
-                                                                            FirearmId = "glock22",
-                                                                    })
-                                                }
-                   });
+//            Create("glock22magazine",
+//                   new ItemTemplate
+//                   {
+//                       Name = "Magazine, Glock 22",
+//                       Asset = "MAGAZINE_GLOCK22",
+//                       Type = ItemType.Ammo,
+//                       Value = 3200,
+//                       Weight = 7,
+//                       Components = new List<ItemComponent>
+//                                                {
+//                                                        new MagazineComponent(
+//                                                                new MagazineComponentTemplate
+//                                                                    {
+//                                                                            ComponentId = "glock22magazine",
+//                                                                            Action = ItemAction.ReloadFirearm,
+//                                                                            ActionDescription = "reload",
+//                                                                            ActionDescriptionPlural = "reloads",
+//                                                                            Shots = 15,
+//                                                                            Caliber = ".40S&W",
+//                                                                            FirearmId = "glock22",
+//                                                                    })
+//                                                }
+//                   });
             Create(".40S&W",
                    new ItemTemplate
                    {
@@ -345,17 +349,18 @@ namespace SkrGame.Universe.Factories {
                        Components = new List<ItemComponent>
                                                 {
                                                         new BulletComponent(
-                                                                new BulletComponentTemplate
+                                                                new BulletComponentTemplate()
                                                                     {
                                                                             ComponentId = ".40S&Wbullet",
                                                                             Action = ItemAction.LoadMagazine,
                                                                             ActionDescription = "load",
-                                                                            ActionDescriptionPlural = "loads",
-                                                                            Used = false,
+                                                                            ActionDescriptionPlural = "loads",                                                                            
                                                                             Caliber = ".40S&W",
                                                                     })
                                                 }
-                   });
+                               });
+            #endregion
+
         }
 
         private void Create(string id, ItemTemplate template) {
