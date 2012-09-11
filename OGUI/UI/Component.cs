@@ -282,7 +282,7 @@ namespace OGUI.UI {
         /// <summary>
         /// Called each application loop iteration.  Override to add specific update code.
         /// </summary>
-        protected internal virtual void OnTick() {
+        protected internal virtual void Update() {
             uint milli = TCODSystem.getElapsedMilli();
 
             LastTickElapsed = milli - TotalElapsed;

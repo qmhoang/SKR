@@ -9,7 +9,7 @@ namespace SkrGame.Universe.Entities.Items {
         public string Caliber { get; private set; }        
 
         public BulletComponent(BulletComponentTemplate template)
-            : base(template.ComponentId, template.Action, template.ActionDescription, template.ActionDescriptionPlural) {
+            : base(template.ComponentId, template.ActionDescription, template.ActionDescriptionPlural) {
             Caliber = template.Caliber;
         }
     } 
@@ -22,7 +22,7 @@ namespace SkrGame.Universe.Entities.Items {
         public int Amount { get; set; }
 
         public AmountComponent(AmountComponentTemplate template)
-            : base(template.ComponentId, template.Action, template.ActionDescription, template.ActionDescriptionPlural) {
+            : base(template.ComponentId, template.ActionDescription, template.ActionDescriptionPlural) {
             Amount = template.Amount;
         }
     }
@@ -67,7 +67,7 @@ namespace SkrGame.Universe.Entities.Items {
         public int ShotsRemaining { get; set; }
 
         public GunComponent(GunComponentTemplate template)
-            : base(template.ComponentId, template.Action, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
+            : base(template.ComponentId, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
             Accuracy = template.Accuracy;
             DamageRange = template.DamageRange;
             this.damageType = template.DamageType;

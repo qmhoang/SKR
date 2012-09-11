@@ -143,10 +143,10 @@ namespace SkrGame.Universe.Location {
         }
     }
 
-    public class SwitchFeaturecomponent : FeatureComponent {
+    public class SwitchFeatureComponent : FeatureComponent {
         public bool Switch { get; set; }
 
-        public SwitchFeaturecomponent(bool @switch = false) {
+        public SwitchFeatureComponent(bool @switch = false) {
             Switch = @switch;
         }
     }

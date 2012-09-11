@@ -47,7 +47,7 @@ namespace SkrGame.Universe.Entities.Actors {
             Punch = new MeleeComponent(new MeleeComponentTemplate
                                            {
                                                    ComponentId = "punch",
-                                                   Action = ItemAction.MeleeAttack,
+//                                                   Action = ItemAction.MeleeAttack,
                                                    ActionDescription = "punch",
                                                    ActionDescriptionPlural = "punches",
                                                    Skill = Skill.Brawling,

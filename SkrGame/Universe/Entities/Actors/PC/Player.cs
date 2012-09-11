@@ -1,4 +1,5 @@
-﻿using SkrGame.Universe.Location;
+﻿using DEngine.Core;
+using SkrGame.Universe.Location;
 
 namespace SkrGame.Universe.Entities.Actors.PC {
     public class Player : Actor {

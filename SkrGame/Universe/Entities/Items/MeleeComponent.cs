@@ -26,7 +26,7 @@ namespace SkrGame.Universe.Entities.Items {
         public int Reach { get; protected set; }        
         public int Parry { get; protected set; }
 
-        public MeleeComponent(MeleeComponentTemplate template) : base(template.ComponentId, template.Action, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
+        public MeleeComponent(MeleeComponentTemplate template) : base(template.ComponentId, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
             HitBonus = template.HitBonus;
             Damage = template.Damage;
             damageType = template.DamageType;

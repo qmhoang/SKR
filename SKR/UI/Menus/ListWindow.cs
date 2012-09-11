@@ -20,7 +20,7 @@ namespace SKR.UI.Menus {
 
         protected Dictionary<char, T> Items;
         protected IEnumerable<T> List; 
-
+        
         protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
                 : base(template) {
             this.selectItem = selectItem;
@@ -64,13 +64,20 @@ namespace SKR.UI.Menus {
             CustomDraw(ListRect);
         }
 
+        protected override void Update() {
+            base.Update();
+
+            if (List.Count() == 0)
+                ExitWindow();
+        }
+
         protected abstract void CustomDraw(Rect rect);
 
         protected virtual void OnSelectItem(T item) {
             selectItem(item);
 
             if (List.Count() <= 0)
-                Quit();
+                ExitWindow();
             else {
                 Items.Clear();
 

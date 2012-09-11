@@ -91,6 +91,9 @@ namespace SkrGame.Universe {
 
             Player.AddItem(CreateItem("glock22"));
             Player.AddItem(CreateItem(".40S&W"));
+            var ammo = CreateItem(".40S&W");
+            ammo.Amount = 20;
+            level.AddItem(ammo, Player.Position);
         }
 
         public Talent GetTalent(Skill skill) {

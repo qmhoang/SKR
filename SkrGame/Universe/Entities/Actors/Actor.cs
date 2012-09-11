@@ -106,6 +106,16 @@ namespace SkrGame.Universe.Entities.Actors {
         private Dictionary<BodyPartType, Item> equippedItems;
         private Dictionary<Skill, Talent> talents;
 
+        public override int ActionPoints {
+            get {
+                return base.ActionPoints;
+            }
+            set {
+                RecalculateFov = true;
+                base.ActionPoints = value;
+            }
+        } 
+
         public Level Level { get; private set; }
 
         public World World {
@@ -160,6 +170,8 @@ namespace SkrGame.Universe.Entities.Actors {
 
             Characteristics = new ActorCharacteristics(this);
             conditionStatuses = new ActorCondition(this);
+
+            RecalculateFov = true;
         }
 
         private void CheckEncumbrance() {
@@ -196,8 +208,8 @@ namespace SkrGame.Universe.Entities.Actors {
         protected bool RecalculateFov;
 
         public override bool HasLineOfSight(Point position) {
-//            if (RecalculateFov)
-                CalculateFov();
+            if (RecalculateFov)
+                CalculateFov();            
             return Level.IsVisible(position);
         }
 

@@ -16,13 +16,13 @@ namespace SkrGame.Universe.Entities.Items {
         BodyPart,
     }
 
-    public enum ItemAction {
-        MeleeAttack,        
-        Wear,
-        ReloadFirearm,
-        LoadMagazine,
-        Shoot,
-    }
+//    public enum ItemAction {
+//        MeleeAttack,        
+//        Wear,
+//        ReloadFirearm,
+//        LoadMagazine,
+//        Shoot,
+//    }
 
     public class Item {
         public string Name { get; private set; }
@@ -38,11 +38,30 @@ namespace SkrGame.Universe.Entities.Items {
         public int CurrentDurability { get; set; }
         public int Hardness { get; set; }
 
+        private int amount;
+        public int Amount {
+            get { 
+                if (StackType != StackType.Hard)
+                    return 1; 
+                if (amount <= 0)
+                    throw new ArgumentException("How did amount get to be <= 0???");
+                return amount;
+            }
+            set {
+                if (value <= 0)
+                    throw new ArgumentException("cannot be 0 or negative, remove instead", "value");
+                if (StackType != StackType.Hard)
+                    throw new ArgumentException("Cannot modify count of non-stacked item");
+                amount = value;
+            }
+        }
+
+        public StackType StackType { get; private set; }
         public ItemType Type { get; private set; }
 
-        private Dictionary<ItemAction, ItemComponent> components;
+        private Dictionary<Type, ItemComponent> components;
 
-        public bool Is(ItemAction action) {
+        public bool Is(Type action) {
             return components.ContainsKey(action);
         }
 
@@ -55,7 +74,7 @@ namespace SkrGame.Universe.Entities.Items {
             return (T) components.Values.First(c => c is T);
         }
 
-        public T As<T>(ItemAction action) where T : ItemComponent {
+        public T As<T>(Type action) where T : ItemComponent {
             if (Is(action))
                 return (T)components[action];
             else
@@ -67,19 +86,26 @@ namespace SkrGame.Universe.Entities.Items {
             RefId = template.RefId;
             Asset = template.Asset;
 
+            StackType = template.StackType;
+            amount = 1;
             Type = template.Type;
             UniqueId = new UniqueId();
             Weight = template.Weight;
             Value = template.Value;
-            components = new Dictionary<ItemAction, ItemComponent>();
+            components = new Dictionary<Type, ItemComponent>();
 
             foreach (var comp in template.Components) {
                 comp.Item = this;
-                components.Add(comp.Action, comp);
+                components.Add(comp.GetType(), comp);
             }
         }               
     }
 
+    public enum StackType {
+        None,
+        Soft,
+        Hard
+    }
 
     public class ItemTemplate {
         public string Name { get; set; }
@@ -88,6 +114,7 @@ namespace SkrGame.Universe.Entities.Items {
         public int Weight { get; set; }
         public int Value { get; set; }
         public string Asset { get; set; }
+        public StackType StackType { get; set; }
 
         public IEnumerable<ItemComponent> Components { set; get; }        
     }
