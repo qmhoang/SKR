@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Timers;
 using DEngine.Core;
-using DEngine.Extensions;
 using NUnit.Framework;
 
-namespace SKRTests {
+namespace DEngineTests {
     [TestFixture]
     class RngTests {
         [SetUp]
@@ -16,14 +14,27 @@ namespace SKRTests {
 
         [Test]
         public static void TestTriangle() {
-            Assert.AreEqual(1, 1);
+            int[] list = new int[20];
 
-            int[] list = new int[10];
-
-            for (int i = 0; i < 1000; i++) {
-                list[Rng.TriangleInt(5, 3)]++;
+            for (int i = 0; i < 100000; i++) {
+                list[Rng.TriangleInt(10, 8)]++;
             }
 
+            int index = 0;
+            foreach (var i in list) {
+                Console.WriteLine("{0}: {1}", index, i);
+                index++;
+            }
+        }
+
+        [Test]
+        public static void TestGaussian() {
+            int[] list = new int[20];
+
+            for (int i = 0; i < 100000; i++) {
+                list[Rng.GaussianInt(10, 8, 3)]++;
+            }
+            
             int index = 0;
             foreach (var i in list) {
                 Console.WriteLine("{0}: {1}", index, i);

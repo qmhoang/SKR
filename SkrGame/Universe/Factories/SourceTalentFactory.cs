@@ -32,13 +32,13 @@ namespace SkrGame.Universe.Factories {
                                                               // if we have something in our right hand, probably want to use that
                                                               if (self.IsItemEquipped(BodyPartType.RightHand)) {
                                                                   var item = self.GetItemAtBodyPart(BodyPartType.RightHand);
-                                                                  melee = (item.Is(ItemAction.MeleeAttack)
-                                                                                   ? item.As<MeleeComponent>(ItemAction.MeleeAttack)
+                                                                  melee = (item.Is(typeof(MeleeComponent))
+                                                                                   ? item.As<MeleeComponent>()
                                                                                    : null);
                                                               } else if (self.IsItemEquipped(BodyPartType.LeftHand)) {
                                                                   var item = self.GetItemAtBodyPart(BodyPartType.LeftHand);
-                                                                  melee = (item.Is(ItemAction.MeleeAttack)
-                                                                                   ? item.As<MeleeComponent>(ItemAction.MeleeAttack)
+                                                                  melee = (item.Is(typeof(MeleeComponent))
+                                                                                   ? item.As<MeleeComponent>()
                                                                                    : null);
                                                               } 
                                                               
@@ -71,10 +71,10 @@ namespace SkrGame.Universe.Factories {
 
                                                                   if (self.IsItemEquipped(BodyPartType.RightHand)) {
                                                                       var item = self.GetItemAtBodyPart(BodyPartType.RightHand);
-                                                                      gun = item.Is(ItemAction.Shoot) ? item.As<GunComponent>() : null;
+                                                                      gun = item.Is(typeof(GunComponent)) ? item.As<GunComponent>() : null;
                                                                   } else if (self.IsItemEquipped(BodyPartType.LeftHand)) {
                                                                       var item = self.GetItemAtBodyPart(BodyPartType.LeftHand);
-                                                                      gun = item.Is(ItemAction.Shoot) ? item.As<GunComponent>() : null;
+                                                                      gun = item.Is(typeof(GunComponent)) ? item.As<GunComponent>() : null;
                                                                   }
 
                                                                   if (gun == null) {
@@ -112,15 +112,24 @@ namespace SkrGame.Universe.Factories {
                                                                                              var weapons = new List<GunComponent>();
                 
                                                                                              if (self.IsItemEquipped(BodyPartType.LeftHand) &&
-                                                                                                 self.GetItemAtBodyPart(BodyPartType.LeftHand).Is(ItemAction.Shoot))
-                                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.LeftHand).As<GunComponent>(ItemAction.Shoot));
+                                                                                                 self.GetItemAtBodyPart(BodyPartType.LeftHand).Is(typeof(GunComponent)))
+                                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.LeftHand).As<GunComponent>());
                 
                                                                                              if (self.IsItemEquipped(BodyPartType.RightHand) &&
-                                                                                                 self.GetItemAtBodyPart(BodyPartType.RightHand).Is(ItemAction.Shoot))
-                                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.RightHand).As<GunComponent>(ItemAction.Shoot));
+                                                                                                 self.GetItemAtBodyPart(BodyPartType.RightHand).Is(typeof(GunComponent)))
+                                                                                                 weapons.Add(self.GetItemAtBodyPart(BodyPartType.RightHand).As<GunComponent>());
                 
                                                                                              return weapons;
                                                                                          },
+                                                                                         delegate(Talent t, Actor self, Point p)
+                                                                                             {
+                                                                                                 List<BulletComponent> mags = new List<BulletComponent>();
+                                                                                                 foreach (Item i in self.Items)
+                                                                                                     if (i.Is(typeof(BulletComponent)))
+                                                                                                         mags.Add(i.As<BulletComponent>());
+                                                                                                 return mags;
+
+                                                                                             },
                                                                              },
                 
                                                                   ArgsDesciptor = new List<TalentTemplate.ArgDesciptorFunction>()
@@ -159,22 +168,13 @@ namespace SkrGame.Universe.Factories {
                                                                                                    //todo factor in speed for quick reload
                                                                                                    self.ActionPoints -= gun.ReloadSpeed;
 
-                                                                                                   for (int i = 0; i < gun.Shots; i++) {
-                                                                                                       self.Level.AddItem(World.Instance.CreateItem(gun.AmmoCaliber), self.Position);
+                                                                                                   if (gun.ShotsRemaining > 0) {
+                                                                                                       var droppedAmmo = World.Instance.CreateItem(gun.AmmoCaliber);
+                                                                                                       droppedAmmo.Amount = gun.ShotsRemaining;
+
+                                                                                                       self.Level.AddItem(droppedAmmo, self.Position);
                                                                                                    }
-
-                                                                                                   int amount = 0;
-
-//                                                                                                   while (amount <= gun.Shots && self.Items.fi) {
-//                                                                                                       
-//                                                                                                   }
-
-//                                                                                                   int bullets = Math.Max(gun.Shots, self.Items.Count(i => i.Is(ItemAction.ReloadFirearm));
-//                                                                                                   for (int i = 0; i < bullets; i++) {
-//                                                                                                       self.RemoveItem();
-//                                                                                                   }
-
-//                                                                                                   self.Level.AddItem(gun.Shots);
+                                                                                                   
                 
                                                                                                    self.World.InsertMessage(String.Format("{0} reloads {1}, dropping all excess bullets", self.Name, gun.Item.Name));
                 

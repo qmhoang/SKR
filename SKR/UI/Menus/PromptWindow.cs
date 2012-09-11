@@ -23,7 +23,7 @@ namespace SKR.UI.Menus {
         protected static readonly WindowTemplate popupTemplate = new WindowTemplate()
         {
             HasFrame = false,
-            Size = new Size(1, 1)
+            Size = new Size(1, 1),            
         };
 
         protected Player player;
@@ -78,7 +78,7 @@ namespace SKR.UI.Menus {
             if (keyData.KeyCode == TCODKeyCode.Space)
                 actionBoolean(defaultBooleanAction);
 
-            Quit();
+            ExitWindow();
         }
     }
 
@@ -140,9 +140,9 @@ namespace SKR.UI.Menus {
 
             if (key.KeyCode == TCODKeyCode.Enter || key.KeyCode == TCODKeyCode.KeypadEnter) {
                 actionCount(value);
-                Quit();
+                ExitWindow();
             } else if (key.KeyCode == TCODKeyCode.Escape) {
-                Quit();
+                ExitWindow();
             }
         }
     }
@@ -196,7 +196,7 @@ namespace SKR.UI.Menus {
             if (key.KeyCode == TCODKeyCode.KeypadThree)
                 actionPosition(origin + Point.Southeast);
 
-            Quit();
+            ExitWindow();
         }
     }
 
@@ -275,7 +275,7 @@ namespace SKR.UI.Menus {
                 MovePosition(Point.Southeast);
 
             if (key.KeyCode == TCODKeyCode.Escape)
-                Quit();
+                ExitWindow();
         }
     }
 
@@ -363,11 +363,11 @@ namespace SKR.UI.Menus {
                 selectedPosition += Point.Southeast;
 
             if (key.KeyCode == TCODKeyCode.Escape)
-                Quit();
+                ExitWindow();
 
             if (key.KeyCode == TCODKeyCode.Enter || key.KeyCode == TCODKeyCode.KeypadEnter) {
                 actionPosition(selectedPosition);
-                Quit();
+                ExitWindow();
             }
         }
     }
@@ -390,7 +390,7 @@ namespace SKR.UI.Menus {
             base.OnSettingUp();
             if (options.Count <= 0) {
                 player.World.InsertMessage("No options to select from.");
-                Quit();
+                ExitWindow();
             }
         }
 
@@ -417,10 +417,10 @@ namespace SKR.UI.Menus {
                 int index = Char.ToLower(keyData.Character) - 'a';
                 if (index < options.Count && index >= 0) {
                     actionCount(options[index]);
-                    Quit();    
+                    ExitWindow();    
                 }                
             } else if (keyData.KeyCode == TCODKeyCode.Escape) {
-                Quit();
+                ExitWindow();
             }
         }
     }

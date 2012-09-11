@@ -307,7 +307,7 @@ namespace OGUI.UI
 
             foreach (var window in windowStack) {
                 if (window.IsActive)
-                    window.OnTick();                
+                    window.Update();                
             }
 
             CurrentWindow.Input.Update(elapsed);

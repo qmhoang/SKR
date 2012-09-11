@@ -38,7 +38,7 @@ namespace SKR.UI.Menus {
             int y = 0;
             
             foreach (var item in Items) {
-                Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}", item.Key, item.Value.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
+                Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1} x{4}", item.Key, item.Value.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode, item.Value.Amount));
 
                 for (int i = 0; i < rect.Size.Width; i++) {
                     if ((item.Key - 'A') == MouseOverIndex)
@@ -57,16 +57,16 @@ namespace SKR.UI.Menus {
         protected override void OnSettingUp() {
             base.OnSettingUp();
 
-            if (Items.Count <= 0) {
+            if (List.Count() <= 0) {
                 World.Instance.InsertMessage("No items.");
-                Quit();
+                ExitWindow();
             }
         }
 
         protected override void OnSelectItem(Item item) {
             base.OnSelectItem(item);
             if (singleItem)
-                Quit();
+                ExitWindow();
         }
 
 
@@ -74,7 +74,7 @@ namespace SKR.UI.Menus {
             base.OnKeyPressed(keyData);
 
             if (keyData.KeyCode == TCODKeyCode.Escape) {
-                Quit();
+                ExitWindow();
             }
         }
 
@@ -95,9 +95,10 @@ namespace SKR.UI.Menus {
             player = World.Instance.Player;
             bodyPartWidth = 25; // todo replace to code            
             sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
+            
         }
 
-        private void SelectIndex(BodyPart bodyPart) {
+        protected override void OnSelectItem(BodyPart bodyPart) {
             if (player.IsItemEquipped(bodyPart.Type)) {
                 if (player.Unequip(bodyPart.Type) == ActionResult.Aborted)  //todo
                     World.Instance.InsertMessage("Unable to unequip item, maybe you are carrying too much.");
@@ -132,9 +133,7 @@ namespace SKR.UI.Menus {
                 WindowState = WindowState.Quitting;
             }
         }
-
-
-
+        
         protected override int MouseToIndex(MouseData mouseData) {
             return mouseData.Position.Y / 2;
         }

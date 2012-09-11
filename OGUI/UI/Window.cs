@@ -496,7 +496,7 @@ namespace OGUI.UI
         /// <summary>
         /// Quit current window, removing it from the application's window stack
         /// </summary>
-        protected void Quit() {            
+        protected void ExitWindow() {            
             WindowState = WindowState.Quitting;
         }
         
@@ -605,9 +605,9 @@ namespace OGUI.UI
         /// Base method sends tick message to controls and managers.  Override to add
         /// custom handling.
         /// </summary>
-        internal protected override void OnTick()
+        internal protected override void Update()
         {
-            base.OnTick();
+            base.Update();
 
             AddManagersFromList();
             RemoveManagersFromList();
@@ -617,12 +617,12 @@ namespace OGUI.UI
 
             foreach (Manager m in managerList)
             {
-                m.OnTick();
+                m.Update();
             }
 
             foreach (Control c in ControlList)
             {
-                c.OnTick();
+                c.Update();
             }
         }
         

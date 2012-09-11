@@ -23,13 +23,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 10,
+                               StackType = StackType.None,
                                Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "largeknifeslash",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "slash",
                                                                             ActionDescriptionPlural = "slashes",
                                                                             Skill = Skill.Knife,
@@ -55,13 +56,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 3000,
                                Weight = 5,
+                               StackType = StackType.None,
                                Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "smallknifethrust",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "jab",
                                                                             ActionDescriptionPlural = "jabs",
                                                                             Skill = Skill.Knife,
@@ -85,13 +87,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 5000,
                                Weight = 40,
+                               StackType = StackType.None,
                                Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "axeswing",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "hack",
                                                                             ActionDescriptionPlural = "hacks",
                                                                             Skill = Skill.Axe,
@@ -114,13 +117,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 20,
+                               StackType = StackType.None,
                                Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "hatchetswing",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "hack",
                                                                             ActionDescriptionPlural = "hacks",
                                                                             Skill = Skill.Axe,
@@ -144,13 +148,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 4000,
                                Weight = 20,
+                               StackType = StackType.None,
                                Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "brassknucklesswing",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "punch",
                                                                             ActionDescriptionPlural = "punches",
                                                                             Skill = Skill.Brawling,
@@ -176,13 +181,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 60000,
                                Weight = 19,
+                               StackType = StackType.None,
                                Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "glock17swing",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "pistol whip",
                                                                             ActionDescriptionPlural = "pistol whips",
                                                                             Skill = Skill.Brawling,
@@ -199,7 +205,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new GunComponentTemplate
                                                                     {
                                                                             ComponentId = "glock17shoot",
-                                                                            Action = ItemAction.Shoot,
+//                                                                            Action = ItemAction.Shoot,
                                                                             ActionDescription = "shoot",
                                                                             ActionDescriptionPlural = "shoots",
                                                                             Skill = Skill.Pistol,
@@ -250,13 +256,14 @@ namespace SkrGame.Universe.Factories {
                                Type = ItemType.OneHandedWeapon,
                                Value = 30,
                                Weight = 0,
+                               StackType = StackType.Hard,
                                Components = new List<ItemComponent>
                                                 {
                                                         new BulletComponent(
                                                                 new BulletComponentTemplate
                                                                     {
                                                                             ComponentId = "9x9mmbullet",
-                                                                            Action = ItemAction.LoadMagazine,
+//                                                                            Action = ItemAction.LoadMagazine,
                                                                             ActionDescription = "load",
                                                                             ActionDescriptionPlural = "loads",                                                                            
                                                                             Caliber = "9x19mm",
@@ -272,13 +279,14 @@ namespace SkrGame.Universe.Factories {
                        Type = ItemType.OneHandedWeapon,
                        Value = 40000,
                        Weight = 21,
+                       StackType = StackType.None,
                        Components = new List<ItemComponent>
                                                 {
                                                         new MeleeComponent(
                                                                 new MeleeComponentTemplate
                                                                     {
                                                                             ComponentId = "glock22swing",
-                                                                            Action = ItemAction.MeleeAttack,
+//                                                                            Action = ItemAction.MeleeAttack,
                                                                             ActionDescription = "pistol whip",
                                                                             ActionDescriptionPlural = "pistol whips",
                                                                             Skill = Skill.Brawling,
@@ -295,7 +303,7 @@ namespace SkrGame.Universe.Factories {
                                                                 new GunComponentTemplate()
                                                                     {
                                                                             ComponentId = "glock22shoot",
-                                                                            Action = ItemAction.Shoot,
+//                                                                            Action = ItemAction.Shoot,
                                                                             ActionDescription = "shoot",
                                                                             ActionDescriptionPlural = "shoots",
                                                                             Skill = Skill.Pistol,
@@ -346,13 +354,14 @@ namespace SkrGame.Universe.Factories {
                        Type = ItemType.OneHandedWeapon,
                        Value = 30,
                        Weight = 0,
+                       StackType = StackType.Hard,
                        Components = new List<ItemComponent>
                                                 {
                                                         new BulletComponent(
                                                                 new BulletComponentTemplate()
                                                                     {
                                                                             ComponentId = ".40S&Wbullet",
-                                                                            Action = ItemAction.LoadMagazine,
+//                                                                            Action = ItemAction.LoadMagazine,
                                                                             ActionDescription = "load",
                                                                             ActionDescriptionPlural = "loads",                                                                            
                                                                             Caliber = ".40S&W",
