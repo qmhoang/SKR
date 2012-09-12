@@ -1,215 +1,105 @@
 ﻿using System;
+using DEngine.Actor;
 using DEngine.Core;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Location;
 
 namespace SkrGame.Universe.Factories {
-    public abstract class FeatureFactory : Factory<string, Feature> {
-        
-    }
+    public abstract class FeatureFactory : Factory<string, Feature> {}
+
     public class SourceFeatureFactory : FeatureFactory {
+        private ActionResult ActionDoor(ActiveFeatureComponent f, Actor user, string assetOpened, string assetClosed) {
+            if (f.Action == "Open door") {
+                f.Owner.Asset = assetOpened;
+                f.Action = "Close door";
+                f.Owner.Transparent = f.Owner.Walkable = true;
+                user.World.InsertMessage(String.Format("{0} opens the door.", user.Name));
+                return ActionResult.Success;
+            }
+            if (!f.Owner.Level.DoesActorExistAtLocation(f.Owner.Position)) {
+                f.Owner.Asset = assetClosed;
+                f.Action = "Open door";
+                f.Owner.Transparent = f.Owner.Walkable = false;
+                user.World.InsertMessage(String.Format("{0} closes the door.", user.Name));
+                return ActionResult.Success;
+            }
+
+            user.World.InsertMessage("There's something blocking the way.");
+            return ActionResult.Aborted;
+        }
+
+        private ActionResult ActionWindow(ActiveFeatureComponent f, Actor user, string assetOpened, string assetClosed) {
+            if (f.Action == "Open window") {
+                f.Owner.Asset = assetOpened;
+                f.Action = "Close window";
+                f.Owner.Transparent = true;
+                user.World.InsertMessage(String.Format("{0} opens the window.", user.Name));
+                return ActionResult.Success;
+            } else {
+                f.Owner.Asset = assetClosed;
+                f.Action = "Open window";
+                f.Owner.Transparent = false;
+                user.World.InsertMessage(String.Format("{0} closes the window.", user.Name));
+                return ActionResult.Success;
+            }
+        }
+
+        private int doorUsageAPCost = World.DefaultTurnSpeed;
+        private int windowUsageAPCost = World.DefaultTurnSpeed;
+
         public override Feature Construct(string key) {
-            switch (key)
-            {
-                #region Doors & Windows
+            switch (key) {
+                    #region Doors & Windows
+
                 case "Door":
                     return new Feature(key, "OpenedDoor").Add(
-                            new ActiveFeatureComponent("Close door", delegate(ActiveFeatureComponent f, Actor user)
-                                                                         {
-                                                                             if (f.Action == "Open door") {
-                                                                                 f.Owner.Asset = "OpenedDoor";
-                                                                                 f.Action = "Close door";
-                                                                                 f.Owner.Transparent = f.Owner.Walkable = true;
-                                                                                 user.World.InsertMessage(String.Format("{0} opens the door.", user.Name));
-                                                                             } else {
-                                                                                 if (!f.Owner.Level.DoesActorExistAtLocation(f.Owner.Position)) {
-                                                                                     f.Owner.Asset = "ClosedDoor";
-                                                                                     f.Action = "Open door";
-                                                                                     f.Owner.Transparent = f.Owner.Walkable = false;
-                                                                                     user.World.InsertMessage(String.Format("{0} closes the door.", user.Name));
-                                                                                 } else
-                                                                                     user.World.InsertMessage("There's something blocking the way.");
-
-                                                                             }
-                                                                         }));
+                            new ActiveFeatureComponent("Close door", doorUsageAPCost,
+                                                       (f, user) => ActionDoor(f, user, "OpenedDoor", "ClosedDoor")));
                 case "WALL_BRICK_DARK_DOOR_HORZ":
                     return new Feature(key, "WALL_BRICK_DARK_DOOR_HORZ", false, false).Add(
-                            new ActiveFeatureComponent("Open door", delegate(ActiveFeatureComponent f, Actor user)
-                                                                        {
-                                                                            if (f.Action == "Open door") {
-                                                                                f.Owner.Asset = "WALL_BRICK_DARK_DOOR_VERT";
-                                                                                f.Action = "Close door";
-                                                                                f.Owner.Transparent = f.Owner.Walkable = true;
-                                                                                user.World.InsertMessage(
-                                                                                        String.Format("{0} opens the door.", user.Name));
-                                                                            } else {
-                                                                                if (
-                                                                                        !f.Owner.Level.DoesActorExistAtLocation(
-                                                                                                f.Owner.Position)) {
-                                                                                    f.Owner.Asset = "WALL_BRICK_DARK_DOOR_HORZ";
-                                                                                    f.Action = "Open door";
-                                                                                    f.Owner.Transparent = f.Owner.Walkable = false;
-                                                                                    user.World.InsertMessage(
-                                                                                            String.Format("{0} closes the door.",
-                                                                                                          user.Name));
-                                                                                } else
-                                                                                    user.World.InsertMessage(
-                                                                                            "There's something blocking the way.");
-                                                                            }
-                                                                        }));
+                            new ActiveFeatureComponent("Open door", doorUsageAPCost,
+                                (f, user) => ActionDoor(f, user, "WALL_BRICK_DARK_DOOR_VERT", "WALL_BRICK_DARK_DOOR_HORZ")));
+                                                       
                 case "WALL_BRICK_DARK_DOOR_VERT":
                     return new Feature(key, "WALL_BRICK_DARK_DOOR_VERT", false, false).Add(
-                            new ActiveFeatureComponent("Open door", delegate(ActiveFeatureComponent f, Actor user)
-                                                                        {
-                                                                            if (f.Action == "Open door") {
-                                                                                f.Owner.Asset = "WALL_BRICK_DARK_DOOR_HORZ";
-                                                                                f.Action = "Close door";
-                                                                                f.Owner.Transparent = f.Owner.Walkable = true;
-                                                                                user.World.InsertMessage(
-                                                                                        String.Format("{0} opens the door.", user.Name));
-                                                                            } else {
-                                                                                if (
-                                                                                        !f.Owner.Level.DoesActorExistAtLocation(
-                                                                                                f.Owner.Position)) {
-                                                                                    f.Owner.Asset = "WALL_BRICK_DARK_DOOR_VERT";
-                                                                                    f.Action = "Open door";
-                                                                                    f.Owner.Transparent = f.Owner.Walkable = false;
-                                                                                    user.World.InsertMessage(
-                                                                                            String.Format("{0} closes the door.",
-                                                                                                          user.Name));
-                                                                                } else
-                                                                                    user.World.InsertMessage(
-                                                                                            "There's something blocking the way.");
-                                                                            }
-                                                                        }));
+                            new ActiveFeatureComponent("Open door", doorUsageAPCost,
+                                (f, user) => ActionDoor(f, user, "WALL_BRICK_DARK_DOOR_HORZ", "WALL_BRICK_DARK_DOOR_VERT")));
                 case "WINDOW_BRICK_DARK_VERT":
                     return new Feature(key, "WINDOW_BRICK_DARK_VERT", false, false).Add(
-                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
-                                                                          {
-                                                                              if (f.Action == "Open window") {
-                                                                                  f.Owner.Asset = "WINDOW_BRICK_DARK_HORZ";
-                                                                                  f.Action = "Close window";
-                                                                                  f.Owner.Transparent = true;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} opens the window.", user.Name));
-                                                                              } else {
-                                                                                  f.Owner.Asset = "WINDOW_BRICK_DARK_VERT";
-                                                                                  f.Action = "Open window";
-                                                                                  f.Owner.Transparent = false;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} closes the window.", user.Name));
-
-                                                                              }
-                                                                          }));
+                            new ActiveFeatureComponent("Open window", windowUsageAPCost,
+                                (f, user) => ActionWindow(f, user, "WINDOW_BRICK_DARK_HORZ", "WINDOW_BRICK_DARK_VERT")));
                 case "WINDOW_BRICK_DARK_HORZ":
                     return new Feature(key, "WINDOW_BRICK_DARK_HORZ", false, false).Add(
-                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
-                                                                          {
-                                                                              if (f.Action == "Open window") {
-                                                                                  f.Owner.Asset = "WINDOW_BRICK_DARK_VERT";
-                                                                                  f.Action = "Close window";
-                                                                                  f.Owner.Transparent = true;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} opens the window.", user.Name));
-                                                                              } else {
-                                                                                  f.Owner.Asset = "WINDOW_BRICK_DARK_HORZ";
-                                                                                  f.Action = "Open window";
-                                                                                  f.Owner.Transparent = false;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} closes the window.", user.Name));
-
-                                                                              }
-                                                                          }));
+                            new ActiveFeatureComponent("Open window", windowUsageAPCost,
+                                (f, user) => ActionWindow(f, user, "WINDOW_BRICK_DARK_VERT", "WINDOW_BRICK_DARK_HORZ")));
                 case "WINDOW_HOUSE_VERT":
                     return new Feature(key, "WINDOW_HOUSE_VERT", false, false).Add(
-                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
-                                                                          {
-                                                                              if (f.Action == "Open window") {
-                                                                                  f.Owner.Asset = "WINDOW_HOUSE_HORZ";
-                                                                                  f.Action = "Close window";
-                                                                                  f.Owner.Transparent = true;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} opens the window.", user.Name));
-                                                                              } else {
-                                                                                  f.Owner.Asset = "WINDOW_HOUSE_VERT";
-                                                                                  f.Action = "Open window";
-                                                                                  f.Owner.Transparent = false;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} closes the window.", user.Name));
-
-                                                                              }
-                                                                          }));
+                            new ActiveFeatureComponent("Open window", windowUsageAPCost,
+                                (f, user) => ActionWindow(f, user, "WINDOW_HOUSE_HORZ", "WINDOW_HOUSE_VERT")));
                 case "WINDOW_HOUSE_HORZ":
                     return new Feature(key, "WINDOW_HOUSE_HORZ", false, false).Add(
-                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
-                                                                          {
-                                                                              if (f.Action == "Open window") {
-                                                                                  f.Owner.Asset = "WINDOW_HOUSE_VERT";
-                                                                                  f.Action = "Close window";
-                                                                                  f.Owner.Transparent = true;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} opens the window.", user.Name));
-                                                                              } else {
-                                                                                  f.Owner.Asset = "WINDOW_HOUSE_HORZ";
-                                                                                  f.Action = "Open window";
-                                                                                  f.Owner.Transparent = false;
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} closes the window.", user.Name));
-
-                                                                              }
-                                                                          }));
+                            new ActiveFeatureComponent("Open window", windowUsageAPCost,
+                                (f, user) => ActionWindow(f, user, "WINDOW_HOUSE_VERT", "WINDOW_HOUSE_HORZ")));
                 case "DOOR_APART_1_VERT":
                     return new Feature(key, "DOOR_APART_1_VERT", false, false).Add(
-                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
-                                                                          {
-                                                                              if (f.Action == "Open window") {
-                                                                                  f.Owner.Asset = "DOOR_APART_1_HORZ";
-                                                                                  f.Action = "Close window";
-                                                                                  f.Owner.Transparent = f.Owner.Walkable = true;
-
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} opens the window.", user.Name));
-                                                                              } else {
-                                                                                  f.Owner.Asset = "DOOR_APART_1_VERT";
-                                                                                  f.Action = "Open window";
-                                                                                  f.Owner.Transparent = f.Owner.Walkable = false;
-
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} closes the window.", user.Name));
-
-                                                                              }
-                                                                          }));
+                            new ActiveFeatureComponent("Open window", windowUsageAPCost,
+                                (f, user) => ActionWindow(f, user, "DOOR_APART_1_HORZ", "DOOR_APART_1_VERT"))); 
                 case "DOOR_APART_1_HORZ":
                     return new Feature(key, "DOOR_APART_1_HORZ", false, false).Add(
-                            new ActiveFeatureComponent("Open window", delegate(ActiveFeatureComponent f, Actor user)
-                                                                          {
-                                                                              if (f.Action == "Open window") {
-                                                                                  f.Owner.Asset = "DOOR_APART_1_VERT";
-                                                                                  f.Action = "Close window";
-                                                                                  f.Owner.Transparent = f.Owner.Walkable = true;
+                            new ActiveFeatureComponent("Open window", windowUsageAPCost,
+                                (f, user) => ActionWindow(f, user, "DOOR_APART_1_VERT", "DOOR_APART_1_HORZ")));
+                    #endregion
 
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} opens the window.", user.Name));
-                                                                              } else {
-                                                                                  f.Owner.Asset = "DOOR_APART_1_HORZ";
-                                                                                  f.Action = "Open window";
-                                                                                  f.Owner.Transparent = f.Owner.Walkable = false;
+                    #region House Features
 
-                                                                                  user.World.InsertMessage(
-                                                                                          String.Format("{0} closes the window.", user.Name));
-
-                                                                              }
-                                                                          }));
-                #endregion
-
-                #region House Features
                 case "COUNTER_WOOD_RED":
                     return new Feature(key, "COUNTER_WOOD_RED", false, false);
                 case "SINK":
                     return new Feature(key, "SINK").Add(
-                            new ActiveFeatureComponent("Wash hands", delegate(ActiveFeatureComponent f, Actor user)
+                            new ActiveFeatureComponent("Wash hands", World.DefaultTurnSpeed, delegate(ActiveFeatureComponent f, Actor user)
                                                                          {
                                                                              //user.cleaniness += 5
+                                                                             return ActionResult.Aborted;
                                                                          }));
                 case "TOILET":
                     return new Feature(key, "TOILET", true, true).Add(
@@ -239,7 +129,7 @@ namespace SkrGame.Universe.Factories {
                 case "BED_WOODEN":
                     return new Feature(key, "BED_WOODEN", true, true).Add(
                             new PassiveFeatureComponent(delegate(PassiveFeatureComponent f, Actor actor, double distance)
-                                                            {    
+                                                            {
                                                                 if (Math.Abs(distance - 0) < Double.Epsilon)
                                                                     actor.World.InsertMessage(String.Format("{0} jumps on the bed.", actor.Name));
                                                             }));
@@ -281,8 +171,11 @@ namespace SkrGame.Universe.Factories {
                     return new Feature(key, "TABLE_WOODEN", true, true);
                 case "SAFE_SIMPLE":
                     return new Feature(key, "SAFE_SIMPLE", true, true);
-                #endregion
-                #region Walls
+
+                    #endregion
+
+                    #region Walls
+
                 case "WALL_BRICK_DARK":
                     return new Feature(key, "WALL_BRICK_DARK", false, false);
                 case "WALL_BRICK_DARK_VERT":
@@ -307,18 +200,24 @@ namespace SkrGame.Universe.Factories {
                     return new Feature(key, "WALL_BRICK_DARK_SOUTHEAST", false, false);
                 case "WALL_DRY":
                     return new Feature(key, "WALL_DRY", false, false);
-                #endregion
 
-                #region Stairs
+                    #endregion
+
+                    #region Stairs
+
                 case "STAIR_WOODEN_UP":
                     return new Feature(key, "STAIR_WOODEN_UP", true, true);
                 case "STAIR_WOODEN_DOWN":
                     return new Feature(key, "STAIR_WOODEN_DOWN", true, true);
-                #endregion
-                #region Misc Decorations
+
+                    #endregion
+
+                    #region Misc Decorations
+
                 case "PLANTPOT_FIXED":
                     return new Feature(key, "PLANTPOT_FIXED", true, true);
-                #endregion
+
+                    #endregion
             }
 
             return null;
