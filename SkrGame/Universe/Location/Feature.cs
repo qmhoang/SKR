@@ -90,9 +90,24 @@ namespace SkrGame.Universe.Location {
 
         public void Use(Actor user, string action) {
             foreach (var component in components) {
-                if (component is ActiveFeatureComponent)
-                    if (((ActiveFeatureComponent)component).Action == action)
-                        ((ActiveFeatureComponent)component).Use(component as ActiveFeatureComponent, user);
+                if (component is ActiveFeatureComponent) {
+                    var activefeature = (ActiveFeatureComponent) component;
+                    if (activefeature.Action == action) {
+                        ActionResult result = activefeature.Use(component as ActiveFeatureComponent, user);
+
+                        switch (result) {
+                            case ActionResult.SuccessNoTime:
+                            case ActionResult.Aborted:
+                                // no AP is used
+                                break;
+                            case ActionResult.Failed:
+                            case ActionResult.Success:
+                                user.ActionPoints -= activefeature.ActionPointCost;
+                                break;
+                        }
+                    }
+                }
+                    
             }
         }
 
@@ -126,11 +141,12 @@ namespace SkrGame.Universe.Location {
 
     public class ActiveFeatureComponent : FeatureComponent {        
         public string Action { get; set; }
-        public Action<ActiveFeatureComponent, Actor> Use { get; set; }
+        public int ActionPointCost { get; set; }
+        public Func<ActiveFeatureComponent, Actor, ActionResult> Use { get; set; }
 
-        public ActiveFeatureComponent(string action, Action<ActiveFeatureComponent, Actor> use)
-        {
+        public ActiveFeatureComponent(string action, int apcost, Func<ActiveFeatureComponent, Actor, ActionResult> use) {
             Use = use;
+            ActionPointCost = apcost;
             Action = action;
         }
     }
