@@ -42,7 +42,7 @@ namespace SKR.UI.Menus {
                 var item = charItemPair.Value;
 
                 Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, item.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
-                    item.Is(typeof(GunComponent)) ? string.Format(" ({0}/{1})", item.As<GunComponent>().ShotsRemaining, item.As<GunComponent>().Shots) : ""));
+                    item.Is(typeof(RangeComponent)) ? string.Format(" ({0}/{1})", item.As<RangeComponent>().ShotsRemaining, item.As<RangeComponent>().Shots) : ""));
 
                 Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", item.Amount));
 
@@ -64,7 +64,7 @@ namespace SKR.UI.Menus {
             base.OnSettingUp();
 
             if (List.Count() <= 0) {
-                World.Instance.InsertMessage("No items.");
+                World.Instance.AddMessage("No items.");
                 ExitWindow();
             }
         }
@@ -107,7 +107,7 @@ namespace SKR.UI.Menus {
         protected override void OnSelectItem(BodyPart bodyPart) {
             if (player.IsItemEquipped(bodyPart.Type)) {
                 if (player.Unequip(bodyPart.Type) == ActionResult.Aborted)  //todo
-                    World.Instance.InsertMessage("Unable to unequip item, maybe you are carrying too much.");
+                    World.Instance.AddMessage("Unable to unequip item, maybe you are carrying too much.");
             } else {
                 var items = player.Items.Where(bodyPart.CanUseItem).ToList();
                 if (items.Count > 0)
@@ -122,10 +122,10 @@ namespace SKR.UI.Menus {
                                                           delegate(Item i)
                                                           {
                                                               if (player.Equip(bodyPart.Type, i) == ActionResult.Aborted) // todo
-                                                                  World.Instance.InsertMessage("Unable to equip item.");
+                                                                  World.Instance.AddMessage("Unable to equip item.");
                                                           }));
                 else
-                    World.Instance.InsertMessage("No items in inventory that go there.");
+                    World.Instance.AddMessage("No items in inventory that go there.");
 
             }
 
@@ -152,7 +152,7 @@ namespace SKR.UI.Menus {
                 Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", bodyPartPair.Key, bodyPartPair.Value.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
                 Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
                 Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, player.IsItemEquipped(bodyPartPair.Value.Type) ?
-                    String.Format("{0}{1}", item.Name, (item.Is(typeof(GunComponent)) ? string.Format(" ({0}/{1})", item.As<GunComponent>().ShotsRemaining, item.As<GunComponent>().Shots) : "")) : 
+                    String.Format("{0}{1}", item.Name, (item.Is(typeof(RangeComponent)) ? string.Format(" ({0}/{1})", item.As<RangeComponent>().ShotsRemaining, item.As<RangeComponent>().Shots) : "")) : 
                     "-");
 
                 for (int i = 0; i < rect.Size.Width; i++) {
