@@ -6,8 +6,10 @@ namespace SkrGame.Universe.Entities.Items {
         Cut,
         Impale,
         Crush,
+        PierceSmall,
         Pierce,
         PierceLarge,
+        PierceHuge,
     }
 
     public abstract class WeaponComponentTemplate : ItemComponentTemplate {

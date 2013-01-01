@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using DEngine.Core;
-using OGUI.UI;
+using Ogui.UI;
 
 namespace SKR.UI.Menus {
     public class ListWindowTemplate<T> : WindowTemplate {        

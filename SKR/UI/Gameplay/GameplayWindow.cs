@@ -5,8 +5,8 @@ using System.Reflection.Emit;
 using System.Text;
 using DEngine.Core;
 using DEngine.Extensions;
-using OGUI.Core;
-using OGUI.UI;
+using Ogui.Core;
+using Ogui.UI;
 using SKR.UI.Menus;
 using SKR.Universe;
 using SkrGame.Gameplay.Talent;
@@ -229,25 +229,34 @@ namespace SKR.UI.Gameplay {
 //                    } else if (keyData.Character == 'a') {
 //                        HandleTalent(player.GetTalent(Skill.TargetAttack));
                     } else if (keyData.Character == 'd') {
-                        ParentApplication.Push(new ItemWindow(false,
-                                                              new ListWindowTemplate<Item>()
+                        if (player.Items.Count() > 0) {
+                            ParentApplication.Push(new ItemWindow(false,
+                                                                  new ListWindowTemplate<Item>()
                                                                   {
-                                                                          Size = MapPanel.Size,
-                                                                          IsPopup = true,
-                                                                          HasFrame = true,
-                                                                          Items = player.Items,
+                                                                      Size = MapPanel.Size,
+                                                                      IsPopup = true,
+                                                                      HasFrame = true,
+                                                                      Items = player.Items,
                                                                   },
-                                                              DropItem));
+                                                                  DropItem));
+                        } else {
+                            World.Instance.InsertMessage("You are carrying no items to drop.");                            
+                        }
+                        
                     } else if (keyData.Character == 'g') {
-                        ParentApplication.Push(new ItemWindow(false,
-                                                              new ListWindowTemplate<Item>()
-                                                              {
-                                                                  Size = MapPanel.Size,
-                                                                  IsPopup = true,
-                                                                  HasFrame = true,
-                                                                  Items = player.Level.Items.Where(tuple => tuple.Item1 == player.Position).Select(tuple => tuple.Item2),
-                                                              },
-                                                              PickUpItem));
+                        if (player.Level.Items.Where(tuple => tuple.Item1 == player.Position).Count() > 0)
+                            ParentApplication.Push(new ItemWindow(false,
+                                                                  new ListWindowTemplate<Item>()
+                                                                  {
+                                                                      Size = MapPanel.Size,
+                                                                      IsPopup = true,
+                                                                      HasFrame = true,
+                                                                      Items = player.Level.Items.Where(tuple => tuple.Item1 == player.Position).Select(tuple => tuple.Item2),
+                                                                  },
+                                                                  PickUpItem));
+                        else {
+                            World.Instance.InsertMessage("No items here to pick up.");
+                        }
                     } else if (keyData.Character == 'u') {
                         HandleTalent(player.GetTalent(Skill.UseFeature));
                     } else if (keyData.Character == 'i') {

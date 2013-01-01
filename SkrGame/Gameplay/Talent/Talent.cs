@@ -128,8 +128,7 @@ namespace SkrGame.Gameplay.Talent {
         }
 
         public int NumberOfArgs {
-            get { return argsFuncs.Count; }
-            
+            get { return argsFuncs != null ? argsFuncs.Count : 0; }
         }
 
         /// <summary>

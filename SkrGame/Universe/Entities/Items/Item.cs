@@ -98,7 +98,12 @@ namespace SkrGame.Universe.Entities.Items {
                 comp.Item = this;
                 components.Add(comp.GetType(), comp);
             }
-        }               
+        }
+
+        public static string FormatNormalItemName(Item item) {
+            return String.Format("{0} x{1}", item.Name, item.amount);
+
+        }
     }
 
     public enum StackType {
