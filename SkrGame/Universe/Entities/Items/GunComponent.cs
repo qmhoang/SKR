@@ -31,7 +31,7 @@ namespace SkrGame.Universe.Entities.Items {
 
     public class GunComponentTemplate : WeaponComponentTemplate {
         public int Accuracy { get; set; }
-        public Rand DamageRange { get; set; }
+        public Rand Damage { get; set; }
         public DamageType DamageType { get; set; }
         public double Penetration { get; set; }
         public int Range { get; set; }
@@ -42,11 +42,16 @@ namespace SkrGame.Universe.Entities.Items {
         public int Reliability { get; set; }
         public string Caliber { get; set; }
         public int Shots { get; set; }
+
+        // not used yet
+        public bool SwapClips { get; set; }         // if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
+        public int ShotsPerBurst { get; set; }      // number of bullets fired per burst
+        public int BurstPenalty { get; set; }       // penalty for each shot of the burst
+        public int BurstAP { get; set; }            // AP cost for a burst
     }
 
     public class GunComponent : WeaponComponent {
-        public int Accuracy { get; protected set; }
-        public Rand DamageRange { get; protected set; }
+        public int Accuracy { get; protected set; }        
         private DamageType damageType;
         public override DamageType DamageType { get { return damageType; } }
 
@@ -69,7 +74,7 @@ namespace SkrGame.Universe.Entities.Items {
         public GunComponent(GunComponentTemplate template)
             : base(template.ComponentId, template.ActionDescription, template.ActionDescriptionPlural, template.Skill, template.Strength) {
             Accuracy = template.Accuracy;
-            DamageRange = template.DamageRange;
+            Damage = template.Damage;
             this.damageType = template.DamageType;
             this.penetration = template.Penetration;
             Range = template.Range;

@@ -5,8 +5,8 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Extensions;
-using OGUI.Core;
-using OGUI.UI;
+using Ogui.Core;
+using Ogui.UI;
 using SKR.Universe;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
@@ -37,15 +37,21 @@ namespace SKR.UI.Menus {
         protected override void CustomDraw(Rect rect) {
             int y = 0;
             
-            foreach (var item in Items) {
-                Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1} x{4}", item.Key, item.Value.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode, item.Value.Amount));
+            foreach (var charItemPair in Items) {
+                var letter = charItemPair.Key;
+                var item = charItemPair.Value;
+
+                Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, item.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
+                    item.Is(typeof(GunComponent)) ? string.Format(" ({0}/{1})", item.As<GunComponent>().ShotsRemaining, item.As<GunComponent>().Shots) : ""));
+
+                Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", item.Amount));
 
                 for (int i = 0; i < rect.Size.Width; i++) {
-                    if ((item.Key - 'A') == MouseOverIndex)
+                    if ((letter - 'A') == MouseOverIndex)
                         Canvas.Console.setCharBackground(rect.TopLeft.X + i, rect.TopLeft.Y + y, Pigments[PigmentType.ViewHilight].Background.TCODColor);
                     else
                         Canvas.Console.setCharBackground(rect.TopLeft.X + i, rect.TopLeft.Y + y,
-                                                         item.Key % 2 == 0
+                                                         letter % 2 == 0
                                                                  ? Pigments[PigmentType.ViewNormal].Background.TCODColor
                                                                  : Pigments[PigmentType.ViewFocus].Background.TCODColor);
                 }
@@ -141,9 +147,13 @@ namespace SKR.UI.Menus {
         protected override void CustomDraw(Rect rect) {
             int positionY = 0;
             foreach (var bodyPartPair in Items) {
+                var item = player.GetItemAtBodyPart(bodyPartPair.Value.Type);
+
                 Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", bodyPartPair.Key, bodyPartPair.Value.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
                 Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
-                Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, player.IsItemEquipped(bodyPartPair.Value.Type) ? player.GetItemAtBodyPart(bodyPartPair.Value.Type).Name : "-");
+                Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, player.IsItemEquipped(bodyPartPair.Value.Type) ?
+                    String.Format("{0}{1}", item.Name, (item.Is(typeof(GunComponent)) ? string.Format(" ({0}/{1})", item.As<GunComponent>().ShotsRemaining, item.As<GunComponent>().Shots) : "")) : 
+                    "-");
 
                 for (int i = 0; i < rect.Size.Width; i++) {
                     if ((bodyPartPair.Key - 'A') == MouseOverIndex)

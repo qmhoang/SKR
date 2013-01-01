@@ -79,6 +79,7 @@
     </Content>
     <Content Include="Log.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="zlib1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -89,9 +90,9 @@
       <Project>{FAA2CEF2-1844-4043-A582-AD4CDE346ADD}</Project>
       <Name>DEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OGUI\OGUI.csproj">
-      <Project>{08BCC46C-7FFA-4781-AEA8-0C280754DF61}</Project>
-      <Name>OGUI</Name>
+    <ProjectReference Include="..\..\Ogui\Ogui.csproj">
+      <Project>{EA31E2EA-686F-4B95-9FE1-34EC5015794B}</Project>
+      <Name>Ogui</Name>
     </ProjectReference>
     <ProjectReference Include="..\SkrGame\SkrGame.csproj">
       <Project>{0ADBAB4C-409B-4E65-9444-B7D677B560FA}</Project>

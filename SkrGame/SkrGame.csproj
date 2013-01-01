@@ -78,7 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gameplay\Combat\MeleeCombat.cs" />
+    <Compile Include="Gameplay\Combat\PhysicalCombat.cs" />
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Universe\Calendar.cs" />
@@ -100,8 +100,8 @@
     <Compile Include="Universe\Entities\Items\WeaponComponent.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Factories\MapFactory.cs" />
-    <Compile Include="Universe\Factories\SourceTalentFactory.cs" />
-    <Compile Include="Universe\Factories\SourceTileFactory.cs" />
+    <Compile Include="Universe\Factories\TalentFactory.cs" />
+    <Compile Include="Universe\Factories\FeatureFactory.cs" />
     <Compile Include="Universe\Location\Feature.cs" />
     <Compile Include="Universe\Location\Level.cs" />
     <Compile Include="Universe\World.cs" />

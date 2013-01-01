@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using OGUI.Core;
+using Ogui.Core;
 using libtcod;
 
 namespace SKR.Universe {

@@ -41,13 +41,13 @@ namespace SkrGame.Universe.Factories {
                     return FromString(
                                       new Dictionary<char, Tuple<string, string>>
                                           {
-                                                  {'#', new Tuple<string, string>("StoneFloor", "BlockWall")},
+                                                  {'#', new Tuple<string, string>("StoneFloor", "WALL_BRICK_DARK")},
                                                   {'.', new Tuple<string, string>("StoneFloor", null)},
                                                   {'/', new Tuple<string, string>("StoneFloor", "Door")},
                                                   {'+', new Tuple<string, string>("StoneFloor", null)},
                                                   {'^', new Tuple<string, string>("StoneFloor", null)},
                                           },
-                                      "############################################################", 
+                                      ".###########################################################", 
                                       "#..........................................................#", 
                                       "#....../...................................................#", 
                                       "#..........................................................#", 

@@ -72,12 +72,12 @@ namespace SkrGame.Universe {
         }
 
         private void Temp() {
-            var level = MapFactory.Construct("TestMotel");
+            var level = MapFactory.Construct("TestMap");
             level.World = this;
             Npc npc1 = new Npc(level) { Position = new Point(3, 4) };            
             npc1.Intelligence = new SimpleIntelligence(npc1);
-//            level.AddActor(npc1);
-//            AddUpdateableObject(npc1);
+            level.AddActor(npc1);
+            AddUpdateableObject(npc1);
 
             level.GenerateFov();
 
@@ -119,7 +119,7 @@ namespace SkrGame.Universe {
             toAdds.Add(i);
         }
 
-        public void RemoveUpdateableOjects(IEntity i) {
+        public void RemoveUpdateableOject(IEntity i) {
             toRemove.Add(i);
         }
 
