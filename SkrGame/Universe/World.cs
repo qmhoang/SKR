@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Core;
+using SkrGame.Core;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.NPC;
@@ -9,143 +10,182 @@ using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Factories;
+using SkrGame.Universe.Location;
 
 namespace SkrGame.Universe {
-    public class World {
-        public const int DefaultTurnSpeed = 100;
-        public const int TurnLengthInSeconds = 1;
-        
-        public const int Mean = 0;
-        public const int StandardDeviation = 3;
+	public class World {
+		/// <summary>
+		/// default speed of entities, an entity with 2x speed can act twice as before an entity with normal speed
+		/// </summary>
+		public const int DEFAULT_SPEED = 100;					// 
+		public const int TURN_LENGTH_IN_SECONDS = 1;			// how long is a turn in seconds
 
-        public static int SecondsToActionPoints(double seconds) {
-            return TurnLengthInSeconds * (int) Math.Round(DefaultTurnSpeed / seconds);
-        }
+		public const int MEAN = 50;								// what is the mean score for an attribute
+		public const int STANDARD_DEVIATION = 15;				// what is the stddev for an attribute score
 
-        public static double SpeedToSeconds(int speed) {
-            return (DefaultTurnSpeed * TurnLengthInSeconds) / (double) speed;
-        }
+		public const int TILE_LENGTH = 1;						// length of 1 square tile
 
-        public static int SecondsToSpeed(double seconds) {
-            return (int) ((DefaultTurnSpeed * TurnLengthInSeconds) / seconds);
-        }
+		public static int SecondsToActionPoints(double seconds) {
+			return (int)Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
+		}
 
-        public List<string> MessageBuffer { get; private set; }
+		public static double ActionPointsToSeconds(int ap) {
+			return (double)(ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
+		}
 
-        public event EventHandler<EventArgs<string>> MessageAdded;
+		public static int SpeedToActionPoints(int speed) {
+			return SecondsToActionPoints(SpeedToSeconds(speed));
+		}
 
-        public void OnMessageAdded(EventArgs<string> e) {
-            EventHandler<EventArgs<string>> handler = MessageAdded;
-            if (handler != null)
-                handler(this, e);
-        }
+		public static int ActionPointsToSpeed(int ap) {
+			return SecondsToSpeed(ActionPointsToSeconds(ap));
+		}
 
-        private readonly List<IEntity> entities;
-        private readonly List<IEntity> toAdds;
-        private readonly List<IEntity> toRemove;
+		public static double SpeedToSeconds(int speed) {
+			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / (double)speed;
+		}
 
-        public Calendar Calendar { get; private set; }
+		/// <summary>
+		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
+		/// </summary>
+		public static int SecondsToSpeed(double seconds) {
+			return (int)((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
+		}
 
-        public Player Player { get; set; }
+		public List<Message> MessageBuffer { get; private set; }
 
-        private readonly ItemFactory ItemFactory;        
-        private readonly FeatureFactory FeatureFactory;
-        private readonly TalentFactory TalentFactory;
-        private readonly MapFactory MapFactory;
+		public event EventHandler<EventArgs<Message>> MessageAdded;
+		public Message CurrentMessage;
 
-        public static World Instance { get; private set; }
+		public void OnMessageAdded(EventArgs<Message> e) {
+			EventHandler<EventArgs<Message>> handler = MessageAdded;
+			if (handler != null)
+				handler(this, e);
+		}
 
-        private World() {
-            Calendar = new Calendar();
+		private readonly List<IEntity> entities;
+		private readonly List<IEntity> toAdds;
+		private readonly List<IEntity> toRemove;
 
-            entities = new List<IEntity> { Calendar };
-            toAdds = new List<IEntity>();
-            toRemove = new List<IEntity>();
-            MessageBuffer = new List<string>();
-            
-            TalentFactory = new SourceTalentFactory();
-            ItemFactory = new SourceItemFactory();
-            FeatureFactory = new SourceFeatureFactory();
-            MapFactory = new SourceMapFactory(FeatureFactory);
+		public Calendar Calendar { get; private set; }
 
-            Rng.Seed(0);
-        }
+		public Player Player { get; set; }
 
-        private void Temp() {
-            var level = MapFactory.Construct("TestMap");
-            level.World = this;
-            Npc npc1 = new Npc(level) { Position = new Point(3, 4) };            
-            npc1.Intelligence = new SimpleIntelligence(npc1);
-            level.AddActor(npc1);
-            AddUpdateableObject(npc1);
+		private readonly ItemFactory itemFactory;        
+		private readonly FeatureFactory featureFactory;
+		private readonly TalentFactory talentFactory;
+		private readonly MapFactory mapFactory;
 
-            level.GenerateFov();
+		public static World Instance { get; private set; }
 
-            Player = new Player(level) { Position = new Point(0, 0) };            
+		public Level CurrentLevel {
+			get { return Player.Level; }
+		}
 
-            Player.AddItem(CreateItem("largeknife"));
+		private World() {
+			Calendar = new Calendar();
 
-            var i = CreateItem("brassknuckles");
-            Player.AddItem(i);
-            Player.Equip(BodyPartType.LeftHand, i);
+			entities = new List<IEntity> { Calendar };
+			toAdds = new List<IEntity>();
+			toRemove = new List<IEntity>();
+			MessageBuffer = new List<Message>(); 
+			
+			talentFactory = new SourceTalentFactory();
+			itemFactory = new SourceItemFactory();
+			featureFactory = new SourceFeatureFactory();
+			mapFactory = new SourceMapFactory(featureFactory);
 
-            Player.AddItem(CreateItem("glock22"));
-            Player.AddItem(CreateItem(".40S&W"));
-            var ammo = CreateItem(".40S&W");
-            ammo.Amount = 20;
-            level.AddItem(ammo, Player.Position);
-        }
+			Rng.Seed(0);
+		}
 
-        public Talent GetTalent(Skill skill) {
-            return TalentFactory.Construct(skill);
-        }
+		private void Temp() {
+			var level = mapFactory.Construct("TestMap");
+			level.World = this;
+			Npc npc1 = new Npc(level) { Position = new Point(3, 4) };
+			npc1.Intelligence = new SimpleIntelligence(npc1);
+			level.AddActor(npc1);
+			AddEntity(npc1);
 
-        public void InsertMessage(string message) {
-            MessageBuffer.Add(message);
-            OnMessageAdded(new EventArgs<string>(message));
-        }
+			level.GenerateFov();
 
-        public static World Create() {            
-            Instance = new World();     
-            Instance.Temp();
-            return Instance;
-        }
+			Player = new Player(level) { Position = new Point(0, 0) };
 
-        public Item CreateItem(string key) {
-            return ItemFactory.Construct(key);
-        }
+			Player.AddItem(CreateItem("largeknife"));
 
-        public void AddUpdateableObject(IEntity i) {
-            toAdds.Add(i);
-        }
+			var i = CreateItem("brassknuckles");
+			Player.AddItem(i);
+			Player.Equip(BodySlot.OffHand, i);
 
-        public void RemoveUpdateableOject(IEntity i) {
-            toRemove.Add(i);
-        }
+			Player.AddItem(CreateItem("glock22"));
+			Player.AddItem(CreateItem(".40S&W"));
+			var ammo = CreateItem(".40S&W");
+			ammo.Amount = 20;
+			level.AddItem(ammo, Player.Position);
+		}
 
-        public void Update() {
-            foreach (var entity in toRemove) {
-                entities.Remove(entity);
-            }            
+		public Talent GetTalent(string skillRefId) {
+			return talentFactory.Construct(skillRefId);
+		}
 
-            entities.AddRange(toAdds);
+		public void AddMessage(string message, MessageType priority = MessageType.Normal) {
+			var currentMessage = new Message(message, priority);
 
-            toAdds.Clear();
-            toRemove.Clear();
+			MessageBuffer.Add(currentMessage);
+			OnMessageAdded(new EventArgs<Message>(currentMessage));
+		}
 
-            // update everything while the player cannot act
-            // we iterate through every updateable adding their speed to their AP.  If its >0 they can act
-            while (!Player.Updateable) {
-                foreach (IEntity entity in entities) {
-                    entity.ActionPoints += entity.Speed;
-                    if (entity.Updateable && !entity.Dead)
-                        entity.Update();
-                }
-                Player.Update();
-                Player.ActionPoints += Player.Speed;
-            }
+		public static World Create() {
+			Instance = new World();
+			Instance.Temp();
+			return Instance;
+		}
 
-            entities.RemoveAll(actor => actor.Dead);
-        }
-    }
+		public Item CreateItem(string key) {
+			return itemFactory.Construct(key);
+		}
+
+		public void AddEntity(IEntity i) {
+			toAdds.Add(i);
+		}
+
+		public void RemoveEntity(IEntity i) {
+			toRemove.Add(i);
+		}
+
+		public void AddActorToCurrentLevel(Actor actor) {
+			AddEntity(actor);
+			CurrentLevel.AddActor(actor);
+		}
+
+		public void RemoveActorFromCurrentLevel(Actor actor) {
+			RemoveEntity(actor);
+			CurrentLevel.RemoveActor(actor);
+		}
+
+		public void Update() {
+			foreach (var entity in toRemove) {
+				entities.Remove(entity);
+			}
+
+			entities.AddRange(toAdds);
+
+			toAdds.Clear();
+			toRemove.Clear();
+
+			// update everything while the player cannot act
+			// we iterate through every updateable adding their speed to their AP.  If its >0 they can act
+			while (!Player.Updateable) {
+				foreach (IEntity entity in entities) {
+					entity.ActionPoints += entity.Speed;
+					if (entity.Dead)
+						entity.OnDeath();
+					else if (entity.Updateable)
+						while (entity.Updateable)
+							entity.Update();
+				}
+				Player.Update();
+				Player.ActionPoints += Player.Speed;
+			}
+		}
+	}
 }

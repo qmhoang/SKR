@@ -5,88 +5,88 @@ using DEngine.Core;
 using Ogui.UI;
 
 namespace SKR.UI.Menus {
-    public class ListWindowTemplate<T> : WindowTemplate {        
-        public IEnumerable<T> Items { get; set; }
-    }
+	public class ListWindowTemplate<T> : WindowTemplate {
+		public IEnumerable<T> Items { get; set; }
+	}
 
-    public abstract class ListWindow<T> : Window {
-        private readonly Action<T> selectItem;
-        protected int MouseOverIndex;
+	public abstract class ListWindow<T> : Window {
+		private readonly Action<T> selectItem;
+		protected int MouseOverIndex;
 
-        /// <summary>
-        /// The rectangle in which the list will be drawn
-        /// </summary>
-        protected abstract Rect ListRect { get; }
+		/// <summary>
+		/// The rectangle in which the list will be drawn
+		/// </summary>
+		protected abstract Rect ListRect { get; }
 
-        protected Dictionary<char, T> Items;
-        protected IEnumerable<T> List; 
-        
-        protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
-                : base(template) {
-            this.selectItem = selectItem;
-            HasFrame = template.HasFrame;
-            List = template.Items;
-            Items = new Dictionary<char, T>();
+		protected Dictionary<char, T> Items;
+		protected IEnumerable<T> List;
 
-            int count = 0;
-            foreach (var i in template.Items) {
-                Items.Add((char)('A' + count), i);
-                count++;
-            }
-        }
+		protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
+				: base(template) {
+			this.selectItem = selectItem;
+			HasFrame = template.HasFrame;
+			List = template.Items;
+			Items = new Dictionary<char, T>();
 
-        protected override void OnMouseMoved(MouseData mouseData) {
-            base.OnMouseMoved(mouseData);
-            MouseOverIndex = MouseToIndex(mouseData);
-        }
+			int count = 0;
+			foreach (var i in template.Items) {
+				Items.Add((char) ('A' + count), i);
+				count++;
+			}
+		}
 
-        protected abstract int MouseToIndex(MouseData mouseData);
+		protected override void OnMouseMoved(MouseData mouseData) {
+			base.OnMouseMoved(mouseData);
+			MouseOverIndex = MouseToIndex(mouseData);
+		}
 
-        protected override void OnMouseButtonDown(MouseData mouseData) {
-            base.OnMouseButtonDown(mouseData);
+		protected abstract int MouseToIndex(MouseData mouseData);
 
-            int index = MouseToIndex(mouseData);
-            if (index >= 0 && index < Items.Count && Items.ContainsKey((char)(index + 'A'))) {
-                var t = Items[(char)(index + 'A')];
-                OnSelectItem(t);
-            }
-        }
+		protected override void OnMouseButtonDown(MouseData mouseData) {
+			base.OnMouseButtonDown(mouseData);
 
-        protected override void OnKeyPressed(KeyboardData keyData) {
-            char c = Char.ToUpper(keyData.Character);
-            if (Items.ContainsKey(c))
-                OnSelectItem(Items[c]);
-        }
+			int index = MouseToIndex(mouseData);
+			if (index >= 0 && index < Items.Count && Items.ContainsKey((char) (index + 'A'))) {
+				var t = Items[(char) (index + 'A')];
+				OnSelectItem(t);
+			}
+		}
 
-        protected override void Redraw() {
-            base.Redraw();
+		protected override void OnKeyPressed(KeyboardData keyData) {
+			char c = Char.ToUpper(keyData.Character);
+			if (Items.ContainsKey(c))
+				OnSelectItem(Items[c]);
+		}
 
-            CustomDraw(ListRect);
-        }
+		protected override void Redraw() {
+			base.Redraw();
 
-        protected override void Update() {
-            base.Update();
+			CustomDraw(ListRect);
+		}
 
-            if (List.Count() == 0)
-                ExitWindow();
-        }
+		protected override void Update() {
+			base.Update();
 
-        protected abstract void CustomDraw(Rect rect);
+			if (List.Count() == 0)
+				ExitWindow();
+		}
 
-        protected virtual void OnSelectItem(T item) {
-            selectItem(item);
+		protected abstract void CustomDraw(Rect rect);
 
-            if (List.Count() <= 0)
-                ExitWindow();
-            else {
-                Items.Clear();
+		protected virtual void OnSelectItem(T item) {
+			selectItem(item);
 
-                int count = 0;
-                foreach (var i in List) {
-                    Items.Add((char)('A' + count), i);
-                    count++;
-                }
-            }                       
-        } 
-    }
+			if (List.Count() <= 0)
+				ExitWindow();
+			else {
+				Items.Clear();
+
+				int count = 0;
+				foreach (var i in List) {
+					Items.Add((char) ('A' + count), i);
+					count++;
+				}
+			}
+		}
+	}
 }

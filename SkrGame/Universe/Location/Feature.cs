@@ -6,164 +6,163 @@ using DEngine.Core;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Location {
-    /// <summary>
-    /// Features are useable "items" that reside on the map, they contain the logic in themselves on how to use them
-    /// </summary>
-    public class Feature {
-        public Feature(string refid, string asset) : this(refid, asset, true, true) {            
-        }
+	/// <summary>
+	/// Features are useable "items" that reside on the map, they contain the logic in themselves on how to use them
+	/// </summary>
+	public class Feature {
+		public Feature(string refid, string asset) : this(refid, asset, true, true) { }
 
-        public Feature(string refId, string asset, bool walkable, bool transparent) {
-            RefId = refId;
-            Asset = asset;
-            this.walkable = walkable;
-            this.transparent = transparent;
-            components = new List<FeatureComponent>();
-            Uid = new UniqueId();
+		public Feature(string refId, string asset, bool walkable, bool transparent) {
+			RefId = refId;
+			Asset = asset;
+			this.walkable = walkable;
+			this.transparent = transparent;
+			components = new List<FeatureComponent>();
+			Uid = new UniqueId();
 
-        }
+		}
 
-        public string Asset { get; set; }
-        public Level Level { get; set; }
+		public string Asset { get; set; }
+		public Level Level { get; set; }
 
-        public string RefId { get; private set; }
-        public UniqueId Uid { get; private set; }
-        public Point Position { get; set; }
+		public string RefId { get; private set; }
+		public UniqueId Uid { get; private set; }
+		public Point Position { get; set; }
 
-        public string Description { get; set; }
+		public string Description { get; set; }
 
-        private bool transparent;
-        private bool walkable;
+		private bool transparent;
+		private bool walkable;
 
-        public bool Transparent {
-            get { return transparent; }
-            set { 
-                transparent = value; 
-                OnTransparencyChanged();
-            }
-        }
+		public bool Transparent {
+			get { return transparent; }
+			set { 
+				transparent = value; 
+				OnTransparencyChanged();
+			}
+		}
 
-        public bool Walkable {
-            get { return walkable; }
-            set {
-                walkable = value;
-                OnWalkableChanged();
-            }
-        }
+		public bool Walkable {
+			get { return walkable; }
+			set {
+				walkable = value;
+				OnWalkableChanged();
+			}
+		}
 
-        public double WalkPenalty { get; set; }
+		public double WalkPenalty { get; set; }
 
-        public event EventHandler<EventArgs> TransparencyChanged;
-        public event EventHandler<EventArgs> WalkableChanged;
+		public event EventHandler<EventArgs> TransparencyChanged;
+		public event EventHandler<EventArgs> WalkableChanged;
 
-        public void OnTransparencyChanged() {
-            EventHandler<EventArgs> handler = TransparencyChanged;            
-            if (handler != null)
-                handler(this, EventArgs.Empty);
-        }
-
-
-        public void OnWalkableChanged() {
-            EventHandler<EventArgs> handler = WalkableChanged;
-            if (handler != null)
-                handler(this, EventArgs.Empty);
-        }
-
-        private List<FeatureComponent> components;
-
-        public Feature Add(params FeatureComponent[] comps)
-        {
-            foreach (var comp in comps) {
-                comp.Owner = this;
-                components.Add(comp);
-            }
-
-            return this;
-        }
-
-        public Feature Remove(FeatureComponent component)
-        {
-            component.Owner = null;
-            components.Remove(component);
-            return this;
-        }
-
-        public void Use(Actor user, string action) {
-            foreach (var component in components) {
-                if (component is ActiveFeatureComponent) {
-                    var activefeature = (ActiveFeatureComponent) component;
-                    if (activefeature.Action == action) {
-                        ActionResult result = activefeature.Use(component as ActiveFeatureComponent, user);
-
-                        switch (result) {
-                            case ActionResult.SuccessNoTime:
-                            case ActionResult.Aborted:
-                                // no AP is used
-                                break;
-                            case ActionResult.Failed:
-                            case ActionResult.Success:
-                                user.ActionPoints -= activefeature.ActionPointCost;
-                                break;
-                        }
-                    }
-                }
-                    
-            }
-        }
-
-        public void Near(Actor user) {
-            foreach (var component in components) {
-                if (component is PassiveFeatureComponent)
-                    ((PassiveFeatureComponent) component).Near(component as PassiveFeatureComponent, user, user.Position.DistanceTo(Position));
-            }
-        }
-
-        public IEnumerable<string> ActiveUsages { get { return components.Where(fc => fc is ActiveFeatureComponent).Select(fc => ((ActiveFeatureComponent)fc).Action); } }
-    }
+		public void OnTransparencyChanged() {
+			EventHandler<EventArgs> handler = TransparencyChanged;
+			if (handler != null)
+				handler(this, EventArgs.Empty);
+		}
 
 
-    public class FeaturePropertyChangeEvent : EventArgs {
-        public bool Transparency { get; private set; }
-        public bool Walkable { get; private set; }
-        public double WalkPenalty { get; private set; }
+		public void OnWalkableChanged() {
+			EventHandler<EventArgs> handler = WalkableChanged;
+			if (handler != null)
+				handler(this, EventArgs.Empty);
+		}
 
-        public FeaturePropertyChangeEvent(bool transparency, bool walkable, double walkPenalty) {
-            Transparency = transparency;
-            Walkable = walkable;
-            WalkPenalty = walkPenalty;
-        }
-    }
+		private List<FeatureComponent> components;
 
-    public abstract class FeatureComponent {
-        public Feature Owner { get; set; }
+		public Feature Add(params FeatureComponent[] comps)
+		{
+			foreach (var comp in comps) {
+				comp.Owner = this;
+				components.Add(comp);
+			}
 
-    }
+			return this;
+		}
 
-    public class ActiveFeatureComponent : FeatureComponent {        
-        public string Action { get; set; }
-        public int ActionPointCost { get; set; }
-        public Func<ActiveFeatureComponent, Actor, ActionResult> Use { get; set; }
+		public Feature Remove(FeatureComponent component)
+		{
+			component.Owner = null;
+			components.Remove(component);
+			return this;
+		}
 
-        public ActiveFeatureComponent(string action, int apcost, Func<ActiveFeatureComponent, Actor, ActionResult> use) {
-            Use = use;
-            ActionPointCost = apcost;
-            Action = action;
-        }
-    }
+		public void Use(Actor user, string action) {
+			foreach (var component in components) {
+				if (component is ActiveFeatureComponent) {
+					var activefeature = (ActiveFeatureComponent) component;
+					if (activefeature.Action == action) {
+						ActionResult result = activefeature.Use(component as ActiveFeatureComponent, user);
 
-    public class PassiveFeatureComponent : FeatureComponent {
-        public Action<PassiveFeatureComponent, Actor, double> Near { get; set; }        
+						switch (result) {
+							case ActionResult.SuccessNoTime:
+							case ActionResult.Aborted:
+								// no AP is used
+								break;
+							case ActionResult.Failed:
+							case ActionResult.Success:
+								user.ActionPoints -= activefeature.ActionPointCost;
+								break;
+						}
+					}
+				}
+					
+			}
+		}
 
-        public PassiveFeatureComponent(Action<PassiveFeatureComponent, Actor, double> near) {
-            Near = near;            
-        }
-    }
+		public void Near(Actor user) {
+			foreach (var component in components) {
+				if (component is PassiveFeatureComponent)
+					((PassiveFeatureComponent) component).Near(component as PassiveFeatureComponent, user, user.Position.DistanceTo(Position));
+			}
+		}
 
-    public class SwitchFeatureComponent : FeatureComponent {
-        public bool Switch { get; set; }
+		public IEnumerable<string> ActiveUsages { get { return components.Where(fc => fc is ActiveFeatureComponent).Select(fc => ((ActiveFeatureComponent)fc).Action); } }
+	}
 
-        public SwitchFeatureComponent(bool @switch = false) {
-            Switch = @switch;
-        }
-    }
+
+	public class FeaturePropertyChangeEvent : EventArgs {
+		public bool Transparency { get; private set; }
+		public bool Walkable { get; private set; }
+		public double WalkPenalty { get; private set; }
+
+		public FeaturePropertyChangeEvent(bool transparency, bool walkable, double walkPenalty) {
+			Transparency = transparency;
+			Walkable = walkable;
+			WalkPenalty = walkPenalty;
+		}
+	}
+
+	public abstract class FeatureComponent {
+		public Feature Owner { get; set; }
+
+	}
+
+	public class ActiveFeatureComponent : FeatureComponent {        
+		public string Action { get; set; }
+		public int ActionPointCost { get; set; }
+		public Func<ActiveFeatureComponent, Actor, ActionResult> Use { get; set; }
+
+		public ActiveFeatureComponent(string action, int apcost, Func<ActiveFeatureComponent, Actor, ActionResult> use) {
+			Use = use;
+			ActionPointCost = apcost;
+			Action = action;
+		}
+	}
+
+	public class PassiveFeatureComponent : FeatureComponent {
+		public Action<PassiveFeatureComponent, Actor, double> Near { get; set; }        
+
+		public PassiveFeatureComponent(Action<PassiveFeatureComponent, Actor, double> near) {
+			Near = near;            
+		}
+	}
+
+	public class SwitchFeatureComponent : FeatureComponent {
+		public bool Switch { get; set; }
+
+		public SwitchFeatureComponent(bool @switch = false) {
+			Switch = @switch;
+		}
+	}
 }
