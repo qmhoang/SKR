@@ -29,10 +29,13 @@ namespace DEngineTests {
 
         [Test]
         public static void TestGaussian() {
-            int[] list = new int[20];
 
-            for (int i = 0; i < 100000; i++) {
-                list[Rng.GaussianInt(10, 8, 3)]++;
+            int[] list = new int[51];
+
+            for (int i = 0; i < 400000; i++) {
+                int j = Rng.GaussianInt(10, 10, 3);
+//                Console.WriteLine(j);
+                list[j]++;
             }
             
             int index = 0;
