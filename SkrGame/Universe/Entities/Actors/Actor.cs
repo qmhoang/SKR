@@ -274,8 +274,8 @@ namespace SkrGame.Universe.Entities.Actors {
 			return bodyParts[bp];
 		}
 
-		public void CalculateFov() {
-			Level.Fov.computeFov(Position.X, Position.Y, SightRadius);
+		public void CalculateFov() {			
+			Level.CalculateFOV(Position, SightRadius);
 			RecalculateFov = false;
 		}
 

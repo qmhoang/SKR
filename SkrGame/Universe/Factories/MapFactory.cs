@@ -215,10 +215,7 @@ namespace SkrGame.Universe.Factories {
 		private Level FromString(Dictionary<char, Tuple<string, string>> charIdentifiers, params string[] definition) {
 			int width = definition[0].Length;
 			int height = definition.Count();
-			var map = new Level(new Size(width, height), "Grass");
-
-			foreach (var terrain in terrainDefinitions)
-				map.AddTerrain(terrain);
+			var map = new Level(new Size(width, height), "Grass", terrainDefinitions);
 
 			for (int y = 0; y < height; y++) {
 				var s = definition[y];
@@ -234,8 +231,7 @@ namespace SkrGame.Universe.Factories {
 						map.AddFeature(feature);
 					}
 				}
-			}
-			map.GenerateFov();
+			}			
 			return map;
 		}
 	}
