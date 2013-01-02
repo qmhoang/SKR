@@ -3,32 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Entity;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Location {
 	/// <summary>
 	/// Features are useable "items" that reside on the map, they contain the logic in themselves on how to use them
 	/// </summary>
-	public class Feature {
-		public Feature(string refid, string asset) : this(refid, asset, true, true) { }
+	public class Feature : EntityComponent {
+		public Feature() : this(true, true) { }
 
-		public Feature(string refId, string asset, bool walkable, bool transparent) {
-			RefId = refId;
-			Asset = asset;
+		public Feature( bool walkable, bool transparent) {
 			this.walkable = walkable;
-			this.transparent = transparent;
-			components = new List<FeatureComponent>();
-			Uid = new UniqueId();
-
+			this.transparent = transparent;			
 		}
-
-		public string Asset { get; set; }
-		public Level Level { get; set; }
-
-		public string RefId { get; private set; }
-		public UniqueId Uid { get; private set; }
-		public Point Position { get; set; }
-
+		
+		public Level Level { get; set; }		
 		public string Description { get; set; }
 
 		private bool transparent;
@@ -68,59 +58,37 @@ namespace SkrGame.Universe.Location {
 				handler(this, EventArgs.Empty);
 		}
 
-		private List<FeatureComponent> components;
+//		public void Use(Actor user, string action) {
+//			foreach (var component in components) {
+//				if (component is ActiveFeatureComponent) {
+//					var activefeature = (ActiveFeatureComponent) component;
+//					if (activefeature.Action == action) {
+//						ActionResult result = activefeature.Use(component as ActiveFeatureComponent, user);
+//
+//						switch (result) {
+//							case ActionResult.SuccessNoTime:
+//							case ActionResult.Aborted:
+//								// no AP is used
+//								break;
+//							case ActionResult.Failed:
+//							case ActionResult.Success:
+//								user.ActionPoints -= activefeature.ActionPointCost;
+//								break;
+//						}
+//					}
+//				}
+//					
+//			}
+//		}
 
-		public Feature Add(params FeatureComponent[] comps)
-		{
-			foreach (var comp in comps) {
-				comp.Owner = this;
-				components.Add(comp);
-			}
-
-			return this;
-		}
-
-		public Feature Remove(FeatureComponent component)
-		{
-			component.Owner = null;
-			components.Remove(component);
-			return this;
-		}
-
-		public void Use(Actor user, string action) {
-			foreach (var component in components) {
-				if (component is ActiveFeatureComponent) {
-					var activefeature = (ActiveFeatureComponent) component;
-					if (activefeature.Action == action) {
-						ActionResult result = activefeature.Use(component as ActiveFeatureComponent, user);
-
-						switch (result) {
-							case ActionResult.SuccessNoTime:
-							case ActionResult.Aborted:
-								// no AP is used
-								break;
-							case ActionResult.Failed:
-							case ActionResult.Success:
-								user.ActionPoints -= activefeature.ActionPointCost;
-								break;
-						}
-					}
-				}
-					
-			}
-		}
-
-		public void Near(Actor user) {
-			foreach (var component in components) {
-				if (component is PassiveFeatureComponent)
-					((PassiveFeatureComponent) component).Near(component as PassiveFeatureComponent, user, user.Position.DistanceTo(Position));
-			}
-		}
-
-		public IEnumerable<string> ActiveUsages { get { return components.Where(fc => fc is ActiveFeatureComponent).Select(fc => ((ActiveFeatureComponent)fc).Action); } }
+//		public void Near(Actor user) {
+//			foreach (var component in components) {
+//				if (component is PassiveFeatureComponent)
+//					((PassiveFeatureComponent) component).Near(component as PassiveFeatureComponent, user, user.Position.DistanceTo(Position));
+//			}
+//		}		
 	}
-
-
+	
 	public class FeaturePropertyChangeEvent : EventArgs {
 		public bool Transparency { get; private set; }
 		public bool Walkable { get; private set; }
@@ -133,35 +101,30 @@ namespace SkrGame.Universe.Location {
 		}
 	}
 
-	public abstract class FeatureComponent {
-		public Feature Owner { get; set; }
-
-	}
-
-	public class ActiveFeatureComponent : FeatureComponent {        
+	public class UseableFeature : EntityComponent {        
 		public string Action { get; set; }
 		public int ActionPointCost { get; set; }
-		public Func<ActiveFeatureComponent, Actor, ActionResult> Use { get; set; }
+		public Func<UseableFeature, Actor, ActionResult> Use { get; set; }
 
-		public ActiveFeatureComponent(string action, int apcost, Func<ActiveFeatureComponent, Actor, ActionResult> use) {
+		public UseableFeature(string action, int apcost, Func<UseableFeature, Actor, ActionResult> use) {
 			Use = use;
 			ActionPointCost = apcost;
 			Action = action;
 		}
 	}
 
-	public class PassiveFeatureComponent : FeatureComponent {
-		public Action<PassiveFeatureComponent, Actor, double> Near { get; set; }        
+	public class PassiveFeature : EntityComponent {
+		public Action<PassiveFeature, Actor, double> Near { get; set; }        
 
-		public PassiveFeatureComponent(Action<PassiveFeatureComponent, Actor, double> near) {
+		public PassiveFeature(Action<PassiveFeature, Actor, double> near) {
 			Near = near;            
 		}
 	}
 
-	public class SwitchFeatureComponent : FeatureComponent {
+	public class SwitchFeature : EntityComponent {
 		public bool Switch { get; set; }
 
-		public SwitchFeatureComponent(bool @switch = false) {
+		public SwitchFeature(bool @switch = false) {
 			Switch = @switch;
 		}
 	}

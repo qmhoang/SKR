@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DEngine.Components;
 using DEngine.Core;
 using SkrGame.Universe.Location;
 
@@ -227,8 +228,10 @@ namespace SkrGame.Universe.Factories {
 					map.SetTerrain(x, y, charIdentifiers[s[x]].Item1);
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
 						var feature = featureFactory.Construct(charIdentifiers[s[x]].Item2);
-						feature.Position = new Point(x, y);
-						map.AddFeature(feature);
+
+						feature.As<Position>().Coordinates = new Point(x, y);
+						map.EntityManager.Create(feature);
+											
 					}
 				}
 			}			

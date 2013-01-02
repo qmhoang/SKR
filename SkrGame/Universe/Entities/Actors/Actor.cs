@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Gameplay.Talent.Components;
@@ -66,12 +67,12 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public abstract class Actor : AbstractActor {
-		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	public class Health : EntityComponent {
+		
+	}
 
-		public string FullId {
-			get { return string.Format("RefId: {0}, Uid: {1}", RefId, Uid); }
-		}
+	public class Actor : EntityComponent{
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly ActorCondition conditionStatuses;
 		private readonly Dictionary<BodySlot, Item> equippedItems;
@@ -111,17 +112,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (handler != null)
 				handler(this, e);
 		}
-
-		public override int ActionPoints {
-			get {
-				return base.ActionPoints;
-			}
-			set {
-				RecalculateFov = true;
-				base.ActionPoints = value;
-			}
-		}
-
+		
 		public Level Level { get; private set; }
 
 		public World World {
@@ -164,20 +155,19 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return bodyParts.Values; }
 		}
 
-		public override bool Dead {
+		public string Name { get; set; }
+
+		public bool Dead {
 			get { return Health < 0; }
 		}
 
-		public override void OnDeath() {
-			Level.RemoveActor(this);
-			World.RemoveEntity(this);
-
+		public void OnDeath() {
+			Level.EntityManager.Remove(Owner);
 			World.AddMessage(String.Format("{0} has died.", Name));
 		}
 
-		protected Actor(string name, string refId, string asset, Level level) {
+		public Actor(string name, Level level) {
 			Level = level;
-			RefId = refId;
 
 			Name = name;
 
@@ -186,41 +176,40 @@ namespace SkrGame.Universe.Entities.Actors {
 			talents = new Dictionary<string, Talent>();
 			tags = new Dictionary<string, int>();
 
-			LearnTalent("action_attack");
-			LearnTalent("action_range");
-			LearnTalent("action_reload");
-			LearnTalent("action_activate");
+//			LearnTalent("action_attack");
+//			LearnTalent("action_range");
+//			LearnTalent("action_reload");
+//			LearnTalent("action_activate");
+//
+//			LearnTalent("attrb_strength");
+//			LearnTalent("attrb_agility");
+//			LearnTalent("attrb_constitution");
+//			LearnTalent("attrb_intellect");
+//			LearnTalent("attrb_cunning");
+//			LearnTalent("attrb_resolve");
+//			LearnTalent("attrb_presence");
+//			LearnTalent("attrb_grace");
+//			LearnTalent("attrb_composure");
+//
+//			GetTalent("attrb_strength").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_agility").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_constitution").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_intellect").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_cunning").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_resolve").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_presence").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_grace").As<AttributeComponent>().Rank = World.MEAN;
+//			GetTalent("attrb_composure").As<AttributeComponent>().Rank = World.MEAN;
+//
+//			LearnTalent("skill_sword");
+//			LearnTalent("skill_knife");
+//
+//			LearnTalent("skill_pistol");
+//			LearnTalent("skill_bow");
+//
+//			LearnTalent("skill_unarmed");			
 
-			LearnTalent("attrb_strength");
-			LearnTalent("attrb_agility");
-			LearnTalent("attrb_constitution");
-			LearnTalent("attrb_intellect");
-			LearnTalent("attrb_cunning");
-			LearnTalent("attrb_resolve");
-			LearnTalent("attrb_presence");
-			LearnTalent("attrb_grace");
-			LearnTalent("attrb_composure");
-
-			GetTalent("attrb_strength").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_agility").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_constitution").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_intellect").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_cunning").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_resolve").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_presence").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_grace").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_composure").As<AttributeComponent>().Rank = World.MEAN;
-
-			LearnTalent("skill_sword");
-			LearnTalent("skill_knife");
-
-			LearnTalent("skill_pistol");
-			LearnTalent("skill_bow");
-
-			LearnTalent("skill_unarmed");
-			Asset = asset;
-
-			MaxHealth = Health = GetTalent("attrb_constitution").As<AttributeComponent>().Rank;
+//			MaxHealth = Health = GetTalent("attrb_constitution").As<AttributeComponent>().Rank;
 
 			bodyParts = new Dictionary<BodySlot, BodyPart>
 			            {
@@ -275,67 +264,75 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public void CalculateFov() {			
-			Level.CalculateFOV(Position, SightRadius);
-			RecalculateFov = false;
+//			Level.CalculateFOV(Position, SightRadius);
+//			RecalculateFov = false;
 		}
 
-		public override void Update() {
+		public void Update() {
 			//            CheckEncumbrance();
 
 		}
 
 		protected bool RecalculateFov;
 
-		public override bool HasLineOfSight(Point position) {
+		public bool HasLineOfSight(Point position) {
 			if (RecalculateFov)
 				CalculateFov();
 			return Level.IsVisible(position);
 		}
 
-		public override bool CanSpot(AbstractActor actor) {
+		public bool CanSpot(AbstractActor actor) {
 			throw new NotImplementedException();
 			return HasLineOfSight(actor.Position);
 		}
 
-		#region Move
-		public override ActionResult Move(int dx, int dy) {
-			return Move(new Point(dx, dy));
-		}
+//		public bool IsVisibleTo(Actor actor) {
+//			return actor.CanSpot(this);
+//		}
+//
+//		public bool HasLineOfSight(Actor target) {
+//			return HasLineOfSight(target.Position);
+//		}
 
-		public override ActionResult Move(Point p) {
-			Point nPos = p + Position;
-
-			if (!Level.IsWalkable(nPos)) {
-				World.AddMessage("There is something in the way");
-				return ActionResult.Aborted;
-			}
-
-			if (!Level.IsInBoundsOrBorder(nPos)) {
-				return ActionResult.Aborted;
-			}
-
-			if (Level.DoesActorExistAtLocation(nPos)) {
-				MeleeAttack().As<ActiveTalentComponent>().InvokeAction(nPos);
-			} else {
-				Position = nPos;
-
-				foreach (var feature in Level.Features) {
-					feature.Near(this);
-				}
-			}
-
-			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-
-			RecalculateFov = true;
-			return ActionResult.Success;
-		}
-
-		public override ActionResult Wait() {
-			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-			return ActionResult.Success;
-		}
-
-		#endregion
+//		#region Move
+//		public override ActionResult Move(int dx, int dy) {
+//			return Move(new Point(dx, dy));
+//		}
+//
+//		public override ActionResult Move(Point p) {
+//			Point nPos = p + Position;
+//
+//			if (!Level.IsWalkable(nPos)) {
+//				World.AddMessage("There is something in the way");
+//				return ActionResult.Aborted;
+//			}
+//
+//			if (!Level.IsInBoundsOrBorder(nPos)) {
+//				return ActionResult.Aborted;
+//			}
+//
+//			if (Level.DoesActorExistAtLocation(nPos)) {
+//				MeleeAttack().As<ActiveTalentComponent>().InvokeAction(nPos);
+//			} else {
+//				Position = nPos;
+//
+//				foreach (var feature in Level.Features) {
+//					feature.Near(this);
+//				}
+//			}
+//
+//			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+//
+//			RecalculateFov = true;
+//			return ActionResult.Success;
+//		}
+//
+//		public override ActionResult Wait() {
+//			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+//			return ActionResult.Success;
+//		}
+//
+//		#endregion
 
 		#region Life
 		public event EventHandler<EventArgs<Condition, int>> ConditionChanged;
@@ -534,13 +531,13 @@ namespace SkrGame.Universe.Entities.Actors {
 				Logger.WarnFormat("{0} already knows {1}.", Name, skillRefId);
 			else {
 				// add talent
-				var t = World.GetTalent(skillRefId);
-				t.Owner = this;
-				talents.Add(skillRefId, t);
-				t.OnLearn();
-
-				OnTalentLearned(new EventArgs<Talent>(t));
-				Logger.DebugFormat("{0} has learned {1}.", Name, skillRefId);
+//				var t = World.GetTalent(skillRefId);
+//				t.Owner = this;
+//				talents.Add(skillRefId, t);
+//				t.OnLearn();
+//
+//				OnTalentLearned(new EventArgs<Talent>(t));
+//				Logger.DebugFormat("{0} has learned {1}.", Name, skillRefId);
 			}
 		}
 

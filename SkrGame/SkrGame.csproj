@@ -83,6 +83,7 @@
     <Compile Include="Gameplay\Talent\Components\TalentComponent.cs" />
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\ActionPointSystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
     <Compile Include="Universe\Entities\Actors\ActorCharacteristics.cs" />
@@ -113,6 +114,7 @@
       <Name>DEngine</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
