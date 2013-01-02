@@ -88,6 +88,7 @@
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
     <Compile Include="Universe\Entities\Actors\ActorCharacteristics.cs" />
     <Compile Include="Universe\Entities\Actors\BodyPart.cs" />
+    <Compile Include="Universe\Entities\Actors\BodyComponent.cs" />
     <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Items\ItemContainer.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />

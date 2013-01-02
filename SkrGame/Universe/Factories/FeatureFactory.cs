@@ -57,7 +57,7 @@ namespace SkrGame.Universe.Factories {
 				case "Door":
 					return new Template()
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("OpenedDoor", 1),
 					       		new Blocker(),
 					       		new UseableFeature("Close door", doorUsageAPCost,
@@ -66,7 +66,7 @@ namespace SkrGame.Universe.Factories {
 				case "WALL_BRICK_DARK_DOOR_HORZ":
 					return new Template()
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("WALL_BRICK_DARK_DOOR_HORZ", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open door", doorUsageAPCost,
@@ -76,7 +76,7 @@ namespace SkrGame.Universe.Factories {
 				case "WALL_BRICK_DARK_DOOR_VERT":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("WALL_BRICK_DARK_DOOR_VERT", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open door", doorUsageAPCost,
@@ -85,7 +85,7 @@ namespace SkrGame.Universe.Factories {
 				case "WINDOW_BRICK_DARK_VERT":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("WINDOW_BRICK_DARK_VERT", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
@@ -94,7 +94,7 @@ namespace SkrGame.Universe.Factories {
 				case "WINDOW_BRICK_DARK_HORZ":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("WINDOW_BRICK_DARK_HORZ", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
@@ -103,7 +103,7 @@ namespace SkrGame.Universe.Factories {
 				case "WINDOW_HOUSE_VERT":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("WINDOW_HOUSE_VERT", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
@@ -112,7 +112,7 @@ namespace SkrGame.Universe.Factories {
 				case "WINDOW_HOUSE_HORZ":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("WINDOW_HOUSE_HORZ", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
@@ -121,7 +121,7 @@ namespace SkrGame.Universe.Factories {
 				case "DOOR_APART_1_VERT":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("DOOR_APART_1_VERT", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
@@ -130,7 +130,7 @@ namespace SkrGame.Universe.Factories {
 				case "DOOR_APART_1_HORZ":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("DOOR_APART_1_HORZ", 1),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
@@ -142,11 +142,11 @@ namespace SkrGame.Universe.Factories {
 					#region House Features
 
 				case "COUNTER_WOOD_RED":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("COUNTER_WOOD_RED", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("COUNTER_WOOD_RED", 1), new Blocker(false, false)};
 				case "SINK":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("SINK"),
 					       		new UseableFeature("Wash hands", World.DEFAULT_SPEED, delegate(UseableFeature f, Actor user)
 					       		                                                      {
@@ -157,7 +157,7 @@ namespace SkrGame.Universe.Factories {
 				case "TOILET":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("TOILET"),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
@@ -168,13 +168,13 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "BATHROOMSINK":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("BATHROOMSINK", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("BATHROOMSINK", 1), new Blocker(false, false)};
 
 
 				case "BATH":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("BATH", 1),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
@@ -185,15 +185,15 @@ namespace SkrGame.Universe.Factories {
 					       				)
 					       };
 				case "SHOWER":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("SHOWER"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("SHOWER"), new Blocker(true, true)};
 				case "CHAIR_WOODEN":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("CHAIR_WOODEN"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("CHAIR_WOODEN"), new Blocker(true, true)};
 				case "TREE_SMALL":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("TREE_SMALL", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("TREE_SMALL", 1), new Blocker(false, false)};
 				case "BED_WOODEN":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("BED_WOODEN"),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
@@ -203,13 +203,13 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "SHELF_WOOD":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("SHELF_WOOD", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("SHELF_WOOD", 1), new Blocker(false, false)};
 				case "SHELF_METAL":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("SHELF_METAL", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("SHELF_METAL", 1), new Blocker(false, false)};
 				case "TELEVISION":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("TELEVISION", 1),
 					       		new Blocker(false, false),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
@@ -220,15 +220,15 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "FRIDGE":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("FRIDGE", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("FRIDGE", 1), new Blocker(false, false)};
 				case "DESK_WOODEN":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("DESK_WOODEN", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("DESK_WOODEN", 1), new Blocker(false, false)};
 				case "CASH_REGISTER":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("CASH_REGISTER", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("CASH_REGISTER", 1), new Blocker(false, false)};
 				case "SOFA":
 					return new Template
 					       {
-					       		new DEngine.Components.Location(0, 0),
+					       		new Location(0, 0),
 					       		new Sprite("SOFA"),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
@@ -238,63 +238,63 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "OVEN":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("OVEN", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("OVEN", 1), new Blocker(false, false)};
 
 				case "DOOR_GARAGE":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("DOOR_GARAGE", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("DOOR_GARAGE", 1), new Blocker(false, false)};
 				case "FENCE_WOODEN":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("FENCE_WOODEN", 1), new Blocker(false, true)};
+					return new Template {new Location(0, 0), new Sprite("FENCE_WOODEN", 1), new Blocker(false, true)};
 				case "LAMP_STANDARD":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("LAMP_STANDARD"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("LAMP_STANDARD"), new Blocker(true, true)};
 				case "TABLE_WOODEN":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("TABLE_WOODEN"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("TABLE_WOODEN"), new Blocker(true, true)};
 				case "SAFE_SIMPLE":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("SAFE_SIMPLE"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("SAFE_SIMPLE"), new Blocker(true, true)};
 
 					#endregion
 
 					#region Walls
 
 				case "WALL_BRICK_DARK":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_VERT":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_VERT", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_VERT", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_HORZ":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_HORZ", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_HORZ", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_NORTH":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_T_NORTH", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_T_NORTH", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_SOUTH":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_T_SOUTH", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_T_SOUTH", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_EAST":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_T_EAST", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_T_EAST", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_WEST":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_T_WEST", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_T_WEST", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_NORTHEAST":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_NORTHEAST", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_NORTHEAST", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_NORTHWEST":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_NORTHWEST", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_NORTHWEST", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_SOUTHWEST":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_SOUTHWEST", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_SOUTHWEST", 1), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_SOUTHEAST":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_BRICK_DARK_SOUTHEAST", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_BRICK_DARK_SOUTHEAST", 1), new Blocker(false, false)};
 				case "WALL_DRY":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("WALL_DRY", 1), new Blocker(false, false)};
+					return new Template {new Location(0, 0), new Sprite("WALL_DRY", 1), new Blocker(false, false)};
 
 					#endregion
 
 					#region Stairs
 
 				case "STAIR_WOODEN_UP":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("STAIR_WOODEN_UP"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("STAIR_WOODEN_UP"), new Blocker(true, true)};
 				case "STAIR_WOODEN_DOWN":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("STAIR_WOODEN_DOWN"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("STAIR_WOODEN_DOWN"), new Blocker(true, true)};
 
 					#endregion
 
 					#region Misc Decorations
 
 				case "PLANTPOT_FIXED":
-					return new Template {new DEngine.Components.Location(0, 0), new Sprite("PLANTPOT_FIXED"), new Blocker(true, true)};
+					return new Template {new Location(0, 0), new Sprite("PLANTPOT_FIXED"), new Blocker(true, true)};
 
 					#endregion
 			}

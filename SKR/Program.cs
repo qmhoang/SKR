@@ -18,101 +18,19 @@ using libtcod;
 using log4net.Config;
 
 namespace SKR {
-//	public class MonsterMovement : Manager {
-//		private FilteredCollection updateables;
-//
-//		public MonsterMovement(EntityManager entityManager) {
-//			updateables = entityManager.Get(typeof (ActionPoint), typeof(Position));
-//		}
-//
-//		protected override void Update() {
-//			base.Update();
-//
-//			foreach (var updateable in updateables) {
-//				if (!updateable.Is<PlayerMarker>()) {
-//					while (updateable.As<ActionPoint>().Updateable) {
-//						updateable.As<Position>().X++;
-//						updateable.As<ActionPoint>().ActionPoints -= 100;
-//					}
-//				}
-//
-//			}
-//		}
-//	}
-//
-//	public class PlayerMovement : Manager {
-//		private Entity player;
-//
-//
-//		public PlayerMovement(EntityManager entityManager) {
-//			player = entityManager.Get<PlayerMarker>().ToList()[0];
-//		}
-//
-//		protected override void OnKeyReleased(KeyboardData keyData) {
-//			base.OnKeyReleased(keyData);
-//			if (player.As<ActionPoint>().Updateable) {
-//				switch (keyData.KeyCode) {
-//					case TCODKeyCode.Up:
-//					case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
-//						player.As<Position>().Y--;
-//						player.As<ActionPoint>().ActionPoints -= 100;
-//						break;
-//					case TCODKeyCode.Down:
-//					case TCODKeyCode.KeypadTwo:
-//						player.As<Position>().Y++;
-//						player.As<ActionPoint>().ActionPoints -= 100;
-//						break;
-//					case TCODKeyCode.Left:
-//					case TCODKeyCode.KeypadFour:
-//						player.As<Position>().X--;
-//						player.As<ActionPoint>().ActionPoints -= 100;
-//						break;
-//					case TCODKeyCode.KeypadFive:
-//						break;
-//					case TCODKeyCode.Right:
-//					case TCODKeyCode.KeypadSix:
-//						player.As<Position>().X++;
-//						player.As<ActionPoint>().ActionPoints -= 100;
-//						break;
-//					case TCODKeyCode.KeypadSeven:
-//						break;
-//					case TCODKeyCode.KeypadNine:
-//						break;
-//					case TCODKeyCode.KeypadOne:
-//						break;
-//					case TCODKeyCode.KeypadThree:
-//						break;
-//				}
-//			}
-//
-//		}
-//	}
-
 	public class RoguelikeApp : Application {
 		private World world;
-
-//		private EntityManager entityManager;
 
 		protected override void Setup(ApplicationInfo info) {
 			base.Setup(info);
 			world = World.Create();
 			Push(new GameplayWindow(world.EntityManager, new WindowTemplate()));
-
-//			entityManager = new EntityManager();
-//
-//			entityManager.Create().Add(new ActionPoint()).Add(new Sprite("", '@', 1)).Add(new Position(3, 4)).Add(new PlayerMarker());
-//			entityManager.Create().Add(new ActionPoint()).Add(new Sprite("", '$', 1)).Add(new Position(9, 4));
-//			var drawing = new DrawingSystem(entityManager, new WindowTemplate());
-//			drawing.AddManager(new APSystem(entityManager));
-//			drawing.AddManager(new MonsterMovement(entityManager));
-//			drawing.AddManager(new PlayerMovement(entityManager));
-//			Push(drawing);
-			
+		
 		}
 
 		protected override void Update() {
 			base.Update();
-//			world.Update();
+			world.UpdateSystems();
 		}
 	}
 

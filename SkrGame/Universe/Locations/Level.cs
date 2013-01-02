@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 
@@ -24,14 +25,6 @@ namespace SkrGame.Universe.Locations {
 		}
 	}
 
-	public class LevelComponent : EntityComponent {
-		public Level Level { get; set; }
-
-		public LevelComponent(Level level) {
-			Level = level;
-		}
-	}
-
 	public class Level : Map {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,6 +37,8 @@ namespace SkrGame.Universe.Locations {
 		public World World { get; set; }
 
 		public EntityManager EntityManager { get; private set; }
+		private FilteredCollection entities;
+
 		
 		public Level(Size size, string fill, IEnumerable<Terrain> terrainDefinitions) : base(size) {
 			Uid = new UniqueId();
@@ -68,7 +63,23 @@ namespace SkrGame.Universe.Locations {
 			}
 
 			EntityManager = new EntityManager();
-		}		
+
+			entities = EntityManager.Get(typeof(Blocker), typeof(Location));
+			entities.OnEntityAdd += entities_OnEntityAdd;
+			entities.OnEntityRemove += entities_OnEntityRemove;
+		}
+
+		void entities_OnEntityRemove(Entity entity) {
+			var pos = entity.As<Location>().Position;
+
+			var terrain = GetTerrain(pos.X, pos.Y);
+			SetProperties(pos.X, pos.Y, terrain.Transparent, terrain.Walkable);
+		}
+
+		void entities_OnEntityAdd(Entity entity) {
+			var pos = entity.As<Location>().Position;
+			SetProperties(pos.X, pos.Y, entity.As<Blocker>().Transparent, entity.As<Blocker>().Walkable);
+		}
 		
 		public void SetTerrain(int x, int y, string t) {
 			if (!IsInBoundsOrBorder(x, y))
@@ -95,7 +106,7 @@ namespace SkrGame.Universe.Locations {
 		/// <summary>
 		/// Generate FOV from tiles and features
 		/// </summary>
-		public void GenerateFov() {
+		public void GenerateData() {
 			// tiles
 			for (int x = 0; x < Map.GetLength(0); x++)
 				for (int y = 0; y < Map.GetLength(1); y++) {

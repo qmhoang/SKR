@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Entity;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items.Components;
 
@@ -17,13 +18,10 @@ namespace SkrGame.Universe.Entities.Items {
 		BodyPart,
 	}
 
-	public class Item {
+	public class Item : EntityComponent {
 		public string Name { get; private set; }
 
-		// Asset string is a unique string that represents what each item looks like.  A GUI uses this to draw the item depending on each item
-		public string Asset { get; private set; }
 		public string RefId { get; private set; }
-		public UniqueId UniqueId { get; private set; }
 		public int Weight { get; private set; }
 		public int Size { get; private set; }
 		public int Value { get; private set; }
@@ -80,13 +78,11 @@ namespace SkrGame.Universe.Entities.Items {
 		public Item(ItemTemplate template) {
 			Name = template.Name;
 			RefId = template.RefId;
-			Asset = template.Asset;
 
 			StackType = template.StackType;
 			Slot = template.Slot;
 			amount = 1;
 			Type = template.Type;
-			UniqueId = new UniqueId();
 			Weight = template.Weight;
 			Size = template.Size;
 			Value = template.Value;

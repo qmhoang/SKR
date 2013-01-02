@@ -4,21 +4,24 @@ using System.Linq;
 using System.Text;
 using DEngine.Components;
 using DEngine.Entity;
+using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.PC;
+using SkrGame.Universe.Locations;
 
 namespace SkrGame.Systems {
 	public class ActionPointSystem {
-		private FilteredCollection updateables;
+		private FilteredCollection entities;
 		private Entity player;
 
 		public ActionPointSystem(EntityManager entityManager) {
-			updateables = entityManager.Get(typeof(ActionPoint));
-			player = entityManager.Get<PlayerMarker>().ToList()[0];
+			entities = entityManager.Get(typeof(ActionPoint));
+			player = World.Instance.Player;
 		}
 
 		public void Update() {
 			if (!player.As<ActionPoint>().Updateable) {
-				foreach (var entity in updateables) {
+				foreach (var entity in entities) {
 					if (!entity.Is<PlayerMarker>()) {
 						var entityAP = entity.As<ActionPoint>();
 						entityAP.ActionPoints += entityAP.Speed;
