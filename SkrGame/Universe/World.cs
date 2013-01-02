@@ -63,9 +63,9 @@ namespace SkrGame.Universe {
 				handler(this, e);
 		}
 
-		private readonly List<IEntity> entities;
-		private readonly List<IEntity> toAdds;
-		private readonly List<IEntity> toRemove;
+		private readonly List<IObject> entities;
+		private readonly List<IObject> toAdds;
+		private readonly List<IObject> toRemove;
 
 		public Calendar Calendar { get; private set; }
 
@@ -85,9 +85,9 @@ namespace SkrGame.Universe {
 		private World() {
 			Calendar = new Calendar();
 
-			entities = new List<IEntity> { Calendar };
-			toAdds = new List<IEntity>();
-			toRemove = new List<IEntity>();
+			entities = new List<IObject> { Calendar };
+			toAdds = new List<IObject>();
+			toRemove = new List<IObject>();
 			MessageBuffer = new List<Message>(); 
 			
 			talentFactory = new SourceTalentFactory();
@@ -144,11 +144,11 @@ namespace SkrGame.Universe {
 			return itemFactory.Construct(key);
 		}
 
-		public void AddEntity(IEntity i) {
+		public void AddEntity(IObject i) {
 			toAdds.Add(i);
 		}
 
-		public void RemoveEntity(IEntity i) {
+		public void RemoveEntity(IObject i) {
 			toRemove.Add(i);
 		}
 
@@ -175,7 +175,7 @@ namespace SkrGame.Universe {
 			// update everything while the player cannot act
 			// we iterate through every updateable adding their speed to their AP.  If its >0 they can act
 			while (!Player.Updateable) {
-				foreach (IEntity entity in entities) {
+				foreach (IObject entity in entities) {
 					entity.ActionPoints += entity.Speed;
 					if (entity.Dead)
 						entity.OnDeath();

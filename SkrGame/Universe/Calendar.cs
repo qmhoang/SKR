@@ -1,7 +1,7 @@
 ﻿using DEngine.Actor;
 
 namespace SkrGame.Universe {
-	public class Calendar : IEntity {
+	public class Calendar : IObject {
 		public int Second { get; private set; }
 		public int Minute { get; private set; }
 		public int Hour { get; private set; }
