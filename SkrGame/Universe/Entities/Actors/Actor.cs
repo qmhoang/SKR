@@ -66,7 +66,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public abstract class Actor : Entity {
+	public abstract class Actor : AbstractActor {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public string FullId {
@@ -292,7 +292,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			return Level.IsVisible(position);
 		}
 
-		public override bool CanSpot(Entity actor) {
+		public override bool CanSpot(AbstractActor actor) {
 			throw new NotImplementedException();
 			return HasLineOfSight(actor.Position);
 		}
