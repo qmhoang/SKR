@@ -4,8 +4,6 @@ using DEngine.Actor;
 using DEngine.Core;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Actors.PC;
-using SkrGame.Universe.Location;
-using libtcod;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors.NPC.AI {
@@ -21,8 +19,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 
 		public override void Update() {
 			Player player = World.Instance.Player;
-
-
+			
 			if (Actor.HasLineOfSight(player.Position)) {
 				var distance = Actor.Position.DistanceTo(player.Position);
 				if (distance <= 1) {

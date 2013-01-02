@@ -63,9 +63,6 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libtcod-net">
-      <HintPath>..\..\Crossroads\Engine\libtcod-net.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\..\Code Libraries\log4net-1.2.11\bin\net\4.0\release\log4net.dll</HintPath>
     </Reference>

@@ -6,7 +6,6 @@ using DEngine.Core;
 using DEngine.Extensions;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
-using libtcod;
 
 namespace SkrGame.Universe.Location {
 	/// <summary>
