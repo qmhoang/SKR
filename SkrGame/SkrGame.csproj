@@ -108,23 +108,6 @@
     <Compile Include="Universe\World.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\Font\consolas12x12_gs_tc.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Font\consolas_unicode_10x10.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Font\consolas_unicode_12x12.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Font\lucida10x10_gs_tc.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Font\terminal12x12_gs_ro.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\DEngine\DEngine\DEngine.csproj">
       <Project>{FAA2CEF2-1844-4043-A582-AD4CDE346ADD}</Project>
       <Name>DEngine</Name>
