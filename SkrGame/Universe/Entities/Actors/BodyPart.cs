@@ -21,16 +21,14 @@ namespace SkrGame.Universe.Entities.Actors {
 
 	public class BodyPart {
 		public string Name { get; private set; }
-		public BodySlot Type { get; private set; }
-		public Actor Owner { get; private set; }
+		public BodySlot Type { get; private set; }		
 		public int Health { get; set; }
 		public int MaxHealth { get; protected set; }
 		public int TargettingPenalty { get; protected set; }
 
-		public BodyPart(string name, BodySlot type, Actor owner, int health, int attackPenalty) {
+		public BodyPart(string name, BodySlot type, int health, int attackPenalty) {
 			Name = name;
-			Type = type;
-			Owner = owner;
+			Type = type;			
 
 			if (health <= 0)
 				health = 1;

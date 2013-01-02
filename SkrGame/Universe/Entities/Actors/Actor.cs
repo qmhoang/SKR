@@ -56,15 +56,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public class TalentUsedEvent : EventArgs {
-		public Actor User { get; private set; }
-		public Talent Talent { get; private set; }
 
-		public TalentUsedEvent(Actor user, Talent talent) {
-			User = user;
-			Talent = talent;
-		}
-	}
 
 	public abstract class Actor : Entity {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -73,9 +65,19 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return string.Format("RefId: {0}, Uid: {1}", RefId, Uid); }
 		}
 
-		private readonly ActorCondition conditionStatuses;
+		public ActorBody Body { get; private set; }
+		public ActorTalents Talents { get; private set; }
+
+		public event EventHandler<EventArgs> HealthChanged;
+
+		protected void OnHealthChange() {
+			var handler = HealthChanged;
+			if (handler != null)
+				handler(this, EventArgs.Empty);
+		}
+
 		private readonly Dictionary<BodySlot, Item> equippedItems;
-		private readonly Dictionary<string, Talent> talents;
+		private readonly ActorCondition conditionStatuses;
 		private readonly Dictionary<string, int> tags;
 
 		public event EventHandler<TagChangedEvent> TagChanged;
@@ -99,23 +101,12 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (tags.ContainsKey(id)) {
 				tags[id] += increment;
 				OnTagChanged(new TagChangedEvent(id, increment, GetTag(id)));
-			} else {
+			} else
 				SetTag(id, increment);
-			}
-		}
-
-		public event EventHandler<TalentUsedEvent> TalentUsed;
-
-		public void OnTalentUsed(TalentUsedEvent e) {
-			EventHandler<TalentUsedEvent> handler = TalentUsed;
-			if (handler != null)
-				handler(this, e);
 		}
 
 		public override int ActionPoints {
-			get {
-				return base.ActionPoints;
-			}
+			get { return base.ActionPoints; }
 			set {
 				RecalculateFov = true;
 				base.ActionPoints = value;
@@ -131,41 +122,21 @@ namespace SkrGame.Universe.Entities.Actors {
 		private readonly ItemContainer inventory;
 		private int additionalWeight;
 
-		public event EventHandler<EventArgs> HealthChanged;
-
-		protected void OnHealthChange() {
-			var handler = HealthChanged;
-			if (handler != null)
-				handler(this, EventArgs.Empty);
-		}
-
-		private readonly Dictionary<BodySlot, BodyPart> bodyParts;
-
-		public int Health { get; set; }
-		public int MaxHealth { get; set; }
-
-		public MeleeComponent Punch;
-		public MeleeComponent Kick;
-
 		public int Dodge {
-			get { return GetTalent("attrb_agility").As<AttributeComponent>().Rank + GetTalent("attrb_cunning").As<AttributeComponent>().Rank; }
+			get { return Talents.GetTalent("attrb_agility").As<AttributeComponent>().Rank + Talents.GetTalent("attrb_cunning").As<AttributeComponent>().Rank; }
 		}
 
 		public int Lift {
 			get {
 				return
 						(int)
-						(GetTalent("attrb_strength").As<AttributeComponent>().Rank * GetTalent("attrb_strength").As<AttributeComponent>().Rank * 18 * Math.Pow(World.STANDARD_DEVIATION, -2.0) +
+						(Talents.GetTalent("attrb_strength").As<AttributeComponent>().Rank * Talents.GetTalent("attrb_strength").As<AttributeComponent>().Rank * 18 * Math.Pow(World.STANDARD_DEVIATION, -2.0) +
 						 additionalWeight);
 			}
 		}
 
-		public IEnumerable<BodyPart> BodyPartsList {
-			get { return bodyParts.Values; }
-		}
-
 		public override bool Dead {
-			get { return Health < 0; }
+			get { return Body.Health < 0; }
 		}
 
 		public override void OnDeath() {
@@ -182,76 +153,16 @@ namespace SkrGame.Universe.Entities.Actors {
 			Name = name;
 
 			inventory = new ItemContainer();
-			equippedItems = new Dictionary<BodySlot, Item>();
-			talents = new Dictionary<string, Talent>();
 			tags = new Dictionary<string, int>();
 
-			LearnTalent("action_attack");
-			LearnTalent("action_range");
-			LearnTalent("action_reload");
-			LearnTalent("action_activate");
 
-			LearnTalent("attrb_strength");
-			LearnTalent("attrb_agility");
-			LearnTalent("attrb_constitution");
-			LearnTalent("attrb_intellect");
-			LearnTalent("attrb_cunning");
-			LearnTalent("attrb_resolve");
-			LearnTalent("attrb_presence");
-			LearnTalent("attrb_grace");
-			LearnTalent("attrb_composure");
-
-			GetTalent("attrb_strength").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_agility").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_constitution").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_intellect").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_cunning").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_resolve").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_presence").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_grace").As<AttributeComponent>().Rank = World.MEAN;
-			GetTalent("attrb_composure").As<AttributeComponent>().Rank = World.MEAN;
-
-			LearnTalent("skill_sword");
-			LearnTalent("skill_knife");
-
-			LearnTalent("skill_pistol");
-			LearnTalent("skill_bow");
-
-			LearnTalent("skill_unarmed");
 			Asset = asset;
 
-			MaxHealth = Health = GetTalent("attrb_constitution").As<AttributeComponent>().Rank;
-
-			bodyParts = new Dictionary<BodySlot, BodyPart>
-			            {
-			            		{BodySlot.Torso, new BodyPart("Torso", BodySlot.Torso, this, Health, 0)},
-			            		{BodySlot.Head, new BodyPart("Head", BodySlot.Head, this, Health, -World.STANDARD_DEVIATION * 5 / 3)},
-			            		{BodySlot.MainArm, new BodyPart("Right Arm", BodySlot.MainArm, this, Health / 2, -World.STANDARD_DEVIATION * 4 / 3)},
-			            		{BodySlot.OffArm, new BodyPart("Left Arm", BodySlot.OffArm, this, Health / 2, -World.STANDARD_DEVIATION * 4 / 3)},
-			            		{BodySlot.MainHand, new BodyPart("Main Hand", BodySlot.MainHand, this, Health / 3, -World.STANDARD_DEVIATION * 4 / 3)},
-			            		{BodySlot.OffHand,new BodyPart("Off Hand", BodySlot.OffHand, this, Health / 3, -World.STANDARD_DEVIATION * 4 / 3)},
-			            		{BodySlot.Leg, new BodyPart("Leg", BodySlot.Leg, this, Health / 2, -2)},
-			            		{BodySlot.Feet, new BodyPart("Feet", BodySlot.Feet, this, Health / 3, -4)}
-			            };
-
-
-			Punch = new MeleeComponent(null, new MeleeComponentTemplate
-			{
-				ComponentId = "punch",
-				ActionDescription = "punch",
-				ActionDescriptionPlural = "punches",
-				Skill = "skill_unarmed",
-				HitBonus = 0,
-				Damage = Rand.Constant(-5),
-				DamageType = Combat.DamageTypes["crush"],
-				Penetration = 1,
-				WeaponSpeed = 100,
-				Reach = 0,
-				Strength = 0,
-				Parry = 0
-			});
+			Body = new ActorBody(this);
+			Talents = new ActorTalents(this);
 
 			conditionStatuses = new ActorCondition(this);
+			equippedItems = new Dictionary<BodySlot, Item>();
 
 			RecalculateFov = true;
 		}
@@ -270,18 +181,13 @@ namespace SkrGame.Universe.Entities.Actors {
 				SetConditionStatus(Condition.Encrumbrance, 4);
 		}
 
-		public BodyPart GetBodyPart(BodySlot bp) {
-			return bodyParts[bp];
-		}
-
-		public void CalculateFov() {			
+		public void CalculateFov() {
 			Level.CalculateFOV(Position, SightRadius);
 			RecalculateFov = false;
 		}
 
 		public override void Update() {
 			//            CheckEncumbrance();
-
 		}
 
 		protected bool RecalculateFov;
@@ -298,6 +204,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		#region Move
+
 		public override ActionResult Move(int dx, int dy) {
 			return Move(new Point(dx, dy));
 		}
@@ -310,18 +217,16 @@ namespace SkrGame.Universe.Entities.Actors {
 				return ActionResult.Aborted;
 			}
 
-			if (!Level.IsInBoundsOrBorder(nPos)) {
+			if (!Level.IsInBoundsOrBorder(nPos))
 				return ActionResult.Aborted;
-			}
 
-			if (Level.DoesActorExistAtLocation(nPos)) {
-				MeleeAttack().As<ActiveTalentComponent>().InvokeAction(nPos);
-			} else {
+			if (Level.DoesActorExistAtLocation(nPos))
+				Talents.MeleeAttack().As<ActiveTalentComponent>().InvokeAction(nPos);
+			else {
 				Position = nPos;
 
-				foreach (var feature in Level.Features) {
+				foreach (var feature in Level.Features)
 					feature.Near(this);
-				}
 			}
 
 			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
@@ -338,6 +243,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		#endregion
 
 		#region Life
+
 		public event EventHandler<EventArgs<Condition, int>> ConditionChanged;
 
 		public void OnConditionChanged(EventArgs<Condition, int> e) {
@@ -362,15 +268,15 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (IsItemEquipped(bodyPart.Type)) {
 				var itemAtSlot = GetItemAtBodyPart(bodyPart.Type);
 
-				if (itemAtSlot.Is(typeof(ArmorComponent))) {
+				if (itemAtSlot.Is(typeof (ArmorComponent))) {
 					var armor = itemAtSlot.As<ArmorComponent>();
 					damageResistance = armor.Resistances[type];
 					damageDealt = Math.Max(damage - damageResistance, 0);
-					if (Rng.Chance(armor.Coverage / 100.0)) {
+					if (Rng.Chance(armor.Coverage / 100.0))
 						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
-					} else {
+					else {
 						// we hit a chink in the armor
-						damageResistance /= (int)armor.NonCoverageDivisor;
+						damageResistance /= (int) armor.NonCoverageDivisor;
 						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR reduced because of non-coverage: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
 					}
 				}
@@ -378,20 +284,19 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			if (damageDealt > bodyPart.MaxHealth) {
 				damageDealt = Math.Min(damage, bodyPart.MaxHealth);
-				Logger.InfoFormat("Damage reduced to {0} because of {1}'s max health", damageDealt, bodyPart.Name);
+				Logger.InfoFormat("Damage: {2} reduced to {0} because of {1}'s max health", damageDealt, bodyPart.Name, damage);
 			}
 
 			bodyPart.Health -= damageDealt;
-			Health -= damageDealt;
+			Body.Health -= damageDealt;
 
 			Logger.InfoFormat("{0}'s {1} was hurt ({2} damage)", Name, bodyPart.Name, damageDealt);
 			OnHealthChange();
-
 		}
 
 		public void Heal(int amount) {
-			amount = Math.Min(amount, MaxHealth - Health);
-			Health -= amount;
+			amount = Math.Min(amount, Body.MaxHealth - Body.Health);
+			Body.Health -= amount;
 			Logger.InfoFormat("{0} was healed {1} health", Name, amount);
 			OnHealthChange();
 		}
@@ -444,7 +349,6 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// <returns>returns success if it was successful, aborted if item already equip couldn't fit in inventory</returns>
 		/// todo rethink this
 		public ActionResult Equip(BodySlot bpslot, Item item) {
-			var bp = GetBodyPart(bpslot);
 			if (item == null)
 				throw new ArgumentException("item is null", "item");
 			if (!item.Slot.HasFlag(bpslot))
@@ -518,84 +422,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (handler != null)
 				handler(this, e);
 		}
-		#endregion
 
-		#region Talents
-		public bool KnowTalent(string skillRefId) {
-			return talents.ContainsKey(skillRefId);
-		}
-
-		public bool CanLearnTalent(string talent) {
-			throw new NotImplementedException();
-		}
-
-		public void LearnTalent(string skillRefId) {
-			if (KnowTalent(skillRefId))
-				Logger.WarnFormat("{0} already knows {1}.", Name, skillRefId);
-			else {
-				// add talent
-				var t = World.GetTalent(skillRefId);
-				t.Owner = this;
-				talents.Add(skillRefId, t);
-				t.OnLearn();
-
-				OnTalentLearned(new EventArgs<Talent>(t));
-				Logger.DebugFormat("{0} has learned {1}.", Name, skillRefId);
-			}
-		}
-
-		public void UnlearnTalent(string skillRefId) {
-			if (!KnowTalent(skillRefId)) {
-				Logger.WarnFormat("{0} doesn't know {1} to unlearn.", Name, skillRefId);
-			} else {
-				var t = GetTalent(skillRefId);
-				t.OnUnlearn();
-
-				talents.Remove(skillRefId);
-
-				OnTalentUnlearned(new EventArgs<Talent>(t));
-				Logger.DebugFormat("{0} has unlearned {1}.", Name, skillRefId);
-			}
-		}
-
-		public Talent GetTalent(string skillRefId) {
-			return talents[skillRefId];
-		}
-
-		public event EventHandler<EventArgs<Talent>> TalentLearned;
-
-		public void OnTalentLearned(EventArgs<Talent> e) {
-			EventHandler<EventArgs<Talent>> handler = TalentLearned;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public event EventHandler<EventArgs<Talent>> TalentUnlearned;
-
-		public void OnTalentUnlearned(EventArgs<Talent> e) {
-			EventHandler<EventArgs<Talent>> handler = TalentUnlearned;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		#endregion
-
-		#region Basic Actions
-		public Talent MeleeAttack() {
-			return GetTalent("action_attack");
-		}
-
-		public Talent RangeAttack() {
-			return GetTalent("action_range");
-		}
-
-		public Talent ReloadWeapon() {
-			return GetTalent("action_reload");
-		}
-
-		public Talent Activate() {
-			return GetTalent("action_activate");
-		}
 		#endregion
 	}
 }

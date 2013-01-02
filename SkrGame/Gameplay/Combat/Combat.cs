@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using DEngine.Core;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
+using log4net;
 
 namespace SkrGame.Gameplay.Combat {
 	public class DamageType {
@@ -50,7 +52,7 @@ namespace SkrGame.Gameplay.Combat {
 	}
 
 	internal static class Combat {
-		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static readonly Dictionary<string, DamageType> DamageTypes = new Dictionary<string, DamageType>
 		                                                                    {
@@ -72,25 +74,25 @@ namespace SkrGame.Gameplay.Combat {
 
 			//todo unfinished
 			if (roll <= 4)
-				return target.GetBodyPart(BodySlot.Head);
+				return target.Body.GetBodyPart(BodySlot.Head);
 			if (roll <= 5)
-				return target.GetBodyPart(BodySlot.OffHand);
+				return target.Body.GetBodyPart(BodySlot.OffHand);
 			if (roll <= 7)
-				return target.GetBodyPart(BodySlot.Leg);            // left leg
+				return target.Body.GetBodyPart(BodySlot.Leg);            // left leg
 			if (roll <= 8)
-				return target.GetBodyPart(BodySlot.OffArm);
+				return target.Body.GetBodyPart(BodySlot.OffArm);
 			if (roll <= 11)
-				return target.GetBodyPart(BodySlot.Torso);
+				return target.Body.GetBodyPart(BodySlot.Torso);
 			if (roll <= 12)
-				return target.GetBodyPart(BodySlot.MainArm);
+				return target.Body.GetBodyPart(BodySlot.MainArm);
 			if (roll <= 14)
-				return target.GetBodyPart(BodySlot.Leg);            // right leg
+				return target.Body.GetBodyPart(BodySlot.Leg);            // right leg
 			if (roll <= 15)
-				return target.GetBodyPart(BodySlot.MainHand);
+				return target.Body.GetBodyPart(BodySlot.MainHand);
 			if (roll <= 16)
-				return target.GetBodyPart(BodySlot.Feet);
+				return target.Body.GetBodyPart(BodySlot.Feet);
 			else
-				return target.GetBodyPart(BodySlot.Head);
+				return target.Body.GetBodyPart(BodySlot.Head);
 		}
 
 		private static double ChanceOfSuccess(double difficulty) {
@@ -148,6 +150,11 @@ namespace SkrGame.Gameplay.Combat {
 				if (currentLevel.DoesActorExistAtLocation(location))
 					yield return location;
 			}
+		}
+
+		public static void ProcessCombat(CombatEventArgs e) {
+			e.Attacker.OnAttacking(e);
+			e.Defender.OnDefending(e);
 		}
 	}
 

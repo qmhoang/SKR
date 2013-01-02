@@ -23,7 +23,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 			if (Actor.HasLineOfSight(player.Position)) {
 				var distance = Actor.Position.DistanceTo(player.Position);
 				if (distance <= 1) {
-					Actor.MeleeAttack().As<ActiveTalentComponent>().InvokeAction(player.Position);
+					Actor.Talents.MeleeAttack().As<ActiveTalentComponent>().InvokeAction(player.Position);
 					Actor.ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
 				} else if (distance <= 1.5)		// we are diagonally next to the player
 				{

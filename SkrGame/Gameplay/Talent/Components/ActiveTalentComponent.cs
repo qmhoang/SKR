@@ -150,7 +150,7 @@ namespace SkrGame.Gameplay.Talent.Components {
 		#endregion
 
 		public ActionResult InvokeAction(Point target, params dynamic[] args) {
-			Talent.Owner.OnTalentUsed(new TalentUsedEvent(Talent.Owner, Talent));
+			Talent.Owner.Talents.OnTalentUsed(new TalentUsedEvent(Talent.Owner, Talent));
 			return actionOnTargetFunc(this, Talent.Owner, target, args);
 		}
 
