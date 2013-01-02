@@ -145,8 +145,8 @@ namespace SkrGame.Gameplay.Combat {
 					yield break;
 				}
 
-				if (currentLevel.DoesActorExistAtLocation(location))
-					yield return location;
+//				if (currentLevel.DoesActorExistAtLocation(location))
+//					yield return location;
 			}
 		}
 	}
