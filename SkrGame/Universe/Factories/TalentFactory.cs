@@ -348,14 +348,14 @@ namespace SkrGame.Universe.Factories {
 			       												return ActionResult.Aborted;
 			       											}
 
-			       											var weapon = args[0] as RangeComponent;
+			       											var weapon = (RangeComponent) args[0];
 
 			       											if (!(args[1] is AmmoComponent)) {
 			       												World.Instance.AddMessage("Not ammo.", MessageType.High);
 			       												return ActionResult.Aborted;
 			       											}
 
-			       											var ammo = args[1] as AmmoComponent;
+			       											var ammo = (AmmoComponent) args[1];
 
 			       											if (!ammo.Type.Equals(weapon.AmmoType)) {
 			       												World.Instance.AddMessage("Wrong ammo type for this weapon.", MessageType.High);
@@ -368,18 +368,31 @@ namespace SkrGame.Universe.Factories {
 			       												return ActionResult.Aborted;
 			       											}
 
-			       											if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount > 1)
-			       												ammo.Item.Amount--;
-			       											else
-			       												user.RemoveItem(ammo.Item);
+															// todo revolvers and single load weapons
 
-			       											weapon.ShotsRemaining++;
 
+															// to semi-simulate dropping magazines, drop remaining bullets on the ground
+															if (weapon.ShotsRemaining > 0) {
+																var droppedAmmo = World.Instance.CreateItem(weapon.AmmoType);
+																droppedAmmo.Amount = weapon.ShotsRemaining;
+																weapon.ShotsRemaining = 0;
+																user.Level.AddItem(droppedAmmo, user.Position);
+																World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Name, weapon.Item.Name,
+																										ammo.Item.Name));
+															} else {
+																World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}.", user.Name, weapon.Item.Name,
+																										ammo.Item.Name));
+															}
+
+			       											if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount >= weapon.Shots) {
+			       												ammo.Item.Amount -= weapon.Shots;
+			       												weapon.ShotsRemaining = weapon.Shots;
+			       											} else if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount > 0) {
+				       											weapon.ShotsRemaining = ammo.Item.Amount;
+																user.RemoveItem(ammo.Item);
+			       											}
+															
 			       											user.ActionPoints -= weapon.APToReload;
-
-
-			       											World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}", user.Name, weapon.Item.Name,
-			       											                                        ammo.Item.Name));
 
 			       											return ActionResult.Success;
 			       										}

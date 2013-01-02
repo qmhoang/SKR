@@ -100,14 +100,9 @@ namespace SkrGame.Universe {
 
 		private void Temp() {
 			var level = mapFactory.Construct("TestMap");
-			level.World = this;
-			Npc npc1 = new Npc(level) { Position = new Point(3, 4) };
-			npc1.Intelligence = new SimpleIntelligence(npc1);
-			level.AddActor(npc1);
-			AddEntity(npc1);
-
 			level.GenerateFov();
-
+			level.World = this;
+			
 			Player = new Player(level) { Position = new Point(0, 0) };
 
 			Player.AddItem(CreateItem("largeknife"));
@@ -121,6 +116,11 @@ namespace SkrGame.Universe {
 			var ammo = CreateItem(".40S&W");
 			ammo.Amount = 20;
 			level.AddItem(ammo, Player.Position);
+
+			Npc npc1 = new Npc(level) { Position = new Point(3, 4) };
+			npc1.Intelligence = new SimpleIntelligence(npc1);
+			level.AddActor(npc1);
+			AddEntity(npc1);
 		}
 
 		public Talent GetTalent(string skillRefId) {

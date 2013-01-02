@@ -49,7 +49,7 @@ namespace SkrGame.Gameplay.Combat {
 		}
 	}
 
-	public static class Combat {
+	internal static class Combat {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static readonly Dictionary<string, DamageType> DamageTypes = new Dictionary<string, DamageType>

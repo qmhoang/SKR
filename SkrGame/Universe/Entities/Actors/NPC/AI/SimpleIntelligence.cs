@@ -1,12 +1,19 @@
+using System.Collections.Generic;
+using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Actors.PC;
+using SkrGame.Universe.Location;
+using libtcod;
+using log4net;
 
 namespace SkrGame.Universe.Entities.Actors.NPC.AI {
-	class SimpleIntelligence : NpcIntelligence {
-		private AStarPathFinder pf;
 
+	internal class SimpleIntelligence : NpcIntelligence {
+		private AStarPathFinder pf;
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		
 		public SimpleIntelligence(Npc monster)
 			: base(monster) {
 			pf = new AStarPathFinder(monster.Level, 1.41f);
@@ -14,6 +21,8 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 
 		public override void Update() {
 			Player player = World.Instance.Player;
+
+
 			if (Actor.HasLineOfSight(player.Position)) {
 				var distance = Actor.Position.DistanceTo(player.Position);
 				if (distance <= 1) {
@@ -23,13 +32,16 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 				{
 					Actor.Wait();		// todo add diagonal attacks
 				} else {
-					pf.Compute(Actor.Position.X, Actor.Position.Y, player.Position.X, player.Position.Y);
+					pf.Compute(Actor.Position.X, Actor.Position.Y, player.Position.X, player.Position.Y);					
 					int nx = Actor.Position.X, ny = Actor.Position.Y;
 
 					if (pf.Walk(ref nx, ref ny, false)) {
 						Point dir = new Point(nx, ny) - Actor.Position;
 						if (Actor.Move(dir) == ActionResult.Success) {
+
 						}
+					} else {
+						Actor.Wait();
 					}
 				}
 
@@ -39,7 +51,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 		}
 	}
 
-	class BasicHumanIntelligence : SimpleIntelligence {
+	internal class BasicHumanIntelligence : SimpleIntelligence {
 
 
 		public BasicHumanIntelligence(Npc actor)
@@ -52,7 +64,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 		}
 	}
 
-	class FightOrFlightIntelligence : SimpleIntelligence {
+	internal class FightOrFlightIntelligence : SimpleIntelligence {
 		private Actor target;
 
 

@@ -4,7 +4,7 @@ using SkrGame.Universe.Location;
 
 namespace SkrGame.Universe.Entities.Actors.NPC {
 	public class Npc : Actor {
-		public NpcIntelligence Intelligence { get; set; }
+		internal NpcIntelligence Intelligence { get; set; }
 
 		public override int SightRadius {
 			get { return 10; }

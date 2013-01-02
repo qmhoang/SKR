@@ -1,5 +1,5 @@
 namespace SkrGame.Universe.Entities.Actors.NPC.AI {
-	public abstract class NpcIntelligence {
+	internal abstract class NpcIntelligence {
 		protected Npc Actor;
 
 		protected NpcIntelligence(Npc actor) {

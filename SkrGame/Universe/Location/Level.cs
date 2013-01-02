@@ -33,7 +33,6 @@ namespace SkrGame.Universe.Location {
 
 		protected string[,] Map;
 		protected Dictionary<string, Terrain> TerrainDefinitions;
-		public TCODMap Fov { get; protected set; }
 
 		public bool[,] Vision { get; protected set; }
 
@@ -56,14 +55,16 @@ namespace SkrGame.Universe.Location {
 
 		public IEnumerable<Feature> Features { get { return features; } }
 
-		public Level(Size size, string fill) {
+		public Level(Size size, string fill, IEnumerable<Terrain> terrainDefinitions) : base(size) {
 			Uid = new UniqueId();
-			Size = size;
 
 			Vision = new bool[Width, Height];
 			Map = new string[Width, Height];
-			Fov = new TCODMap(Width, Height);
 			TerrainDefinitions = new Dictionary<string, Terrain>();
+
+			foreach (var terrain in terrainDefinitions) {
+				TerrainDefinitions.Add(terrain.Definition, terrain);
+			}
 
 			actors = new List<Actor>();
 			itemsByLocation = new Dictionary<Item, Point>();
@@ -72,6 +73,12 @@ namespace SkrGame.Universe.Location {
 			for (int x = 0; x < Map.GetLength(0); x++)
 				for (int y = 0; y < Map.GetLength(1); y++) {
 					Map[x, y] = fill;
+
+					var t = TerrainDefinitions[fill];
+					if (t == null)
+						SetProperties(x, y, false, false);
+					else
+						SetProperties(x, y, t.Transparent, t.Walkable);
 				}
 		}
 
@@ -133,7 +140,7 @@ namespace SkrGame.Universe.Location {
 				throw new ArgumentOutOfRangeException();
 			Map[x, y] = t;
 			var terrain = GetTerrain(x, y);
-			Fov.setProperties(x, y, terrain.Transparent, terrain.Walkable);
+			SetProperties(x, y, terrain.Transparent, terrain.Walkable);
 		}
 
 		public void SetTerrain(Point p, string t) {
@@ -150,18 +157,6 @@ namespace SkrGame.Universe.Location {
 			return TerrainDefinitions[Map[x, y]];
 		}
 
-		public override bool IsVisible(int x, int y) {
-			if (!IsInBoundsOrBorder(x, y))
-				throw new ArgumentOutOfRangeException();
-			return Fov.isInFov(x, y);
-		}
-
-		public override bool IsWalkable(int x, int y) {
-			if (!IsInBoundsOrBorder(x, y))
-				return false;
-			return Fov.isWalkable(x, y);
-		}
-
 		/// <summary>
 		/// Generate FOV from tiles and features
 		/// </summary>
@@ -171,17 +166,13 @@ namespace SkrGame.Universe.Location {
 				for (int y = 0; y < Map.GetLength(1); y++) {
 					var t = GetTerrain(x, y);
 					if (t == null)
-						Fov.setProperties(x, y, false, false);
+						SetProperties(x, y, false, false);
 					else
-						Fov.setProperties(x, y, t.Transparent, t.Walkable);
+						SetProperties(x, y, t.Transparent, t.Walkable);
 				}
 
 			// features
-			Features.Each(feature => Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable));
-		}
-
-		public void AddTerrain(Terrain t) {
-			TerrainDefinitions.Add(t.Definition, t);
+			Features.Each(feature => SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable));
 		}
 
 		public void AddFeature(Feature feature) {
@@ -189,7 +180,7 @@ namespace SkrGame.Universe.Location {
 			feature.Level = this;
 			feature.TransparencyChanged += FeatureTransparencyChanged;
 			feature.WalkableChanged += FeatureWalkableChanged;
-			Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+			SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
 		}
 
 		public bool RemoveFeature(Feature feature) {
@@ -198,22 +189,23 @@ namespace SkrGame.Universe.Location {
 			feature.WalkableChanged -= FeatureWalkableChanged;
 
 			var terrain = GetTerrain(feature.Position);
-			Fov.setProperties(feature.Position.X, feature.Position.Y, terrain.Transparent, terrain.Walkable);
+			SetProperties(feature.Position.X, feature.Position.Y, terrain.Transparent, terrain.Walkable);
 
 			return features.Remove(feature);
 		}
 
-		void FeatureWalkableChanged(object sender, EventArgs e) {
+		// these are basically delegates that are added to every feature to detect when they change
+		private void FeatureWalkableChanged(object sender, EventArgs e) {
 			if (sender is Feature) {
 				var feature = sender as Feature;
-				Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+				SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
 			}
 		}
 
-		void FeatureTransparencyChanged(object sender, EventArgs e) {
+		private void FeatureTransparencyChanged(object sender, EventArgs e) {
 			if (sender is Feature) {
 				var feature = sender as Feature;
-				Fov.setProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
+				SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
 			}
 		}
 
