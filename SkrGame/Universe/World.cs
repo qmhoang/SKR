@@ -12,7 +12,7 @@ using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Factories;
-using SkrGame.Universe.Location;
+using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe {
 	public class World {
@@ -95,7 +95,7 @@ namespace SkrGame.Universe {
 			Rng.Seed(0);
 			level = mapFactory.Construct("TestHouse");
 
-			EntityManager.Create().Add(new ActionPoint()).Add(new Sprite("player", 3)).Add(new Position(0, 0)).Add(new PlayerMarker()).Add(new Actor("player", level));	
+			EntityManager.Create().Add(new ActionPoint()).Add(new Sprite("player", 3)).Add(new DEngine.Components.Location(0, 0)).Add(new PlayerMarker()).Add(new Actor("player", level)).Add(new LevelComponent(level));	
 		}
 //
 //		private void Temp() {
@@ -181,7 +181,7 @@ namespace SkrGame.Universe {
 		public EntityWorld() {
 			entityManager = new EntityManager();
 			
-			entityManager.Create().Add(new ActionPoint()).Add(new Sprite("", 3)).Add(new Position(0, 0)).Add(new PlayerMarker());			
+			entityManager.Create().Add(new ActionPoint()).Add(new Sprite("", 3)).Add(new DEngine.Components.Location(0, 0)).Add(new PlayerMarker());			
 		}
 	}
 }

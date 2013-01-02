@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Components;
 using DEngine.Core;
-using SkrGame.Universe.Location;
+using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Factories {
 	public abstract class MapFactory : Factory<string, Level> {}
@@ -216,6 +216,7 @@ namespace SkrGame.Universe.Factories {
 		private Level FromString(Dictionary<char, Tuple<string, string>> charIdentifiers, params string[] definition) {
 			int width = definition[0].Length;
 			int height = definition.Count();
+
 			var map = new Level(new Size(width, height), "Grass", terrainDefinitions);
 
 			for (int y = 0; y < height; y++) {
@@ -229,7 +230,8 @@ namespace SkrGame.Universe.Factories {
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
 						var feature = featureFactory.Construct(charIdentifiers[s[x]].Item2);
 
-						feature.As<Position>().Coordinates = new Point(x, y);
+						feature.As<DEngine.Components.Location>().Position = new Point(x, y);
+						feature.Add(new LevelComponent(map));
 						map.EntityManager.Create(feature);
 											
 					}

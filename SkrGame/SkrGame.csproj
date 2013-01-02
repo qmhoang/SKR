@@ -104,8 +104,8 @@
     <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\TalentFactory.cs" />
     <Compile Include="Universe\Factories\FeatureFactory.cs" />
-    <Compile Include="Universe\Location\Feature.cs" />
-    <Compile Include="Universe\Location\Level.cs" />
+    <Compile Include="Universe\Locations\Blocker.cs" />
+    <Compile Include="Universe\Locations\Level.cs" />
     <Compile Include="Universe\World.cs" />
   </ItemGroup>
   <ItemGroup>
