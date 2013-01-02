@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using SkrGame.Universe.Entities.Items;
 
-namespace SkrGame.Universe.Entities.Actors {
+namespace SkrGame.Universe.Entities.Items {
 	public class ItemContainer : IEnumerable<Item> {
 		protected List<Item> Items;
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -41,17 +40,17 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// <param name="item"></param>
 		public void AddItem(Item item) {
 			if (Items.Contains(item))
-				throw new ArgumentException(String.Format("Item (Guid: {0}) already exist in in the container.", item.UniqueId));
+				throw new ArgumentException(String.Format("Item (Guid: {0}) already exist in in the container.", item.OwnerUId));
 
-			Log.DebugFormat("Adding item: {0}, Guid: {1}", item.Name, item.UniqueId);
+			Log.DebugFormat("Adding item: {0}, Guid: {1}", item.Name, item.OwnerUId);
 
 			Items.Add(item);
 		}
 
 		public void RemoveItem(Item item) {
 			if (!Items.Contains(item))
-				throw new ArgumentException(String.Format("Item (Guid: {0}) does not exist in in the container.", item.UniqueId));
-			Log.DebugFormat("Removing item: {1} Guid: {0}", item.UniqueId, item.Name);
+				throw new ArgumentException(String.Format("Item (Guid: {0}) does not exist in in the container.", item.OwnerUId));
+			Log.DebugFormat("Removing item: {1} Guid: {0}", item.OwnerUId, item.Name);
 
 			Items.Remove(item);
 		}

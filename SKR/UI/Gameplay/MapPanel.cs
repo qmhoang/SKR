@@ -8,6 +8,7 @@ using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.Universe;
+using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Locations;
 using libtcod;
@@ -29,19 +30,25 @@ namespace SKR.UI.Gameplay {
 
 			entities = manager.Get(typeof(Location), typeof(Sprite));
 
-			player = manager.Get<PlayerMarker>().ToList()[0];
+			player = World.Instance.Player;
 		}
 
 		protected override void Redraw() {
 			base.Redraw();
-			var level = player.As<LevelComponent>().Level;
+			var level = player.As<Location>().Level;
+
+			ViewOffset = new Point(Math.Min(Math.Max(player.As<Location>().X - Size.Width / 2, 0),
+			                                level.Width - Size.Width),
+			                       Math.Min(Math.Max(player.As<Location>().Y - Size.Height / 2, 0),
+			                                level.Height - Size.Height));
+
 			//draw map
 			for (int x = 0; x < Size.Width; x++) {
 				for (int y = 0; y < Size.Height; y++) {
 					if (!level.IsInBoundsOrBorder(x, y))
 						continue;
 
-					var texture = assets[level.GetTerrain(x, y).Asset];
+					var texture = assets[((Level) level).GetTerrain(x, y).Asset];
 					if (texture == null)
 						continue;
 					if (IsPointWithinPanel(x, y))
@@ -62,10 +69,7 @@ namespace SKR.UI.Gameplay {
 					Canvas.PrintChar(entity.As<Location>().Position, assets[entity.As<Sprite>().Asset].Item1, assets[entity.As<Sprite>().Asset].Item2);
 			}
 
-//			ViewOffset = new Point(Math.Min(Math.Max(player.As<Position>().X - Size.Width / 2, 0),
-//			                                player.Level.Width - Size.Width),
-//								   Math.Min(Math.Max(player.As<Position>().Y - Size.Height / 2, 0),
-//			                                player.Level.Height - Size.Height));
+
 
 //			for (int x = 0; x < Size.Width; x++)
 //				for (int y = 0; y < Size.Height; y++) {

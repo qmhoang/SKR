@@ -12,7 +12,6 @@ namespace SkrGame.Universe.Locations {
 			this.transparent = transparent;			
 		}
 		
-		public Level Level { get; set; }		
 		public string Description { get; set; }
 
 		private bool transparent;

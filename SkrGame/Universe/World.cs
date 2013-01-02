@@ -6,6 +6,7 @@ using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Core;
 using SkrGame.Gameplay.Talent;
+using SkrGame.Systems;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.NPC;
 using SkrGame.Universe.Entities.Actors.NPC.AI;
@@ -19,20 +20,21 @@ namespace SkrGame.Universe {
 		/// <summary>
 		/// default speed of entities, an entity with 2x speed can act twice as before an entity with normal speed
 		/// </summary>
-		public const int DEFAULT_SPEED = 100;					// 
-		public const int TURN_LENGTH_IN_SECONDS = 1;			// how long is a turn in seconds
+		public const int DEFAULT_SPEED = 100; // 
 
-		public const int MEAN = 50;								// what is the mean score for an attribute
-		public const int STANDARD_DEVIATION = 15;				// what is the stddev for an attribute score
+		public const int TURN_LENGTH_IN_SECONDS = 1; // how long is a turn in seconds
 
-		public const int TILE_LENGTH = 1;						// length of 1 square tile
+		public const int MEAN = 50; // what is the mean score for an attribute
+		public const int STANDARD_DEVIATION = 15; // what is the stddev for an attribute score
+
+		public const int TILE_LENGTH = 1; // length of 1 square tile
 
 		public static int SecondsToActionPoints(double seconds) {
-			return (int)Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
+			return (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
 		}
 
 		public static double ActionPointsToSeconds(int ap) {
-			return (double)(ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
+			return (double) (ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
 		}
 
 		public static int SpeedToActionPoints(int speed) {
@@ -44,14 +46,14 @@ namespace SkrGame.Universe {
 		}
 
 		public static double SpeedToSeconds(int speed) {
-			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / (double)speed;
+			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / (double) speed;
 		}
 
 		/// <summary>
 		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
 		/// </summary>
 		public static int SecondsToSpeed(double seconds) {
-			return (int)((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
+			return (int) ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
 		}
 
 		public List<Message> MessageBuffer { get; private set; }
@@ -66,7 +68,7 @@ namespace SkrGame.Universe {
 		}
 
 
-		private readonly ItemFactory itemFactory;        
+		private readonly ItemFactory itemFactory;
 		private readonly FeatureFactory featureFactory;
 //		private readonly TalentFactory talentFactory;
 		private readonly MapFactory mapFactory;
@@ -79,24 +81,49 @@ namespace SkrGame.Universe {
 			get { return level; }
 		}
 
-		public EntityManager EntityManager { get { return level.EntityManager; } }
+		public Entity Player { get; set; }
 
+		public EntityManager EntityManager {
+			get { return level.EntityManager; }
+		}
+
+		private ActionPointSystem actionPointSystem;		
 
 		private World() {
-			MessageBuffer = new List<Message>(); 
-			
+			MessageBuffer = new List<Message>();
+
 //			talentFactory = new SourceTalentFactory();
 			itemFactory = new SourceItemFactory();
 			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(featureFactory);
 
 
-
 			Rng.Seed(0);
 			level = mapFactory.Construct("TestHouse");
 
-			EntityManager.Create().Add(new ActionPoint()).Add(new Sprite("player", 3)).Add(new DEngine.Components.Location(0, 0)).Add(new PlayerMarker()).Add(new Actor("player", level)).Add(new LevelComponent(level));	
+			Player = EntityManager.Create(new Template()
+			                              {
+			                              		new ActionPoint(),
+			                              		new Sprite("player", 3),
+			                              		new Location()
+			                              		{
+			                              				Level = level,
+														Position = new Point(0, 0)
+			                              		},
+			                              		new PlayerMarker(),
+			                              		new Actor("player", level),			                              		
+			                              		new BodyComponent(),
+			                              });
+			
+			
+
+
 		}
+
+		public void Initialize() {
+			actionPointSystem = new ActionPointSystem(EntityManager);
+		}
+
 //
 //		private void Temp() {
 //			var level = mapFactory.Construct("TestHouse");
@@ -132,56 +159,13 @@ namespace SkrGame.Universe {
 		}
 
 		public static World Create() {
-			Instance = new World();			
+			Instance = new World();
+			Instance.Initialize();
 			return Instance;
 		}
-	}
 
-	public class EntityWorld {
-		/// <summary>
-		/// default speed of entities, an entity with 2x speed can act twice as before an entity with normal speed
-		/// </summary>
-		public const int DEFAULT_SPEED = 100;					// 
-		public const int TURN_LENGTH_IN_SECONDS = 1;			// how long is a turn in seconds
-
-		public const int MEAN = 50;								// what is the mean score for an attribute
-		public const int STANDARD_DEVIATION = 15;				// what is the stddev for an attribute score
-
-		public const int TILE_LENGTH = 1;						// length of 1 square tile
-
-		public static int SecondsToActionPoints(double seconds) {
-			return (int)Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
-		}
-
-		public static double ActionPointsToSeconds(int ap) {
-			return (double)(ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
-		}
-
-		public static int SpeedToActionPoints(int speed) {
-			return SecondsToActionPoints(SpeedToSeconds(speed));
-		}
-
-		public static int ActionPointsToSpeed(int ap) {
-			return SecondsToSpeed(ActionPointsToSeconds(ap));
-		}
-
-		public static double SpeedToSeconds(int speed) {
-			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / (double)speed;
-		}
-
-		/// <summary>
-		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
-		/// </summary>
-		public static int SecondsToSpeed(double seconds) {
-			return (int)((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
-		}
-
-		private EntityManager entityManager;
-
-		public EntityWorld() {
-			entityManager = new EntityManager();
-			
-			entityManager.Create().Add(new ActionPoint()).Add(new Sprite("", 3)).Add(new DEngine.Components.Location(0, 0)).Add(new PlayerMarker());			
+		public void UpdateSystems() {
+			actionPointSystem.Update();			
 		}
 	}
 }

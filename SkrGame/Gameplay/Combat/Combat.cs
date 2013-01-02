@@ -60,12 +60,12 @@ namespace SkrGame.Gameplay.Combat {
 		                                                                    		{"crush", new DamageType("Crushing")},
 		                                                                    		{"pierce_small", new DamageType("Small Piercing")},
 		                                                                    		{"pierce", new DamageType("Piercing")},
-																					{"pierce_large", new DamageType("Large Piercing")},
-																					{"pierce_huge", new DamageType("Huge Piercing")},
+		                                                                    		{"pierce_large", new DamageType("Large Piercing")},
+		                                                                    		{"pierce_huge", new DamageType("Huge Piercing")},
 		                                                                    		{"burn", new DamageType("Burning")},
 		                                                                    };
 
-		public static BodyPart GetRandomBodyPart(Actor target) {
+		public static BodyPart GetRandomBodyPart(BodyComponent target) {
 			int roll = Rng.Roll(3, 6);
 
 			Logger.InfoFormat("Random body part roll: {0}", roll);
@@ -76,7 +76,7 @@ namespace SkrGame.Gameplay.Combat {
 			if (roll <= 5)
 				return target.GetBodyPart(BodySlot.OffHand);
 			if (roll <= 7)
-				return target.GetBodyPart(BodySlot.Leg);            // left leg
+				return target.GetBodyPart(BodySlot.Leg); // left leg
 			if (roll <= 8)
 				return target.GetBodyPart(BodySlot.OffArm);
 			if (roll <= 11)
@@ -84,7 +84,7 @@ namespace SkrGame.Gameplay.Combat {
 			if (roll <= 12)
 				return target.GetBodyPart(BodySlot.MainArm);
 			if (roll <= 14)
-				return target.GetBodyPart(BodySlot.Leg);            // right leg
+				return target.GetBodyPart(BodySlot.Leg); // right leg
 			if (roll <= 15)
 				return target.GetBodyPart(BodySlot.MainHand);
 			if (roll <= 16)
@@ -145,9 +145,46 @@ namespace SkrGame.Gameplay.Combat {
 					yield break;
 				}
 
-//				if (currentLevel.DoesActorExistAtLocation(location))
-//					yield return location;
+				//				if (currentLevel.DoesActorExistAtLocation(location))
+				//					yield return location;
 			}
+		}
+
+		public static void Damage(int damage, DamageType type, BodyPart bodyPart, out int damageResistance, out int damageDealt) {
+			damageDealt = damage;
+			damageResistance = 0;
+			if (bodyPart.Equipped) {
+				var itemAtSlot = bodyPart.Item;
+
+				if (itemAtSlot.Is(typeof (ArmorComponent))) {
+					var armor = itemAtSlot.As<ArmorComponent>();
+					damageResistance = armor.Resistances[type];
+					damageDealt = Math.Max(damage - damageResistance, 0);
+					if (Rng.Chance(armor.Coverage / 100.0)) {
+						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
+					} else {
+						// we hit a chink in the armor
+						damageResistance /= (int) armor.NonCoverageDivisor;
+						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR reduced because of non-coverage: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
+					}
+				}
+			}
+
+			if (damageDealt > bodyPart.MaxHealth) {
+				damageDealt = Math.Min(damage, bodyPart.MaxHealth);
+				Logger.InfoFormat("Damage reduced to {0} because of {1}'s max health", damageDealt, bodyPart.Name);
+			}
+
+			bodyPart.Health -= damageDealt;
+			bodyPart.Owner.Health -= damageDealt;
+
+			Logger.DebugFormat("{0}'s {1} was hurt ({2} damage)", bodyPart.Owner.OwnerUId, bodyPart.Name, damageDealt);
+		}
+
+		public static void Heal(BodyPart bodyPart, int amount) {
+			amount = Math.Min(amount, bodyPart.Owner.MaxHealth - bodyPart.Owner.Health);
+			bodyPart.Owner.Health += amount;
+			Logger.DebugFormat("{0} was healed {1} health", bodyPart.Owner.OwnerUId, amount);
 		}
 	}
 

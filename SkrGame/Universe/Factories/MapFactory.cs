@@ -230,8 +230,8 @@ namespace SkrGame.Universe.Factories {
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
 						var feature = featureFactory.Construct(charIdentifiers[s[x]].Item2);
 
-						feature.As<DEngine.Components.Location>().Position = new Point(x, y);
-						feature.Add(new LevelComponent(map));
+						feature.As<Location>().Position = new Point(x, y);
+						feature.As<Location>().Level = map;						
 						map.EntityManager.Create(feature);
 											
 					}
