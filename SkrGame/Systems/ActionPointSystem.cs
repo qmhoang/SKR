@@ -16,7 +16,7 @@ namespace SkrGame.Systems {
 			player = entityManager.Get<PlayerMarker>().ToList()[0];
 		}
 
-		protected void Update() {
+		public void Update() {
 			if (!player.As<ActionPoint>().Updateable) {
 				foreach (var entity in updateables) {
 					if (!entity.Is<PlayerMarker>()) {

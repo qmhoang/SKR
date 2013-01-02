@@ -9,6 +9,7 @@ using Ogui.Core;
 using Ogui.UI;
 using SKR.Universe;
 using SkrGame.Universe.Entities.Actors.PC;
+using SkrGame.Universe.Locations;
 using libtcod;
 
 namespace SKR.UI.Gameplay {
@@ -26,16 +27,39 @@ namespace SKR.UI.Gameplay {
 			ViewOffset = new Point(0, 0);
 			assets = assetsManager;
 
-			entities = manager.Get(typeof(Position), typeof(Sprite));
+			entities = manager.Get(typeof(Location), typeof(Sprite));
 
 			player = manager.Get<PlayerMarker>().ToList()[0];
 		}
 
 		protected override void Redraw() {
 			base.Redraw();
+			var level = player.As<LevelComponent>().Level;
+			//draw map
+			for (int x = 0; x < Size.Width; x++) {
+				for (int y = 0; y < Size.Height; y++) {
+					if (!level.IsInBoundsOrBorder(x, y))
+						continue;
 
-			foreach (var entity in entities) {
-				Canvas.PrintChar(entity.As<Position>().Coordinates, assets[entity.As<Sprite>().Asset].Item1, assets[entity.As<Sprite>().Asset].Item2);
+					var texture = assets[level.GetTerrain(x, y).Asset];
+					if (texture == null)
+						continue;
+					if (IsPointWithinPanel(x, y))
+					{
+						if (!Program.SeeAll.Enabled) {
+							Canvas.PrintChar(x, y, texture.Item1, texture.Item2);
+						} else {
+							Canvas.PrintChar(x, y, texture.Item1, texture.Item2);
+						}
+					}
+					
+				}
+			}			
+			
+			// draw entities
+			foreach (var entity in entities.OrderBy(entity => entity.As<Sprite>().Order)) {
+				if (IsPointWithinPanel(entity.As<Location>().Position))
+					Canvas.PrintChar(entity.As<Location>().Position, assets[entity.As<Sprite>().Asset].Item1, assets[entity.As<Sprite>().Asset].Item2);
 			}
 
 //			ViewOffset = new Point(Math.Min(Math.Max(player.As<Position>().X - Size.Width / 2, 0),

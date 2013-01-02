@@ -1,6 +1,5 @@
 ﻿using DEngine.Core;
 using DEngine.Entity;
-using SkrGame.Universe.Location;
 
 namespace SkrGame.Universe.Entities.Actors.PC {
 	public class PlayerMarker : EntityComponent {

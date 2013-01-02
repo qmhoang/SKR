@@ -1,6 +1,5 @@
 using DEngine.Core;
 using SkrGame.Universe.Entities.Actors.NPC.AI;
-using SkrGame.Universe.Location;
 
 namespace SkrGame.Universe.Entities.Actors.NPC {
 //	public class Npc : Actor {

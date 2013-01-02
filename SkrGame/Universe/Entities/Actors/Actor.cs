@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
@@ -10,7 +11,7 @@ using SkrGame.Gameplay.Talent;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
-using SkrGame.Universe.Location;
+using SkrGame.Universe.Locations;
 using log4net;
 
 
@@ -286,53 +287,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			return HasLineOfSight(actor.Position);
 		}
 
-//		public bool IsVisibleTo(Actor actor) {
-//			return actor.CanSpot(this);
-//		}
-//
-//		public bool HasLineOfSight(Actor target) {
-//			return HasLineOfSight(target.Position);
-//		}
 
-//		#region Move
-//		public override ActionResult Move(int dx, int dy) {
-//			return Move(new Point(dx, dy));
-//		}
-//
-//		public override ActionResult Move(Point p) {
-//			Point nPos = p + Position;
-//
-//			if (!Level.IsWalkable(nPos)) {
-//				World.AddMessage("There is something in the way");
-//				return ActionResult.Aborted;
-//			}
-//
-//			if (!Level.IsInBoundsOrBorder(nPos)) {
-//				return ActionResult.Aborted;
-//			}
-//
-//			if (Level.DoesActorExistAtLocation(nPos)) {
-//				MeleeAttack().As<ActiveTalentComponent>().InvokeAction(nPos);
-//			} else {
-//				Position = nPos;
-//
-//				foreach (var feature in Level.Features) {
-//					feature.Near(this);
-//				}
-//			}
-//
-//			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-//
-//			RecalculateFov = true;
-//			return ActionResult.Success;
-//		}
-//
-//		public override ActionResult Wait() {
-//			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-//			return ActionResult.Success;
-//		}
-//
-//		#endregion
 
 		#region Life
 		public event EventHandler<EventArgs<Condition, int>> ConditionChanged;
