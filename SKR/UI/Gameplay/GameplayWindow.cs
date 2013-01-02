@@ -29,7 +29,7 @@ namespace SKR.UI.Gameplay {
 			base.Redraw();
 
 			Canvas.PrintString(1, 1, World.Instance.Player.Name);
-			Canvas.PrintString(1, 3, String.Format("H: {0}/{1}", player.Health, player.MaxHealth));
+			Canvas.PrintString(1, 3, String.Format("H: {0}/{1}", player.Body.Health, player.Body.MaxHealth));
 		}
 	}
 
@@ -207,12 +207,12 @@ namespace SKR.UI.Gameplay {
 							Size = MapPanel.Size,
 							IsPopup = true,
 							HasFrame = true,
-							Items = player.BodyPartsList,
+							Items = player.Body.BodyPartsList,
 						}));
 					else if (keyData.Character == 'r')
-						HandleActiveTalent(player.ReloadWeapon().As<ActiveTalentComponent>());
+						HandleActiveTalent(player.Talents.ReloadWeapon().As<ActiveTalentComponent>());
 					else if (keyData.Character == 'f')
-						HandleActiveTalent(player.RangeAttack().As<ActiveTalentComponent>());
+						HandleActiveTalent(player.Talents.RangeAttack().As<ActiveTalentComponent>());
 					else if (keyData.Character == 'l')
 						ParentApplication.Push(new LookWindow(player.Position, MapPanel, promptTemplate));
 					//                    } else if (keyData.Character == 'a') {
@@ -244,7 +244,7 @@ namespace SKR.UI.Gameplay {
 						else
 							World.Instance.AddMessage("No items here to pick up.");
 					else if (keyData.Character == 'u')
-						HandleActiveTalent(player.Activate().As<ActiveTalentComponent>());
+						HandleActiveTalent(player.Talents.Activate().As<ActiveTalentComponent>());
 					else if (keyData.Character == 'i')
 						ParentApplication.Push(new ItemWindow(false,
 															  new ListWindowTemplate<Item>

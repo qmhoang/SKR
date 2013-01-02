@@ -51,73 +51,61 @@ namespace SkrGame.Universe.Factories {
 			       								InitialRank = 1,
 			       								MaxRank = 1,
 			       								RequiresTarget = TargetType.Directional,
+			       								Args = new List<ActiveTalentArgTemplate>
+			       								       {
+			       								       		new ActiveTalentArgTemplate
+			       								       		{
+			       								       				ArgFunction = delegate(ActiveTalentComponent t, Actor user, Point p)
+			       								       				              {
+			       								       				              	List<dynamic> melees = new List<dynamic>();
+			       								       				              	if (user.IsItemEquipped(BodySlot.MainHand)) {
+			       								       				              		var item = user.GetItemAtBodyPart(BodySlot.MainHand);
+			       								       				              		if (item.Is(typeof (MeleeComponent)))
+			       								       				              			melees.Add(item.As<MeleeComponent>());
+			       								       				              	} else if (user.IsItemEquipped(BodySlot.OffHand)) {
+			       								       				              		var item = user.GetItemAtBodyPart(BodySlot.OffHand);
+			       								       				              		if (item.Is(typeof (MeleeComponent)))
+			       								       				              			melees.Add(item.As<MeleeComponent>());
+			       								       				              	}
+
+			       								       				              	// todo shoot both guns at the same time
+			       								       				              	return melees;
+			       								       				              },
+			       								       				ArgDesciptor = delegate(ActiveTalentComponent t, Actor user, Point p, dynamic arg)
+			       								       				               {
+			       								       				               	var weapon = (RangeComponent) arg;
+			       								       				               	return weapon.Item == null
+			       								       				               	       		? weapon.ActionDescription
+			       								       				               	       		: String.Format("{0} with {1}", weapon.ActionDescription, weapon.Item.Name);
+			       								       				               },
+			       								       				Required = false,
+			       								       		}
+			       								       },
 			       								ActionOnTargetFunction =
-			       										delegate(ActiveTalentComponent t, Actor user, Point point, dynamic[] args)
+			       										delegate(ActiveTalentComponent talent, Actor user, Point target, dynamic[] args)
 			       										{
-			       											Actor target = user.Level.GetActorAtLocation(point);
 			       											MeleeComponent melee = null;
-			       											// if we have something in our main hand, probably want to use that
-			       											if (user.IsItemEquipped(BodySlot.MainHand)) {
-			       												var item = user.GetItemAtBodyPart(BodySlot.MainHand);
-			       												melee = (item.Is(typeof (MeleeComponent))
-			       												         		? item.As<MeleeComponent>()
-			       												         		: null);
-			       											} else if (user.IsItemEquipped(BodySlot.OffHand)) {
-			       												var item = user.GetItemAtBodyPart(BodySlot.OffHand);
-			       												melee = (item.Is(typeof (MeleeComponent))
-			       												         		? item.As<MeleeComponent>()
-			       												         		: null);
+			       											if (args.Count() == 0) {
+			       												// default attack
+			       												if (user.IsItemEquipped(BodySlot.MainHand)) {
+			       													var item = user.GetItemAtBodyPart(BodySlot.MainHand);
+			       													melee = (item.Is(typeof (MeleeComponent))
+			       													         		? item.As<MeleeComponent>()
+			       													         		: null);
+			       												} else if (user.IsItemEquipped(BodySlot.OffHand)) {
+			       													var item = user.GetItemAtBodyPart(BodySlot.OffHand);
+			       													melee = (item.Is(typeof (MeleeComponent))
+			       													         		? item.As<MeleeComponent>()
+			       													         		: null);
+			       												}
+			       											} else if (melee == null) {
+																melee = user.Body.Punch;
 			       											}
 
-			       											if (melee == null)
-			       												melee = user.Punch;
-
-			       											if (user.Position.DistanceTo(target.Position) > (melee.Reach + t.Range + 1)) {
-			       												World.Instance.AddMessage("Too far to attack.");
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											var hitBonusFromSkill = user.GetTalent(melee.Skill).As<SkillComponent>().Rank;
-			       											var bodyPart = target.GetBodyPart(BodySlot.Torso);
-
-			       											var result = Combat.Attack(user, target, hitBonusFromSkill - World.MEAN);
-
-			       											if (result == CombatEventResult.Hit) {
-			       												var damage =
-			       														Math.Max(
-			       																Combat.GetStrengthDamage(user.GetTalent("attrb_strength").As<AttributeComponent>().Rank).Roll() + melee.Damage.Roll(),
-			       																1);
-			       												int damageResistance, realDamage;
-
-			       												target.Damage(damage, melee.DamageType, bodyPart, out damageResistance, out realDamage);
-
-			       												World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-			       												                                        user.Name, melee.ActionDescriptionPlural, target.Name, bodyPart.Name, "todo-description"));
-
-
-			       												CombatEventArgs hit = new CombatEventArgs(user, target, bodyPart, CombatEventResult.Hit, damage,
-			       												                                          damageResistance, realDamage);
-			       												user.OnAttacking(hit);
-			       												target.OnDefending(hit);
-			       											} else if (result == CombatEventResult.Miss) {
-			       												World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-			       												                                        user.Name, melee.ActionDescriptionPlural, target.Name, bodyPart.Name));
-
-			       												CombatEventArgs combatEvent = new CombatEventArgs(user, target, bodyPart);
-			       												user.OnAttacking(combatEvent);
-			       												target.OnDefending(combatEvent);
-			       											} else if (result == CombatEventResult.Dodge) {
-			       												World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {4} dodges.",
-			       												                                        user.Name, melee.ActionDescriptionPlural, target.Name, bodyPart.Name, target.Name));
-
-			       												CombatEventArgs combatEvent = new CombatEventArgs(user, target, bodyPart, CombatEventResult.Dodge);
-			       												user.OnAttacking(combatEvent);
-			       												target.OnDefending(combatEvent);
-			       											}
-
-			       											user.ActionPoints -= melee.APToAttack;
-			       											return ActionResult.Success;
+															return MeleeAttackMethod(talent, user, target, melee, user.Body.GetBodyPart(BodySlot.Torso));
 			       										}
+
+
 			       						}
 			       				},
 			       });
@@ -168,127 +156,14 @@ namespace SkrGame.Universe.Factories {
 			       								       				              	if (!user.Level.DoesActorExistAtLocation(p))
 			       								       				              		return null;
 
-			       								       				              	return user.Level.GetActorAtLocation(p).BodyPartsList;
+																					return user.Level.GetActorAtLocation(p).Body.BodyPartsList;
 			       								       				              },
 			       								       				ArgDesciptor = (t, user, target, arg) => arg.ToString(),
 			       								       				Required = false,
 			       								       				PromptDescription = "Shoot at which body part?"
 			       								       		}
 			       								       },
-			       								ActionOnTargetFunction =
-			       										delegate(ActiveTalentComponent t, Actor user, Point targettedLocation, dynamic[] args)
-			       										{
-			       											if (!(args[0] is RangeComponent)) {
-			       												World.Instance.AddMessage("Not a range weapon.");
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											var weapon = (RangeComponent) args[0];
-
-			       											bool actorAtLocation = true;
-			       											if (args[1] == null)
-			       												actorAtLocation = false;
-			       											else if (!(args[1] is BodyPart)) {
-			       												World.Instance.AddMessage("Not a body part.");
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											if (user.Position.DistanceTo(targettedLocation) > (weapon.Range + t.Range + 1)) {
-			       												World.Instance.AddMessage("Too far to attack.");
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											if (weapon.ShotsRemaining <= 0) {
-			       												World.Instance.AddMessage(String.Format("{0} attempts to use the {1} only to realize the weapon is not loaded",
-			       												                                        user.Name, weapon.Item.Name));
-			       												user.ActionPoints -= weapon.APToAttack;
-			       												return ActionResult.Failed;
-			       											}
-
-			       											weapon.ShotsRemaining--;
-			       											user.ActionPoints -= weapon.APToAttack;
-
-			       											var hitBonusFromSkill = user.GetTalent(weapon.Skill).As<SkillComponent>().Rank - World.MEAN;
-
-			       											var targets = Combat.GetTargetsOnPath(user.Position, targettedLocation).ToList();
-
-			       											for (int i = 0; i < targets.Count; i++) {
-			       												var point = targets[i];
-			       												var targetAtLocation = user.Level.GetActorAtLocation(point);
-
-			       												BodyPart bodyPartTargetted;
-
-			       												if (actorAtLocation)
-			       													bodyPartTargetted = (BodyPart) args[1];
-			       												else
-			       													bodyPartTargetted = Combat.GetRandomBodyPart(targetAtLocation);
-
-
-			       												double range = targetAtLocation.Position.DistanceTo(user.Position) * World.TILE_LENGTH;
-			       												double rangePenalty = Math.Min(0,
-			       												                               -World.STANDARD_DEVIATION * Combat.RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) +
-			       												                               World.STANDARD_DEVIATION * 2 / 3);
-			       												Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, targetAtLocation.Name);
-
-			       												// not being targetted gives a sigma (std dev) penalty
-			       												rangePenalty -= targettedLocation == targetAtLocation.Position ? 0 : World.STANDARD_DEVIATION;
-
-			       												double difficultyOfShot = hitBonusFromSkill + rangePenalty + i * Combat.RANGE_PENALTY_TILE_OCCUPIED;
-			       												Logger.InfoFormat("Shot difficulty: {0}, targetting penalty: {1}, weapon bonus: {2}, is target: {3}",
-			       												                  difficultyOfShot, bodyPartTargetted.TargettingPenalty, hitBonusFromSkill,
-			       												                  targettedLocation == targetAtLocation.Position);
-
-
-			       												var result = Combat.Attack(user, targetAtLocation, difficultyOfShot);
-
-			       												if (result == CombatEventResult.Miss) {
-			       													if (point == targettedLocation) // if this is where the actor targetted
-			       														World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-			       														                                        user.Name, weapon.ActionDescriptionPlural, targetAtLocation.Name,
-			       														                                        bodyPartTargetted.Name));
-			       													CombatEventArgs combatEvent = new CombatEventArgs(user, targetAtLocation, bodyPartTargetted);
-			       													user.OnAttacking(combatEvent);
-			       													targetAtLocation.OnDefending(combatEvent);
-			       												} else if (result == CombatEventResult.Dodge) {
-			       													if (point == targettedLocation)
-			       														World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {4} dodges.",
-			       														                                        user.Name, weapon.ActionDescriptionPlural, targetAtLocation.Name,
-			       														                                        bodyPartTargetted.Name, targetAtLocation.Name));
-			       													else {
-			       														// we didn't target the actor, but the actor still dodges
-			       													}
-			       													CombatEventArgs combatEvent = new CombatEventArgs(user, targetAtLocation, bodyPartTargetted, CombatEventResult.Dodge);
-			       													user.OnAttacking(combatEvent);
-			       													targetAtLocation.OnDefending(combatEvent);
-			       												} else if (result == CombatEventResult.Hit) {
-			       													var damage =
-			       															Math.Max(
-			       																	Combat.GetStrengthDamage(user.GetTalent("attrb_strength").As<AttributeComponent>().Rank).Roll() +
-			       																	weapon.Damage.Roll(), 1);
-			       													int damageResistance, realDamage;
-
-			       													targetAtLocation.Damage(damage, weapon.DamageType, bodyPartTargetted, out damageResistance, out realDamage);
-
-			       													World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-			       													                                        user.Name, weapon.ActionDescriptionPlural, targetAtLocation.Name,
-			       													                                        bodyPartTargetted.Name,
-			       													                                        "todo-description"));
-
-
-			       													CombatEventArgs combatEvent = new CombatEventArgs(user, targetAtLocation, bodyPartTargetted, CombatEventResult.Hit, damage,
-			       													                                                  damageResistance, realDamage);
-			       													user.OnAttacking(combatEvent);
-			       													targetAtLocation.OnDefending(combatEvent);
-
-			       													return ActionResult.Success;
-			       												}
-
-			       												// todo drop ammo casing
-			       											}
-
-			       											World.Instance.AddMessage(String.Format("{0} {1} and hits nothing", user.Name, weapon.ActionDescriptionPlural));
-			       											return ActionResult.Failed;
-			       										}
+			       								ActionOnTargetFunction = RangeAttackMethod
 			       						}
 			       				},
 			       });
@@ -340,62 +215,8 @@ namespace SkrGame.Universe.Factories {
 			       								       				ArgDesciptor = (t, user, target, arg) => ((AmmoComponent) arg).Item.Name,
 			       								       		}
 			       								       },
-			       								ActionOnTargetFunction =
-			       										delegate(ActiveTalentComponent t, Actor user, Point p, dynamic[] args)
-			       										{
-			       											if (!(args[0] is RangeComponent)) {
-			       												World.Instance.AddMessage("Not a range weapon.", MessageType.High);
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											var weapon = (RangeComponent) args[0];
-
-			       											if (!(args[1] is AmmoComponent)) {
-			       												World.Instance.AddMessage("Not ammo.", MessageType.High);
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											var ammo = (AmmoComponent) args[1];
-
-			       											if (!ammo.Type.Equals(weapon.AmmoType)) {
-			       												World.Instance.AddMessage("Wrong ammo type for this weapon.", MessageType.High);
-			       												return ActionResult.Aborted;
-			       											}
-
-			       											// todo give arrow back when replacing new ammo
-			       											if (weapon.ShotsRemaining >= weapon.Shots) {
-			       												World.Instance.AddMessage("Weapon is already fully loaded.");
-			       												return ActionResult.Aborted;
-			       											}
-
-															// todo revolvers and single load weapons
-
-
-															// to semi-simulate dropping magazines, drop remaining bullets on the ground
-															if (weapon.ShotsRemaining > 0) {
-																var droppedAmmo = World.Instance.CreateItem(weapon.AmmoType);
-																droppedAmmo.Amount = weapon.ShotsRemaining;
-																weapon.ShotsRemaining = 0;
-																user.Level.AddItem(droppedAmmo, user.Position);
-																World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Name, weapon.Item.Name,
-																										ammo.Item.Name));
-															} else {
-																World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}.", user.Name, weapon.Item.Name,
-																										ammo.Item.Name));
-															}
-
-			       											if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount >= weapon.Shots) {
-			       												ammo.Item.Amount -= weapon.Shots;
-			       												weapon.ShotsRemaining = weapon.Shots;
-			       											} else if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount > 0) {
-				       											weapon.ShotsRemaining = ammo.Item.Amount;
-																user.RemoveItem(ammo.Item);
-			       											}
-															
-			       											user.ActionPoints -= weapon.APToReload;
-
-			       											return ActionResult.Success;
-			       										}
+			       								ActionOnTargetFunction = ReloadMethod
+			       										
 			       						}
 			       				},
 			       });
@@ -461,7 +282,7 @@ namespace SkrGame.Universe.Factories {
 			       		             		{
 			       		             				InitialRank = 0,
 			       		             				MaxRank = 10,
-			       		             				CalculateRealRank = (t, user) => t.RawRank + user.GetTalent("attrb_agility").As<AttributeComponent>().Rank
+			       		             				CalculateRealRank = (t, user) => t.RawRank + user.Talents.GetTalent("attrb_agility").As<AttributeComponent>().Rank
 			       		             		}
 			       		             }
 			       });
@@ -475,7 +296,7 @@ namespace SkrGame.Universe.Factories {
 			       		             		{
 			       		             				InitialRank = 0,
 			       		             				MaxRank = 10,
-			       		             				CalculateRealRank = (t, user) => t.RawRank + user.GetTalent("attrb_agility").As<AttributeComponent>().Rank
+			       		             				CalculateRealRank = (t, user) => t.RawRank + user.Talents.GetTalent("attrb_agility").As<AttributeComponent>().Rank
 			       		             		},
 			       		             }
 			       });
@@ -489,7 +310,7 @@ namespace SkrGame.Universe.Factories {
 			       		             		{
 			       		             				InitialRank = 0,
 			       		             				MaxRank = 10,
-			       		             				CalculateRealRank = (t, user) => t.RawRank + user.GetTalent("attrb_agility").As<AttributeComponent>().Rank
+			       		             				CalculateRealRank = (t, user) => t.RawRank + user.Talents.GetTalent("attrb_agility").As<AttributeComponent>().Rank
 			       		             		}
 			       		             }
 			       });
@@ -503,7 +324,7 @@ namespace SkrGame.Universe.Factories {
 			       		             		{
 			       		             				InitialRank = 0,
 			       		             				MaxRank = 10,
-			       		             				CalculateRealRank = (t, user) => t.RawRank + user.GetTalent("attrb_agility").As<AttributeComponent>().Rank
+			       		             				CalculateRealRank = (t, user) => t.RawRank + user.Talents.GetTalent("attrb_agility").As<AttributeComponent>().Rank
 			       		             		}
 			       		             }
 			       });
@@ -517,10 +338,240 @@ namespace SkrGame.Universe.Factories {
 			       		             		{
 			       		             				InitialRank = 0,
 			       		             				MaxRank = 10,
-			       		             				CalculateRealRank = (t, user) => t.RawRank + user.GetTalent("attrb_agility").As<AttributeComponent>().Rank
+			       		             				CalculateRealRank = (t, user) => t.RawRank + user.Talents.GetTalent("attrb_agility").As<AttributeComponent>().Rank
 			       		             		}
 			       		             }
 			       });
+		}
+
+		// todo move to combat
+		// arg0 is always the weapon
+		// arg1 is always the targetted bodyPart (if targetting)
+		private static ActionResult MeleeAttackMethod(ActiveTalentComponent t, Actor user, Point targettedLocation, params dynamic[] args) {
+
+			MeleeComponent melee = (MeleeComponent)args[0] ?? user.Body.Punch;
+
+			if (user.Position.DistanceTo(targettedLocation) > (melee.Reach + t.Range + 1)) {
+				World.Instance.AddMessage("Too far to attack.");
+				return ActionResult.Aborted;
+			}
+
+			if (!(args[1] is BodyPart)) {
+				World.Instance.AddMessage("Not targetting a body part.");
+				return ActionResult.Aborted;
+			}
+
+			var hitBonusFromSkill = user.Talents.GetTalent(melee.Skill).As<SkillComponent>().Rank;
+
+			var targetAtLocation = user.Level.GetActorAtLocation(targettedLocation);
+
+			BodyPart bodyPartTargetted = (BodyPart) args[1];
+
+			var result = Combat.Attack(user, targetAtLocation, hitBonusFromSkill - World.MEAN);
+
+			if (result == CombatEventResult.Hit) {
+				var damage =
+						Math.Max(Combat.GetStrengthDamage(user.Talents.GetTalent("attrb_strength").As<AttributeComponent>().Rank).Roll() + melee.Damage.Roll(),
+						         1);
+				int damageResistance, realDamage;
+
+				targetAtLocation.Damage(damage, melee.DamageType, bodyPartTargetted, out damageResistance, out realDamage);
+
+				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+														user.Name, melee.ActionDescriptionPlural, targetAtLocation.Name, bodyPartTargetted.Name, "todo-description"));
+
+
+
+				Combat.ProcessCombat(new CombatEventArgs(user, targetAtLocation, bodyPartTargetted, CombatEventResult.Hit, damage,
+				                                         damageResistance, realDamage));
+			} else if (result == CombatEventResult.Miss) {
+				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
+														user.Name, melee.ActionDescriptionPlural, targetAtLocation.Name, bodyPartTargetted.Name));
+
+				Combat.ProcessCombat(new CombatEventArgs(user, targetAtLocation, bodyPartTargetted));
+			} else if (result == CombatEventResult.Dodge) {
+				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {4} dodges.",
+														user.Name, melee.ActionDescriptionPlural, targetAtLocation.Name, bodyPartTargetted.Name, targetAtLocation.Name));
+
+				Combat.ProcessCombat(new CombatEventArgs(user, targetAtLocation, bodyPartTargetted, CombatEventResult.Dodge));
+			}
+
+			user.ActionPoints -= melee.APToAttack;
+			return ActionResult.Success;
+		}
+
+		private static ActionResult RangeAttackMethod(ActiveTalentComponent t, Actor user, Point targettedLocation, dynamic[] args) {
+			if (!(args[0] is RangeComponent)) {
+				World.Instance.AddMessage("Not a range weapon.");
+				return ActionResult.Aborted;
+			}
+
+			var weapon = (RangeComponent)args[0];
+
+			bool actorAtLocation = true;
+			if (args[1] == null)
+				actorAtLocation = false;
+			else if (!(args[1] is BodyPart)) {
+				World.Instance.AddMessage("Not a body part.");
+				return ActionResult.Aborted;
+			}
+
+			if (user.Position.DistanceTo(targettedLocation) > (weapon.Range + t.Range + 1)) {
+				World.Instance.AddMessage("Too far to attack.");
+				return ActionResult.Aborted;
+			}
+
+			if (weapon.ShotsRemaining <= 0) {
+				World.Instance.AddMessage(String.Format("{0} attempts to use the {1} only to realize the weapon is not loaded",
+														user.Name, weapon.Item.Name));
+				user.ActionPoints -= weapon.APToAttack;
+				return ActionResult.Failed;
+			}
+
+			weapon.ShotsRemaining--;
+			user.ActionPoints -= weapon.APToAttack;
+
+			var hitBonus = user.Talents.GetTalent(weapon.Skill).As<SkillComponent>().Rank - World.MEAN;
+
+			var targets = Combat.GetTargetsOnPath(user.Position, targettedLocation).ToList();
+
+			bool dodge = true, block = true, parry = true;
+
+			if (user.Position == targettedLocation) {
+				// shooting oneself
+				hitBonus += World.STANDARD_DEVIATION * 2;
+				targets.Add(user.Position);
+				dodge = false;
+				parry = false;
+				block = false;
+			}
+
+			for (int i = 0; i < targets.Count; i++) {
+				var point = targets[i];
+				var targetAtLocation = user.Level.GetActorAtLocation(point);
+
+				BodyPart bodyPartTargetted;
+
+				if (actorAtLocation)
+					bodyPartTargetted = (BodyPart)args[1];
+				else
+					bodyPartTargetted = Combat.GetRandomBodyPart(targetAtLocation);
+
+
+				double range = targetAtLocation.Position.DistanceTo(user.Position) * World.TILE_LENGTH;
+				double rangePenalty = Math.Min(0,
+											   -World.STANDARD_DEVIATION * Combat.RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) +
+											   World.STANDARD_DEVIATION * 2 / 3);
+				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, targetAtLocation.Name);
+
+				// not being targetted gives a sigma (std dev) penalty
+				rangePenalty -= targettedLocation == targetAtLocation.Position ? 0 : World.STANDARD_DEVIATION;
+
+				double difficultyOfShot = hitBonus + rangePenalty + i * Combat.RANGE_PENALTY_TILE_OCCUPIED;
+				Logger.InfoFormat("Shot difficulty: {0}, targetting penalty: {1}, weapon bonus: {2}, is target: {3}",
+								  difficultyOfShot, bodyPartTargetted.TargettingPenalty, hitBonus,
+								  targettedLocation == targetAtLocation.Position);
+
+
+				var result = Combat.Attack(user, targetAtLocation, difficultyOfShot, dodge, parry, block);
+
+				if (result == CombatEventResult.Miss) {
+					if (point == targettedLocation) // if this is where the actor targetted
+						World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
+																user.Name, weapon.ActionDescriptionPlural, targetAtLocation.Name,
+																bodyPartTargetted.Name));
+					Combat.ProcessCombat(new CombatEventArgs(user, targetAtLocation, bodyPartTargetted));
+				} else if (result == CombatEventResult.Dodge) {
+					if (point == targettedLocation)
+						World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {4} dodges.",
+																user.Name, weapon.ActionDescriptionPlural, targetAtLocation.Name,
+																bodyPartTargetted.Name, targetAtLocation.Name));
+					else {
+						// we didn't target the actor, but the actor still dodges
+					}
+					Combat.ProcessCombat(new CombatEventArgs(user, targetAtLocation, bodyPartTargetted, CombatEventResult.Dodge));
+				} else if (result == CombatEventResult.Hit) {
+					var damage =
+							Math.Max(
+									Combat.GetStrengthDamage(user.Talents.GetTalent("attrb_strength").As<AttributeComponent>().Rank).Roll() +
+									weapon.Damage.Roll(), 1);
+					int damageResistance, realDamage;
+
+					targetAtLocation.Damage(damage, weapon.DamageType, bodyPartTargetted, out damageResistance, out realDamage);
+
+					World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+															user.Name, weapon.ActionDescriptionPlural, targetAtLocation.Name,
+															bodyPartTargetted.Name,
+															"todo-description"));
+
+
+					Combat.ProcessCombat(new CombatEventArgs(user, targetAtLocation, bodyPartTargetted, CombatEventResult.Hit, damage,
+															 damageResistance, realDamage));
+
+					return ActionResult.Success;
+				}
+
+				// todo drop ammo casing
+			}
+
+			World.Instance.AddMessage(String.Format("{0} {1} and hits nothing", user.Name, weapon.ActionDescriptionPlural));
+			return ActionResult.Failed;
+
+		}
+
+		private static ActionResult ReloadMethod(ActiveTalentComponent t, Actor user, Point p, dynamic[] args) {
+			if (!(args[0] is RangeComponent)) {
+				World.Instance.AddMessage("Not a range weapon.", MessageType.High);
+				return ActionResult.Aborted;
+			}
+
+			var weapon = (RangeComponent)args[0];
+
+			if (!(args[1] is AmmoComponent)) {
+				World.Instance.AddMessage("Not ammo.", MessageType.High);
+				return ActionResult.Aborted;
+			}
+
+			var ammo = (AmmoComponent)args[1];
+
+			if (!ammo.Type.Equals(weapon.AmmoType)) {
+				World.Instance.AddMessage("Wrong ammo type for this weapon.", MessageType.High);
+				return ActionResult.Aborted;
+			}
+
+			// todo give arrow back when replacing new ammo
+			if (weapon.ShotsRemaining >= weapon.Shots) {
+				World.Instance.AddMessage("Weapon is already fully loaded.");
+				return ActionResult.Aborted;
+			}
+
+			// todo revolvers and single load weapons
+
+
+			// to semi-simulate dropping magazines, drop remaining bullets on the ground
+			if (weapon.ShotsRemaining > 0) {
+				var droppedAmmo = World.Instance.CreateItem(weapon.AmmoType);
+				droppedAmmo.Amount = weapon.ShotsRemaining;
+				weapon.ShotsRemaining = 0;
+				user.Level.AddItem(droppedAmmo, user.Position);
+				World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Name, weapon.Item.Name,
+														ammo.Item.Name));
+			} else {
+				World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}.", user.Name, weapon.Item.Name,
+														ammo.Item.Name));
+			}
+
+			if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount >= weapon.Shots) {
+				ammo.Item.Amount -= weapon.Shots;
+				weapon.ShotsRemaining = weapon.Shots;
+			} else if (ammo.Item.StackType == StackType.Hard && ammo.Item.Amount > 0) {
+				weapon.ShotsRemaining = ammo.Item.Amount;
+				user.RemoveItem(ammo.Item);
+			}
+
+			user.ActionPoints -= weapon.APToReload;
+
+			return ActionResult.Success;
 		}
 
 //		public override Talent Construct(Skill identifier) {

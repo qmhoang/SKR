@@ -85,7 +85,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
-    <Compile Include="Universe\Entities\Actors\ActorCharacteristics.cs" />
+    <Compile Include="Universe\Entities\Actors\ActorBody.cs" />
+    <Compile Include="Universe\Entities\Actors\ActorTalents.cs" />
     <Compile Include="Universe\Entities\Actors\BodyPart.cs" />
     <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Items\ItemContainer.cs" />
