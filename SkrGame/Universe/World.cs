@@ -99,7 +99,7 @@ namespace SkrGame.Universe {
 		}
 
 		private void Temp() {
-			var level = mapFactory.Construct("TestMap");
+			var level = mapFactory.Construct("TestHouse");
 			level.GenerateFov();
 			level.World = this;
 			
