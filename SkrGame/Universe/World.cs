@@ -99,7 +99,7 @@ namespace SkrGame.Universe {
 		}
 
 		private void Temp() {
-			var level = mapFactory.Construct("TestHouse");
+			var level = mapFactory.Construct("TestMap");
 			level.GenerateFov();
 			level.World = this;
 			
@@ -111,7 +111,7 @@ namespace SkrGame.Universe {
 			Player.AddItem(i);
 			Player.Equip(BodySlot.OffHand, i);
 
-			Player.AddItem(CreateItem("glock22"));
+			Player.Equip(BodySlot.MainHand, CreateItem("glock22"));
 			Player.AddItem(CreateItem(".40S&W"));
 			var ammo = CreateItem(".40S&W");
 			ammo.Amount = 20;

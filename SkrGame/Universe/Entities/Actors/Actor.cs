@@ -158,8 +158,9 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			Asset = asset;
 
-			Body = new ActorBody(this);
+			//todo fix dependency issues
 			Talents = new ActorTalents(this);
+			Body = new ActorBody(this);
 
 			conditionStatuses = new ActorCondition(this);
 			equippedItems = new Dictionary<BodySlot, Item>();

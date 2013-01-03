@@ -50,10 +50,13 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public void RemoveItem(Item item) {
 			if (!Items.Contains(item))
-				throw new ArgumentException(String.Format("Item (Guid: {0}) does not exist in in the container.", item.UniqueId));
-			Log.DebugFormat("Removing item: {1} Guid: {0}", item.UniqueId, item.Name);
+				Log.DebugFormat("Item (Guid: {0}) does not exist in in the container.", item.UniqueId);
+			else {
+				Log.DebugFormat("Removing item: {1} Guid: {0}", item.UniqueId, item.Name);
 
-			Items.Remove(item);
+				Items.Remove(item);
+			}
+			
 		}
 
 		public IEnumerator<Item> GetEnumerator() {

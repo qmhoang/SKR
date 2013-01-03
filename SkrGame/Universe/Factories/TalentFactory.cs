@@ -450,6 +450,9 @@ namespace SkrGame.Universe.Factories {
 				var point = targets[i];
 				var targetAtLocation = user.Level.GetActorAtLocation(point);
 
+				if (targetAtLocation == null)
+					continue;
+
 				BodyPart bodyPartTargetted;
 
 				if (actorAtLocation)
