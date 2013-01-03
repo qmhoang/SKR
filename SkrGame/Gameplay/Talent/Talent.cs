@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Entity;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Actors;
 
@@ -11,17 +12,17 @@ namespace SkrGame.Gameplay.Talent {
 		public string RefId { get; set; }
 		public string Name { get; set; }
 
-		public Func<Talent, Actor, bool> OnPreUse { get; set; }
+		public Func<Talent, Entity, bool> OnPreUse { get; set; }
 
 		/// <summary>
 		/// Call when an actor first learns the talent (NOT when rank is increased)
 		/// </summary>
-		public Action<Talent, Actor> OnLearn { get; set; }
+		public Action<Talent, Entity> OnLearn { get; set; }
 
 		/// <summary>
 		/// Called when an actor loses the talent (usually when rank is 0) (NOT when rank is decreased)
 		/// </summary>
-		public Action<Talent, Actor> OnUnlearn { get; set; }
+		public Action<Talent, Entity> OnUnlearn { get; set; }
 
 		public IEnumerable<TalentComponentTemplate> Components { get; set; }
 	}
@@ -33,7 +34,7 @@ namespace SkrGame.Gameplay.Talent {
 	public class Talent {
 		#region Basic Stats
 
-		public Actor Owner { get; set; }
+		public Entity Owner { get; set; }
 		public string RefId { get; private set; }
 		public string Name { get; private set; }
 
@@ -60,14 +61,14 @@ namespace SkrGame.Gameplay.Talent {
 
 		private Dictionary<Type, TalentComponent> components;
 
-		private Func<Talent, Actor, bool> onPreUse;
+		private Func<Talent, Entity, bool> onPreUse;
 
 		public bool PreUseCheck() {
 			return onPreUse == null || onPreUse(this, Owner);
 		}
 
-		private Action<Talent, Actor> onLearn;
-		private Action<Talent, Actor> onUnlearn;
+		private Action<Talent, Entity> onLearn;
+		private Action<Talent, Entity> onUnlearn;
 
 		public void OnLearn() {
 			if (onLearn != null)

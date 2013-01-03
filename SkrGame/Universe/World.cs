@@ -112,7 +112,7 @@ namespace SkrGame.Universe {
 			                              		},
 			                              		new PlayerMarker(),
 			                              		new Actor("player", level),			                              		
-			                              		new BodyComponent(),
+			                              		new DefendComponent(),
 			                              });
 			
 			

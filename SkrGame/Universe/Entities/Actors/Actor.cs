@@ -68,7 +68,6 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-
 	public class Actor : EntityComponent{
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -118,8 +117,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 
-		public MeleeComponent Punch;
-		public MeleeComponent Kick;
+		public MeleeComponent DefaultAttack;
 
 		public int Dodge {
 			get { return GetTalent("attrb_agility").As<AttributeComponent>().Rank + GetTalent("attrb_cunning").As<AttributeComponent>().Rank; }
@@ -136,9 +134,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 		public string Name { get; set; }
-
 		
-
 		public Actor(string name, Level level) {
 			Level = level;
 
@@ -180,66 +176,8 @@ namespace SkrGame.Universe.Entities.Actors {
 //
 //			LearnTalent("skill_unarmed");			
 
-			Punch = new MeleeComponent(null, new MeleeComponentTemplate
-			{
-				ComponentId = "punch",
-				ActionDescription = "punch",
-				ActionDescriptionPlural = "punches",
-				Skill = "skill_unarmed",
-				HitBonus = 0,
-				Damage = Rand.Constant(-5),
-				DamageType = Combat.DamageTypes["crush"],
-				Penetration = 1,
-				WeaponSpeed = 100,
-				Reach = 0,
-				Strength = 0,
-				Parry = 0
-			});
-
 			conditionStatuses = new ActorCondition(this);
-
-			RecalculateFov = true;
 		}
-
-//		private void CheckEncumbrance() {
-//			var weight = inventory.Weight + equippedItems.Values.Sum(i => i.Weight);
-//			if (weight <= Lift)
-//				SetConditionStatus(Condition.Encrumbrance, 0);
-//			else if (weight > Lift)
-//				SetConditionStatus(Condition.Encrumbrance, 1);
-//			else if (weight > 2 * Lift)
-//				SetConditionStatus(Condition.Encrumbrance, 2);
-//			else if (weight > 4 * Lift)
-//				SetConditionStatus(Condition.Encrumbrance, 3);
-//			else if (weight > 6 * Lift)
-//				SetConditionStatus(Condition.Encrumbrance, 4);
-//		}
-
-
-
-		public void CalculateFov() {			
-//			Level.CalculateFOV(Position, SightRadius);
-//			RecalculateFov = false;
-		}
-
-		public void Update() {
-			//            CheckEncumbrance();
-
-		}
-
-		protected bool RecalculateFov;
-
-		public bool HasLineOfSight(Point position) {
-			if (RecalculateFov)
-				CalculateFov();
-			return Level.IsVisible(position);
-		}
-
-		public bool CanSpot(AbstractActor actor) {
-			throw new NotImplementedException();
-			return HasLineOfSight(actor.Position);
-		}
-
 
 
 		public event EventHandler<EventArgs<Condition, int>> ConditionChanged;
@@ -259,9 +197,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			OnConditionChanged(new EventArgs<Condition, int>(condition, status));
 			conditionStatuses.SetConditionStatus(condition, status);
 		}
-
 		
-
 		public event EventHandler<CombatEventArgs> Attacking;
 		public event EventHandler<CombatEventArgs> Defending;
 
@@ -277,11 +213,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				handler(this, e);
 		}
 
-
-		#region Inventory
-
-		
-		#endregion
 
 		#region Talents
 		public bool KnowTalent(string skillRefId) {
@@ -341,24 +272,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				handler(this, e);
 		}
 
-		#endregion
-
-		#region Basic Actions
-		public Talent MeleeAttack() {
-			return GetTalent("action_attack");
-		}
-
-		public Talent RangeAttack() {
-			return GetTalent("action_range");
-		}
-
-		public Talent ReloadWeapon() {
-			return GetTalent("action_reload");
-		}
-
-		public Talent Activate() {
-			return GetTalent("action_activate");
-		}
 		#endregion
 	}
 }

@@ -1,4 +1,5 @@
-﻿using SkrGame.Universe.Entities.Actors;
+﻿using DEngine.Entity;
+using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Gameplay.Talent.Components {
 	public class AttributeComponentTemplate : TalentComponentTemplate {
@@ -29,7 +30,7 @@ namespace SkrGame.Gameplay.Talent.Components {
 		/// from a simple adding another attribute to it or something much more complicated
 		/// <b>If left null, it will default to simply return the raw rank</b>
 		/// </summary>
-		public delegate int CalculateRealRankFunction(SkillComponent talent, Actor self);
+		public delegate int CalculateRealRankFunction(SkillComponent talent, Entity self);
 
 		public CalculateRealRankFunction CalculateRealRank { get; set; }
 
