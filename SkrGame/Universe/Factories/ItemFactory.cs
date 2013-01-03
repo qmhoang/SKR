@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
@@ -7,14 +8,14 @@ using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 
 namespace SkrGame.Universe.Factories {
-	public abstract class ItemFactory : Factory<string, Template> {}
+	public abstract class ItemFactory : Factory<string, IEnumerable<EntityComponent>> {}
 
 	// ReSharper disable RedundantArgumentName
 	public sealed class SourceItemFactory : ItemFactory {
-		private Dictionary<string, Template> templates;
+		private Dictionary<string, List<EntityComponent>> templates;
 
 		public SourceItemFactory() {
-			templates = new Dictionary<string, Template>();
+			templates = new Dictionary<string, List<EntityComponent>>();
 
 			Create("punch",
 			       new MeleeComponent(
@@ -35,11 +36,11 @@ namespace SkrGame.Universe.Factories {
 			       		}));
 
 			Create("largeknife",
+			       new Sprite("LARGE_KNIFE", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = "Large Knife",
-			       				Asset = "LARGE_KNIFE",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 4000,
 			       				Weight = 10,
@@ -72,11 +73,11 @@ namespace SkrGame.Universe.Factories {
 
 
 			Create("smallknife",
+			       new Sprite("SMALL_KNIFE", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = "Small Knife",
-			       				Asset = "SMALL_KNIFE",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 3000,
 			       				Weight = 5,
@@ -108,11 +109,11 @@ namespace SkrGame.Universe.Factories {
 					);
 
 			Create("axe",
+			       new Sprite("AXE", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = "Axe",
-			       				Asset = "AXE",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 5000,
 			       				Weight = 40,
@@ -144,11 +145,11 @@ namespace SkrGame.Universe.Factories {
 					);
 
 			Create("hatchet",
+			       new Sprite("HATCHET", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = "Hatchet",
-			       				Asset = "HATCHET",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 4000,
 			       				Weight = 20,
@@ -179,11 +180,11 @@ namespace SkrGame.Universe.Factories {
 					);
 
 			Create("brassknuckles",
+			       new Sprite("BRASS_KNUCKLES", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = "Brass Knuckles",
-			       				Asset = "BRASS_KNUCKLES",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 1000,
 			       				Weight = 20,
@@ -215,10 +216,10 @@ namespace SkrGame.Universe.Factories {
 			#region Firearms
 
 			Create("glock17",
+			       new Sprite("GLOCK17", 1),
 			       new Item(new ItemTemplate
 			                {
 			                		Name = "Glock 17",
-			                		Asset = "GLOCK17",
 			                		Type = ItemType.OneHandedWeapon,
 			                		Value = 60000,
 			                		Weight = 19,
@@ -269,10 +270,10 @@ namespace SkrGame.Universe.Factories {
 					);
 
 			Create("glock22",
+			       new Sprite("GLOCK22", 1),
 			       new Item(new ItemTemplate
 			                {
 			                		Name = "Glock 22",
-			                		Asset = "GLOCK22",
 			                		Type = ItemType.OneHandedWeapon,
 			                		Value = 40000,
 			                		Weight = 21,
@@ -323,11 +324,11 @@ namespace SkrGame.Universe.Factories {
 					);
 
 			Create("9x19mm",
+			       new Sprite("BULLET_9x19MM", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = "9x19mm Parabellum",
-			       				Asset = "BULLET_9x19MM",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 30,
 			       				Weight = 0,
@@ -344,11 +345,11 @@ namespace SkrGame.Universe.Factories {
 			       		}));
 
 			Create(".40S&W",
+			       new Sprite("BULLET_.40S&W", 1),
 			       new Item(
 			       		new ItemTemplate
 			       		{
 			       				Name = ".40 Smith & Wesson",
-			       				Asset = "BULLET_.40S&W",
 			       				Type = ItemType.OneHandedWeapon,
 			       				Value = 30,
 			       				Weight = 0,
@@ -369,10 +370,10 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private void Create(string id, params EntityComponent[] components) {
-			templates.Add(id, new Template(components));
+			templates.Add(id, new List<EntityComponent>(components));
 		}
 
-		public override Template Construct(string refId) {
+		public override IEnumerable<EntityComponent> Construct(string refId) {
 			return templates[refId];
 		}
 	}

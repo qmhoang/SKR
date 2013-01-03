@@ -36,7 +36,6 @@ namespace SkrGame.Universe.Locations {
 
 		public World World { get; set; }
 
-		public EntityManager EntityManager { get; private set; }
 		private FilteredCollection entities;
 
 		

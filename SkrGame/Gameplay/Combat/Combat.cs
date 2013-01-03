@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Core;
+using DEngine.Entity;
+using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
@@ -31,9 +35,9 @@ namespace SkrGame.Gameplay.Combat {
 				return false;
 			if (ReferenceEquals(this, obj))
 				return true;
-			if (obj.GetType() != typeof(DamageType))
+			if (obj.GetType() != typeof (DamageType))
 				return false;
-			return Equals((DamageType)obj);
+			return Equals((DamageType) obj);
 		}
 
 		public override int GetHashCode() {
@@ -49,7 +53,7 @@ namespace SkrGame.Gameplay.Combat {
 		}
 	}
 
-	internal static class Combat {
+	public static class Combat {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static readonly Dictionary<string, DamageType> DamageTypes = new Dictionary<string, DamageType>
@@ -66,35 +70,79 @@ namespace SkrGame.Gameplay.Combat {
 		                                                                    };
 
 
+		/// <summary>
+		/// Higher means easier
+		/// </summary>
+		/// <param name="difficulty"></param>
+		/// <returns></returns>
 		private static double ChanceOfSuccess(double difficulty) {
 			return GaussianDistribution.CumulativeTo(difficulty + World.MEAN, World.MEAN, World.STANDARD_DEVIATION);
 		}
 
-		//todo change defender to actorBody
-		public static CombatEventResult Attack(Actor attacker, Actor defender, double attackDifficulty, bool dodge = true, bool block = true, bool parry = true) {
+		public static CombatEventResult Attack(string attackerName, string defenderName, double attackDifficulty, double dodgeDifficulty = 0.5, bool dodge = true, bool block = true, bool parry = true) {
 			double atkRoll = Rng.Double();
 			double chanceToHit = ChanceOfSuccess(attackDifficulty);
 
 			if (atkRoll > chanceToHit) {
-				Logger.InfoFormat("{0} misses {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attacker.Name, defender.Name, chanceToHit, atkRoll, attackDifficulty);
+				Logger.InfoFormat("{0} misses {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attackerName, defenderName, chanceToHit, atkRoll, attackDifficulty);
 				return CombatEventResult.Miss;
 			}
 
-			Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attacker.Name, defender.Name, chanceToHit, atkRoll, attackDifficulty);
+			Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attackerName, defenderName, chanceToHit, atkRoll, attackDifficulty);
 
 			if (dodge) {
 				double defRoll = Rng.Double();
-				double chanceToDodge = 0.5; //TODO
-				Logger.InfoFormat("{0} attempts to dodge {1}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attacker.Name, defender.Name, chanceToHit, atkRoll, attackDifficulty);
-				if (defRoll > chanceToDodge) {
+				double chanceToDodge = ChanceOfSuccess(dodgeDifficulty);
+				Logger.InfoFormat("{1} attempts to dodge {0}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attackerName, defenderName, chanceToDodge, defRoll, dodgeDifficulty);
+				if (defRoll < chanceToDodge)
 					return CombatEventResult.Dodge;
-				}
 			}
 
 			// todo defenses, parries, etc
 
-			// todo wounding
 			return CombatEventResult.Hit;
+		}
+
+		public static ActionResult MeleeAttack(Entity attacker, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
+			if (!attacker.Is<MeleeComponent>())
+				throw new ArgumentException("entity cannot melee attack", "attacker");
+			if (!attacker.Is<ActionPoint>())
+				throw new ArgumentException("entity cannot act", "attacker");
+
+			if (!defender.Is<DefendComponent>())
+				throw new ArgumentException("entity cannot be attacked", "defender");
+
+			var weapon = attacker.As<MeleeComponent>();
+
+
+			var result = Combat.Attack(attacker.Id.ToString(), defender.Id.ToString(), hitBonus + weapon.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
+
+			if (result == CombatEventResult.Hit) {
+				var damage = Math.Max(weapon.Damage.Roll(), 1);
+				int damageResistance, realDamage;
+
+				Combat.Damage(damage, weapon.DamageType, bodyPartTargetted, out damageResistance, out realDamage);
+
+				Logger.InfoFormat("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+				                  attacker.Id, weapon.ActionDescriptionPlural, defender.Id, bodyPartTargetted.Name, "todo-description");
+
+
+				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
+				                                         damageResistance, realDamage));
+			} else if (result == CombatEventResult.Miss) {
+				Logger.InfoFormat("{0} {1} {2}'s {3}.... and misses.",
+				                  attacker.Id, weapon.ActionDescriptionPlural, defender.Id, bodyPartTargetted.Name);
+
+				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
+			} else if (result == CombatEventResult.Dodge) {
+				Logger.InfoFormat("{0} {1} {2}'s {3}.... and {2} dodges.",
+				                  attacker.Id, weapon.ActionDescriptionPlural, defender.Id, bodyPartTargetted.Name);
+
+				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
+			}
+
+			attacker.As<ActionPoint>().ActionPoints -= weapon.APToAttack;
+			return ActionResult.Success;
 		}
 
 		public static Rand GetStrengthDamage(int strength) {
@@ -146,13 +194,13 @@ namespace SkrGame.Gameplay.Combat {
 
 			if (damageDealt > bodyPart.MaxHealth) {
 				damageDealt = Math.Min(damage, bodyPart.MaxHealth);
-				Logger.InfoFormat("Damage reduced to {0} because of {1}'s max health", damageDealt, bodyPart.Name);
+				Logger.DebugFormat("Damage reduced to {0} because of {1}'s max health", damageDealt, bodyPart.Name);
 			}
 
 			bodyPart.Health -= damageDealt;
 			bodyPart.Owner.Health -= damageDealt;
 
-			Logger.DebugFormat("{0}'s {1} was hurt ({2} damage)", bodyPart.Owner.OwnerUId, bodyPart.Name, damageDealt);
+			Logger.InfoFormat("{0}'s {1} was hurt ({2} damage)", bodyPart.Owner.OwnerUId, bodyPart.Name, damageDealt);
 		}
 
 		public static void Heal(DefendComponent.AttackablePart bodyPart, int amount) {
@@ -162,9 +210,8 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public static void ProcessCombat(CombatEventArgs e) {
-			e.Attacker.OnAttacking(e);
-			e.Defender.OnDefending(e);
+//			e.Attacker.OnAttacking(e);
+//			e.Defender.OnDefending(e);
 		}
 	}
-
 }

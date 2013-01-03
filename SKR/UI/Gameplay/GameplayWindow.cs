@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using DEngine.Extensions;
@@ -9,11 +13,15 @@ using Ogui.UI;
 using SKR.UI.Gameplay.Systems;
 using SKR.UI.Menus;
 using SKR.Universe;
+using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Systems;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Locations;
+using libtcod;
 
 namespace SKR.UI.Gameplay {
 	public class GameplayWindow : Window {
@@ -24,8 +32,10 @@ namespace SKR.UI.Gameplay {
 		public MessagePanel MessagePanel { get; private set; }
 		public AssetsManager AssetsManager { get; private set; }
 
-		private WindowTemplate promptTemplate;
+		public static WindowTemplate PromptTemplate;
 
+		private Entity player;
+		
 		private EntityManager manager;
 
 		public GameplayWindow(EntityManager manager, WindowTemplate template)
@@ -34,6 +44,7 @@ namespace SKR.UI.Gameplay {
 			AssetsManager = new AssetsManager();
 
 			this.manager = manager;
+			player = World.Instance.Player;
 		}
 
 //		/// <summary>
@@ -140,7 +151,7 @@ namespace SKR.UI.Gameplay {
 
 			world.MessageAdded += (sender, args) => MessagePanel.HandleMessage(args.Data);
 
-			promptTemplate =
+			PromptTemplate =
 					new WindowTemplate
 					{
 							HasFrame = false,
@@ -152,68 +163,206 @@ namespace SKR.UI.Gameplay {
 			AddManager(new PlayerMovementSystem(manager));
 		}
 
-//		private void PickUpItem(Item item) {
-//			if (item.StackType == StackType.Hard)
-//				ParentApplication.Push(
-//						new CountPrompt("How many items to pick up?",
-//						                delegate(int amount)
-//						                {
-//						                	if (amount < 1)
-//						                		return;
-//
-//						                	if (amount < item.Amount)
-//						                		item.Amount -= amount;
-//						                	else
-//						                		player.Level.RemoveItem(item);
-//
-//						                	// if an item doesn't exist in the inventory, create one
-//						                	if (!player.Items.ToList().Exists(i => i.RefId == item.RefId)) {
-//						                		var tempItem = World.Instance.CreateItem(item.RefId);
-//						                		tempItem.Amount += amount - 1;
-//						                		player.AddItem(tempItem);
-//						                	} else
-//						                		player.Items.First(i => i.RefId == item.RefId).Amount += amount;
-//
-//						                	// additional testing
-//						                	if (item.Amount < 0)
-//						                		throw new Exception("Should not be possible: have negative amount");
-//						                }, item.Amount, 0, item.Amount, promptTemplate));
-//			else {
-//				player.Level.RemoveItem(item);
-//				player.AddItem(item);
-//			}
-//		}
-//
-//		private void DropItem(Item item) {
-//			if (item.StackType == StackType.Hard)
-//				ParentApplication.Push(
-//						new CountPrompt("How many items to drop to the ground?",
-//										delegate(int amount)
-//										{
-//											if (amount < 1)
-//												return;
-//
-//											if (amount < item.Amount)
-//												item.Amount -= amount;
-//											else
-//												player.RemoveItem(item);
-//
-//											// if an item doesn't exist in the at the location, create one
-//											if (!player.Level.Items.ToList().Exists(t => t.Item1 == player.Position && t.Item2.RefId == item.RefId)) {
-//												var tempItem = World.Instance.CreateItem(item.RefId);
-//												tempItem.Amount += amount - 1;
-//												player.Level.AddItem(tempItem, player.Position);
-//											} else
-//												player.Level.Items.First(t => t.Item1 == player.Position && t.Item2.RefId == item.RefId).Item2.Amount += amount;
-//
-//											// additional testing
-//											if (item.Amount < 0)
-//												throw new Exception("Should not be possible: have negative amount");
-//										}, item.Amount, 0, item.Amount, promptTemplate));
-//			else {
-//				player.RemoveItem(item);
-//				player.Level.AddItem(item, player.Position);
-//			}
-//		}
+		private void Move(Entity entity, Point direction) {
+			Point newPosition = entity.As<Location>().Position + direction;
+
+			var level = entity.As<Location>().Level;
+
+			if (level.IsWalkable(newPosition)) {
+				// todo fix hack cast?
+				var actorsAtNewLocation = ((Level) level).EntityManager.Get(typeof (DefendComponent), typeof (Location)).Where(actor => actor.As<Location>().Position == newPosition).ToList();
+
+				if (actorsAtNewLocation.Count > 1)
+					throw new Exception("We somehow have had 2 actors occupying the same location");
+				else if (actorsAtNewLocation.Count == 1) {
+					Combat.MeleeAttack(player, actorsAtNewLocation.First(), actorsAtNewLocation.First().As<DefendComponent>().DefaultPart, World.MEAN);
+					//				MeleeAttack().As<ActiveTalentComponent>().InvokeAction(newPosition);
+				} else
+					entity.As<Location>().Position = newPosition;
+
+				entity.As<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+			} else
+				World.Instance.AddMessage("There is something in the way.");
+		}
+
+		private void Wait(Entity entity) {
+			entity.As<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);	
+		}
+
+		private void PickUpItem(Entity inventoryEntity, Entity itemEntity) {
+			var inventory = inventoryEntity.As<ContainerComponent>();
+			var item = itemEntity.As<Item>();
+
+			if (item.StackType == StackType.Hard)
+				ParentApplication.Push(
+						new CountPrompt("How many items to pick up?", amount => PickUpStackedItem(inventoryEntity, inventoryEntity, amount), item.Amount, 0, item.Amount, PromptTemplate));
+			else {
+				itemEntity.Remove<Location>();
+				inventory.AddItem(itemEntity);
+			}
+		}
+
+		private void PickUpStackedItem(Entity inventoryEntity, Entity itemEntity, int amount) {
+
+			var inventory = inventoryEntity.As<ContainerComponent>();
+			var item = itemEntity.As<Item>();
+
+
+
+			if (amount < item.Amount)
+				item.Amount -= amount;
+			else
+				itemEntity.Remove<Location>();
+
+			// if an item doesn't exist in the inventory, create one
+			if (inventory.Exist(e => e.As<Item>().RefId == item.RefId)) {
+				var tempItem = inventoryEntity.As<Location>().Level.EntityManager.Create(World.Instance.ItemFactory.Construct(item.RefId));
+				
+				tempItem.As<Item>().Amount += amount - 1;	// amount starts out as 1
+				inventory.AddItem(tempItem);
+			} else {
+				inventory.GetItem(e => e.As<Item>().RefId == item.RefId).As<Item>().Amount += amount;
+			}
+			Contract.Requires(amount > 1);
+			Contract.Ensures(item.Amount >= 0, "item afterwards cannot have negative amounts");				
+		}
+
+		private void DropItem(Entity inventoryEntity, Entity itemEntity) {
+			var inventory = inventoryEntity.As<ContainerComponent>();
+			var item = itemEntity.As<Item>();
+
+			if (item.StackType == StackType.Hard)
+				ParentApplication.Push(
+						new CountPrompt("How many items to drop to the ground?",
+						                amount => DropStackedItem(inventoryEntity, itemEntity, amount), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
+			else {
+				inventory.RemoveItem(itemEntity);
+				itemEntity.Add(new Location(inventoryEntity.As<Location>().Position, inventoryEntity.As<Location>().Level));				
+			}
+		}
+
+		private void DropStackedItem(Entity inventoryEntity, Entity itemEntity, int amount) {
+			var inventory = inventoryEntity.As<ContainerComponent>();
+			var item = itemEntity.As<Item>();
+
+			Contract.Requires(amount > 1);
+			Contract.Ensures(item.Amount >= 0, "item afterwards cannot have negative amounts");
+
+			// if amount drop is less than currently carrying, just substract it, otherwise remove it
+			if (amount < item.Amount)
+				item.Amount -= amount;
+			else
+				inventory.RemoveItem(itemEntity);
+
+			// if an item doesn't exist in the at the location, create one
+			var level = inventoryEntity.As<Location>().Level;
+			var itemsInLevel = level.EntityManager.Get(typeof (Location), typeof (Item)).ToList();
+			if (!itemsInLevel.Exists(e => e.As<Item>().RefId == item.RefId && e.As<Location>() == inventoryEntity.As<Location>())) {
+				var tempItem = inventoryEntity.As<Location>().Level.EntityManager.Create(World.Instance.ItemFactory.Construct(item.RefId));
+				tempItem.As<Item>().Amount += amount - 1;	// amount starts out as 1
+
+				tempItem.Add(new Location(inventoryEntity.As<Location>().Position, inventoryEntity.As<Location>().Level));
+			} else {
+				itemsInLevel.First(e => e.As<Item>().RefId == item.RefId && e.As<Location>() == inventoryEntity.As<Location>()).As<Item>().Amount += amount;
+				// todo improve				
+			}
+
+		}
+
+		protected override void OnKeyPressed(KeyboardData keyData) {
+			base.OnKeyReleased(keyData);
+			if (player.As<ActionPoint>().Updateable) {
+				switch (keyData.KeyCode) {
+					case TCODKeyCode.Up:
+					case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
+						Move(player, Point.North);
+						break;
+					case TCODKeyCode.Down:
+					case TCODKeyCode.KeypadTwo:
+						Move(player, Point.South);
+						break;
+					case TCODKeyCode.Left:
+					case TCODKeyCode.KeypadFour:
+						Move(player, Point.West);
+						break;
+					case TCODKeyCode.KeypadFive:
+						Wait(player);
+						break;
+					case TCODKeyCode.Right:
+					case TCODKeyCode.KeypadSix:
+						Move(player, Point.East);
+						break;
+					case TCODKeyCode.KeypadSeven:
+						Move(player, Point.Northwest);
+						break;
+					case TCODKeyCode.KeypadNine:
+						Move(player, Point.Northeast);
+						break;
+					case TCODKeyCode.KeypadOne:
+						Move(player, Point.Southwest);
+						break;
+					case TCODKeyCode.KeypadThree:
+						Move(player, Point.Southeast);
+						break;
+					default:
+					{
+						if (keyData.Character == 'd') {
+							var inventory = player.As<ContainerComponent>();
+							if (inventory.Items.Count() > 0)
+								ParentApplication.Push(new ItemWindow(false,
+																	  new ListWindowTemplate<Entity>
+																	  {
+																		  Size = MapPanel.Size,
+																		  IsPopup = true,
+																		  HasFrame = true,
+																		  Items = inventory.Items,
+																	  }, i => DropItem(player, i)));
+							else
+								World.Instance.AddMessage("You are carrying no items to drop.");
+						} else if (keyData.Character == 'g') {
+							var level = player.As<Location>().Level;
+							// get all items that have a location (eg present on the map) that are at the location where are player is
+							var items = level.EntityManager.Get(typeof(Item), typeof(Location)).Where(e => e.As<Location>().Position == player.As<Location>().Position).ToList();
+							if (items.Count() > 0)
+								ParentApplication.Push(new ItemWindow(false,
+																	  new ListWindowTemplate<Entity>
+																	  {
+																		  Size = MapPanel.Size,
+																		  IsPopup = true,
+																		  HasFrame = true,
+																		  Items = items,
+																	  },
+																	  i =>
+																	  {
+																		  PickUpItem(player, i);
+																		  items.Remove(i);
+																	  }));
+							else
+								World.Instance.AddMessage("No items here to pick up.");
+						} else if (keyData.Character == 'i') {
+							var inventory = player.As<ContainerComponent>();
+
+							ParentApplication.Push(new ItemWindow(false,
+															  new ListWindowTemplate<Entity>
+															  {
+																  Size = MapPanel.Size,
+																  IsPopup = true,
+																  HasFrame = true,
+																  Items = inventory.Items,
+															  },
+															  i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.As<Item>().Name, i.As<Item>().Weight))));
+						} else if (keyData.Character == 'w')
+							ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
+							                                           {
+							                                           		Size = MapPanel.Size,
+							                                           		IsPopup = true,
+							                                           		HasFrame = true,
+							                                           		Items = player.As<ContainerComponent>().Slots,
+							                                           }));
+						break;
+					}
+				}
+			}
+		}
 	}
 }

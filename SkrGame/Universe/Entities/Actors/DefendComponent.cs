@@ -5,122 +5,12 @@ using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
-using SkrGame.Universe.Entities.Items;
+using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Items.Components;
 using log4net;
 using log4net.Repository.Hierarchy;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class Inventory : EntityComponent {
-		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		private readonly ItemContainer inventory;
-
-		public Inventory() {
-			inventory = new ItemContainer();
-			equippedItems = new Dictionary<string, Item>();
-			slots = new Dictionary<string, bool>()
-			        {
-			        		{"MainHand", true},
-			        		{"OffHand", true},
-			        };
-		}
-
-		/// <summary>
-		/// Add item into inventory, return true if item was added, false if item couldn't for whatever reason
-		/// </summary>
-		public void AddItem(Item item) {
-			if (item == null)
-				throw new ArgumentException("item is null", "item");
-
-			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Name);
-			inventory.AddItem(item);
-			OnItemAdded(new EventArgs<Item>(item));			
-		}
-
-		public void RemoveItem(Item item) {
-			if (item == null)
-				throw new ArgumentException("item is null", "item");
-			Logger.DebugFormat("{0} is removing {1} from his inventory.", OwnerUId, item.Name);
-			OnItemRemoved(new EventArgs<Item>(item));
-			inventory.RemoveItem(item);
-		}
-
-		public IEnumerable<Item> Items {
-			get { return inventory; }
-		}
-
-		public event EventHandler<EventArgs<Item>> ItemRemoved;
-		public event EventHandler<EventArgs<Item>> ItemAdded;
-
-
-		public void OnItemAdded(EventArgs<Item> e) {
-			EventHandler<EventArgs<Item>> handler = ItemAdded;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public void OnItemRemoved(EventArgs<Item> e) {
-			EventHandler<EventArgs<Item>> handler = ItemRemoved;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		private readonly Dictionary<string, Item> equippedItems;
-		private readonly Dictionary<string, bool> slots; 
-
-		public event EventHandler<EventArgs<string, Item>> ItemEquipped;
-		public event EventHandler<EventArgs<string, Item>> ItemUnequipped;
-
-		public void OnItemEquipped(EventArgs<string, Item> e) {
-			EventHandler<EventArgs<string, Item>> handler = ItemEquipped;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public void OnItemUnequipped(EventArgs<string, Item> e) {
-			EventHandler<EventArgs<string, Item>> handler = ItemUnequipped;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public void Equip(string slot, Item item) {
-			if (!slots.ContainsKey(slot))
-				throw new ArgumentException("does not contain this slot");
-
-			Logger.DebugFormat("{0} is equipping {1} to {2}.", OwnerUId, item.Name, slot);
-			OnItemEquipped(new EventArgs<string, Item>(slot, item));
-
-			if (equippedItems.ContainsKey(slot))
-				Unequip(slot);
-
-			equippedItems.Add(slot, item);		
-		}
-
-		public bool Unequip(string slot) {
-			if (!slots.ContainsKey(slot))
-				throw new ArgumentException("does not contain this slot");
-
-			Logger.DebugFormat("{0} is unequipping his item at {1}.", OwnerUId, slot);
-
-			if (!equippedItems.ContainsKey(slot))
-				return false;
-			else {
-				Item old = equippedItems[slot];				
-				equippedItems.Remove(slot);
-				AddItem(old);
-
-				OnItemUnequipped(new EventArgs<string, Item>(slot, old));
-
-				return true;
-			}
-		}
-
-		public bool IsSlotEquipped(string slot) {
-			return equippedItems.ContainsKey(slot);
-		}
-
-	}
 	/// <summary>
 	/// Add this to an entity if the entity can be attacked, it contains its defense information
 	/// </summary>
@@ -207,6 +97,14 @@ namespace SkrGame.Universe.Entities.Actors {
 //				return target.GetBodyPart(BodySlot.Head);
 
 			return bodyParts[Rng.Int(bodyParts.Count)];
+		}
+
+		public AttackablePart DefaultPart {
+			get { return bodyParts[0]; }
+		}
+
+		public int Dodge {
+			get { return 50; }
 		}
 
 
