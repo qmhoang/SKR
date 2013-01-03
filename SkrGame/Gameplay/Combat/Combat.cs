@@ -142,7 +142,11 @@ namespace SkrGame.Gameplay.Combat {
 			for (int index = 0; index < pointsOnPath.Count; index++) {
 				var location = pointsOnPath[index];
 				if (!currentLevel.IsWalkable(location)) {
-					Logger.InfoFormat("We hit a location:({0}) where it is not walkable, returning previous location({1}).", location, pointsOnPath[index - 1]);
+					if (index == 0) {
+						Logger.DebugFormat("We hit a location:({0}) where it is not walkable and its the adjacent to start, returning empty list.", location);	
+						yield break;
+					}
+					Logger.DebugFormat("We hit a location:({0}) where it is not walkable, returning previous location({1}).", location, pointsOnPath[index - 1]);
 					yield return pointsOnPath[index - 1];
 					yield break;
 				}
