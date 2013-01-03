@@ -169,8 +169,8 @@ namespace SKR.UI.Gameplay {
 			var level = entity.As<Location>().Level;
 
 			if (level.IsWalkable(newPosition)) {
-				// todo fix hack cast?
-				var actorsAtNewLocation = ((Level) level).EntityManager.Get(typeof (DefendComponent), typeof (Location)).Where(actor => actor.As<Location>().Position == newPosition).ToList();
+		
+				var actorsAtNewLocation = level.EntityManager.Get(typeof (DefendComponent), typeof (Location)).Where(actor => actor.As<Location>().Position == newPosition).ToList();
 
 				if (actorsAtNewLocation.Count > 1)
 					throw new Exception("We somehow have had 2 actors occupying the same location");
@@ -319,46 +319,79 @@ namespace SKR.UI.Gameplay {
 																	  }, i => DropItem(player, i)));
 							else
 								World.Instance.AddMessage("You are carrying no items to drop.");
-						} else if (keyData.Character == 'g') {
-							var level = player.As<Location>().Level;
-							// get all items that have a location (eg present on the map) that are at the location where are player is
-							var items = level.EntityManager.Get(typeof(Item), typeof(Location)).Where(e => e.As<Location>().Position == player.As<Location>().Position).ToList();
-							if (items.Count() > 0)
-								ParentApplication.Push(new ItemWindow(false,
-																	  new ListWindowTemplate<Entity>
-																	  {
-																		  Size = MapPanel.Size,
-																		  IsPopup = true,
-																		  HasFrame = true,
-																		  Items = items,
-																	  },
-																	  i =>
-																	  {
-																		  PickUpItem(player, i);
-																		  items.Remove(i);
-																	  }));
-							else
-								World.Instance.AddMessage("No items here to pick up.");
-						} else if (keyData.Character == 'i') {
-							var inventory = player.As<ContainerComponent>();
+						} else {
+							var location = player.As<Location>();
+							if (keyData.Character == 'g') {
+								var level = location.Level;
+								// get all items that have a location (eg present on the map) that are at the location where are player is
+								var items = level.EntityManager.Get(typeof(Item), typeof(Location)).Where(e => e.As<Location>().Position == location.Position).ToList();
+								if (items.Count() > 0)
+									ParentApplication.Push(new ItemWindow(false,
+									                                      new ListWindowTemplate<Entity>
+									                                      {
+									                                      		Size = MapPanel.Size,
+									                                      		IsPopup = true,
+									                                      		HasFrame = true,
+									                                      		Items = items,
+									                                      },
+									                                      i =>
+									                                      {
+									                                      	PickUpItem(player, i);
+									                                      	items.Remove(i);
+									                                      }));
+								else
+									World.Instance.AddMessage("No items here to pick up.");
+							} else if (keyData.Character == 'i') {
+								var inventory = player.As<ContainerComponent>();
 
-							ParentApplication.Push(new ItemWindow(false,
-															  new ListWindowTemplate<Entity>
-															  {
-																  Size = MapPanel.Size,
-																  IsPopup = true,
-																  HasFrame = true,
-																  Items = inventory.Items,
-															  },
-															  i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.As<Item>().Name, i.As<Item>().Weight))));
-						} else if (keyData.Character == 'w')
-							ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
-							                                           {
-							                                           		Size = MapPanel.Size,
-							                                           		IsPopup = true,
-							                                           		HasFrame = true,
-							                                           		Items = player.As<ContainerComponent>().Slots,
-							                                           }));
+								ParentApplication.Push(new ItemWindow(false,
+								                                      new ListWindowTemplate<Entity>
+								                                      {
+								                                      		Size = MapPanel.Size,
+								                                      		IsPopup = true,
+								                                      		HasFrame = true,
+								                                      		Items = inventory.Items,
+								                                      },
+								                                      i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.As<Item>().Name, i.As<Item>().Weight))));
+							} else if (keyData.Character == 'w')
+								ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
+								                                           {
+								                                           		Size = MapPanel.Size,
+								                                           		IsPopup = true,
+								                                           		HasFrame = true,
+								                                           		Items = player.As<ContainerComponent>().Slots,
+								                                           }));
+							else if (keyData.Character == 'l') {
+								if (keyData.ControlKeys == ControlKeys.LeftControl) {
+									//									ParentApplication.Push(new LookWindow(location.Position,
+									//									                                      p => string.Format("{0}\n{1}\nVisible: {2}, Transparent: {3}, Walkable: {4}", player.Level.GetTerrain(p).Definition,
+									//									                                                         (player.Level.DoesFeatureExistAtLocation(p) ? player.Level.GetFeatureAtLocation(p).Asset : ""),
+									//									                                                         player.Level.IsVisible(p), player.Level.IsTransparent(p), player.Level.IsWalkable(p)),
+									//									                                      MapPanel, GameplayWindow.PromptTemplate));
+								} else
+									ParentApplication.Push(
+											new LookWindow(
+													location.Position,
+													delegate(Point p)
+													{														
+														StringBuilder sb = new StringBuilder();
+														var entitiesAtLocation = location.Level.GetEntitiesAt(p);
+														sb.AppendLine(((Level) location.Level).GetTerrain(p).Definition);
+														foreach (var entity in entitiesAtLocation) {
+															sb.AppendFormat("Entity: {0} ", entity.Id);
+															if (entity.Is<Blocker>())
+																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.As<Blocker>().Transparent, entity.As<Blocker>().Walkable);
+															if (entity.Is<Item>())
+																sb.AppendFormat("Item: {0}", entity.As<Item>().Name);
+															sb.AppendLine();
+														}
+
+														return sb.ToString();
+													},
+													MapPanel,
+													GameplayWindow.PromptTemplate));
+							}
+						}
 						break;
 					}
 				}
