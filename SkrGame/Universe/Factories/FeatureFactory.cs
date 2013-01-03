@@ -58,7 +58,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template()
 					       {
 					       		
-					       		new Sprite("OpenedDoor", 1),
+					       		new Sprite("OpenedDoor", Sprite.FEATURES_LAYER),
 					       		new Blocker(),
 					       		new UseableFeature("Close door", doorUsageAPCost,
 					       		                   (f, user) => ActionDoor(f, user, "OpenedDoor", "ClosedDoor"))
@@ -67,7 +67,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template()
 					       {
 					       		
-					       		new Sprite("WALL_BRICK_DARK_DOOR_HORZ", 1),
+					       		new Sprite("WALL_BRICK_DARK_DOOR_HORZ", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open door", doorUsageAPCost,
 					       		                   (f, user) => ActionDoor(f, user, "WALL_BRICK_DARK_DOOR_VERT", "WALL_BRICK_DARK_DOOR_HORZ"))
@@ -77,7 +77,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("WALL_BRICK_DARK_DOOR_VERT", 1),
+					       		new Sprite("WALL_BRICK_DARK_DOOR_VERT", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open door", doorUsageAPCost,
 					       		                   (f, user) => ActionDoor(f, user, "WALL_BRICK_DARK_DOOR_HORZ", "WALL_BRICK_DARK_DOOR_VERT"))
@@ -86,7 +86,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("WINDOW_BRICK_DARK_VERT", 1),
+					       		new Sprite("WINDOW_BRICK_DARK_VERT", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
 					       		                   (f, user) => ActionWindow(f, user, "WINDOW_BRICK_DARK_HORZ", "WINDOW_BRICK_DARK_VERT"))
@@ -95,7 +95,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("WINDOW_BRICK_DARK_HORZ", 1),
+					       		new Sprite("WINDOW_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
 					       		                   (f, user) => ActionWindow(f, user, "WINDOW_BRICK_DARK_VERT", "WINDOW_BRICK_DARK_HORZ"))
@@ -104,7 +104,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("WINDOW_HOUSE_VERT", 1),
+					       		new Sprite("WINDOW_HOUSE_VERT", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
 					       		                   (f, user) => ActionWindow(f, user, "WINDOW_HOUSE_HORZ", "WINDOW_HOUSE_VERT"))
@@ -113,7 +113,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("WINDOW_HOUSE_HORZ", 1),
+					       		new Sprite("WINDOW_HOUSE_HORZ", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
 					       		                   (f, user) => ActionWindow(f, user, "WINDOW_HOUSE_VERT", "WINDOW_HOUSE_HORZ"))
@@ -122,7 +122,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("DOOR_APART_1_VERT", 1),
+					       		new Sprite("DOOR_APART_1_VERT", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
 					       		                   (f, user) => ActionWindow(f, user, "DOOR_APART_1_HORZ", "DOOR_APART_1_VERT"))
@@ -131,7 +131,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("DOOR_APART_1_HORZ", 1),
+					       		new Sprite("DOOR_APART_1_HORZ", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new UseableFeature("Open window", windowUsageAPCost,
 					       		                   (f, user) => ActionWindow(f, user, "DOOR_APART_1_VERT", "DOOR_APART_1_HORZ"))
@@ -142,12 +142,12 @@ namespace SkrGame.Universe.Factories {
 					#region House Features
 
 				case "COUNTER_WOOD_RED":
-					return new Template { new Sprite("COUNTER_WOOD_RED", 1), new Blocker(false, false)};
+					return new Template { new Sprite("COUNTER_WOOD_RED", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "SINK":
 					return new Template
 					       {
 					       		
-					       		new Sprite("SINK"),
+					       		new Sprite("SINK", Sprite.FEATURES_LAYER),
 					       		new UseableFeature("Wash hands", World.DEFAULT_SPEED, delegate(UseableFeature f, Actor user)
 					       		                                                      {
 					       		                                                      	//user.cleaniness += 5
@@ -158,7 +158,7 @@ namespace SkrGame.Universe.Factories {
 					return new Template
 					       {
 					       		
-					       		new Sprite("TOILET"),
+					       		new Sprite("TOILET", Sprite.FEATURES_LAYER),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
 					       		                   {
@@ -168,14 +168,14 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "BATHROOMSINK":
-					return new Template { new Sprite("BATHROOMSINK", 1), new Blocker(false, false)};
+					return new Template { new Sprite("BATHROOMSINK", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 
 
 				case "BATH":
 					return new Template
 					       {
 					       		
-					       		new Sprite("BATH", 1),
+					       		new Sprite("BATH", Sprite.FEATURES_LAYER),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
 					       		                   {
@@ -185,16 +185,16 @@ namespace SkrGame.Universe.Factories {
 					       				)
 					       };
 				case "SHOWER":
-					return new Template { new Sprite("SHOWER"), new Blocker(true, true)};
+					return new Template { new Sprite("SHOWER", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 				case "CHAIR_WOODEN":
-					return new Template { new Sprite("CHAIR_WOODEN"), new Blocker(true, true)};
+					return new Template { new Sprite("CHAIR_WOODEN", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 				case "TREE_SMALL":
-					return new Template { new Sprite("TREE_SMALL", 1), new Blocker(false, false)};
+					return new Template { new Sprite("TREE_SMALL", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "BED_WOODEN":
 					return new Template
 					       {
 					       		
-					       		new Sprite("BED_WOODEN"),
+					       		new Sprite("BED_WOODEN", Sprite.FEATURES_LAYER),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
 					       		                   {
@@ -203,14 +203,14 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "SHELF_WOOD":
-					return new Template { new Sprite("SHELF_WOOD", 1), new Blocker(false, false)};
+					return new Template { new Sprite("SHELF_WOOD", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "SHELF_METAL":
-					return new Template { new Sprite("SHELF_METAL", 1), new Blocker(false, false)};
+					return new Template { new Sprite("SHELF_METAL", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "TELEVISION":
 					return new Template
 					       {
 					       		
-					       		new Sprite("TELEVISION", 1),
+					       		new Sprite("TELEVISION", Sprite.FEATURES_LAYER),
 					       		new Blocker(false, false),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
 					       		                   {
@@ -220,16 +220,16 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "FRIDGE":
-					return new Template { new Sprite("FRIDGE", 1), new Blocker(false, false)};
+					return new Template { new Sprite("FRIDGE", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "DESK_WOODEN":
-					return new Template { new Sprite("DESK_WOODEN", 1), new Blocker(false, false)};
+					return new Template { new Sprite("DESK_WOODEN", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "CASH_REGISTER":
-					return new Template { new Sprite("CASH_REGISTER", 1), new Blocker(false, false)};
+					return new Template { new Sprite("CASH_REGISTER", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "SOFA":
 					return new Template
 					       {
 					       		
-					       		new Sprite("SOFA"),
+					       		new Sprite("SOFA", Sprite.FEATURES_LAYER),
 					       		new Blocker(true, true),
 					       		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
 					       		                   {
@@ -238,63 +238,63 @@ namespace SkrGame.Universe.Factories {
 					       		                   })
 					       };
 				case "OVEN":
-					return new Template { new Sprite("OVEN", 1), new Blocker(false, false)};
+					return new Template { new Sprite("OVEN", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 
 				case "DOOR_GARAGE":
-					return new Template { new Sprite("DOOR_GARAGE", 1), new Blocker(false, false)};
+					return new Template { new Sprite("DOOR_GARAGE", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "FENCE_WOODEN":
-					return new Template { new Sprite("FENCE_WOODEN", 1), new Blocker(false, true)};
+					return new Template { new Sprite("FENCE_WOODEN", Sprite.FEATURES_LAYER), new Blocker(false, true)};
 				case "LAMP_STANDARD":
-					return new Template { new Sprite("LAMP_STANDARD"), new Blocker(true, true)};
+					return new Template { new Sprite("LAMP_STANDARD", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 				case "TABLE_WOODEN":
-					return new Template { new Sprite("TABLE_WOODEN"), new Blocker(true, true)};
+					return new Template { new Sprite("TABLE_WOODEN", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 				case "SAFE_SIMPLE":
-					return new Template { new Sprite("SAFE_SIMPLE"), new Blocker(true, true)};
+					return new Template { new Sprite("SAFE_SIMPLE", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 
 					#endregion
 
 					#region Walls
 
 				case "WALL_BRICK_DARK":
-					return new Template { new Sprite("WALL_BRICK_DARK", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_VERT":
-					return new Template { new Sprite("WALL_BRICK_DARK_VERT", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_VERT", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_HORZ":
-					return new Template { new Sprite("WALL_BRICK_DARK_HORZ", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_NORTH":
-					return new Template { new Sprite("WALL_BRICK_DARK_T_NORTH", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_T_NORTH", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_SOUTH":
-					return new Template { new Sprite("WALL_BRICK_DARK_T_SOUTH", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_T_SOUTH", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_EAST":
-					return new Template { new Sprite("WALL_BRICK_DARK_T_EAST", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_T_EAST", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_T_WEST":
-					return new Template { new Sprite("WALL_BRICK_DARK_T_WEST", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_T_WEST", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_NORTHEAST":
-					return new Template { new Sprite("WALL_BRICK_DARK_NORTHEAST", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_NORTHEAST", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_NORTHWEST":
-					return new Template { new Sprite("WALL_BRICK_DARK_NORTHWEST", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_NORTHWEST", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_SOUTHWEST":
-					return new Template { new Sprite("WALL_BRICK_DARK_SOUTHWEST", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_SOUTHWEST", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_BRICK_DARK_SOUTHEAST":
-					return new Template { new Sprite("WALL_BRICK_DARK_SOUTHEAST", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_BRICK_DARK_SOUTHEAST", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 				case "WALL_DRY":
-					return new Template { new Sprite("WALL_DRY", 1), new Blocker(false, false)};
+					return new Template { new Sprite("WALL_DRY", Sprite.FEATURES_LAYER), new Blocker(false, false)};
 
 					#endregion
 
 					#region Stairs
 
 				case "STAIR_WOODEN_UP":
-					return new Template { new Sprite("STAIR_WOODEN_UP"), new Blocker(true, true)};
+					return new Template { new Sprite("STAIR_WOODEN_UP", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 				case "STAIR_WOODEN_DOWN":
-					return new Template { new Sprite("STAIR_WOODEN_DOWN"), new Blocker(true, true)};
+					return new Template { new Sprite("STAIR_WOODEN_DOWN", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 
 					#endregion
 
 					#region Misc Decorations
 
 				case "PLANTPOT_FIXED":
-					return new Template { new Sprite("PLANTPOT_FIXED"), new Blocker(true, true)};
+					return new Template { new Sprite("PLANTPOT_FIXED", Sprite.FEATURES_LAYER), new Blocker(true, true) };
 
 					#endregion
 			}

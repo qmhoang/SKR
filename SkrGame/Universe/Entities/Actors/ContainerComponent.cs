@@ -45,10 +45,10 @@ namespace SkrGame.Universe.Entities.Actors {
 		public ContainerComponent() {
 			itemContainer = new List<Entity>();
 			equippedItems = new Dictionary<string, Entity>();
-			slots = new Dictionary<string, bool>()
+			slots = new List<string>
 			        {
-			        		{"MainHand", true},
-			        		{"OffHand", true},
+			        		"MainHand",
+			        		"OffHand",
 			        };
 		}
 
@@ -82,7 +82,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 		private readonly Dictionary<string, Entity> equippedItems;
-		private readonly Dictionary<string, bool> slots;
+		private readonly List<string> slots;
 
 		public event EventHandler<EventArgs<string, Entity>> ItemEquipped;
 		public event EventHandler<EventArgs<string, Entity>> ItemUnequipped;
@@ -100,11 +100,11 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public bool ContainSlot(string slot) {
-			return slots.ContainsKey(slot);
+			return slots.Contains(slot);
 		}
 
 		public IEnumerable<string> Slots {
-			get { return slots.Keys; }
+			get { return slots; }
 		}
 
 		public void Equip(string slot, Entity item) {			
@@ -117,7 +117,8 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (equippedItems.ContainsKey(slot))
 				Unequip(slot);
 
-			equippedItems.Add(slot, item);		
+			equippedItems.Add(slot, item);
+			itemContainer.Remove(item);
 		}
 		
 		public bool Unequip(string slot) {

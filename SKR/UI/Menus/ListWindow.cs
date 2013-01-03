@@ -40,10 +40,10 @@ namespace SKR.UI.Menus {
 			MouseOverIndex = MouseToIndex(mouseData);
 		}
 
-		protected abstract int MouseToIndex(MouseData mouseData);
+		protected abstract int MouseToIndex(MouseData mouseData);		
 
-		protected override void OnMouseButtonDown(MouseData mouseData) {
-			base.OnMouseButtonDown(mouseData);
+		protected override void OnMouseButtonUp(MouseData mouseData) {
+			base.OnMouseButtonDown(mouseData);			
 
 			int index = MouseToIndex(mouseData);
 			if (index >= 0 && index < Items.Count && Items.ContainsKey((char) (index + 'A'))) {

@@ -5,6 +5,7 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Core;
+using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities.Actors;
@@ -28,7 +29,7 @@ namespace SkrGame.Universe {
 		public const int MEAN = 50; // what is the mean score for an attribute
 		public const int STANDARD_DEVIATION = 15; // what is the stddev for an attribute score
 
-		public const int TILE_LENGTH = 1; // length of 1 square tile
+		public const double TILE_LENGTH_IN_METER = 1f; // length of 1 square tile
 
 		public static int SecondsToActionPoints(double seconds) {
 			return (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
@@ -105,25 +106,41 @@ namespace SkrGame.Universe {
 			Player = EntityManager.Create(new Template()
 			                              {
 			                              		new ActionPoint(),
-			                              		new Sprite("player", 3),
+			                              		new Sprite("player", Sprite.PLAYER_LAYER),
 			                              		new Location(0, 0, level),
 			                              		new PlayerMarker(),
 			                              		new Actor("player", level),			                              		
 			                              		new DefendComponent(),
 												new ContainerComponent()												
 			                              });
-			Player.Add(ItemFactory.Construct("punch"));
+			Player.Add(new MeleeComponent(
+			           		new MeleeComponentTemplate
+			           		{
+			           				ComponentId = "punch",
+			           				ActionDescription = "punch",
+			           				ActionDescriptionPlural = "punches",
+			           				Skill = "skill_unarmed",
+			           				HitBonus = 0,
+			           				Damage = Rand.Constant(-5),
+			           				DamageType = Combat.DamageTypes["crush"],
+			           				Penetration = 1,
+			           				WeaponSpeed = 100,
+			           				Reach = 0,
+			           				Strength = 0,
+			           				Parry = 0
+			           		}));
 
 			EntityManager.Create(new Template
 			                     {
 			                     		new ActionPoint(),
-			                     		new Sprite("npc", 3),
+			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                     		new Location(4, 3, level),
-			                     		new Actor("player", level),
+			                     		new Actor("npc", level),
 			                     		new DefendComponent(),
 			                     });
 
 			EntityManager.Create(ItemFactory.Construct("smallknife")).Add(new Location(1, 1, level));
+			EntityManager.Create(ItemFactory.Construct("glock17")).Add(new Location(1, 1, level));
 
 
 		}
