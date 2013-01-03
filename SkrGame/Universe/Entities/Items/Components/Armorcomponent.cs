@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items.Components {
-	public class ArmorComponentTemplate : IItemComponentTemplate {
+	public class ArmorComponentTemplate {
 		public Dictionary<DamageType, int> Resistances { get; set; }
 
 		/// <summary>
@@ -27,17 +28,9 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		public string ComponentId { get; set; }
 		public string ActionDescription { get; set; }
 		public string ActionDescriptionPlural { get; set; }
-
-		public IItemComponent Construct(Item item) {
-			return new ArmorComponent(item, this);
-		}
 	}
 
-	public class ArmorComponent : IItemComponent {
-		public string ComponentId { get; private set; }
-
-		public Item Item { get; set; }
-
+	public class ArmorComponent : EntityComponent {
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
 
@@ -50,10 +43,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		public int Coverage { get; protected set; }
 		public int DonTime { get; protected set; }
 
-		public ArmorComponent(Item item, ArmorComponentTemplate template) {
-			Item = item;
-
-			ComponentId = template.ComponentId;
+		public ArmorComponent(ArmorComponentTemplate template) {
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 

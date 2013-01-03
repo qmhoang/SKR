@@ -12,6 +12,7 @@ using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Components;
 using libtcod;
 
 namespace SKR.UI.Menus {
@@ -41,8 +42,8 @@ namespace SKR.UI.Menus {
                 var letter = charItemPair.Key;
                 var item = charItemPair.Value;
 
-                Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, item.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
-                    item.Is(typeof(RangeComponent)) ? string.Format(" ({0}/{1})", item.As<RangeComponent>().ShotsRemaining, item.As<RangeComponent>().Shots) : ""));
+//                Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, item.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
+//                    item.Is(typeof(RangeComponent)) ? string.Format(" ({0}/{1})", item.As<RangeComponent>().ShotsRemaining, item.As<RangeComponent>().Shots) : ""));
 
                 Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", item.Amount));
 

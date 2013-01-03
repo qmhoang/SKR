@@ -50,49 +50,20 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public StackType StackType { get; private set; }
 		public ItemType Type { get; private set; }
-		public BodySlot Slot { get; private set; }
+		public List<string> Slots { get; private set; }
 
-
-		private readonly Dictionary<Type, IItemComponent> components;
-
-		public bool Is(Type action) {
-			return components.ContainsKey(action);
-		}
-
-		/// <summary>
-		/// Get Item's Component
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public T As<T>() where T : IItemComponent {
-			return (T)components.Values.First(c => c is T);
-		}
-
-		public T As<T>(Type action) where T : IItemComponent {
-			if (Is(action))
-				return (T)components[action];
-			else
-				throw new ArgumentException("This item has no component for this", "action");
-		}
 
 		public Item(ItemTemplate template) {
 			Name = template.Name;
 			RefId = template.RefId;
 
 			StackType = template.StackType;
-			Slot = template.Slot;
+			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);			
 			amount = 1;
 			Type = template.Type;
 			Weight = template.Weight;
 			Size = template.Size;
 			Value = template.Value;
-			components = new Dictionary<Type, IItemComponent>();
-
-			foreach (var componentTemplate in template.Components) {
-				IItemComponent comp = componentTemplate.Construct(this);
-
-				components.Add(comp.GetType(), comp);
-			}
 		}
 	}
 
@@ -111,7 +82,7 @@ namespace SkrGame.Universe.Entities.Items {
 		public int Value { get; set; }
 		public string Asset { get; set; }
 		public StackType StackType { get; set; }
-		public BodySlot Slot { get; set; }
+		public List<string> Slot { get; set; }
 
 		public IEnumerable<IItemComponentTemplate> Components { set; get; }
 	}

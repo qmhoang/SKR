@@ -65,38 +65,12 @@ namespace SkrGame.Gameplay.Combat {
 		                                                                    		{"burn", new DamageType("Burning")},
 		                                                                    };
 
-		public static BodyPart GetRandomBodyPart(BodyComponent target) {
-			int roll = Rng.Roll(3, 6);
-
-			Logger.InfoFormat("Random body part roll: {0}", roll);
-
-			//todo unfinished
-			if (roll <= 4)
-				return target.GetBodyPart(BodySlot.Head);
-			if (roll <= 5)
-				return target.GetBodyPart(BodySlot.OffHand);
-			if (roll <= 7)
-				return target.GetBodyPart(BodySlot.Leg); // left leg
-			if (roll <= 8)
-				return target.GetBodyPart(BodySlot.OffArm);
-			if (roll <= 11)
-				return target.GetBodyPart(BodySlot.Torso);
-			if (roll <= 12)
-				return target.GetBodyPart(BodySlot.MainArm);
-			if (roll <= 14)
-				return target.GetBodyPart(BodySlot.Leg); // right leg
-			if (roll <= 15)
-				return target.GetBodyPart(BodySlot.MainHand);
-			if (roll <= 16)
-				return target.GetBodyPart(BodySlot.Feet);
-			else
-				return target.GetBodyPart(BodySlot.Head);
-		}
 
 		private static double ChanceOfSuccess(double difficulty) {
 			return GaussianDistribution.CumulativeTo(difficulty + World.MEAN, World.MEAN, World.STANDARD_DEVIATION);
 		}
 
+		//todo change defender to actorBody
 		public static CombatEventResult Attack(Actor attacker, Actor defender, double attackDifficulty, bool dodge = true, bool block = true, bool parry = true) {
 			double atkRoll = Rng.Double();
 			double chanceToHit = ChanceOfSuccess(attackDifficulty);
@@ -150,25 +124,25 @@ namespace SkrGame.Gameplay.Combat {
 			}
 		}
 
-		public static void Damage(int damage, DamageType type, BodyPart bodyPart, out int damageResistance, out int damageDealt) {
+		public static void Damage(int damage, DamageType type, DefendComponent.AttackablePart bodyPart, out int damageResistance, out int damageDealt) {
 			damageDealt = damage;
 			damageResistance = 0;
-			if (bodyPart.Equipped) {
-				var itemAtSlot = bodyPart.Item;
-
-				if (itemAtSlot.Is(typeof (ArmorComponent))) {
-					var armor = itemAtSlot.As<ArmorComponent>();
-					damageResistance = armor.Resistances[type];
-					damageDealt = Math.Max(damage - damageResistance, 0);
-					if (Rng.Chance(armor.Coverage / 100.0)) {
-						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
-					} else {
-						// we hit a chink in the armor
-						damageResistance /= (int) armor.NonCoverageDivisor;
-						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR reduced because of non-coverage: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
-					}
-				}
-			}
+//			if (bodyPart.Equipped) {
+//				var itemAtSlot = bodyPart.Item;
+//
+//				if (itemAtSlot.Is(typeof (ArmorComponent))) {
+//					var armor = itemAtSlot.As<ArmorComponent>();
+//					damageResistance = armor.Resistances[type];
+//					damageDealt = Math.Max(damage - damageResistance, 0);
+//					if (Rng.Chance(armor.Coverage / 100.0)) {
+//						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
+//					} else {
+//						// we hit a chink in the armor
+//						damageResistance /= (int) armor.NonCoverageDivisor;
+//						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR reduced because of non-coverage: {2}]", damageDealt, itemAtSlot.Name, damageResistance, damage);
+//					}
+//				}
+//			}
 
 			if (damageDealt > bodyPart.MaxHealth) {
 				damageDealt = Math.Min(damage, bodyPart.MaxHealth);
@@ -181,10 +155,15 @@ namespace SkrGame.Gameplay.Combat {
 			Logger.DebugFormat("{0}'s {1} was hurt ({2} damage)", bodyPart.Owner.OwnerUId, bodyPart.Name, damageDealt);
 		}
 
-		public static void Heal(BodyPart bodyPart, int amount) {
+		public static void Heal(DefendComponent.AttackablePart bodyPart, int amount) {
 			amount = Math.Min(amount, bodyPart.Owner.MaxHealth - bodyPart.Owner.Health);
 			bodyPart.Owner.Health += amount;
 			Logger.DebugFormat("{0} was healed {1} health", bodyPart.Owner.OwnerUId, amount);
+		}
+
+		public static void ProcessCombat(CombatEventArgs e) {
+			e.Attacker.OnAttacking(e);
+			e.Defender.OnDefending(e);
 		}
 	}
 

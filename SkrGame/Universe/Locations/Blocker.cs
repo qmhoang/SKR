@@ -4,6 +4,28 @@ using DEngine.Entity;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Locations {
+	public class MovementBlocker : EntityComponent {
+		public string Description { get; set; }
+
+		private bool walkable;
+		public bool Walkable {
+			get { return walkable; }
+			set {
+				walkable = value;
+				OnWalkableChanged();
+			}
+		}
+
+		public double WalkPenalty { get; set; }
+
+		public event EventHandler<EventArgs> WalkableChanged;
+
+		public void OnWalkableChanged() {
+			EventHandler<EventArgs> handler = WalkableChanged;
+			if (handler != null)
+				handler(this, EventArgs.Empty);
+		}
+	}
 	public class Blocker : EntityComponent {
 		public Blocker() : this(true, true) { }
 

@@ -1,10 +1,11 @@
 ﻿using System;
 using DEngine.Core;
+using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Items.Components {
-    public class MeleeComponentTemplate : IWeaponComponentTemplate {
+    public class MeleeComponentTemplate {
         public int HitBonus { get; set; }
         public Rand Damage { get; set; }
         public Action<Actor, Actor> OnHit { get; set; }
@@ -30,17 +31,9 @@ namespace SkrGame.Universe.Entities.Items.Components {
         public bool UnreadyAfterAttack { get; set; }
 
         public DamageType DamageType { get; set; }
-
-        public IItemComponent Construct(Item item) {
-            return new MeleeComponent(item, this);
-        }
     }
 
-    public class MeleeComponent : IWeaponComponent {
-
-        public string ComponentId { get; private set; }
-
-        public Item Item { get; private set; }
+    public class MeleeComponent : EntityComponent {
 
         public string ActionDescription { get; private set; }
         public string ActionDescriptionPlural { get; private set; }
@@ -64,11 +57,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
         public int Parry { get; protected set; }
         public int Targetting { get; protected set; }
 
-
-        public MeleeComponent(Item item, MeleeComponentTemplate template) {
-            Item = item;
-
-            ComponentId = template.ComponentId;
+        public MeleeComponent(MeleeComponentTemplate template) {
             ActionDescription = template.ActionDescription;
             ActionDescriptionPlural = template.ActionDescriptionPlural;
 

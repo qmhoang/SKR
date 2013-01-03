@@ -1,44 +1,33 @@
 using System;
 using DEngine.Core;
+using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Items.Components;
 
-namespace SkrGame.Universe.Entities.Items {
-	public class AmmoComponentTemplate : IItemComponentTemplate {
+namespace SkrGame.Universe.Entities.Items.Components {
+	public class AmmoComponentTemplate {
 		public string Type { get; set; }
 		public string ComponentId { get; set; }
 
 		public string ActionDescription { get; set; }
 		public string ActionDescriptionPlural { get; set; }
-
-		public IItemComponent Construct(Item item) {
-			return new AmmoComponent(item, this);
-		}
 	}
 
-	public class AmmoComponent : IItemComponent {
+	public class AmmoComponent : EntityComponent {
 		public string Type { get; private set; }
 
-		public AmmoComponent(Item item, AmmoComponentTemplate template) {
-			Item = item;
-
-			ComponentId = template.ComponentId;
+		public AmmoComponent(AmmoComponentTemplate template) {
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 
 			Type = template.Type;
 		}
-
-		public string ComponentId { get; private set; }
-		public Item Item { get; private set; }
-
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
 	}
 	// todo ammo cases
 
-	public class RangeComponentTemplate : IWeaponComponentTemplate {
+	public class RangeComponentTemplate {
 		public int Accuracy { get; set; }
 		public Rand Damage { get; set; }
 		public double Penetration { get; set; }
@@ -81,17 +70,9 @@ namespace SkrGame.Universe.Entities.Items {
 		public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
 		public int BurstPenalty { get; set; }		// penalty for each shot of the burst
 		public int BurstAP { get; set; }			// AP cost for a burst
-
-		public IItemComponent Construct(Item item) {
-			return new RangeComponent(item, this);
-		}
 	}
 
-	public class RangeComponent : IWeaponComponent {
-		public string ComponentId { get; private set; }
-
-		public Item Item { get; private set; }
-
+	public class RangeComponent : EntityComponent {
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
 
@@ -118,10 +99,7 @@ namespace SkrGame.Universe.Entities.Items {
 		public int Shots { get; set; }
 		public int ShotsRemaining { get; set; }
 
-		public RangeComponent(Item item, RangeComponentTemplate template) {
-			Item = item;
-
-			ComponentId = template.ComponentId;
+		public RangeComponent(RangeComponentTemplate template) {
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 

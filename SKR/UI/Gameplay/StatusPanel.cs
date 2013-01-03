@@ -17,7 +17,7 @@ namespace SKR.UI.Gameplay {
 		protected override void Redraw() {
 			base.Redraw();
 			Canvas.PrintString(1, 1, player.As<Actor>().Name);
-			Canvas.PrintString(1, 3, String.Format("H: {0}/{1}", player.As<BodyComponent>().Health, player.As<BodyComponent>().MaxHealth));
+			Canvas.PrintString(1, 3, String.Format("H: {0}/{1}", player.As<DefendComponent>().Health, player.As<DefendComponent>().MaxHealth));
 		}
 	}
 }
