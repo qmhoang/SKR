@@ -58,16 +58,6 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public class TalentUsedEvent : EventArgs {
-		public Actor User { get; private set; }
-		public Talent Talent { get; private set; }
-
-		public TalentUsedEvent(Actor user, Talent talent) {
-			User = user;
-			Talent = talent;
-		}
-	}
-
 	public class Actor : EntityComponent{
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -100,27 +90,11 @@ namespace SkrGame.Universe.Entities.Actors {
 				SetTag(id, increment);
 			}
 		}
-
-		public event EventHandler<TalentUsedEvent> TalentUsed;
-
-		public void OnTalentUsed(TalentUsedEvent e) {
-			EventHandler<TalentUsedEvent> handler = TalentUsed;
-			if (handler != null)
-				handler(this, e);
-		}
 		
 		public Level Level { get; private set; }
 
 		public World World {
 			get { return World.Instance; }
-		}
-
-
-
-		public MeleeComponent DefaultAttack;
-
-		public int Dodge {
-			get { return GetTalent("attrb_agility").As<AttributeComponent>().Rank + GetTalent("attrb_cunning").As<AttributeComponent>().Rank; }
 		}
 
 		public int Lift {

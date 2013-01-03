@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
@@ -40,10 +41,9 @@ namespace SkrGame.Universe.Entities.Items {
 				return amount;
 			}
 			set {
-				if (value <= 0)
-					throw new ArgumentException("cannot be 0 or negative, remove instead", "value");
-				if (StackType != StackType.Hard)
-					throw new ArgumentException("Cannot modify count of non-stacked item");
+				Contract.Requires(value > 0);
+				Contract.Requires(StackType != StackType.Hard);
+				Contract.Ensures(value > 0);
 				amount = value;
 			}
 		}
@@ -80,7 +80,6 @@ namespace SkrGame.Universe.Entities.Items {
 		public int Weight { get; set; }
 		public int Size { get; set; }
 		public int Value { get; set; }
-		public string Asset { get; set; }
 		public StackType StackType { get; set; }
 		public List<string> Slot { get; set; }
 

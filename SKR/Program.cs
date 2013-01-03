@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,7 +50,7 @@ namespace SKR {
 		public static BooleanSwitch GodMod = new BooleanSwitch("GodMode", "God mode");
 
 		public static void Main(string[] args) {
-			XmlConfigurator.Configure(new FileInfo("Log.xml"));
+			XmlConfigurator.Configure(new FileInfo("Log.xml"));	
 
 			Logger.InfoFormat("TCODConsole.root initialized {0}", ScreenSize);
 			Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", INITIAL_DELAY,

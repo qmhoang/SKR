@@ -12,6 +12,7 @@ using SkrGame.Universe.Entities.Actors.NPC;
 using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
 
@@ -68,7 +69,7 @@ namespace SkrGame.Universe {
 		}
 
 
-		private readonly ItemFactory itemFactory;
+		public ItemFactory ItemFactory { get; private set; }
 		private readonly FeatureFactory featureFactory;
 //		private readonly TalentFactory talentFactory;
 		private readonly MapFactory mapFactory;
@@ -93,7 +94,7 @@ namespace SkrGame.Universe {
 			MessageBuffer = new List<Message>();
 
 //			talentFactory = new SourceTalentFactory();
-			itemFactory = new SourceItemFactory();
+			ItemFactory = new SourceItemFactory();
 			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(featureFactory);
 
@@ -105,17 +106,24 @@ namespace SkrGame.Universe {
 			                              {
 			                              		new ActionPoint(),
 			                              		new Sprite("player", 3),
-			                              		new Location()
-			                              		{
-			                              				Level = level,
-														Position = new Point(0, 0)
-			                              		},
+			                              		new Location(0, 0, level),
 			                              		new PlayerMarker(),
 			                              		new Actor("player", level),			                              		
 			                              		new DefendComponent(),
+												new ContainerComponent()												
 			                              });
-			
-			
+			Player.Add(ItemFactory.Construct("punch"));
+
+			EntityManager.Create(new Template
+			                     {
+			                     		new ActionPoint(),
+			                     		new Sprite("npc", 3),
+			                     		new Location(4, 3, level),
+			                     		new Actor("player", level),
+			                     		new DefendComponent(),
+			                     });
+
+			EntityManager.Create(ItemFactory.Construct("smallknife")).Add(new Location(1, 1, level));
 
 
 		}
