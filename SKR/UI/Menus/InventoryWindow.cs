@@ -29,7 +29,7 @@ namespace SKR.UI.Menus {
 
 		public ItemWindow(bool selectSingleItem, ListWindowTemplate<Entity> template, Action<Entity> itemSelected)
 			: base(itemSelected, template) {
-			Contract.Requires(Contract.ForAll(template.Items, i => i.Is<Item>()));
+			Contract.Requires(Contract.ForAll(template.Items, i => i.Has<Item>()));
 			singleItem = selectSingleItem;            
 			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 		}
@@ -44,12 +44,12 @@ namespace SKR.UI.Menus {
 			foreach (var charItemPair in Items) {
 				var letter = charItemPair.Key;
 				var entity = charItemPair.Value;
-				var item = entity.As<Item>();
+				var item = entity.Get<Item>();
 
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, item.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
-					entity.Is<RangeComponent>() ? string.Format(" ({0}/{1})", entity.As<RangeComponent>().ShotsRemaining, entity.As<RangeComponent>().Shots) : ""));
+					entity.Has<RangeComponent>() ? string.Format(" ({0}/{1})", entity.Get<RangeComponent>().ShotsRemaining, entity.Get<RangeComponent>().Shots) : ""));
 
-				Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", entity.As<Item>().Amount));
+				Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", entity.Get<Item>().Amount));
 
 				for (int i = 0; i < rect.Size.Width; i++) {
 					if ((letter - 'A') == MouseOverIndex)
@@ -103,7 +103,7 @@ namespace SKR.UI.Menus {
 
 		public InventoryWindow(ListWindowTemplate<string> template)
 			: base(null, template) {
-			inventory = World.Instance.Player.As<ContainerComponent>();
+			inventory = World.Instance.Player.Get<ContainerComponent>();
 			bodyPartWidth = 25; // todo replace to code            
 			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
@@ -113,7 +113,7 @@ namespace SKR.UI.Menus {
 			if (inventory.IsSlotEquipped(slot)) {
 				inventory.Unequip(slot);
 			} else {
-				var items = inventory.Items.Where(i => i.As<Item>().Slots.Contains(slot)).ToList();
+				var items = inventory.Items.Where(i => i.Get<Item>().Slots.Contains(slot)).ToList();
 				if (items.Count > 0)
 					ParentApplication.Push(new ItemWindow(true,
 					                                      new ListWindowTemplate<Entity>
@@ -157,7 +157,7 @@ namespace SKR.UI.Menus {
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", bodyPartPair.Key, bodyPartPair.Value, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
 				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
 				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, inventory.IsSlotEquipped(bodyPartPair.Value) ?
-					String.Format("{0}{1}", item.As<Item>().Name, (item.Is<RangeComponent>() ? string.Format(" ({0}/{1})", item.As<RangeComponent>().ShotsRemaining, item.As<RangeComponent>().Shots) : "")) : 
+					String.Format("{0}{1}", item.Get<Item>().Name, (item.Has<RangeComponent>() ? string.Format(" ({0}/{1})", item.Get<RangeComponent>().ShotsRemaining, item.Get<RangeComponent>().Shots) : "")) : 
 					"-");
 
 				for (int i = 0; i < rect.Size.Width; i++) {

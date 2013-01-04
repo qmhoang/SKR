@@ -29,29 +29,29 @@ namespace SKR.UI.Gameplay {
 			ViewOffset = new Point(0, 0);
 			assets = assetsManager;
 
-			entities = manager.Get(typeof(Location), typeof(Sprite));
+			entities = manager.Get(typeof(Location), typeof(Sprite), typeof(VisibleComponent));
 
 			player = World.Instance.Player;
-			oldPos = player.As<Location>().Position;
-			player.As<Location>().Level.CalculateFOV(player.As<Location>().Position, 10);
+			oldPos = player.Get<Location>().Position;
+			player.Get<Location>().Level.CalculateFOV(player.Get<Location>().Position, 10);
 
 		}
 
 		protected override void Update() {
 			base.Update();
 
-			if (oldPos != player.As<Location>().Position) {
-				player.As<Location>().Level.CalculateFOV(player.As<Location>().Position, 10);
+			if (oldPos != player.Get<Location>().Position) {
+				player.Get<Location>().Level.CalculateFOV(player.Get<Location>().Position, 10);
 			}
 		}
 
 		protected override void Redraw() {
 			base.Redraw();
-			var level = player.As<Location>().Level;
+			var level = player.Get<Location>().Level;
 
-			ViewOffset = new Point(Math.Min(Math.Max(player.As<Location>().X - Size.Width / 2, 0),
+			ViewOffset = new Point(Math.Min(Math.Max(player.Get<Location>().X - Size.Width / 2, 0),
 			                                level.Width - Size.Width),
-			                       Math.Min(Math.Max(player.As<Location>().Y - Size.Height / 2, 0),
+			                       Math.Min(Math.Max(player.Get<Location>().Y - Size.Height / 2, 0),
 			                                level.Height - Size.Height));
 
 			//draw map
@@ -78,15 +78,16 @@ namespace SKR.UI.Gameplay {
 			}
 
 			// draw entities
-			foreach (var entity in entities.OrderBy(entity => entity.As<Sprite>().Order)) {
-				Point localPosition = entity.As<Location>().Position - ViewOffset;
-				var texture = assets[entity.As<Sprite>().Asset];
+			foreach (var entity in entities.OrderBy(entity => entity.Get<Sprite>().Order)) {
+				Point localPosition = entity.Get<Location>().Position - ViewOffset;
+				var texture = assets[entity.Get<Sprite>().Asset];
 
 				if (IsPointWithinPanel(localPosition)) {
 
 					if (!Program.SeeAll.Enabled) {
-						if (level.IsVisible(entity.As<Location>().Position)) {
-							Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);
+						if (level.IsVisible(entity.Get<Location>().Position)) {
+							if (entity.Get<VisibleComponent>().VisibilityIndex > 0)
+								Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);
 						}
 					} else {
 						Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);

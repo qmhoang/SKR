@@ -70,15 +70,15 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		void entities_OnEntityRemove(Entity entity) {
-			var pos = entity.As<Location>().Position;
+			var pos = entity.Get<Location>().Position;
 
 			var terrain = GetTerrain(pos.X, pos.Y);
 			SetProperties(pos.X, pos.Y, terrain.Transparent, terrain.Walkable);
 		}
 
 		void entities_OnEntityAdd(Entity entity) {
-			var pos = entity.As<Location>().Position;
-			SetProperties(pos.X, pos.Y, entity.As<Blocker>().Transparent, entity.As<Blocker>().Walkable);
+			var pos = entity.Get<Location>().Position;
+			SetProperties(pos.X, pos.Y, entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
 		}
 		
 		public void SetTerrain(int x, int y, string t) {

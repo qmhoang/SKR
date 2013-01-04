@@ -164,106 +164,130 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void Move(Entity entity, Point direction) {
-			Point newPosition = entity.As<Location>().Position + direction;
+			Point newPosition = entity.Get<Location>().Position + direction;
 
-			var level = entity.As<Location>().Level;
+			var level = entity.Get<Location>().Level;
 
 			if (level.IsWalkable(newPosition)) {
 		
-				var actorsAtNewLocation = level.EntityManager.Get(typeof (DefendComponent), typeof (Location)).Where(actor => actor.As<Location>().Position == newPosition).ToList();
+				var actorsAtNewLocation = level.EntityManager.Get(typeof (DefendComponent), typeof (Location)).Where(actor => actor.Get<Location>().Position == newPosition).ToList();
 
 				if (actorsAtNewLocation.Count > 1)
 					throw new Exception("We somehow have had 2 actors occupying the same location");
 				else if (actorsAtNewLocation.Count == 1) {
-					Combat.MeleeAttack(player, actorsAtNewLocation.First(), actorsAtNewLocation.First().As<DefendComponent>().DefaultPart, World.MEAN);
+					Combat.MeleeAttack(player, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
 					//				MeleeAttack().As<ActiveTalentComponent>().InvokeAction(newPosition);
 				} else
-					entity.As<Location>().Position = newPosition;
+					entity.Get<Location>().Position = newPosition;
 
-				entity.As<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+				entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
 			} else
 				World.Instance.AddMessage("There is something in the way.");
 		}
 
 		private void Wait(Entity entity) {
-			entity.As<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);	
+			entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);	
 		}
 
-		private void PickUpItem(Entity inventoryEntity, Entity itemEntity) {
-			var inventory = inventoryEntity.As<ContainerComponent>();
-			var item = itemEntity.As<Item>();
+		private void PickUpItem(Entity inventoryEntity, Entity itemEntityFromLevel) {
+			var inventory = inventoryEntity.Get<ContainerComponent>();
+			var item = itemEntityFromLevel.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to pick up?", amount => PickUpStackedItem(inventoryEntity, inventoryEntity, amount), item.Amount, 0, item.Amount, PromptTemplate));
 			else {
-				itemEntity.Remove<Location>();
-				inventory.AddItem(itemEntity);
+				inventory.AddItem(itemEntityFromLevel);
+				itemEntityFromLevel.Get<VisibleComponent>().VisibilityIndex = -1;
 			}
 		}
 
-		private void PickUpStackedItem(Entity inventoryEntity, Entity itemEntity, int amount) {
+		private void PickUpStackedItem(Entity inventoryEntity, Entity itemEntityFromLevel, int amount) {
+			var inventory = inventoryEntity.Get<ContainerComponent>();
+			var item = itemEntityFromLevel.Get<Item>();
+			
+			// if an item doesn't exist in the inventory
+			if (inventory.Exist(e => e.Get<Item>().RefId == item.RefId)) {
 
-			var inventory = inventoryEntity.As<ContainerComponent>();
-			var item = itemEntity.As<Item>();
+				// and if we're splitting an item, create a new one
+				if (amount < item.Amount) {
+					item.Amount -= amount;
+					
+					var tempItem = inventoryEntity.Get<Location>().Level.EntityManager.Create(World.Instance.ItemFactory.Construct(item.RefId));
+					tempItem.Get<VisibleComponent>().VisibilityIndex = -1;
 
+					tempItem.Get<Item>().Amount += amount - 1;	// amount starts out as 1
+					inventory.AddItem(tempItem);
+				} else {
+					inventory.AddItem(itemEntityFromLevel);
+					itemEntityFromLevel.Get<VisibleComponent>().VisibilityIndex = -1;
+				}
 
-
-			if (amount < item.Amount)
-				item.Amount -= amount;
-			else
-				itemEntity.Remove<Location>();
-
-			// if an item doesn't exist in the inventory, create one
-			if (inventory.Exist(e => e.As<Item>().RefId == item.RefId)) {
-				var tempItem = inventoryEntity.As<Location>().Level.EntityManager.Create(World.Instance.ItemFactory.Construct(item.RefId));
-				
-				tempItem.As<Item>().Amount += amount - 1;	// amount starts out as 1
-				inventory.AddItem(tempItem);
 			} else {
-				inventory.GetItem(e => e.As<Item>().RefId == item.RefId).As<Item>().Amount += amount;
+				if (amount < item.Amount) {
+					item.Amount -= amount;
+				} else {
+					manager.Remove(itemEntityFromLevel);
+				}
+				inventory.GetItem(e => e.Get<Item>().RefId == item.RefId).Get<Item>().Amount += amount;
+
 			}
 			Contract.Requires(amount > 1);
 			Contract.Ensures(item.Amount >= 0, "item afterwards cannot have negative amounts");				
 		}
 
-		private void DropItem(Entity inventoryEntity, Entity itemEntity) {
-			var inventory = inventoryEntity.As<ContainerComponent>();
-			var item = itemEntity.As<Item>();
+		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory) {
+			var inventory = inventoryEntity.Get<ContainerComponent>();
+			var item = itemEntityFromInventory.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to drop to the ground?",
-						                amount => DropStackedItem(inventoryEntity, itemEntity, amount), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
+						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
 			else {
-				inventory.RemoveItem(itemEntity);
-				itemEntity.Add(new Location(inventoryEntity.As<Location>().Position, inventoryEntity.As<Location>().Level));				
+				inventory.RemoveItem(itemEntityFromInventory);
+
+				itemEntityFromInventory.Get<VisibleComponent>().Reset();
+
 			}
 		}
 
-		private void DropStackedItem(Entity inventoryEntity, Entity itemEntity, int amount) {
-			var inventory = inventoryEntity.As<ContainerComponent>();
-			var item = itemEntity.As<Item>();
+		private void DropStackedItem(Entity inventoryEntity, Entity itemEntityFromInventory, int amount) {
+			var inventory = inventoryEntity.Get<ContainerComponent>();
+			var item = itemEntityFromInventory.Get<Item>();
 
 			Contract.Requires(amount > 1);
 			Contract.Ensures(item.Amount >= 0, "item afterwards cannot have negative amounts");
+			
 
-			// if amount drop is less than currently carrying, just substract it, otherwise remove it
-			if (amount < item.Amount)
-				item.Amount -= amount;
-			else
-				inventory.RemoveItem(itemEntity);
+			var level = inventoryEntity.Get<Location>().Level;
+			var itemsInLevel = level.EntityManager.Get(typeof(Location), typeof(Item), typeof(VisibleComponent)).ToList();
 
 			// if an item doesn't exist in the at the location, create one
-			var level = inventoryEntity.As<Location>().Level;
-			var itemsInLevel = level.EntityManager.Get(typeof (Location), typeof (Item)).ToList();
-			if (!itemsInLevel.Exists(e => e.As<Item>().RefId == item.RefId && e.As<Location>() == inventoryEntity.As<Location>())) {
-				var tempItem = inventoryEntity.As<Location>().Level.EntityManager.Create(World.Instance.ItemFactory.Construct(item.RefId));
-				tempItem.As<Item>().Amount += amount - 1;	// amount starts out as 1
+			if (!itemsInLevel.Exists(e => e.Get<Item>().RefId == item.RefId && e.Get<Location>() == inventoryEntity.Get<Location>())) {
 
-				tempItem.Add(new Location(inventoryEntity.As<Location>().Position, inventoryEntity.As<Location>().Level));
+				// if amount drop is less than currently carrying, just substract it, otherwise remove it
+				if (amount < item.Amount) {
+					item.Amount -= amount;
+
+					var tempItem = inventoryEntity.Get<Location>().Level.EntityManager.Create(World.Instance.ItemFactory.Construct(item.RefId));
+					tempItem.Get<Item>().Amount += amount - 1;	// amount starts out as 1
+
+					tempItem.Add(new Location(inventoryEntity.Get<Location>().Position, inventoryEntity.Get<Location>().Level));
+				} else {
+					// if we're removing everything, just remove from the inventory and show it
+					inventory.RemoveItem(itemEntityFromInventory);
+					itemEntityFromInventory.Get<VisibleComponent>().Reset();					
+				}
+
+
 			} else {
-				itemsInLevel.First(e => e.As<Item>().RefId == item.RefId && e.As<Location>() == inventoryEntity.As<Location>()).As<Item>().Amount += amount;
+				if (amount < item.Amount) {
+					item.Amount -= amount;
+				} else {
+					manager.Remove(itemEntityFromInventory);
+				}
+				itemsInLevel.First(e => e.Get<Item>().RefId == item.RefId && e.Get<Location>() == inventoryEntity.Get<Location>()).Get<Item>().Amount += amount;
 				// todo improve				
 			}
 
@@ -271,7 +295,7 @@ namespace SKR.UI.Gameplay {
 
 		protected override void OnKeyPressed(KeyboardData keyData) {
 			base.OnKeyReleased(keyData);
-			if (player.As<ActionPoint>().Updateable) {
+			if (player.Get<ActionPoint>().Updateable) {
 				switch (keyData.KeyCode) {
 					case TCODKeyCode.Up:
 					case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
@@ -307,7 +331,7 @@ namespace SKR.UI.Gameplay {
 					default:
 					{
 						if (keyData.Character == 'd') {
-							var inventory = player.As<ContainerComponent>();
+							var inventory = player.Get<ContainerComponent>();
 							if (inventory.Items.Count() > 0)
 								ParentApplication.Push(new ItemWindow(false,
 																	  new ListWindowTemplate<Entity>
@@ -320,11 +344,11 @@ namespace SKR.UI.Gameplay {
 							else
 								World.Instance.AddMessage("You are carrying no items to drop.");
 						} else {
-							var location = player.As<Location>();
+							var location = player.Get<Location>();
 							if (keyData.Character == 'g') {
 								var level = location.Level;
 								// get all items that have a location (eg present on the map) that are at the location where are player is
-								var items = level.EntityManager.Get(typeof(Item), typeof(Location)).Where(e => e.As<Location>().Position == location.Position).ToList();
+								var items = level.EntityManager.Get(typeof(Item), typeof(Location), typeof(VisibleComponent)).Where(e => e.Get<Location>().Position == location.Position).ToList();
 								if (items.Count() > 0)
 									ParentApplication.Push(new ItemWindow(false,
 									                                      new ListWindowTemplate<Entity>
@@ -342,7 +366,7 @@ namespace SKR.UI.Gameplay {
 								else
 									World.Instance.AddMessage("No items here to pick up.");
 							} else if (keyData.Character == 'i') {
-								var inventory = player.As<ContainerComponent>();
+								var inventory = player.Get<ContainerComponent>();
 
 								ParentApplication.Push(new ItemWindow(false,
 								                                      new ListWindowTemplate<Entity>
@@ -352,14 +376,14 @@ namespace SKR.UI.Gameplay {
 								                                      		HasFrame = true,
 								                                      		Items = inventory.Items,
 								                                      },
-								                                      i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.As<Item>().Name, i.As<Item>().Weight))));
+								                                      i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.Get<Item>().Name, i.Get<Item>().Weight))));
 							} else if (keyData.Character == 'w')
 								ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
 								                                           {
 								                                           		Size = MapPanel.Size,
 								                                           		IsPopup = true,
 								                                           		HasFrame = true,
-								                                           		Items = player.As<ContainerComponent>().Slots,
+								                                           		Items = player.Get<ContainerComponent>().Slots,
 								                                           }));
 							else if (keyData.Character == 'l') {
 								if (keyData.ControlKeys == ControlKeys.LeftControl) {
@@ -379,10 +403,10 @@ namespace SKR.UI.Gameplay {
 														sb.AppendLine(((Level) location.Level).GetTerrain(p).Definition);
 														foreach (var entity in entitiesAtLocation) {
 															sb.AppendFormat("Entity: {0} ", entity.Id);
-															if (entity.Is<Blocker>())
-																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.As<Blocker>().Transparent, entity.As<Blocker>().Walkable);
-															if (entity.Is<Item>())
-																sb.AppendFormat("Item: {0}", entity.As<Item>().Name);
+															if (entity.Has<Blocker>())
+																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+															if (entity.Has<Item>())
+																sb.AppendFormat("Item: {0}", entity.Get<Item>().Name);
 															sb.AppendLine();
 														}
 
