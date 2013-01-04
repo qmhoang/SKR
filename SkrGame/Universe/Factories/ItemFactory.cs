@@ -8,14 +8,14 @@ using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 
 namespace SkrGame.Universe.Factories {
-	public abstract class ItemFactory : Factory<string, Template> { }
+	public abstract class ItemFactory : Factory<string, IEnumerable<EntityComponent>> {}
 
 	// ReSharper disable RedundantArgumentName
 	public sealed class SourceItemFactory : ItemFactory {
-		private Dictionary<string, Template> templates;
+		private Dictionary<string, IEnumerable<EntityComponent>> templates;
 
 		public SourceItemFactory() {
-			templates = new Dictionary<string, Template>();
+			templates = new Dictionary<string, IEnumerable<EntityComponent>>();
 
 
 			Create("largeknife",
@@ -88,7 +88,8 @@ namespace SkrGame.Universe.Factories {
 			       				Reach = 1,
 			       				Strength = 6,
 			       				Parry = -1
-			       		})
+			       		}),
+			       new VisibleComponent(10)
 					);
 
 			Create("axe",
@@ -124,7 +125,8 @@ namespace SkrGame.Universe.Factories {
 			       				Reach = 1,
 			       				Strength = 11,
 			       				Parry = 0
-			       		})
+			       		}),
+			       new VisibleComponent(10)
 					);
 
 			Create("hatchet",
@@ -159,7 +161,8 @@ namespace SkrGame.Universe.Factories {
 			       				Reach = 1,
 			       				Strength = 8,
 			       				Parry = 0
-			       		})
+			       		}),
+			       new VisibleComponent(10)
 					);
 
 			Create("brassknuckles",
@@ -193,7 +196,8 @@ namespace SkrGame.Universe.Factories {
 			       				Reach = 0,
 			       				Strength = 1,
 			       				Parry = -1
-			       		})
+			       		}),
+			       new VisibleComponent(10)
 					);
 
 			#region Firearms
@@ -249,10 +253,12 @@ namespace SkrGame.Universe.Factories {
 			       				Reliability = 18,
 			       				Strength = 8,
 			       				AmmoType = "9x19mm",
-			       		})
+			       		}),
+						new VisibleComponent(10)
 					);
 
 			Create("glock22",
+				new VisibleComponent(10),
 			       new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
 			       new Item(new ItemTemplate
 			                {
@@ -307,6 +313,7 @@ namespace SkrGame.Universe.Factories {
 					);
 
 			Create("9x19mm",
+				new VisibleComponent(10),
 			       new Sprite("BULLET_9x19MM", Sprite.ITEMS_LAYER),
 			       new Item(
 			       		new ItemTemplate
@@ -328,6 +335,7 @@ namespace SkrGame.Universe.Factories {
 			       		}));
 
 			Create(".40S&W",
+				new VisibleComponent(10),
 			       new Sprite("BULLET_.40S&W", Sprite.ITEMS_LAYER),
 			       new Item(
 			       		new ItemTemplate
@@ -353,11 +361,11 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private void Create(string id, params EntityComponent[] components) {
-			templates.Add(id, new Template(components));
+			templates.Add(id, new List<EntityComponent>(components));
 		}
 
-		public override Template Construct(string refId) {
-			return templates[refId];
+		public override IEnumerable<EntityComponent> Construct(string refId) {
+			return new List<EntityComponent>(templates[refId]);
 		}
 	}
 }

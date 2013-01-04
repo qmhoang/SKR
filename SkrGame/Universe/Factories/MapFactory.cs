@@ -230,7 +230,7 @@ namespace SkrGame.Universe.Factories {
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
 						var feature = featureFactory.Construct(charIdentifiers[s[x]].Item2);
 
-						feature.Add(new Location(x, y, map));												
+						feature.Add(new Location(x, y, map));						
 						map.EntityManager.Create(feature);
 											
 					}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Universe.Entities.Items;
@@ -61,10 +62,15 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (itemContainer.Contains(item))
 				return;
 
-			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Id);			
+			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Id);						
 
 			itemContainer.Add(item);
 			OnItemAdded(new EventArgs<Entity>(item));
+
+			if (item.Has<VisibleComponent>()) {
+				item.Get<VisibleComponent>().VisibilityIndex = -1;
+				Logger.DebugFormat("{0}'s visibility index is now set to {1}", item.Id, item.Get<VisibleComponent>().VisibilityIndex);										
+			}
 		}
 
 		public bool RemoveItem(Entity item) {
@@ -77,6 +83,12 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			OnItemRemoved(new EventArgs<Entity>(item));
 			itemContainer.Remove(item);
+
+			if (item.Has<VisibleComponent>()) {
+				item.Get<VisibleComponent>().VisibilityIndex = item.Get<VisibleComponent>().DefaultIndex;
+				Logger.DebugFormat("{0}'s visibility index is now set to default: {1}", item.Id, item.Get<VisibleComponent>().VisibilityIndex);
+			}
+
 			return true;
 		}
 
@@ -108,7 +120,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public void Equip(string slot, Entity item) {			
-			Contract.Requires<ArgumentException>(item.Is<Item>());
+			Contract.Requires<ArgumentException>(item.Has<Item>());
 //			Contract.Requires<ArgumentException>(slots.ContainsKey(slot), "invalid slot");
 
 			Logger.DebugFormat("{0} is equipping {1} to {2}.", OwnerUId, item.Id, slot);

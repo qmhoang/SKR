@@ -27,8 +27,6 @@ namespace SkrGame.Universe.Entities.Items {
 		public int Size { get; private set; }
 		public int Value { get; private set; }
 
-		public int NormalDurability { get; set; }
-		public int CurrentDurability { get; set; }
 		public int Hardness { get; set; }
 
 		private int amount;

@@ -89,7 +89,8 @@ namespace SkrGame.Universe {
 			get { return level.EntityManager; }
 		}
 
-		private ActionPointSystem actionPointSystem;		
+		private ActionPointSystem actionPointSystem;
+		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
 
 		private World() {
 			MessageBuffer = new List<Message>();
@@ -111,7 +112,8 @@ namespace SkrGame.Universe {
 			                              		new PlayerMarker(),
 			                              		new Actor("player", level),			                              		
 			                              		new DefendComponent(),
-												new ContainerComponent()												
+												new ContainerComponent(),
+												new VisibleComponent(10)
 			                              });
 			Player.Add(new MeleeComponent(
 			           		new MeleeComponentTemplate
@@ -137,6 +139,7 @@ namespace SkrGame.Universe {
 			                     		new Location(4, 3, level),
 			                     		new Actor("npc", level),
 			                     		new DefendComponent(),
+										new VisibleComponent(10)
 			                     });
 
 			EntityManager.Create(ItemFactory.Construct("smallknife")).Add(new Location(1, 1, level));
@@ -147,6 +150,7 @@ namespace SkrGame.Universe {
 
 		public void Initialize() {
 			actionPointSystem = new ActionPointSystem(EntityManager);
+			itemContainerInteractionSubsystem = new ItemContainerInteractionSubsystem(EntityManager);
 		}
 
 //

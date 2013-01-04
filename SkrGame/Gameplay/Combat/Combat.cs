@@ -104,15 +104,15 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public static ActionResult MeleeAttack(Entity attacker, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
-			if (!attacker.Is<MeleeComponent>())
+			if (!attacker.Has<MeleeComponent>())
 				throw new ArgumentException("entity cannot melee attack", "attacker");
-			if (!attacker.Is<ActionPoint>())
+			if (!attacker.Has<ActionPoint>())
 				throw new ArgumentException("entity cannot act", "attacker");
 
-			if (!defender.Is<DefendComponent>())
+			if (!defender.Has<DefendComponent>())
 				throw new ArgumentException("entity cannot be attacked", "defender");
 
-			var weapon = attacker.As<MeleeComponent>();
+			var weapon = attacker.Get<MeleeComponent>();
 
 
 			var result = Combat.Attack(attacker.Id.ToString(), defender.Id.ToString(), hitBonus + weapon.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
@@ -141,7 +141,7 @@ namespace SkrGame.Gameplay.Combat {
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
 			}
 
-			attacker.As<ActionPoint>().ActionPoints -= weapon.APToAttack;
+			attacker.Get<ActionPoint>().ActionPoints -= weapon.APToAttack;
 			return ActionResult.Success;
 		}
 

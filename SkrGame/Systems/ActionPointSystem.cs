@@ -20,15 +20,15 @@ namespace SkrGame.Systems {
 		}
 
 		public void Update() {
-			if (!player.As<ActionPoint>().Updateable) {
+			if (!player.Get<ActionPoint>().Updateable) {
 				foreach (var entity in entities) {
-					if (!entity.Is<PlayerMarker>()) {
-						var entityAP = entity.As<ActionPoint>();
+					if (!entity.Has<PlayerMarker>()) {
+						var entityAP = entity.Get<ActionPoint>();
 						entityAP.ActionPoints += entityAP.Speed;
 					}
 				}
 
-				player.As<ActionPoint>().ActionPoints += player.As<ActionPoint>().Speed;
+				player.Get<ActionPoint>().ActionPoints += player.Get<ActionPoint>().Speed;
 			}
 
 		}
