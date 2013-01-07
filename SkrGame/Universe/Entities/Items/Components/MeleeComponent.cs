@@ -2,7 +2,6 @@
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
-using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Items.Components {
 	public class MeleeComponent : Component {
@@ -82,7 +81,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		}
 
 		public override Component Copy() {
-			return new MeleeComponent()
+			return new MeleeComponent
 			       {
 			       		ActionDescription = ActionDescription,
 			       		ActionDescriptionPlural = ActionDescriptionPlural,

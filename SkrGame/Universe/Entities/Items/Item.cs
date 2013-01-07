@@ -49,10 +49,10 @@ namespace SkrGame.Universe.Entities.Items {
 				return amount;
 			}
 			set {
-				Contract.Requires(value > 0);
-				Contract.Requires(StackType == StackType.Hard);
+				Contract.Requires<ArgumentException>(value > 0);
+				Contract.Requires<ArgumentException>(StackType == StackType.Hard);
 				Contract.Ensures(value > 0);
-				amount = value;
+				amount = value;				
 			}
 		}
 
@@ -75,19 +75,23 @@ namespace SkrGame.Universe.Entities.Items {
 		}
 
 		public override Component Copy() {
-			return new Item()
-			       {
-			       		Name = Name,
 
-			       		StackType = StackType,
-			       		Slots = new List<string>(Slots),
-			       		Amount = Amount,
-			       		Type = Type,
-			       		Weight = Weight,
-			       		Size = Size,
-			       		Value = Value,
-			       };
+			var copy = new Item()
+			           {
+			           		Name = Name,
+
+			           		StackType = StackType,
+			           		Slots = new List<string>(Slots),
+			           		Type = Type,
+			           		Weight = Weight,
+			           		Size = Size,
+			           		Value = Value,
+			           };
+			if (copy.StackType == StackType.Hard)
+				copy.Amount = Amount;
+			return copy;
 		}
+		
 	}
 
 	public enum StackType {

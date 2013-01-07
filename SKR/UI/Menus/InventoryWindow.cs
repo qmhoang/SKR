@@ -152,7 +152,7 @@ namespace SKR.UI.Menus {
 			int positionY = 0;
 			char letter = 'A';
 			foreach (var bodyPart in List) {
-				var item = inventory.GetItemAt(bodyPart);				
+				var item = inventory.GetEquippedItemAt(bodyPart);				
 
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", letter, bodyPart, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
 				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
