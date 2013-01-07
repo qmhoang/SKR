@@ -12,7 +12,64 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 using log4net;
 
-namespace SkrGame.Systems {
+namespace SkrGame.Systems {	
+	public class ItemEquippingSubsystem {
+		private FilteredCollection containers;
+		private Dictionary<UniqueId, InventoryHelper> inventories;
+
+
+		private class InventoryHelper {
+			private Entity inventory;
+
+			public InventoryHelper(Entity inventory) {
+				this.inventory = inventory;
+			}
+
+			public void InventoryHelper_ItemEquipped(object sender, EventArgs<string, Entity> itemEquippedEvent) {
+
+			}
+
+			public void InventoryHelper_ItemUnequipped(object sender, EventArgs<string, Entity> itemUnequippedEvent) {
+
+			}
+		}
+
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+
+		public ItemEquippingSubsystem(EntityManager entityManager) {
+			containers = entityManager.Get(typeof(ContainerComponent), typeof(DefendComponent));
+			inventories = new Dictionary<UniqueId, InventoryHelper>();
+
+			foreach (var container in containers) {
+				Containers_OnContainerAddToManager(container);
+			}
+
+			containers.OnEntityAdd += Containers_OnContainerAddToManager;
+			containers.OnEntityRemove += Containers_OnContainerRemoveFromManager;
+		}
+
+		private void Containers_OnContainerRemoveFromManager(Entity container) {
+			Contract.Requires(inventories.ContainsKey(container.Id));
+
+			var helper = inventories[container.Id];
+
+			container.Get<ContainerComponent>().ItemEquipped -= helper.InventoryHelper_ItemEquipped;
+			container.Get<ContainerComponent>().ItemUnequipped -= helper.InventoryHelper_ItemUnequipped;
+			inventories.Remove(container.Id);
+		}
+
+		private void Containers_OnContainerAddToManager(Entity container) {
+			Contract.Requires(!inventories.ContainsKey(container.Id));
+
+			var helper = new InventoryHelper(container);
+
+			container.Get<ContainerComponent>().ItemEquipped += helper.InventoryHelper_ItemEquipped;
+			container.Get<ContainerComponent>().ItemUnequipped += helper.InventoryHelper_ItemUnequipped;
+			inventories.Add(container.Id, helper);
+		}
+
+	}
 	public class ItemContainerInteractionSubsystem {
 		
 		private FilteredCollection containers;
@@ -91,6 +148,7 @@ namespace SkrGame.Systems {
 			var helper = inventories[container.Id];
 			container.Get<ContainerComponent>().ItemAdded -= helper.InventoryHelper_ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved -= helper.InventoryHelper_ItemRemoved;
+
 			inventories.Remove(container.Id);
 		}
 
@@ -100,6 +158,7 @@ namespace SkrGame.Systems {
 			var helper = new InventoryHelper(container);
 			container.Get<ContainerComponent>().ItemAdded += helper.InventoryHelper_ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved += helper.InventoryHelper_ItemRemoved;
+
 			inventories.Add(container.Id, helper);
 
 			// we need to add  listeners that are already inside the container

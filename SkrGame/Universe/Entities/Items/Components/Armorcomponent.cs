@@ -6,61 +6,66 @@ using DEngine.Entity;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items.Components {
-	public class ArmorComponentTemplate {
-		public Dictionary<DamageType, int> Resistances { get; set; }
+	public class ArmorComponent : Component {
+		public class Template {
+			public List<LocationProtected> Defenses { get; set; }
 
-		/// <summary>
-		/// This is the how much armor is divided by when an attack hits an area that the armor doesn't cover.  
-		/// If the armor has a DR if 6 and a non coverage divisor of 1.5 and the wearer hits a chink in the armor, 
-		/// the armor has a DR of 4 for the purpose of that attack. 
-		/// </summary>
-		public double NonCoverageDivisor { get; set; }
+			public int DonTime { get; set; }
 
-		public int Defense { get; set; }
+			public string ComponentId { get; set; }
+		}
 
-		/// <summary>
-		/// How much area the armor covers that body part.
-		/// </summary>
-		public int Coverage { get; set; }
-		public int DonTime { get; set; }
-		// todo can race wear armor
+		public class LocationProtected {
 
-		public string ComponentId { get; set; }
-		public string ActionDescription { get; set; }
-		public string ActionDescriptionPlural { get; set; }
-	}
+			public string BodyPart { get; private set; }
+			/// <summary>
+			/// How much area the armor covers that body part.
+			/// </summary>		
+			public int Coverage { get; private set; }
+			public Dictionary<DamageType, int> Resistances { get; private set; }
 
-	public class ArmorComponent : EntityComponent {
-		public string ActionDescription { get; private set; }
-		public string ActionDescriptionPlural { get; private set; }
-
-		public Dictionary<DamageType, int> Resistances { get; set; }
-
-		public double NonCoverageDivisor { get; set; }
-
-		public int Defense { get; protected set; }
-
-		public int Coverage { get; protected set; }
+			public LocationProtected(string bodyPart, int coverage, Dictionary<DamageType, int> resistances) {
+				BodyPart = bodyPart;
+				Coverage = coverage;
+				Resistances = resistances;
+			}
+		}
+		public Dictionary<string, LocationProtected> Defenses { get; private set; }
+		
 		public int DonTime { get; protected set; }
 
-		public ArmorComponent(ArmorComponentTemplate template) {
-			ActionDescription = template.ActionDescription;
-			ActionDescriptionPlural = template.ActionDescriptionPlural;
+		private ArmorComponent() {
+			Defenses = new Dictionary<string, LocationProtected>();
+		}
 
-			Resistances = new Dictionary<DamageType, int>(template.Resistances);
+		internal ArmorComponent(Template template) {
+			Defenses = new Dictionary<string, LocationProtected>();
 
-			// check for missing resistances and throws errors
-			foreach (var value in Combat.DamageTypes.Values) {
-				if (!Resistances.ContainsKey(value)) {
-					throw new ArgumentException("Resistances is missing a damage type");
+			foreach (var locationProtected in template.Defenses) {
+				var resistances = new Dictionary<DamageType, int>(locationProtected.Resistances);
+
+				// check for missing resistances and throws errors
+				foreach (var value in Combat.DamageTypes.Values) {
+					if (!resistances.ContainsKey(value)) {
+						throw new ArgumentException("Resistances is missing a damage type");
+					}
 				}
+
+				Defenses.Add(locationProtected.BodyPart, new LocationProtected(locationProtected.BodyPart, locationProtected.Coverage, resistances));
 			}
 
-			Defense = template.Defense;
-			NonCoverageDivisor = template.NonCoverageDivisor;
-
-			Coverage = template.Coverage;
 			DonTime = template.DonTime;
+		}
+
+		public override Component Copy() {
+			var armor = new ArmorComponent
+			            {
+			            		DonTime = DonTime
+			            };
+			foreach (var defense in Defenses) {
+				armor.Defenses.Add(defense.Key, new LocationProtected(defense.Value.BodyPart, defense.Value.Coverage, new Dictionary<DamageType, int>(defense.Value.Resistances)));
+			}			
+			return new ArmorComponent();
 		}
 	}
 }

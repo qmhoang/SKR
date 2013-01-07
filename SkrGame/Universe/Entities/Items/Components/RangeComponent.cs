@@ -5,18 +5,20 @@ using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Items.Components {
-	public class AmmoComponentTemplate {
-		public string Type { get; set; }
-		public string ComponentId { get; set; }
+	public class AmmoComponent : Component {
+		public class Template {
+			public string Type { get; set; }
+			public string ComponentId { get; set; }
 
-		public string ActionDescription { get; set; }
-		public string ActionDescriptionPlural { get; set; }
-	}
+			public string ActionDescription { get; set; }
+			public string ActionDescriptionPlural { get; set; }
+		}
 
-	public class AmmoComponent : EntityComponent {
 		public string Type { get; private set; }
 
-		public AmmoComponent(AmmoComponentTemplate template) {
+		private AmmoComponent() { }
+
+		internal AmmoComponent(Template template) {
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 
@@ -24,55 +26,66 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		}
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
+		public override Component Copy() {
+			return new AmmoComponent
+			       {
+			       		ActionDescription = ActionDescription,
+			       		ActionDescriptionPlural = ActionDescriptionPlural,
+
+			       		Type = Type,
+			       };
+		}
 	}
 	// todo ammo cases
 
-	public class RangeComponentTemplate {
-		public int Accuracy { get; set; }
-		public Rand Damage { get; set; }
-		public double Penetration { get; set; }
-		public Action<Actor, Actor> OnHit { get; set; }
-		public int Range { get; set; }
-		public int WeaponSpeed {
-			get { return World.ActionPointsToSpeed(APToAttack); }
-			set { APToAttack = World.SpeedToActionPoints(value); }
+
+
+	public class RangeComponent : Component {
+		public class Template {
+			public int Accuracy { get; set; }
+			public Rand Damage { get; set; }
+			public double Penetration { get; set; }
+			public Action<Actor, Actor> OnHit { get; set; }
+			public int Range { get; set; }
+			public int WeaponSpeed {
+				get { return World.ActionPointsToSpeed(APToAttack); }
+				set { APToAttack = World.SpeedToActionPoints(value); }
+			}
+			public int RoF {
+				get { return (int)Math.Round(1 / World.ActionPointsToSeconds(APToAttack)); }
+				set { APToAttack = World.SecondsToActionPoints(1.0 / value); }
+			}
+			public int APToAttack { get; set; }
+			public int ReloadSpeed {
+				get { return World.ActionPointsToSpeed(APToReload); }
+				set { APToReload = World.SpeedToActionPoints(value); }
+			}
+			public int APToReload { get; set; }
+			public int Recoil { get; set; }
+			public int Reliability { get; set; }
+			public string AmmoType { get; set; }
+			public int Shots { get; set; }
+
+			public string ComponentId { get; set; }
+
+			public string ActionDescription { get; set; }
+			public string ActionDescriptionPlural { get; set; }
+
+			public string Skill { get; set; }
+			public int Strength { get; set; }
+
+			public int APToReady { get; set; }
+			public bool UnreadyAfterAttack { get; set; }
+
+			public DamageType DamageType { get; set; }
+
+			// not used yet
+			public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
+			public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
+			public int BurstPenalty { get; set; }		// penalty for each shot of the burst
+			public int BurstAP { get; set; }			// AP cost for a burst
 		}
-		public int RoF {
-			get { return (int) Math.Round(1 / World.ActionPointsToSeconds(APToAttack)); }
-			set { APToAttack = World.SecondsToActionPoints(1.0 / value); }
-		}
-		public int APToAttack { get; set; }
-		public int ReloadSpeed {
-			get { return World.ActionPointsToSpeed(APToReload); }
-			set { APToReload = World.SpeedToActionPoints(value); }
-		}
-		public int APToReload { get; set; }
-		public int Recoil { get; set; }
-		public int Reliability { get; set; }
-		public string AmmoType { get; set; }
-		public int Shots { get; set; }
 
-		public string ComponentId { get; set; }
-
-		public string ActionDescription { get; set; }
-		public string ActionDescriptionPlural { get; set; }
-
-		public string Skill { get; set; }
-		public int Strength { get; set; }
-
-		public int APToReady { get; set; }
-		public bool UnreadyAfterAttack { get; set; }
-
-		public DamageType DamageType { get; set; }
-
-		// not used yet
-		public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
-		public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
-		public int BurstPenalty { get; set; }		// penalty for each shot of the burst
-		public int BurstAP { get; set; }			// AP cost for a burst
-	}
-
-	public class RangeComponent : EntityComponent {
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
 
@@ -99,7 +112,9 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		public int Shots { get; set; }
 		public int ShotsRemaining { get; set; }
 
-		public RangeComponent(RangeComponentTemplate template) {
+		private RangeComponent() { }
+
+		internal RangeComponent(Template template) {
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 
@@ -118,6 +133,30 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			Reliability = template.Reliability;
 			AmmoType = template.AmmoType;
 			ShotsRemaining = Shots = template.Shots;
+		}
+
+		public override Component Copy() {
+			return new RangeComponent()
+			       {
+			       		ActionDescription = ActionDescription,
+			       		ActionDescriptionPlural = ActionDescriptionPlural,
+
+			       		Skill = Skill,
+
+			       		Accuracy = Accuracy,
+			       		Damage = Damage,
+			       		DamageType = DamageType,
+			       		Penetration = Penetration,
+			       		OnHit = OnHit,
+			       		APToReady = APToReady,
+			       		APToAttack = APToAttack,
+			       		Range = Range,
+			       		APToReload = APToReload,
+			       		Recoil = Recoil,
+			       		Reliability = Reliability,
+			       		AmmoType = AmmoType,
+			       		ShotsRemaining = Shots = Shots,
+			       };
 		}
 	}
 }

@@ -20,31 +20,31 @@ namespace SkrGame.Universe.Entities.Actors {
 		Encrumbrance, // 0 - none, 1 - light, 2 - medium, etc
 	}
 
-	public class ActorCondition {
-		private Dictionary<Condition, int> myStatus;
-		private Actor actor;
-
-		public ActorCondition(Actor actor) {
-			this.actor = actor;
-			myStatus = new Dictionary<Condition, int>();
-		}
-
-		/// <summary>
-		/// Gets status condition of person, return int value of condition, -1 if player doesn't have condition
-		/// </summary>
-		/// <param name="condition"></param>
-		/// <returns></returns>
-		public int GetConditionStatus(Condition condition) {
-			return myStatus.ContainsKey(condition) ? myStatus[condition] : -1;
-		}
-
-		public void SetConditionStatus(Condition condition, int status) {
-			if (myStatus.ContainsKey(condition))
-				myStatus[condition] = status;
-			else
-				myStatus.Add(condition, status);
-		}
-	}
+//	public class ActorCondition {
+//		private Dictionary<Condition, int> myStatus;
+//		private Actor actor;
+//
+//		public ActorCondition(Actor actor) {
+//			this.actor = actor;
+//			myStatus = new Dictionary<Condition, int>();
+//		}
+//
+//		/// <summary>
+//		/// Gets status condition of person, return int value of condition, -1 if player doesn't have condition
+//		/// </summary>
+//		/// <param name="condition"></param>
+//		/// <returns></returns>
+//		public int GetConditionStatus(Condition condition) {
+//			return myStatus.ContainsKey(condition) ? myStatus[condition] : -1;
+//		}
+//
+//		public void SetConditionStatus(Condition condition, int status) {
+//			if (myStatus.ContainsKey(condition))
+//				myStatus[condition] = status;
+//			else
+//				myStatus.Add(condition, status);
+//		}
+//	}
 
 	public class TagChangedEvent : EventArgs {
 		public string TagId { get; private set; }
@@ -58,10 +58,9 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public class Actor : EntityComponent{
+	public class Actor : Component{
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		private readonly ActorCondition conditionStatuses;
+		
 		private readonly Dictionary<string, Talent> talents;
 		private readonly Dictionary<string, int> tags;
 
@@ -90,8 +89,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				SetTag(id, increment);
 			}
 		}
-		
-		public Level Level { get; private set; }
 
 		public World World {
 			get { return World.Instance; }
@@ -109,9 +106,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public string Name { get; set; }
 		
-		public Actor(string name, Level level) {
-			Level = level;
-
+		public Actor(string name) {
 			Name = name;
 
 			talents = new Dictionary<string, Talent>();
@@ -150,7 +145,6 @@ namespace SkrGame.Universe.Entities.Actors {
 //
 //			LearnTalent("skill_unarmed");			
 
-			conditionStatuses = new ActorCondition(this);
 		}
 
 
@@ -160,16 +154,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			EventHandler<EventArgs<Condition, int>> handler = ConditionChanged;
 			if (handler != null)
 				handler(this, e);
-		}
-
-		public int GetConditionStatus(Condition condition) {
-			return conditionStatuses.GetConditionStatus(condition);
-		}
-
-		public void SetConditionStatus(Condition condition, int status) {
-			Logger.InfoFormat("{0}'s {1} is now set at {2}", Name, condition, status);
-			OnConditionChanged(new EventArgs<Condition, int>(condition, status));
-			conditionStatuses.SetConditionStatus(condition, status);
 		}
 		
 		public event EventHandler<CombatEventArgs> Attacking;
@@ -247,5 +231,10 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		#endregion
+
+		public override Component Copy() {
+			//todo
+			return new Actor(Name);
+		}
 	}
 }

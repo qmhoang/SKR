@@ -119,8 +119,6 @@
     <Compile Include="Tests\WorldTest.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
-    <Compile Include="Universe\Entities\Actors\ActorCharacteristics.cs" />
-    <Compile Include="Universe\Entities\Actors\BodyPart.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
@@ -131,10 +129,7 @@
     <Compile Include="Universe\Entities\Actors\PC\Player.cs" />
     <Compile Include="Universe\Entities\Items\Components\RangeComponent.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
-    <Compile Include="Universe\Entities\Items\Components\ItemComponent.cs" />
-    <Compile Include="Universe\Entities\Items\Components\MagazineComponent.cs" />
     <Compile Include="Universe\Entities\Items\Components\MeleeComponent.cs" />
-    <Compile Include="Universe\Entities\Items\Components\WeaponComponent.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\TalentFactory.cs" />

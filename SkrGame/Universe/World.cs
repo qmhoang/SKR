@@ -69,8 +69,7 @@ namespace SkrGame.Universe {
 				handler(this, e);
 		}
 
-
-		public ItemFactory ItemFactory { get; private set; }
+		
 		private readonly FeatureFactory featureFactory;
 //		private readonly TalentFactory talentFactory;
 		private readonly MapFactory mapFactory;
@@ -95,8 +94,7 @@ namespace SkrGame.Universe {
 		private World() {
 			MessageBuffer = new List<Message>();
 
-//			talentFactory = new SourceTalentFactory();
-			ItemFactory = new SourceItemFactory();
+//			talentFactory = new SourceTalentFactory();			
 			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(featureFactory);
 
@@ -109,14 +107,14 @@ namespace SkrGame.Universe {
 			                              		new ActionPoint(),
 			                              		new Sprite("player", Sprite.PLAYER_LAYER),
 			                              		new Location(0, 0, level),
-			                              		new PlayerMarker(),
-			                              		new Actor("player", level),			                              		
+			                              		new Player(),
+			                              		new Actor("player"),			                              		
 			                              		new DefendComponent(),
 												new ContainerComponent(),
 												new VisibleComponent(10)
 			                              });
 			Player.Add(new MeleeComponent(
-			           		new MeleeComponentTemplate
+			           		new MeleeComponent.Template
 			           		{
 			           				ComponentId = "punch",
 			           				ActionDescription = "punch",
@@ -132,20 +130,26 @@ namespace SkrGame.Universe {
 			           				Parry = 0
 			           		}));
 
-			EntityManager.Create(new Template
+			var npc = EntityManager.Create(new Template
 			                     {
 			                     		new ActionPoint(),
 			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                     		new Location(4, 3, level),
-			                     		new Actor("npc", level),
+			                     		new Actor("npc"),
 			                     		new DefendComponent(),
-										new VisibleComponent(10)
+										new VisibleComponent(10),
+										new ContainerComponent(),
+
 			                     });
 
-			EntityManager.Create(ItemFactory.Construct("smallknife")).Add(new Location(1, 1, level));
-			EntityManager.Create(ItemFactory.Construct("glock17")).Add(new Location(1, 1, level));
+			EntityManager.Create(MeleeWeaponTemplate.CreateMelee("smallknife").AtLocation(1, 1, level));
+			EntityManager.Create(GunWeaponTemplate.CreateGun("glock17").AtLocation(1, 1, level));
+			var ammo = EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
+			ammo.Get<Item>().Amount = 30;
+			EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
 
-
+			var armor = EntityManager.Create(ArmorTemplate.CreateArmor("footballpads"));
+			npc.Get<ContainerComponent>().Equip("Torso", armor);
 		}
 
 		public void Initialize() {
