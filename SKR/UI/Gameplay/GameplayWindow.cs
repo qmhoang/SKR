@@ -362,8 +362,7 @@ namespace SKR.UI.Gameplay {
 							var inventory = player.Get<ContainerComponent>();
 
 							// get all items that have a location (eg present on the map) that are at the location where are player is
-							var items = level.EntityManager.Get(typeof(Item), typeof(Location), typeof(VisibleComponent)).
-									Where(e => (e.Get<Location>().Position == location.Position) && e.Get<VisibleComponent>().VisibilityIndex > 0 && (!inventory.Items.Contains(e))).ToList();
+							var items = level.GetEntitiesAt(location.Position, typeof(Item), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0 && (!inventory.Items.Contains(e))).ToList();
 
 							if (items.Count() > 0)
 								ParentApplication.Push(new ItemWindow(false,

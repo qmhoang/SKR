@@ -275,7 +275,7 @@ namespace SkrGame.Gameplay.Combat {
 
 			//TODO: FIX EQUIP/PROTECTION SLOT MISTACH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			if (defender.Has<ContainerComponent>()) {
-				var armorEntity = defender.Get<ContainerComponent>().GetItemAt(bodyPart.Name);
+				var armorEntity = defender.Get<ContainerComponent>().GetEquippedItemAt(bodyPart.Name);
 				if (armorEntity != null && armorEntity.Has<ArmorComponent>()) {
 					var armor = armorEntity.Get<ArmorComponent>();
 

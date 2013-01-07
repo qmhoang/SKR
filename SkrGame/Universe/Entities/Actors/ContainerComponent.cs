@@ -32,15 +32,18 @@ namespace SkrGame.Universe.Entities.Actors {
 				handler(this, e);
 		}
 
-		public ContainerComponent() {
-			itemContainer = new List<Entity>();
-			equippedItems = new Dictionary<string, Entity>();
-			slots = new List<string>
+		internal ContainerComponent()
+			: this(new List<string>
 			        {
 			        		"MainHand",
 			        		"OffHand",
 							"Torso"
-			        };
+			        }) { }
+
+		internal ContainerComponent(IEnumerable<string> slots) {
+			itemContainer = new List<Entity>();
+			equippedItems = new Dictionary<string, Entity>();
+			this.slots = new List<string>(slots);
 		}
 
 		public IEnumerator<Entity> GetEnumerator() {
@@ -50,8 +53,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		IEnumerator IEnumerable.GetEnumerator() {
 			return GetEnumerator();
 		}
-
-
+		
 		public void Clear() {
 			itemContainer.Clear();
 		}
@@ -80,32 +82,38 @@ namespace SkrGame.Universe.Entities.Actors {
 			return itemContainer.Exists(match);
 		}
 
+		/// <summary>
+		/// Get item that matches preditcate
+		/// </summary>
+		/// <param name="match"></param>
+		/// <returns></returns>
 		public Entity GetItem(Predicate<Entity> match) {
 			return itemContainer.Find(match);
+		}
+
+		void ICollection<Entity>.Add(Entity item) {
+			Add(item);
 		}
 
 		/// <summary>
 		/// Add item into inventory
 		/// </summary>
-		public void Add(Entity item) {
-			Contract.Requires(item != null);
+		public bool Add(Entity item) {
+			Contract.Requires<ArgumentNullException>(item != null);
 
-			if (itemContainer.Contains(item))
-				return;
+			if (Contains(item))
+				return false;
 
 			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Id);						
 
 			itemContainer.Add(item);
 			OnItemAdded(new EventArgs<Entity>(item));
 
-			if (item.Has<VisibleComponent>()) {
-				item.Get<VisibleComponent>().VisibilityIndex = -1;
-				Logger.DebugFormat("{0}'s visibility index is now set to {1}", item.Id, item.Get<VisibleComponent>().VisibilityIndex);										
-			}
+			return true;
 		}
 
 		public bool Remove(Entity item) {
-			Contract.Requires(item != null);
+			Contract.Requires<ArgumentNullException>(item != null);
 
 			if (!itemContainer.Contains(item))
 				return false;
@@ -114,16 +122,10 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			OnItemRemoved(new EventArgs<Entity>(item));
 			itemContainer.Remove(item);
-
-			if (item.Has<VisibleComponent>()) {
-				item.Get<VisibleComponent>().VisibilityIndex = item.Get<VisibleComponent>().DefaultIndex;
-				Logger.DebugFormat("{0}'s visibility index is now set to default: {1}", item.Id, item.Get<VisibleComponent>().VisibilityIndex);
-			}
-
+			
 			return true;
 		}
-
-
+		
 		private readonly Dictionary<string, Entity> equippedItems;
 		private List<string> slots;
 
@@ -150,10 +152,14 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return slots; }
 		}
 
-		public void Equip(string slot, Entity item) {			
+		public void Equip(string slot, Entity item) {
+			Contract.Requires<ArgumentNullException>(item != null);
 			Contract.Requires<ArgumentException>(item.Has<Item>());
-//			Contract.Requires<ArgumentException>(slots.ContainsKey(slot), "invalid slot");
+			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
+			Contract.Requires<ArgumentException>(Contains(item));
 
+			Contract.Ensures(equippedItems.ContainsKey(slot), "item is not equipped");			
+			
 			Logger.DebugFormat("{0} is equipping {1} to {2}.", OwnerUId, item.Id, slot);
 			OnItemEquipped(new EventArgs<string, Entity>(slot, item));
 
@@ -161,12 +167,12 @@ namespace SkrGame.Universe.Entities.Actors {
 				Unequip(slot);
 
 			equippedItems.Add(slot, item);
-			itemContainer.Remove(item);
+			itemContainer.Remove(item);			
 		}
 		
 		public bool Unequip(string slot) {
-//			Contract.Requires<ArgumentException>(slots.ContainsKey(slot), "invalid slot");
-			Contract.Ensures(!equippedItems.ContainsKey(slot));
+			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
+			Contract.Ensures(!equippedItems.ContainsKey(slot), "item is still equipped");			
 
 			Logger.DebugFormat("{0} is unequipping his item at {1}.", OwnerUId, slot);
 
@@ -186,8 +192,9 @@ namespace SkrGame.Universe.Entities.Actors {
 		public bool IsSlotEquipped(string slot) {
 			return equippedItems.ContainsKey(slot);
 		}
-
-		public Entity GetItemAt(string slot) {
+		
+		public Entity GetEquippedItemAt(string slot) {
+			Contract.Requires<ArgumentException>(string.IsNullOrEmpty(slot));
 			try {
 				return equippedItems[slot];				
 			} catch (Exception) {
@@ -209,12 +216,15 @@ namespace SkrGame.Universe.Entities.Actors {
 				container.equippedItems.Add(equippedItem.Key, equippedItem.Value.Copy());
 			}
 
-			container.ItemAdded = (EventHandler<EventArgs<Entity>>) ItemAdded.Clone();
-			container.ItemRemoved = (EventHandler<EventArgs<Entity>>)ItemRemoved.Clone();
-
-			container.ItemEquipped = (EventHandler<EventArgs<string, Entity>>) ItemEquipped.Clone();
-			container.ItemUnequipped = (EventHandler<EventArgs<string, Entity>>) ItemUnequipped.Clone();
-
+			if (ItemAdded != null)
+				container.ItemAdded = (EventHandler<EventArgs<Entity>>)ItemAdded.Clone();
+			if (ItemRemoved != null)
+				container.ItemRemoved = (EventHandler<EventArgs<Entity>>)ItemRemoved.Clone();
+			if (ItemEquipped != null)
+				container.ItemEquipped = (EventHandler<EventArgs<string, Entity>>)ItemEquipped.Clone();
+			if (ItemUnequipped != null)
+				container.ItemUnequipped = (EventHandler<EventArgs<string, Entity>>)ItemUnequipped.Clone();
+			
 			return container;
 		}
 	}

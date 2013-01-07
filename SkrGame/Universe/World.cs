@@ -149,6 +149,7 @@ namespace SkrGame.Universe {
 			EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
 
 			var armor = EntityManager.Create(ArmorTemplate.CreateArmor("footballpads"));
+			npc.Get<ContainerComponent>().Add(armor);
 			npc.Get<ContainerComponent>().Equip("Torso", armor);
 		}
 
