@@ -17,12 +17,22 @@ namespace SkrGame.Universe.Entities.Items {
 		Shield,
 		Ammo,
 		BodyPart,
+		Misc,
 	}
 
-	public class Item : EntityComponent {
+	public class Item : Component {
+		internal class Template {
+			public string Name { get; set; }
+			public ItemType Type { get; set; }
+			public int Weight { get; set; }
+			public int Size { get; set; }
+			public int Value { get; set; }
+			public StackType StackType { get; set; }
+			public List<string> Slot { get; set; }
+		}
+
 		public string Name { get; private set; }
 
-		public string RefId { get; private set; }
 		public int Weight { get; private set; }
 		public int Size { get; private set; }
 		public int Value { get; private set; }
@@ -40,7 +50,7 @@ namespace SkrGame.Universe.Entities.Items {
 			}
 			set {
 				Contract.Requires(value > 0);
-				Contract.Requires(StackType != StackType.Hard);
+				Contract.Requires(StackType == StackType.Hard);
 				Contract.Ensures(value > 0);
 				amount = value;
 			}
@@ -50,10 +60,10 @@ namespace SkrGame.Universe.Entities.Items {
 		public ItemType Type { get; private set; }
 		public List<string> Slots { get; private set; }
 
+		private Item() { }
 
-		public Item(ItemTemplate template) {
+		internal Item(Template template) {
 			Name = template.Name;
-			RefId = template.RefId;
 
 			StackType = template.StackType;
 			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);			
@@ -63,6 +73,21 @@ namespace SkrGame.Universe.Entities.Items {
 			Size = template.Size;
 			Value = template.Value;
 		}
+
+		public override Component Copy() {
+			return new Item()
+			       {
+			       		Name = Name,
+
+			       		StackType = StackType,
+			       		Slots = new List<string>(Slots),
+			       		Amount = Amount,
+			       		Type = Type,
+			       		Weight = Weight,
+			       		Size = Size,
+			       		Value = Value,
+			       };
+		}
 	}
 
 	public enum StackType {
@@ -71,16 +96,4 @@ namespace SkrGame.Universe.Entities.Items {
 		Hard
 	}
 
-	public class ItemTemplate {
-		public string Name { get; set; }
-		public string RefId { get; set; }
-		public ItemType Type { get; set; }
-		public int Weight { get; set; }
-		public int Size { get; set; }
-		public int Value { get; set; }
-		public StackType StackType { get; set; }
-		public List<string> Slot { get; set; }
-
-		public IEnumerable<IItemComponentTemplate> Components { set; get; }
-	}
 }

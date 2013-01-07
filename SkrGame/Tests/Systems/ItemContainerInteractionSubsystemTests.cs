@@ -23,19 +23,19 @@ namespace SkrGame.Tests.Systems {
 			                                 		new Location(0, 0, null)
 			                                 });
 
-			container.Get<ContainerComponent>().AddItem(
+			container.Get<ContainerComponent>().Add(
 					entityManager.Create(new Template
 					                     {
-					                     		new Item(new ItemTemplate()
+					                     		new Item(new Item.Template()
 					                     		         {
 					                     		         		Name = "item"
 					                     		         }),
 					                     		new Location(4, 2, null)
 					                     }));
-			container.Get<ContainerComponent>().AddItem(
+			container.Get<ContainerComponent>().Add(
 					entityManager.Create(new Template
 					                     {
-					                     		new Item(new ItemTemplate()
+					                     		new Item(new Item.Template()
 					                     		         {
 					                     		         		Name = "item"
 					                     		         }),
@@ -72,19 +72,19 @@ namespace SkrGame.Tests.Systems {
 			                                 		new Location(0, 0, null)
 			                                 });
 
-			container.Get<ContainerComponent>().AddItem(
+			container.Get<ContainerComponent>().Add(
 					entityManager.Create(new Template
 					                     {
-					                     		new Item(new ItemTemplate()
+					                     		new Item(new Item.Template()
 					                     		         {
 					                     		         		Name = "item"
 					                     		         }),
 					                     		new Location(4, 2, null)
 					                     }));
-			container.Get<ContainerComponent>().AddItem(
+			container.Get<ContainerComponent>().Add(
 					entityManager.Create(new Template
 					                     {
-					                     		new Item(new ItemTemplate()
+					                     		new Item(new Item.Template()
 					                     		         {
 					                     		         		Name = "item"
 					                     		         }),
@@ -111,10 +111,10 @@ namespace SkrGame.Tests.Systems {
 			                                 		new Location(0, 0, null)
 			                                 });
 
-			container.Get<ContainerComponent>().AddItem(
+			container.Get<ContainerComponent>().Add(
 					entityManager.Create(new Template
 					                     {
-					                     		new Item(new ItemTemplate()
+					                     		new Item(new Item.Template()
 					                     		         {
 					                     		         		Name = "item"
 					                     		         }),
@@ -122,13 +122,13 @@ namespace SkrGame.Tests.Systems {
 					                     }));
 			var itemToBeRemoved = entityManager.Create(new Template
 			                                  {
-			                                  		new Item(new ItemTemplate()
+			                                  		new Item(new Item.Template()
 			                                  		         {
 			                                  		         		Name = "item"
 			                                  		         }),
 			                                  		new Location(4, 2, null)
 			                                  });
-			container.Get<ContainerComponent>().AddItem(itemToBeRemoved);
+			container.Get<ContainerComponent>().Add(itemToBeRemoved);
 
 			var location1stMove = new Point(0, 3812);
 			container.Get<Location>().Position = location1stMove;
@@ -137,7 +137,7 @@ namespace SkrGame.Tests.Systems {
 				Assert.AreEqual(entity.Get<Location>().Position, container.Get<Location>().Position);
 			}
 
-			container.Get<ContainerComponent>().RemoveItem(itemToBeRemoved);
+			container.Get<ContainerComponent>().Remove(itemToBeRemoved);
 
 			container.Get<Location>().Position = new Point(51, -9);
 			foreach (var entity in container.Get<ContainerComponent>().Items) {

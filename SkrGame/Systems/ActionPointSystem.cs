@@ -22,7 +22,7 @@ namespace SkrGame.Systems {
 		public void Update() {
 			if (!player.Get<ActionPoint>().Updateable) {
 				foreach (var entity in entities) {
-					if (!entity.Has<PlayerMarker>()) {
+					if (!entity.Has<Player>()) {
 						var entityAP = entity.Get<ActionPoint>();
 						entityAP.ActionPoints += entityAP.Speed;
 					}

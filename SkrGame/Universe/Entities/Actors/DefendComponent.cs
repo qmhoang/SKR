@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
@@ -14,12 +15,13 @@ namespace SkrGame.Universe.Entities.Actors {
 	/// <summary>
 	/// Add this to an entity if the entity can be attacked, it contains its defense information
 	/// </summary>
-	public class DefendComponent : EntityComponent {
+	public class DefendComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public class AttackablePart {
 			public string Name { get; private set; }
-			public DefendComponent Owner { get; private set; }
+			public DefendComponent Owner { get; set; }
+			
 			public int Health { get; set; }
 			public int MaxHealth { get; private set; }
 			public int TargettingPenalty { get; private set; }
@@ -30,6 +32,10 @@ namespace SkrGame.Universe.Entities.Actors {
 				MaxHealth = maxHealth;
 				TargettingPenalty = targettingPenalty;
 				Owner = owner;
+			}
+
+			public AttackablePart Copy(DefendComponent newOwner = null) {
+				return new AttackablePart(Name, MaxHealth, TargettingPenalty, newOwner);
 			}
 		}
 
@@ -64,7 +70,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		#endregion
 
-		private readonly List<AttackablePart> bodyParts;
+		private List<AttackablePart> bodyParts;
 
 		public IEnumerable<AttackablePart> BodyPartsList {
 			get { return bodyParts; } 
@@ -108,7 +114,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 
-		public DefendComponent() {		
+		public DefendComponent() {			
 			maxHealth = health = 50;
 			bodyParts = new List<AttackablePart>()
 			            {
@@ -123,6 +129,21 @@ namespace SkrGame.Universe.Entities.Actors {
 			            };
 
 
+		}
+
+		public override Component Copy() {
+			var defend = new DefendComponent()
+			             {
+			             		Health = Health,
+			             		MaxHealth = MaxHealth,
+								bodyParts = bodyParts.Select(part => part.Copy()).ToList()
+			             };
+
+			foreach (var part in defend.bodyParts) {
+				part.Owner = defend;
+			}
+
+			return defend;
 		}
 	}
 }

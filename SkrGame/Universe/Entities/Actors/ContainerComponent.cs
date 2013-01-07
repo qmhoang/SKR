@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -10,22 +11,10 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class ContainerComponent : EntityComponent {
+	public class ContainerComponent : Component, ICollection<Entity> {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly List<Entity> itemContainer;
-
-		public IEnumerable<Entity> Items {
-			get { return itemContainer; }
-		}
-
-		public bool Exist(Predicate<Entity> match) {
-			return itemContainer.Exists(match);
-		}
-
-		public Entity GetItem(Predicate<Entity> match) {
-			return itemContainer.Find(match);
-		}
 
 		public event EventHandler<EventArgs<Entity>> ItemRemoved;
 		public event EventHandler<EventArgs<Entity>> ItemAdded;
@@ -50,13 +39,55 @@ namespace SkrGame.Universe.Entities.Actors {
 			        {
 			        		"MainHand",
 			        		"OffHand",
+							"Torso"
 			        };
+		}
+
+		public IEnumerator<Entity> GetEnumerator() {
+			return itemContainer.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator() {
+			return GetEnumerator();
+		}
+
+
+		public void Clear() {
+			itemContainer.Clear();
+		}
+
+		public bool Contains(Entity item) {
+			return itemContainer.Contains(item);
+		}
+
+		public void CopyTo(Entity[] array, int arrayIndex) {
+			itemContainer.CopyTo(array, arrayIndex);
+		}
+
+		public int Count {
+			get { return itemContainer.Count; }
+		}
+
+		public bool IsReadOnly {
+			get { return false; }
+		}
+		
+		public IEnumerable<Entity> Items {
+			get { return itemContainer; }
+		}
+
+		public bool Exist(Predicate<Entity> match) {
+			return itemContainer.Exists(match);
+		}
+
+		public Entity GetItem(Predicate<Entity> match) {
+			return itemContainer.Find(match);
 		}
 
 		/// <summary>
 		/// Add item into inventory
 		/// </summary>
-		public void AddItem(Entity item) {
+		public void Add(Entity item) {
 			Contract.Requires(item != null);
 
 			if (itemContainer.Contains(item))
@@ -73,7 +104,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			}
 		}
 
-		public bool RemoveItem(Entity item) {
+		public bool Remove(Entity item) {
 			Contract.Requires(item != null);
 
 			if (!itemContainer.Contains(item))
@@ -94,7 +125,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 		private readonly Dictionary<string, Entity> equippedItems;
-		private readonly List<string> slots;
+		private List<string> slots;
 
 		public event EventHandler<EventArgs<string, Entity>> ItemEquipped;
 		public event EventHandler<EventArgs<string, Entity>> ItemUnequipped;
@@ -144,7 +175,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			else {
 				Entity old = equippedItems[slot];				
 				equippedItems.Remove(slot);
-				AddItem(old);
+				Add(old);
 
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
 
@@ -162,6 +193,29 @@ namespace SkrGame.Universe.Entities.Actors {
 			} catch (Exception) {
 				return null;
 			}
+		}
+
+		public override Component Copy() {
+			var container = new ContainerComponent()
+			                {
+			                		slots = new List<string>(slots)
+			                };
+
+			foreach (var entity in itemContainer) {
+				container.itemContainer.Add(entity.Copy());
+			}
+
+			foreach (var equippedItem in equippedItems) {
+				container.equippedItems.Add(equippedItem.Key, equippedItem.Value.Copy());
+			}
+
+			container.ItemAdded = (EventHandler<EventArgs<Entity>>) ItemAdded.Clone();
+			container.ItemRemoved = (EventHandler<EventArgs<Entity>>)ItemRemoved.Clone();
+
+			container.ItemEquipped = (EventHandler<EventArgs<string, Entity>>) ItemEquipped.Clone();
+			container.ItemUnequipped = (EventHandler<EventArgs<string, Entity>>) ItemUnequipped.Clone();
+
+			return container;
 		}
 	}
 }

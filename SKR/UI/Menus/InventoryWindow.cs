@@ -40,10 +40,8 @@ namespace SKR.UI.Menus {
 
 		protected override void CustomDraw(Rect rect) {
 			int y = 0;
-			
-			foreach (var charItemPair in Items) {
-				var letter = charItemPair.Key;
-				var entity = charItemPair.Value;
+			char letter = 'A';
+			foreach (var entity in List) {								
 				var item = entity.Get<Item>();
 
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, item.Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
@@ -62,6 +60,7 @@ namespace SKR.UI.Menus {
 				}
 
 				y++;
+				letter++;
 			}
 		}
 
@@ -151,27 +150,28 @@ namespace SKR.UI.Menus {
 
 		protected override void CustomDraw(Rect rect) {
 			int positionY = 0;
-			foreach (var bodyPartPair in Items) {
-				var item = inventory.GetItemAt(bodyPartPair.Value);				
+			char letter = 'A';
+			foreach (var bodyPart in List) {
+				var item = inventory.GetItemAt(bodyPart);				
 
-				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", bodyPartPair.Key, bodyPartPair.Value, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
+				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", letter, bodyPart, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
 				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
-				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, inventory.IsSlotEquipped(bodyPartPair.Value) ?
+				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, inventory.IsSlotEquipped(bodyPart) ?
 					String.Format("{0}{1}", item.Get<Item>().Name, (item.Has<RangeComponent>() ? string.Format(" ({0}/{1})", item.Get<RangeComponent>().ShotsRemaining, item.Get<RangeComponent>().Shots) : "")) : 
 					"-");
 
 				for (int i = 0; i < rect.Size.Width; i++) {
-					if ((bodyPartPair.Key - 'A') == MouseOverIndex)
+					if ((letter - 'A') == MouseOverIndex)
 						Canvas.Console.setCharBackground(rect.TopLeft.X + i, rect.TopLeft.Y + positionY, Pigments[PigmentType.ViewHilight].Background.TCODColor);
 					else
 						Canvas.Console.setCharBackground(rect.TopLeft.X + i, rect.TopLeft.Y + positionY,
-														 bodyPartPair.Key % 2 == 0
+														 letter % 2 == 0
 																 ? Pigments[PigmentType.ViewNormal].Background.TCODColor
 																 : Pigments[PigmentType.ViewFocus].Background.TCODColor);
 				}
 
 
-
+				letter++;
 				positionY += 2;
 			}
 		}
