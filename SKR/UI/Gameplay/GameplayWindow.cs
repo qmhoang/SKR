@@ -162,6 +162,8 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void Move(Entity entity, Point direction) {
+			Contract.Requires<ArgumentNullException>(entity != null, "entity");
+
 			Point newPosition = entity.Get<Location>().Position + direction;
 
 			var level = entity.Get<Location>().Level;
@@ -187,7 +189,8 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void PickUpItem(Entity inventoryEntity, Entity itemEntityFromLevel, ICollection<Entity> items) {
-			Contract.Requires(items != null);
+			Contract.Requires<ArgumentNullException>(items != null, "items");
+
 			var inventory = inventoryEntity.Get<ContainerComponent>();
 			var item = itemEntityFromLevel.Get<Item>();
 
@@ -203,7 +206,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void PickUpStackedItem(Entity inventoryEntity, Entity itemEntityFromLevel, int amount, ICollection<Entity> items) {
-			Contract.Requires(amount > 0);
+			Contract.Requires<ArgumentException>(amount > 0);
 
 			if (amount == 0)
 				return;
@@ -244,7 +247,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory, ICollection<Entity> items) {
-			Contract.Requires(items != null);
+			Contract.Requires<ArgumentNullException>(items != null, "items");
 			var inventory = inventoryEntity.Get<ContainerComponent>();
 			var item = itemEntityFromInventory.Get<Item>();
 
@@ -260,8 +263,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void DropStackedItem(Entity inventoryEntity, Entity itemEntityFromInventory, int amount, ICollection<Entity> items) {
-			Contract.Requires(amount > 0);
-
+			Contract.Requires<ArgumentException>(amount > 0);
 			if (amount == 0)
 				return;
 
