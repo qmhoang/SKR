@@ -9,8 +9,6 @@ using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Actors.NPC;
-using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
@@ -20,16 +18,16 @@ using SkrGame.Universe.Locations;
 namespace SkrGame.Universe {
 	public class World {
 		/// <summary>
-		/// default speed of entities, an entity with 2x speed can act twice as before an entity with normal speed
+		/// default speed of entities, an entity with 2x speed gains AP 2x as fast
 		/// </summary>
 		public const int DEFAULT_SPEED = 100; // 
 
-		public const int TURN_LENGTH_IN_SECONDS = 1; // how long is a turn in seconds
+		public const int TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
 
-		public const int MEAN = 50; // what is the mean score for an attribute
-		public const int STANDARD_DEVIATION = 15; // what is the stddev for an attribute score
+		public const int MEAN = 50;						// what is the mean score for an attribute
+		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
 
-		public const double TILE_LENGTH_IN_METER = 1f; // length of 1 square tile
+		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
 
 		public static int SecondsToActionPoints(double seconds) {
 			return (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
@@ -74,6 +72,9 @@ namespace SkrGame.Universe {
 //		private readonly TalentFactory talentFactory;
 		private readonly MapFactory mapFactory;
 
+		public TagManager TagManager { get; private set; }
+		public GroupManager GroupManager { get; private set; }
+
 		public static World Instance { get; private set; }
 
 		private Level level;
@@ -92,17 +93,20 @@ namespace SkrGame.Universe {
 		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
 
 		private World() {
+			Rng.Seed(0);
+
 			MessageBuffer = new List<Message>();
 
 //			talentFactory = new SourceTalentFactory();			
 			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(featureFactory);
 
+			TagManager = new TagManager();
+			GroupManager = new GroupManager();
 
-			Rng.Seed(0);
 			level = mapFactory.Construct("TestHouse");
 
-			Player = EntityManager.Create(new Template()
+			Player = EntityManager.Create(new Template
 			                              {
 			                              		new ActionPoint(),
 			                              		new Sprite("player", Sprite.PLAYER_LAYER),
@@ -113,6 +117,9 @@ namespace SkrGame.Universe {
 												new ContainerComponent(),
 												new VisibleComponent(10)
 			                              });
+
+			TagManager.Register("player", Player);
+
 			Player.Add(new MeleeComponent(
 			           		new MeleeComponent.Template
 			           		{
