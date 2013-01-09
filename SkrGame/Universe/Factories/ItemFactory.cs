@@ -61,10 +61,10 @@ namespace SkrGame.Universe.Factories {
 			Add(new VisibleComponent(10),
 			    new Sprite("GENERIC_ITEM", Sprite.ITEMS_LAYER),
 				new ItemRefId("item"),
+				new Identifier("Junk", "A piece of junk."),
 			    new Item(
 			    		new Item.Template
 			    		{
-			    				Name = "Junk",
 			    				Type = ItemType.Misc,
 			    				Value = 0,
 			    				Weight = 0,
@@ -111,41 +111,20 @@ namespace SkrGame.Universe.Factories {
 		public static MeleeWeaponTemplate CreateMelee(string id) {
 			var weapon = new MeleeWeaponTemplate();
 			switch (id) {
-					//#region Generic Size Melee Weapon
-					//				case "generic_small":
-					//					weapon.Add(new MeleeComponent(
-					//					    		new MeleeComponent.Template
-					//					    		{
-					//					    				ComponentId = "genericmeleeweapon",
-					//					    				ActionDescription = "hit",
-					//					    				ActionDescriptionPlural = "hits",
-					//					    				Skill = "skill_unarmed",
-					//					    				HitBonus = 0,
-					//					    				Damage = Rand.Constant(-10),
-					//					    				DamageType = Combat.DamageTypes["crush"],
-					//					    				Penetration = 0,
-					//					    				WeaponSpeed = 100,
-					//					    				APToReady = 10,
-					//					    				Reach = 1,
-					//					    				Strength = 1,
-					//					    				Parry = -3
-					//					    		}));
-					//					   return weapon;
-					//#endregion
 				case "largeknife":
 					weapon.Add(
-							//						new Sprite("LARGE_KNIFE", Sprite.ITEMS_LAYER),
+						//						new Sprite("LARGE_KNIFE", Sprite.ITEMS_LAYER),
 							new ItemRefId("largeknife"),
+							new Identifier("Knife, Large", "A large knife."),
 							new Item(
 									new Item.Template
 									{
-											Name = "Large Knife",
-											Type = ItemType.OneHandedWeapon,
-											Value = 4000,
-											Weight = 10,
-											Size = 2,
-											StackType = StackType.None,
-											Slot = new List<string>()
+										Type = ItemType.OneHandedWeapon,
+										Value = 4000,
+										Weight = 10,
+										Size = 2,
+										StackType = StackType.None,
+										Slot = new List<string>()
 											       {
 											       		"Main Hand",
 											       }
@@ -153,19 +132,19 @@ namespace SkrGame.Universe.Factories {
 							new MeleeComponent(
 									new MeleeComponent.Template
 									{
-											ComponentId = "largeknifeslash",
-											ActionDescription = "slash",
-											ActionDescriptionPlural = "slashes",
-											Skill = "skill_knife",
-											HitBonus = 0,
-											Damage = Rand.Constant(-5),
-											DamageType = Combat.DamageTypes["cut"],
-											Penetration = 1,
-											WeaponSpeed = 100,
-											APToReady = 15,
-											Reach = 1,
-											Strength = 6,
-											Parry = -1
+										ComponentId = "largeknifeslash",
+										ActionDescription = "slash",
+										ActionDescriptionPlural = "slashes",
+										Skill = "skill_knife",
+										HitBonus = 0,
+										Damage = Rand.Constant(-5),
+										DamageType = Combat.DamageTypes["cut"],
+										Penetration = 1,
+										WeaponSpeed = 100,
+										APToReady = 15,
+										Reach = 1,
+										Strength = 6,
+										Parry = -1
 									}));
 					return weapon;
 
@@ -173,10 +152,10 @@ namespace SkrGame.Universe.Factories {
 					weapon.Add(
 							//						new Sprite("SMALL_KNIFE", Sprite.ITEMS_LAYER),
 							new ItemRefId("smallknife"),
+							new Identifier("Knife", "A knife."),
 							new Item(
 									new Item.Template
-									{
-											Name = "Small Knife",
+									{											
 											Type = ItemType.OneHandedWeapon,
 											Value = 3000,
 											Weight = 5,
@@ -209,10 +188,11 @@ namespace SkrGame.Universe.Factories {
 					weapon.Add(
 							//						new Sprite("AXE", Sprite.ITEMS_LAYER),
 							new ItemRefId("axe"),
+							new Identifier("Axe", "An axe."),
+
 							new Item(
 									new Item.Template
 									{
-											Name = "Axe",
 											Type = ItemType.OneHandedWeapon,
 											Value = 5000,
 											Weight = 40,
@@ -246,10 +226,10 @@ namespace SkrGame.Universe.Factories {
 					weapon.Add(
 							//						new Sprite("HATCHET", Sprite.ITEMS_LAYER),
 							new ItemRefId("hatchet"),
+							new Identifier("Hatchet", "A hatchet."),
 							new Item(
 									new Item.Template
 									{
-											Name = "Hatchet",
 											Type = ItemType.OneHandedWeapon,
 											Value = 4000,
 											Weight = 20,
@@ -281,10 +261,10 @@ namespace SkrGame.Universe.Factories {
 					weapon.Add(
 							//							new Sprite("BRASS_KNUCKLES", Sprite.ITEMS_LAYER),
 							new ItemRefId("brassknuckles"),
+							new Identifier("Brass Knuckles"),
 							new Item(
 									new Item.Template
 									{
-											Name = "Brass Knuckles",
 											Type = ItemType.OneHandedWeapon,
 											Value = 1000,
 											Weight = 20,
@@ -374,9 +354,9 @@ namespace SkrGame.Universe.Factories {
 
 						weapon.Add(
 								new Sprite("GLOCK17", Sprite.ITEMS_LAYER),
+								new Identifier("Glock 17"),
 								new Item(new Item.Template
 										 {
-											 Name = "Glock 17",
 											 Type = ItemType.OneHandedWeapon,
 											 Value = 60000,
 											 Weight = 19,
@@ -414,10 +394,10 @@ namespace SkrGame.Universe.Factories {
 					var weapon = GunWeaponTemplate.PistolWhipBySize(2);
 
 					weapon.Add(
-//							new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+							//							new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+							new Identifier("Glock 22"),
 							new Item(new Item.Template
 							         {
-							         		Name = "Glock 22",
 							         		Type = ItemType.OneHandedWeapon,
 							         		Value = 40000,
 							         		Weight = 21,
@@ -460,15 +440,15 @@ namespace SkrGame.Universe.Factories {
 	public class AmmoTemplate : ItemTemplate {
 		protected AmmoTemplate() {
 			Add(new Sprite("BULLET", Sprite.ITEMS_LAYER),
-				new ItemRefId("bullet"),
-			    new Item(
+			    new ItemRefId("bullet"),
+			    new Identifier("Bullets"),
+				new Item(
 			    		new Item.Template
 			    		{
-			    				Name = "Bullets",
 			    				Type = ItemType.Ammo,
 			    				Value = 30,
 			    				Weight = 0,
-			    				Size = 0,								
+			    				Size = 0,
 			    				StackType = StackType.Hard
 			    		}),
 			    new AmmoComponent(
@@ -477,8 +457,8 @@ namespace SkrGame.Universe.Factories {
 			    				ComponentId = "bullet",
 			    				ActionDescription = "load",
 			    				ActionDescriptionPlural = "loads",
-			    				Type = "bullet",								
-			    		}));			
+			    				Type = "bullet",
+			    		}));
 		}
 
 		public static AmmoTemplate CreateAmmo(string id) {
@@ -488,37 +468,37 @@ namespace SkrGame.Universe.Factories {
 				case "9x9mm":
 				{
 					ammo.Add(
-//						new Sprite("BULLET_9x19MM", Sprite.ITEMS_LAYER),
-							 new ItemRefId("9x9mm"),
-					         new Item(
-					         		new Item.Template
-					         		{
-					         				Name = "9x19mm Parabellum",
-					         				Type = ItemType.Ammo,
-					         				Value = 30,
-					         				Weight = 0,
-					         				Size = 0,
-					         				StackType = StackType.Hard
-					         		}),
-					         new AmmoComponent(
-					         		new AmmoComponent.Template
-					         		{
-					         				ComponentId = "9x9mmbullet",
-					         				ActionDescription = "load",
-					         				ActionDescriptionPlural = "loads",
-					         				Type = "9x19mm",
-					         		}));
+							//						new Sprite("BULLET_9x19MM", Sprite.ITEMS_LAYER),
+							new ItemRefId("9x9mm"),
+							new Identifier("9x19mm Parabellum bullet"),
+							new Item(
+									new Item.Template
+									{
+											Type = ItemType.Ammo,
+											Value = 30,
+											Weight = 0,
+											Size = 0,
+											StackType = StackType.Hard
+									}),
+							new AmmoComponent(
+									new AmmoComponent.Template
+									{
+											ComponentId = "9x9mmbullet",
+											ActionDescription = "load",
+											ActionDescriptionPlural = "loads",
+											Type = "9x19mm",
+									}));
 					return ammo;
 				}
 				case ".40S&W":
 				{
 					ammo.Add(
-//							new Sprite("BULLET_.40S&W", Sprite.ITEMS_LAYER),
+							//							new Sprite("BULLET_.40S&W", Sprite.ITEMS_LAYER),
 							new ItemRefId(".40S&W"),
+							new Identifier(".40 Smith & Wesson bullet"),
 							new Item(
 									new Item.Template
 									{
-											Name = ".40 Smith & Wesson",
 											Type = ItemType.Ammo,
 											Value = 30,
 											Weight = 0,
@@ -545,10 +525,11 @@ namespace SkrGame.Universe.Factories {
 	public class ArmorTemplate : ItemTemplate {
 		protected ArmorTemplate() {
 			Add(new Sprite("ARMOR", Sprite.ITEMS_LAYER),
-				new ItemRefId("armor"),
+			    new ItemRefId("armor"),
+			    new Identifier("Generic Armor"),
+
 			    new Item(new Item.Template
 			             {
-			             		Name = "Generic Armor",
 			             		Type = ItemType.Armor,
 			             		Value = 100,
 			             		Weight = 10,
@@ -588,10 +569,10 @@ namespace SkrGame.Universe.Factories {
 			switch (id) {
 				case "footballpads":
 					armor.Add(new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
-						new ItemRefId("footballpads"),
-					          new Item(new Item.Template
+					          new ItemRefId("footballpads"),
+					          new Identifier("Football Shoulder Pads"),
+							  new Item(new Item.Template
 					                   {
-					                   		Name = "Football Shoulder Pads",
 					                   		Type = ItemType.Armor,
 					                   		Value = 5000,
 					                   		Weight = 50,

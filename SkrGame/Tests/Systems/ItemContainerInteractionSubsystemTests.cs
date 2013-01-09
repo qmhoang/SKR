@@ -28,18 +28,14 @@ namespace SkrGame.Tests.Systems {
 					entityManager.Create(new Template
 					                     {
 					                     		new Item(new Item.Template()
-					                     		         {
-					                     		         		Name = "item"
-					                     		         }),
+					                     		         {}),
 					                     		new Location(4, 2, null)
 					                     }));
 			container.Get<ContainerComponent>().Add(
 					entityManager.Create(new Template
 					                     {
 					                     		new Item(new Item.Template()
-					                     		         {
-					                     		         		Name = "item"
-					                     		         }),
+					                     		         {}),
 					                     		new Location(4, 2, null)
 					                     }));
 		}
@@ -97,9 +93,7 @@ namespace SkrGame.Tests.Systems {
 			var itemToBeRemoved = entityManager.Create(new Template
 			                                  {
 			                                  		new Item(new Item.Template()
-			                                  		         {
-			                                  		         		Name = "item"
-			                                  		         }),
+			                                  		         {}),
 			                                  		new Location(4, 2, null)
 			                                  });
 			container.Get<ContainerComponent>().Add(itemToBeRemoved);

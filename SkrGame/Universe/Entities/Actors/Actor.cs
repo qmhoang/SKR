@@ -58,9 +58,9 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public class Actor : Component{
+	public class Actor : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		
+
 		private readonly Dictionary<string, Talent> talents;
 		private readonly Dictionary<string, int> tags;
 
@@ -105,45 +105,45 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 		public string Name { get; set; }
-		
+
 		public Actor(string name) {
 			Name = name;
 
 			talents = new Dictionary<string, Talent>();
 			tags = new Dictionary<string, int>();
 
-//			LearnTalent("action_attack");
-//			LearnTalent("action_range");
-//			LearnTalent("action_reload");
-//			LearnTalent("action_activate");
-//
-//			LearnTalent("attrb_strength");
-//			LearnTalent("attrb_agility");
-//			LearnTalent("attrb_constitution");
-//			LearnTalent("attrb_intellect");
-//			LearnTalent("attrb_cunning");
-//			LearnTalent("attrb_resolve");
-//			LearnTalent("attrb_presence");
-//			LearnTalent("attrb_grace");
-//			LearnTalent("attrb_composure");
-//
-//			GetTalent("attrb_strength").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_agility").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_constitution").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_intellect").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_cunning").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_resolve").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_presence").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_grace").As<AttributeComponent>().Rank = World.MEAN;
-//			GetTalent("attrb_composure").As<AttributeComponent>().Rank = World.MEAN;
-//
-//			LearnTalent("skill_sword");
-//			LearnTalent("skill_knife");
-//
-//			LearnTalent("skill_pistol");
-//			LearnTalent("skill_bow");
-//
-//			LearnTalent("skill_unarmed");			
+			//			LearnTalent("action_attack");
+			//			LearnTalent("action_range");
+			//			LearnTalent("action_reload");
+			//			LearnTalent("action_activate");
+			//
+			//			LearnTalent("attrb_strength");
+			//			LearnTalent("attrb_agility");
+			//			LearnTalent("attrb_constitution");
+			//			LearnTalent("attrb_intellect");
+			//			LearnTalent("attrb_cunning");
+			//			LearnTalent("attrb_resolve");
+			//			LearnTalent("attrb_presence");
+			//			LearnTalent("attrb_grace");
+			//			LearnTalent("attrb_composure");
+			//
+			//			GetTalent("attrb_strength").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_agility").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_constitution").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_intellect").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_cunning").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_resolve").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_presence").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_grace").As<AttributeComponent>().Rank = World.MEAN;
+			//			GetTalent("attrb_composure").As<AttributeComponent>().Rank = World.MEAN;
+			//
+			//			LearnTalent("skill_sword");
+			//			LearnTalent("skill_knife");
+			//
+			//			LearnTalent("skill_pistol");
+			//			LearnTalent("skill_bow");
+			//
+			//			LearnTalent("skill_unarmed");			
 
 		}
 
@@ -155,7 +155,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (handler != null)
 				handler(this, e);
 		}
-		
+
 		public event EventHandler<CombatEventArgs> Attacking;
 		public event EventHandler<CombatEventArgs> Defending;
 
@@ -173,6 +173,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 
 		#region Talents
+
 		public bool KnowTalent(string skillRefId) {
 			return talents.ContainsKey(skillRefId);
 		}
@@ -186,13 +187,13 @@ namespace SkrGame.Universe.Entities.Actors {
 				Logger.WarnFormat("{0} already knows {1}.", Name, skillRefId);
 			else {
 				// add talent
-//				var t = World.GetTalent(skillRefId);
-//				t.Owner = this;
-//				talents.Add(skillRefId, t);
-//				t.OnLearn();
-//
-//				OnTalentLearned(new EventArgs<Talent>(t));
-//				Logger.DebugFormat("{0} has learned {1}.", Name, skillRefId);
+				//				var t = World.GetTalent(skillRefId);
+				//				t.Owner = this;
+				//				talents.Add(skillRefId, t);
+				//				t.OnLearn();
+				//
+				//				OnTalentLearned(new EventArgs<Talent>(t));
+				//				Logger.DebugFormat("{0} has learned {1}.", Name, skillRefId);
 			}
 		}
 

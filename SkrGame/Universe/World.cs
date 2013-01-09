@@ -83,7 +83,10 @@ namespace SkrGame.Universe {
 			get { return level; }
 		}
 
-		public Entity Player { get; set; }
+		public Entity Player {
+			get { return TagManager.GetEntity("player"); }
+			set { TagManager.Register("player", value); }
+		}
 
 		public EntityManager EntityManager {
 			get { return level.EntityManager; }
@@ -110,6 +113,7 @@ namespace SkrGame.Universe {
 			                              {
 			                              		new ActionPoint(),
 			                              		new Sprite("player", Sprite.PLAYER_LAYER),
+												new Identifier("Player"),
 			                              		new Location(0, 0, level),
 			                              		new Player(),
 			                              		new Actor("player"),			                              		
@@ -119,7 +123,6 @@ namespace SkrGame.Universe {
 												new VisibleComponent(10)
 			                              });
 
-			TagManager.Register("player", Player);
 
 			Player.Add(new MeleeComponent(
 			           		new MeleeComponent.Template
@@ -142,6 +145,7 @@ namespace SkrGame.Universe {
 			                     {
 			                     		new ActionPoint(),
 			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
+										new Identifier("npc"),
 			                     		new Location(4, 3, level),
 			                     		new Actor("npc"),
 			                     		new DefendComponent(),
