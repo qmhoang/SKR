@@ -122,6 +122,7 @@
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
+    <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />
     <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Items\ItemContainer.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />

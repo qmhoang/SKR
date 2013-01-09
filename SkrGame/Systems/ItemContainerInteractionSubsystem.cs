@@ -15,14 +15,14 @@ using log4net;
 namespace SkrGame.Systems {	
 	public class ItemEquippingSubsystem {
 		private FilteredCollection containers;
-		private Dictionary<UniqueId, InventoryHelper> inventories;
+		private Dictionary<UniqueId, EquipmentHelper> equipments;
 
 
-		private class InventoryHelper {
-			private Entity inventory;
+		private class EquipmentHelper {
+			private Entity equipment;
 
-			public InventoryHelper(Entity inventory) {
-				this.inventory = inventory;
+			public EquipmentHelper(Entity equipment) {
+				this.equipment = equipment;
 			}
 
 			public void InventoryHelper_ItemEquipped(object sender, EventArgs<string, Entity> itemEquippedEvent) {
@@ -38,8 +38,8 @@ namespace SkrGame.Systems {
 
 
 		public ItemEquippingSubsystem(EntityManager entityManager) {
-			containers = entityManager.Get(typeof(ContainerComponent), typeof(DefendComponent));
-			inventories = new Dictionary<UniqueId, InventoryHelper>();
+			containers = entityManager.Get(typeof(EquipmentComponent), typeof(DefendComponent));
+			equipments = new Dictionary<UniqueId, EquipmentHelper>();
 
 			foreach (var container in containers) {
 				Containers_OnContainerAddToManager(container);
@@ -50,23 +50,23 @@ namespace SkrGame.Systems {
 		}
 
 		private void Containers_OnContainerRemoveFromManager(Entity container) {
-			Contract.Requires(inventories.ContainsKey(container.Id));
+			Contract.Requires(equipments.ContainsKey(container.Id));
 
-			var helper = inventories[container.Id];
+			var helper = equipments[container.Id];
 
-			container.Get<ContainerComponent>().ItemEquipped -= helper.InventoryHelper_ItemEquipped;
-			container.Get<ContainerComponent>().ItemUnequipped -= helper.InventoryHelper_ItemUnequipped;
-			inventories.Remove(container.Id);
+			container.Get<EquipmentComponent>().ItemEquipped -= helper.InventoryHelper_ItemEquipped;
+			container.Get<EquipmentComponent>().ItemUnequipped -= helper.InventoryHelper_ItemUnequipped;
+			equipments.Remove(container.Id);
 		}
 
 		private void Containers_OnContainerAddToManager(Entity container) {
-			Contract.Requires(!inventories.ContainsKey(container.Id));
+			Contract.Requires(!equipments.ContainsKey(container.Id));
 
-			var helper = new InventoryHelper(container);
+			var helper = new EquipmentHelper(container);
 
-			container.Get<ContainerComponent>().ItemEquipped += helper.InventoryHelper_ItemEquipped;
-			container.Get<ContainerComponent>().ItemUnequipped += helper.InventoryHelper_ItemUnequipped;
-			inventories.Add(container.Id, helper);
+			container.Get<EquipmentComponent>().ItemEquipped += helper.InventoryHelper_ItemEquipped;
+			container.Get<EquipmentComponent>().ItemUnequipped += helper.InventoryHelper_ItemUnequipped;
+			equipments.Add(container.Id, helper);
 		}
 
 	}

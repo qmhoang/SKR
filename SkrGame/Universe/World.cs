@@ -115,6 +115,7 @@ namespace SkrGame.Universe {
 			                              		new Actor("player"),			                              		
 			                              		new DefendComponent(),
 												new ContainerComponent(),
+												new EquipmentComponent(),
 												new VisibleComponent(10)
 			                              });
 
@@ -146,7 +147,7 @@ namespace SkrGame.Universe {
 			                     		new DefendComponent(),
 										new VisibleComponent(10),
 										new ContainerComponent(),
-
+										new EquipmentComponent()
 			                     });
 
 			EntityManager.Create(MeleeWeaponTemplate.CreateMelee("smallknife").AtLocation(1, 1, level));
@@ -156,8 +157,8 @@ namespace SkrGame.Universe {
 			EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
 
 			var armor = EntityManager.Create(ArmorTemplate.CreateArmor("footballpads"));
-			npc.Get<ContainerComponent>().Add(armor);
-			npc.Get<ContainerComponent>().Equip("Torso", armor);
+			npc.Get<ContainerComponent>().Add(armor);			
+			npc.Get<EquipmentComponent>().Equip("Torso", armor);
 		}
 
 		public void Initialize() {
