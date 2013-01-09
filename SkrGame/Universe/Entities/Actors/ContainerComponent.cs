@@ -43,7 +43,10 @@ namespace SkrGame.Universe.Entities.Actors {
 			return GetEnumerator();
 		}
 		
-		public void Clear() {
+		void ICollection<Entity>.Clear() {
+			foreach (var entity in itemContainer) {
+				Remove(entity);
+			}
 			itemContainer.Clear();
 		}
 

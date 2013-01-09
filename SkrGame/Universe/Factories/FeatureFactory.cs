@@ -10,7 +10,8 @@ namespace SkrGame.Universe.Factories {
 	public class FeatureTemplate : Template {
 		protected FeatureTemplate() {
 			Add(new VisibleComponent(10), 
-				new Sprite("FEATURE", Sprite.FEATURES_LAYER), 
+				new Sprite("FEATURE", Sprite.FEATURES_LAYER),
+				new Identifier("Feature"),
 				new Blocker(false, false));
 		}
 

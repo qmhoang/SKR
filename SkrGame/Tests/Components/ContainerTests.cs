@@ -37,8 +37,7 @@ namespace SkrGame.Tests.Components {
 			equipableItem = entityManager.Create(new Template
 			                                {
 			                                		new Item(new Item.Template
-			                                		         {
-			                                		         		Name = "equipable",																																	
+			                                		         {			                                		         		
 																	Slot = new List<string>
 																	       {
 																	       		"slot1"
@@ -50,7 +49,6 @@ namespace SkrGame.Tests.Components {
 			                                {
 			                                		new Item(new Item.Template
 			                                		         {
-			                                		         		Name = "equipable",																																	
 																	Slot = new List<string>
 																	       {
 																	       		"slot1"
@@ -121,9 +119,7 @@ namespace SkrGame.Tests.Components {
 			singleItem = entityManager.Create(new Template
 			                                {
 			                                		new Item(new Item.Template
-			                                		         {
-			                                		         		Name = "item",																	
-			                                		         })
+			                                		         {})
 			                                });
 
 		}
@@ -137,9 +133,7 @@ namespace SkrGame.Tests.Components {
 			container.Add(entityManager.Create(new Template
 			                                {
 			                                		new Item(new Item.Template()
-			                                		         {
-			                                		         		Name = "item1"
-			                                		         })
+			                                		         {})
 			                                }));
 			Assert.AreEqual(container.Count, 2);
 			
@@ -173,9 +167,7 @@ namespace SkrGame.Tests.Components {
 			var item1 = entityManager.Create(new Template
 			                     {
 			                     		new Item(new Item.Template()
-			                     		         {
-			                     		         		Name = "item1"
-			                     		         })
+			                     		         {})
 			                     });
 			Assert.IsFalse(container.Contains(item1));
 			Assert.IsFalse(container.Exist(i => i == item1));
