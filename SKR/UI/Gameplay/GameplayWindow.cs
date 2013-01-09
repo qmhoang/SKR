@@ -169,20 +169,35 @@ namespace SKR.UI.Gameplay {
 			var level = entity.Get<Location>().Level;
 
 			if (level.IsWalkable(newPosition)) {
-		
-				var actorsAtNewLocation = level.EntityManager.Get(typeof (DefendComponent), typeof (Location)).Where(actor => actor.Get<Location>().Position == newPosition).ToList();
+				var actorsAtNewLocation = level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();
 
-				if (actorsAtNewLocation.Count > 1)
-					throw new Exception("We somehow have had 2 actors occupying the same location");
-				else if (actorsAtNewLocation.Count == 1) {
-					Combat.MeleeAttack(player, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
-				} else
+				if (actorsAtNewLocation.Count > 1) {
+					ParentApplication.Push(new OptionsSelectionPrompt<Entity>("Attack what?", actorsAtNewLocation, e => e.ToString(),
+					                                                          e => Combat.MeleeAttack(entity, e, e.Get<DefendComponent>().DefaultPart, World.MEAN), GameplayWindow.PromptTemplate));
+				} else if (actorsAtNewLocation.Count == 1) {
+					Combat.MeleeAttack(entity, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
+				} else {
 					entity.Get<Location>().Position = newPosition;
+					entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+				}
 
-				entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
 			} else
 				World.Instance.AddMessage("There is something in the way.");
 		}
+
+//		private void SelectRangeWeapon(Entity entity) {
+//			entity.Get<ContainerComponent>()
+//		}
+
+//		private void AttackRange(Entity entity, Point target) {
+//			Contract.Requires<ArgumentNullException>(entity != null, "entity");
+//
+//			var attackerLocation = entity.Get<Location>();
+//			var level = entity.Get<Location>().Level;
+//
+//			if (attackerLocation.DistanceTo(target) > )
+//			
+//		}
 
 		private void Wait(Entity entity) {
 			entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);	
@@ -206,8 +221,6 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void PickUpStackedItem(Entity inventoryEntity, Entity itemEntityFromLevel, int amount, ICollection<Entity> items) {
-			Contract.Requires<ArgumentException>(amount > 0);
-
 			if (amount == 0)
 				return;
 
@@ -243,7 +256,6 @@ namespace SKR.UI.Gameplay {
 				}
 
 			}
-			Contract.Ensures(item.Amount >= 0, "item afterwards cannot have negative amounts");				
 		}
 
 		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory, ICollection<Entity> items) {
@@ -263,14 +275,12 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void DropStackedItem(Entity inventoryEntity, Entity itemEntityFromInventory, int amount, ICollection<Entity> items) {
-			Contract.Requires<ArgumentException>(amount > 0);
+			Contract.Requires(amount > 0);
 			if (amount == 0)
 				return;
 
 			var inventory = inventoryEntity.Get<ContainerComponent>();
 			var item = itemEntityFromInventory.Get<Item>();
-
-			Contract.Ensures(item.Amount >= 0, "item afterwards cannot have negative amounts");
 			
 			var level = inventoryEntity.Get<Location>().Level;
 
@@ -396,7 +406,7 @@ namespace SKR.UI.Gameplay {
 							                                           		Size = MapPanel.Size,
 							                                           		IsPopup = true,
 							                                           		HasFrame = true,
-							                                           		Items = player.Get<ContainerComponent>().Slots.ToList(),
+							                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
 							                                           }));
 						else if (keyData.Character == 'l') {
 							if (keyData.ControlKeys == ControlKeys.LeftControl) {

@@ -147,7 +147,7 @@ namespace SkrGame.Universe.Factories {
 											StackType = StackType.None,
 											Slot = new List<string>()
 											       {
-											       		"MainHand",
+											       		"Main Hand",
 											       }
 									}),
 							new MeleeComponent(
@@ -184,7 +184,7 @@ namespace SkrGame.Universe.Factories {
 											StackType = StackType.None,
 											Slot = new List<string>()
 											       {
-											       		"MainHand",
+											       		"Main Hand",
 											       }
 									}),
 							new MeleeComponent(
@@ -220,7 +220,7 @@ namespace SkrGame.Universe.Factories {
 											StackType = StackType.None,
 											Slot = new List<string>()
 											       {
-											       		"MainHand",
+											       		"Main Hand",
 											       }
 									}),
 							new MeleeComponent(
@@ -257,7 +257,7 @@ namespace SkrGame.Universe.Factories {
 											StackType = StackType.None,
 											Slot = new List<string>()
 											       {
-											       		"MainHand",
+											       		"Main Hand",
 											       }
 									}),
 							new MeleeComponent(
@@ -291,7 +291,7 @@ namespace SkrGame.Universe.Factories {
 											StackType = StackType.None,
 											Slot = new List<string>()
 											       {
-											       		"MainHand",
+											       		"Main Hand",
 											       }
 									}),
 							new MeleeComponent(
@@ -384,7 +384,7 @@ namespace SkrGame.Universe.Factories {
 											 StackType = StackType.None,
 											 Slot = new List<string>
 							         		       {
-							         		       		"MainHand",
+							         		       		"Main Hand",
 							         		       }
 										 }),
 								new RangeComponent(
@@ -425,7 +425,7 @@ namespace SkrGame.Universe.Factories {
 							         		StackType = StackType.None,
 							         		Slot = new List<string>()
 							         		       {
-							         		       		"MainHand",
+							         		       		"Main Hand",
 							         		       }
 							         }),
 

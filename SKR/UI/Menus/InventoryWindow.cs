@@ -93,6 +93,7 @@ namespace SKR.UI.Menus {
 	public class InventoryWindow : ListWindow<string> {
 		private int bodyPartWidth;
 		private ContainerComponent inventory;
+		private EquipmentComponent equipment;
 
 		private Rect sizeList;
 
@@ -103,14 +104,20 @@ namespace SKR.UI.Menus {
 		public InventoryWindow(ListWindowTemplate<string> template)
 			: base(null, template) {
 			inventory = World.Instance.Player.Get<ContainerComponent>();
+			equipment = World.Instance.Player.Get<EquipmentComponent>();
 			bodyPartWidth = 25; // todo replace to code            
 			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
 		}
 
 		protected override void OnSelectItem(string slot) {
-			if (inventory.IsSlotEquipped(slot)) {
-				inventory.Unequip(slot);
+			if (equipment.IsSlotEquipped(slot)) {
+				Entity removed;
+				equipment.Unequip(slot, out removed);
+
+				if (removed != null) {
+					inventory.Add(removed);
+				}
 			} else {
 				var items = inventory.Items.Where(i => i.Get<Item>().Slots.Contains(slot)).ToList();
 				if (items.Count > 0)
@@ -122,11 +129,9 @@ namespace SKR.UI.Menus {
 					                                      		HasFrame = true,
 					                                      		Items = items,
 					                                      },
-														  delegate(Entity i)
+					                                      delegate(Entity i)
 					                                      {
-					                                      	inventory.Equip(slot, i);
-					                                      	//															  if ( == ActionResult.Aborted) // todo
-					                                      	//																  World.Instance.AddMessage("Unable to equip item.");
+					                                      	equipment.Equip(slot, i);					                                      	
 					                                      }));
 				else
 					World.Instance.AddMessage("No items in inventory that go there.");
@@ -152,11 +157,11 @@ namespace SKR.UI.Menus {
 			int positionY = 0;
 			char letter = 'A';
 			foreach (var bodyPart in List) {
-				var item = inventory.GetEquippedItemAt(bodyPart);				
+				var item = equipment.GetEquippedItemAt(bodyPart);				
 
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", letter, bodyPart, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
 				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
-				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, inventory.IsSlotEquipped(bodyPart) ?
+				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, equipment.IsSlotEquipped(bodyPart) ?
 					String.Format("{0}{1}", item.Get<Item>().Name, (item.Has<RangeComponent>() ? string.Format(" ({0}/{1})", item.Get<RangeComponent>().ShotsRemaining, item.Get<RangeComponent>().Shots) : "")) : 
 					"-");
 
