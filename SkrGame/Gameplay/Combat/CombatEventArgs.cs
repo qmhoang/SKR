@@ -1,5 +1,6 @@
 using System;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Entity;
 using SkrGame.Universe.Entities.Actors;
 
@@ -34,7 +35,9 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public override string ToString() {
-			return String.Format("Atk: {4}, Def: {5}, Result: {0} - damage: {1}, resisted: {2}, taken: {3}", Result.ToString(), Damage, DamageResisted, DamageTaken, Attacker, Defender);
+			return String.Format("Attacker: {4}, Defender: {5}, Result: {0} - damage: {1}, resisted: {2}, taken: {3}", Result.ToString(), Damage, DamageResisted, DamageTaken, 
+				Attacker.Has<Identifier>() ? Attacker.Get<Identifier>().Name : Attacker.Id.ToString(),
+				Defender.Has<Identifier>() ? Defender.Get<Identifier>().Name : Defender.Id.ToString());
 		}
 	}
 }

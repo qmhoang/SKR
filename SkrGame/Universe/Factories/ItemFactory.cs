@@ -470,7 +470,7 @@ namespace SkrGame.Universe.Factories {
 					ammo.Add(
 							//						new Sprite("BULLET_9x19MM", Sprite.ITEMS_LAYER),
 							new ItemRefId("9x9mm"),
-							new Identifier("9x19mm Parabellum bullet"),
+							new Identifier("9x9mm", "9x19mm Parabellum bullet"),
 							new Item(
 									new Item.Template
 									{
@@ -495,7 +495,7 @@ namespace SkrGame.Universe.Factories {
 					ammo.Add(
 							//							new Sprite("BULLET_.40S&W", Sprite.ITEMS_LAYER),
 							new ItemRefId(".40S&W"),
-							new Identifier(".40 Smith & Wesson bullet"),
+							new Identifier(".40S&W", ".40 Smith & Wesson bullet"),
 							new Item(
 									new Item.Template
 									{

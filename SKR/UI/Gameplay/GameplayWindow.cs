@@ -46,70 +46,6 @@ namespace SKR.UI.Gameplay {
 			player = World.Instance.Player;
 		}
 
-//		/// <summary>
-//		/// This function will recursively check for options
-//		/// 
-//		/// </summary>
-//		/// <param name="activeTalent">The talent being used</param>
-//		/// <param name="targetLocation">the target the talent is being used on</param>
-//		/// <param name="index"></param>
-//		/// <param name="args"></param>
-//		private void RecursiveSelectOptionHelper(ActiveTalentComponent activeTalent, Point targetLocation, int index, List<dynamic> argSelected) {
-//			if (index > activeTalent.NumberOfArgs)
-//				throw new Exception("We have somehow recursed on more levels that there are options");
-//
-//			var user = activeTalent.Talent.Owner;
-//			var talentArg = activeTalent.Args.ElementAt(index);
-//
-//			var options = talentArg.ArgFunction(activeTalent, user, targetLocation);
-//
-//			if (options == null || options.Count() == 0)
-//				if (talentArg.Required) {
-//					Logger.DebugFormat("{0} used talent: {1} without any possible options", user.FullId, activeTalent.Talent.RefId);
-//					world.AddMessage("no possible options");
-//				} else {
-//					// no options, but its not required
-//					argSelected.Add(null);
-//					InvokeOrRecurse(activeTalent, targetLocation, index, argSelected);
-//				} else if (options.Count() == 1) {
-//				// only one option, select it automatically
-//				argSelected.Add(options.ElementAt(0));
-//
-//				InvokeOrRecurse(activeTalent, targetLocation, index, argSelected);
-//			} else if (options.Count() > 0)
-//				ParentApplication.Push(
-//						new OptionsSelectionPrompt<dynamic>(String.IsNullOrEmpty(talentArg.PromptDescription) ? "Options" : talentArg.PromptDescription,
-//															options.ToList(),
-//															arg => talentArg.ArgDesciptor(activeTalent, user, targetLocation, arg),
-//															arg =>
-//															{
-//																argSelected.Add(arg);
-//																InvokeOrRecurse(activeTalent, targetLocation, index, argSelected);
-//															},
-//															promptTemplate));
-//			else
-//				world.AddMessage("No options possible in arg");
-//		}
-//
-//		private void InvokeOrRecurse(ActiveTalentComponent activeTalent, Point targetLocation, int index, List<dynamic> argSelected) {
-//			if (activeTalent.ContainsArg(index + 1))
-//				RecursiveSelectOptionHelper(activeTalent, targetLocation, index + 1, argSelected);
-//			else
-//				activeTalent.InvokeAction(targetLocation, argSelected.ToArray());
-//		}
-//
-//		private void HandleActiveTalent(ActiveTalentComponent activeTalent) {
-//			if (activeTalent.RequiresTarget == TargetType.Positional)
-//				ParentApplication.Push(
-//						new TargetPrompt(activeTalent.Talent.Name, player.Position, p => RecursiveSelectOptionHelper(activeTalent, p, 0, new List<dynamic>()), MapPanel,
-//										 promptTemplate));
-//			else if (activeTalent.RequiresTarget == TargetType.Directional)
-//				ParentApplication.Push(
-//						new DirectionalPrompt(activeTalent.Talent.Name, player.Position, p => RecursiveSelectOptionHelper(activeTalent, p, 0, new List<dynamic>()), promptTemplate));
-//			else
-//				RecursiveSelectOptionHelper(activeTalent, player.Position, 0, new List<dynamic>());
-//		}
-
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 			
@@ -173,15 +109,15 @@ namespace SKR.UI.Gameplay {
 				var actorsAtNewLocation = level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();
 
 				if (actorsAtNewLocation.Count > 0) {
-					var weapons = FilterEquippedItems<MeleeComponent>(entity);
+					var weapons = FilterEquippedItems<MeleeComponent>(entity).ToList();
 					if (weapons.Count > 1) {
 						ParentApplication.Push(
 								new OptionsSelectionPrompt<Entity>("With that weapon?",
 								                                   weapons, e => e.Get<Identifier>().Name,
-								                                   weapon => ChooseMeleeTarget(entity, weapon, actorsAtNewLocation),
+								                                   weapon => SelectMeleeTarget(entity, weapon, actorsAtNewLocation),
 								                                   GameplayWindow.PromptTemplate));
 					} else if (weapons.Count == 1) {
-						ChooseMeleeTarget(entity, weapons.First(), actorsAtNewLocation);
+						SelectMeleeTarget(entity, weapons.First(), actorsAtNewLocation);
 					} else {
 
 						World.Instance.AddMessage("No possible way of attacking.");
@@ -198,7 +134,22 @@ namespace SKR.UI.Gameplay {
 				World.Instance.AddMessage("There is something in the way.");
 		}
 
-		private void ChooseMeleeTarget(Entity entity, Entity weapon, List<Entity> actorsAtNewLocation) {
+		private IEnumerable<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entity.Component {
+			List<Entity> items = new List<Entity>();
+
+			if (entity.Has<EquipmentComponent>()) {
+				var equipment = entity.Get<EquipmentComponent>();
+
+				items.AddRange(from slot in equipment.Slots where equipment.IsSlotEquipped(slot) && equipment[slot].Has<T>() select equipment[slot]);
+			}
+
+			if (items.Count == 0 && entity.Has<T>())
+				items.Add(entity);			// natural weapon
+
+			return items;
+		}
+
+		private void SelectMeleeTarget(Entity entity, Entity weapon, List<Entity> actorsAtNewLocation) {
 			if (actorsAtNewLocation.Count == 1) {
 				Combat.MeleeAttack(entity, weapon, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
 			} else {
@@ -211,22 +162,7 @@ namespace SKR.UI.Gameplay {
 
 		}
 
-		private List<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entity.Component {
-			List<Entity> melees = new List<Entity>();
-
-			if (entity.Has<EquipmentComponent>()) {
-				var equipment = entity.Get<EquipmentComponent>();
-
-				melees.AddRange(from slot in equipment.Slots where equipment.IsSlotEquipped(slot) && equipment[slot].Has<T>() select equipment[slot]);
-			}
-
-			if (melees.Count == 0 && entity.Has<T>())
-				melees.Add(entity);			// natural weapon
-
-			return melees;
-		}
-
-		private void SelectRangeLocation(Entity entity, Entity weapon) {
+		private void SelectRangeTarget(Entity entity, Entity weapon) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 
 			ParentApplication.Push(new TargetPrompt("Shoot where?",
@@ -238,12 +174,12 @@ namespace SKR.UI.Gameplay {
 
 											if (entitiesAtLocation.Count > 0) {
 												if (entitiesAtLocation.Count == 1) {
-													Combat.AttackRange(entity, weapon, entitiesAtLocation.First(), entitiesAtLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
+													Combat.RangeAttack(entity, weapon, entitiesAtLocation.First(), entitiesAtLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
 												} else {
 													ParentApplication.Push(
 															new OptionsSelectionPrompt<Entity>("Shoot at what?", entitiesAtLocation,
 																							   e => e.ToString(),
-																							   e => Combat.AttackRange(entity, weapon, e, e.Get<DefendComponent>().DefaultPart, World.MEAN),
+																							   e => Combat.RangeAttack(entity, weapon, e, e.Get<DefendComponent>().DefaultPart, World.MEAN),
 																							   GameplayWindow.PromptTemplate));
 												}
 											} else {
@@ -252,6 +188,22 @@ namespace SKR.UI.Gameplay {
 										},
 										MapPanel,
 										GameplayWindow.PromptTemplate));
+		}
+
+		private void Reload(Entity user, Entity weapon) {
+			Contract.Requires<ArgumentException>(user.Has<ContainerComponent>());
+
+			var ammos = user.Get<ContainerComponent>().Where(e => e.Has<AmmoComponent>() && e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList();
+
+			if (ammos.Count > 1) {
+				ParentApplication.Push(new OptionsSelectionPrompt<Entity>("What ammo?", ammos,
+																		  ammo => ammo.Get<Identifier>().Name,
+																		  ammo => Combat.ReloadWeapon(user, weapon, ammo),
+																		  GameplayWindow.PromptTemplate));
+			} else if (ammos.Count == 1)
+				Combat.ReloadWeapon(user, weapon, ammos.First());
+			else
+				World.Instance.AddMessage("No possible ammo for selected weapon.");
 		}
 
 		private void Wait(Entity entity) {
@@ -331,7 +283,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void DropStackedItem(Entity inventoryEntity, Entity itemEntityFromInventory, int amount, ICollection<Entity> items) {
-			Contract.Requires(amount > 0);
+			Contract.Requires<ArgumentException>(amount >= 0);
 			if (amount == 0)
 				return;
 
@@ -413,22 +365,34 @@ namespace SKR.UI.Gameplay {
 					{
 						var location = player.Get<Location>();
 						if (keyData.Character == 'f') {
-
-
-							var weapons = FilterEquippedItems<RangeComponent>(player);
+							var weapons = FilterEquippedItems<RangeComponent>(player).ToList();
 
 							if (weapons.Count > 1) {
 								ParentApplication.Push(
-										new OptionsSelectionPrompt<Entity>("With that weapon?",
+										new OptionsSelectionPrompt<Entity>("With what weapon?",
 																		   weapons, e => e.Get<Identifier>().Name,
-																		   weapon => SelectRangeLocation(player, weapon),
+																		   weapon => SelectRangeTarget(player, weapon),
 																		   GameplayWindow.PromptTemplate));
 							} else if (weapons.Count == 1) {
-								SelectRangeLocation(player, weapons.First());
+								SelectRangeTarget(player, weapons.First());
 							} else {
 								World.Instance.AddMessage("No possible way of shooting target.");
 							}
 
+						} else if (keyData.Character == 'r') {
+							var weapons = FilterEquippedItems<RangeComponent>(player).ToList();
+
+							if (weapons.Count > 1) {
+								ParentApplication.Push(
+										new OptionsSelectionPrompt<Entity>("Reload what weapon?",
+										                                   weapons, e => e.Get<Identifier>().Name,
+										                                   weapon => Reload(player, weapon),
+										                                   GameplayWindow.PromptTemplate));
+							} else if (weapons.Count == 1) {
+								Reload(player, weapons.First());
+							} else {
+								World.Instance.AddMessage("No weapons to reload.");
+							}
 						} else if (keyData.Character == 'd') {
 							var inventory = player.Get<ContainerComponent>();
 							if (inventory.Count() > 0)
