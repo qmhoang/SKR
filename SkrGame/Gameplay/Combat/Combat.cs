@@ -122,20 +122,20 @@ namespace SkrGame.Gameplay.Combat {
 
 				Combat.Damage(damage, meleeComponent.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
-				Logger.InfoFormat("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name, "todo-description");
+				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name, "todo-description"));
 
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {
-				Logger.InfoFormat("{0} {1} {2}'s {3}.... and misses.",
-				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name);
+				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
+				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name));
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
-				Logger.InfoFormat("{0} {1} {2}'s {3}.... and {2} dodges.",
-				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name);
+				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name));
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
 			}
@@ -144,7 +144,7 @@ namespace SkrGame.Gameplay.Combat {
 			return ActionResult.Success;
 		}
 
-		public static ActionResult AttackRange(Entity attacker, Entity rangeWeapon, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
+		public static ActionResult RangeAttack(Entity attacker, Entity rangeWeapon, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
 			if (!rangeWeapon.Has<RangeComponent>())
 				throw new ArgumentException("rangeWeapon cannot range attack", "rangeWeapon");
 			if (!attacker.Has<ActionPoint>())
@@ -234,6 +234,50 @@ namespace SkrGame.Gameplay.Combat {
 			return ActionResult.Failed;
 		}
 
+		public static ActionResult ReloadWeapon(Entity user, Entity weaponEntity, Entity ammoEntity) {
+			Contract.Requires<ArgumentException>(weaponEntity.Has<RangeComponent>());
+			Contract.Requires<ArgumentException>(ammoEntity.Has<AmmoComponent>());
+			Contract.Requires<ArgumentException>(user.Has<Location>());
+			Contract.Requires<ArgumentException>(user.Has<ActionPoint>());
+			Contract.Requires<ArgumentException>(weaponEntity.Get<RangeComponent>().AmmoType == ammoEntity.Get<AmmoComponent>().Type);
+
+			var weapon = weaponEntity.Get<RangeComponent>();
+			var ammo = ammoEntity.Get<Item>();
+
+			// todo revolvers and single load weapons
+
+			// first we unload all ammos currently in the gun to the group, semi-simulating dropping the magazine
+			if (weapon.ShotsRemaining > 0) {
+				var droppedAmmo = ammoEntity.Copy();
+
+				droppedAmmo.Get<Item>().Amount = weapon.ShotsRemaining;
+				weapon.ShotsRemaining = 0;
+				droppedAmmo.Get<VisibleComponent>().Reset();
+
+				World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
+			} else {
+				World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
+			}
+
+			if (ammo.StackType == StackType.Hard) {
+				if (ammo.Amount >= weapon.Shots) {
+					ammo.Amount -= weapon.Shots;
+					weapon.ShotsRemaining = weapon.Shots;
+				} else {
+					ammo.Amount -= weaponEntity.Get<Item>().Amount;
+
+					if (user.Has<ContainerComponent>()) {
+						user.Get<ContainerComponent>().Remove(ammoEntity);
+					}
+
+					World.Instance.EntityManager.Remove(ammoEntity);
+				}
+			}
+
+			user.Get<ActionPoint>().ActionPoints -= weapon.APToReload;
+			return ActionResult.Success;
+		}
+
 		public static Rand GetStrengthDamage(int strength) {
 			return Rand.Gaussian(strength / 3, strength / 3 - 1, Math.Min(World.STANDARD_DEVIATION / 3, strength / 3));
 		}
@@ -310,6 +354,7 @@ namespace SkrGame.Gameplay.Combat {
 		public static void ProcessCombat(CombatEventArgs e) {
 //			e.Attacker.OnAttacking(e);
 //			e.Defender.OnDefending(e);
+			Logger.Info(e.ToString());
 		}
 	}
 }

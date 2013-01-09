@@ -156,7 +156,7 @@ namespace SkrGame.Universe {
 
 			EntityManager.Create(MeleeWeaponTemplate.CreateMelee("smallknife").AtLocation(1, 1, level));
 			EntityManager.Create(GunWeaponTemplate.CreateGun("glock17").AtLocation(1, 1, level));
-			var ammo = EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
+			var ammo = EntityManager.Create(AmmoTemplate.CreateAmmo("9x9mm").AtLocation(1, 1, level));
 			ammo.Get<Item>().Amount = 30;
 			EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
 
