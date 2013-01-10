@@ -94,9 +94,13 @@ namespace SkrGame.Universe {
 
 		private ActionPointSystem actionPointSystem;
 		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
+		private DoorSubsystem doorSubsystem;
 
 		private World() {
 			Rng.Seed(0);
+
+			TagManager = new TagManager();
+			GroupManager = new GroupManager();
 
 			MessageBuffer = new List<Message>();
 
@@ -104,8 +108,6 @@ namespace SkrGame.Universe {
 			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(featureFactory);
 
-			TagManager = new TagManager();
-			GroupManager = new GroupManager();
 
 			level = mapFactory.Construct("TestHouse");
 
@@ -168,6 +170,7 @@ namespace SkrGame.Universe {
 		public void Initialize() {
 			actionPointSystem = new ActionPointSystem(EntityManager);
 			itemContainerInteractionSubsystem = new ItemContainerInteractionSubsystem(EntityManager);
+			doorSubsystem = new DoorSubsystem(EntityManager);
 		}
 
 //

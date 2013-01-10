@@ -113,7 +113,7 @@ namespace SkrGame.Gameplay.Combat {
 
 			var meleeComponent = weapon.Get<MeleeComponent>();
 
-			var result = Combat.Attack(attacker.Get<Identifier>().Name, defender.Get<Identifier>().Name, hitBonus + meleeComponent.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
+			var result = Combat.Attack(Identifier.GetNameOrId(attacker), Identifier.GetNameOrId(defender), hitBonus + meleeComponent.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
 
 			if (result == CombatEventResult.Hit) {
 				const int TEMP_STR_BONUS = World.MEAN;
@@ -123,19 +123,19 @@ namespace SkrGame.Gameplay.Combat {
 				Combat.Damage(damage, meleeComponent.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
 				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name, "todo-description"));
+				                  Identifier.GetNameOrId(attacker), meleeComponent.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
 
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {
 				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name));
+				                  Identifier.GetNameOrId(attacker), meleeComponent.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
 				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-				                  attacker.Get<Identifier>().Name, meleeComponent.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name));
+				                  Identifier.GetNameOrId(attacker), meleeComponent.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
 			}
@@ -163,7 +163,7 @@ namespace SkrGame.Gameplay.Combat {
 			Contract.EndContractBlock();
 
 			var weapon = rangeWeapon.Get<RangeComponent>();
-			var attackerName = attacker.Get<Identifier>().Name;
+			var attackerName = Identifier.GetNameOrId(attacker);
 			var attackerLocation = attacker.Get<Location>();
 			var targetLocation = defender.Get<Location>();
 
@@ -187,7 +187,7 @@ namespace SkrGame.Gameplay.Combat {
 
 				double range = defenderLocation.DistanceTo(attackerLocation) * World.TILE_LENGTH_IN_METER;
 				double rangePenalty = Math.Min(0, -World.STANDARD_DEVIATION * Combat.RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.STANDARD_DEVIATION * 2 / 3);
-				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, defender.Get<Identifier>().Name);
+				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, Identifier.GetNameOrId(defender));
 
 				// not being targetted gives a sigma (std dev) penalty
 				rangePenalty -= defender.Id == currentEntity.Id ? 0 : World.STANDARD_DEVIATION;
@@ -197,7 +197,7 @@ namespace SkrGame.Gameplay.Combat {
 								  difficultyOfShot, bodyPartTargetted.TargettingPenalty, hitBonus,
 								  defender.Id == currentEntity.Id);
 
-				var result = Combat.Attack(attackerName, defender.Get<Identifier>().Name, difficultyOfShot);
+				var result = Combat.Attack(attackerName, Identifier.GetNameOrId(defender), difficultyOfShot);
 
 				if (result == CombatEventResult.Hit) {
 					var damage = Math.Max(weapon.Damage.Roll(), 1);
@@ -206,7 +206,7 @@ namespace SkrGame.Gameplay.Combat {
 					Combat.Damage(weapon.Damage.Roll(), weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
 					World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                                        attackerName, weapon.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name, "todo-description"));
+					                                        attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
 
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
@@ -215,13 +215,13 @@ namespace SkrGame.Gameplay.Combat {
 				} else if (result == CombatEventResult.Miss) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
 						World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-																attackerName, weapon.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name));
+																attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
 				} else if (result == CombatEventResult.Dodge) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
 						World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-																attackerName, weapon.ActionDescriptionPlural, defender.Get<Identifier>().Name, bodyPartTargetted.Name));
+																attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
 				}

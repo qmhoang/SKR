@@ -114,7 +114,9 @@
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\ActionPointSystem.cs" />
+    <Compile Include="Systems\DoorSubsystem.cs" />
     <Compile Include="Systems\ItemContainerInteractionSubsystem.cs" />
+    <Compile Include="Systems\ItemEquippingSubsystem.cs" />
     <Compile Include="Tests\Components\ContainerTests.cs" />
     <Compile Include="Tests\Systems\ItemContainerInteractionSubsystemTests.cs" />
     <Compile Include="Tests\WorldTest.cs" />
