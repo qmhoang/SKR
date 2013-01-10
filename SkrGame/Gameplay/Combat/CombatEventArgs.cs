@@ -36,8 +36,8 @@ namespace SkrGame.Gameplay.Combat {
 
 		public override string ToString() {
 			return String.Format("Attacker: {4}, Defender: {5}, Result: {0} - damage: {1}, resisted: {2}, taken: {3}", Result.ToString(), Damage, DamageResisted, DamageTaken, 
-				Attacker.Has<Identifier>() ? Attacker.Get<Identifier>().Name : Attacker.Id.ToString(),
-				Defender.Has<Identifier>() ? Defender.Get<Identifier>().Name : Defender.Id.ToString());
+				Identifier.GetNameOrId(Attacker),
+				Identifier.GetNameOrId(Defender));
 		}
 	}
 }

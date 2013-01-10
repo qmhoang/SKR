@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
@@ -21,9 +22,13 @@ using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
 using libtcod;
+using log4net;
 
 namespace SKR.UI.Gameplay {
 	public class GameplayWindow : Window {
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+
 		private readonly World world;
 
 		public MapPanel MapPanel { get; private set; }
@@ -326,6 +331,21 @@ namespace SKR.UI.Gameplay {
 		}
 		#endregion
 
+		private void DoWhat(Entity user, Entity @object, List<UseableFeature.UseAction> actions) {
+			if (actions.Count > 1) {
+				ParentApplication.Push(
+						new OptionsSelectionPrompt<UseableFeature.UseAction>(String.Format("Do what with {0}?", Identifier.GetNameOrId(@object)),
+						                                                     actions,
+						                                                     a => a.Description, a => a.Use(@object, user, a),
+						                                                     GameplayWindow.PromptTemplate));
+			} else if (actions.Count == 1) {
+				actions.First().Use(@object, user, actions.First());
+			} else {
+				World.Instance.AddMessage(String.Format("No possible action on {0}", Identifier.GetNameOrId(@object)));
+			}
+
+		}
+
 		protected override void OnKeyPressed(KeyboardData keyData) {
 			base.OnKeyReleased(keyData);
 			if (player.Get<ActionPoint>().Updateable) {
@@ -393,6 +413,28 @@ namespace SKR.UI.Gameplay {
 							} else {
 								World.Instance.AddMessage("No weapons to reload.");
 							}
+						} else if (keyData.Character == 'u') {
+							ParentApplication.Push(
+									new DirectionalPrompt("What direction?",
+									                      location.Position,
+									                      p =>
+									                      {
+									                      	var useables = location.Level.GetEntitiesAt(p, typeof(UseableFeature), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
+
+															if (useables.Count > 1) {
+																ParentApplication.Push(
+																		new OptionsSelectionPrompt<Entity>("What object do you want to use?",
+																		                                   useables,
+																		                                   Identifier.GetNameOrId,
+																		                                   e => DoWhat(player, e, e.Get<UseableFeature>().Uses.ToList()), 
+																										   GameplayWindow.PromptTemplate));
+															} else if (useables.Count == 1) {
+																DoWhat(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
+															} else {
+																World.Instance.AddMessage("Nothing there to use.");
+															}
+									                      },
+									                      GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'd') {
 							var inventory = player.Get<ContainerComponent>();
 							if (inventory.Count() > 0)
@@ -463,7 +505,7 @@ namespace SKR.UI.Gameplay {
 													sb.AppendLine(((Level)location.Level).GetTerrain(p).Definition);
 													foreach (var entity in entitiesAtLocation) {
 														sb.AppendFormat("Entity: {0} ", entity.Id);
-														sb.AppendFormat("Name: {0} ", entity.Get<Identifier>().Name);
+														sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
 														if (entity.Has<Blocker>())
 															sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
 

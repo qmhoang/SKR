@@ -38,7 +38,6 @@ namespace SkrGame.Universe.Locations {
 		public World World { get; set; }
 
 		private FilteredCollection entities;
-
 		
 		public Level(Size size, string fill, IEnumerable<Terrain> terrainDefinitions) : base(size) {
 			Uid = new UniqueId();
@@ -70,23 +69,29 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		void entities_OnEntityRemove(Entity entity) {
-			var pos = entity.Get<Location>().Position;
-
-			var terrain = GetTerrain(pos.X, pos.Y);
-			SetProperties(pos.X, pos.Y, terrain.Transparent, terrain.Walkable);
+			if (entity.Has<Blocker>()) {
+				ResetTransparency(entity.Get<Location>().Position);
+				ResetWalkable(entity.Get<Location>().Position);
+				entity.Get<Blocker>().WalkableChanged -= FeatureWalkableChanged;
+				entity.Get<Blocker>().TransparencyChanged -= FeatureTransparencyChanged;
+			}
 		}
 
 		void entities_OnEntityAdd(Entity entity) {
-			var pos = entity.Get<Location>().Position;
-			SetProperties(pos.X, pos.Y, entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+			if (entity.Has<Blocker>()) {
+				ResetTransparency(entity.Get<Location>().Position);
+				ResetWalkable(entity.Get<Location>().Position);
+				entity.Get<Blocker>().WalkableChanged += FeatureWalkableChanged;
+				entity.Get<Blocker>().TransparencyChanged += FeatureTransparencyChanged;
+			}
 		}
 		
 		public void SetTerrain(int x, int y, string t) {
 			if (!IsInBoundsOrBorder(x, y))
 				throw new ArgumentOutOfRangeException();
-			Map[x, y] = t;
-			var terrain = GetTerrain(x, y);
-			SetProperties(x, y, terrain.Transparent, terrain.Walkable);
+			Map[x, y] = t;			
+			ResetTransparency(new Point(x, y));
+			ResetWalkable(new Point(x, y));
 		}
 
 		public void SetTerrain(Point p, string t) {
@@ -103,37 +108,55 @@ namespace SkrGame.Universe.Locations {
 			return TerrainDefinitions[Map[x, y]];
 		}
 
-		/// <summary>
-		/// Generate FOV from tiles and features
-		/// </summary>
-		public void GenerateData() {
-			// tiles
-			for (int x = 0; x < Map.GetLength(0); x++)
-				for (int y = 0; y < Map.GetLength(1); y++) {
-					var t = GetTerrain(x, y);
-					if (t == null)
-						SetProperties(x, y, false, false);
-					else
-						SetProperties(x, y, t.Transparent, t.Walkable);
-				}
-
-			// features
-//			Features.Each(feature => SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable));
-		}
+//		/// <summary>
+//		/// Generate FOV from tiles and features
+//		/// </summary>
+//		public void GenerateData() {
+//			// tiles
+//			for (int x = 0; x < Map.GetLength(0); x++)
+//				for (int y = 0; y < Map.GetLength(1); y++) {
+//					var t = GetTerrain(x, y);
+//					if (t == null)
+//						SetProperties(x, y, false, false);
+//					else
+//						SetProperties(x, y, t.Transparent, t.Walkable);
+//				}
+//
+//			// features
+////			Features.Each(feature => SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable));
+//		}
 		
 		// these are basically delegates that are added to every feature to detect when they change
-//		private void FeatureWalkableChanged(object sender, EventArgs e) {
-//			if (sender is Feature) {
-//				var feature = sender as Feature;
-//				SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
-//			}
-//		}
-//
-//		private void FeatureTransparencyChanged(object sender, EventArgs e) {
-//			if (sender is Feature) {
-//				var feature = sender as Feature;
-//				SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable);
-//			}
-//		}
+		private void FeatureWalkableChanged(object sender, EventArgs e) {
+			var p = EntityManager[((Component) sender).OwnerUId].Get<Location>().Position;
+
+			ResetWalkable(p);
+		}
+
+		private void ResetWalkable(Point p) {
+			if (GetTerrain(p.X, p.Y).Walkable) {
+				var entitiesAt = GetEntitiesAt(p, typeof(Blocker));
+				var isWalkable = entitiesAt.All(entity => entity.Get<Blocker>().Walkable);
+
+				SetWalkable(p.X, p.Y, isWalkable);
+			} else
+				SetWalkable(p.X, p.Y, false);
+		}
+
+		private void FeatureTransparencyChanged(object sender, EventArgs e) {
+			var p = EntityManager[((Component)sender).OwnerUId].Get<Location>().Position;
+
+			ResetTransparency(p);
+		}
+
+		private void ResetTransparency(Point p) {
+			if (GetTerrain(p.X, p.Y).Transparent) {
+				var entitiesAt = GetEntitiesAt(p, typeof(Blocker));
+				var isTransparent = entitiesAt.All(entity => entity.Get<Blocker>().Transparent);
+
+				SetTransparency(p.X, p.Y, isTransparent);
+			} else
+				SetTransparency(p.X, p.Y, false);
+		}
 	}
 }
