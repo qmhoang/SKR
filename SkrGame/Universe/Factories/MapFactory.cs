@@ -10,11 +10,11 @@ namespace SkrGame.Universe.Factories {
 
 	public class SourceMapFactory : MapFactory {
 		private List<Terrain> terrainDefinitions;
-		private FeatureFactory featureFactory;
+		private EntityFactory ef;
 
-		public SourceMapFactory(FeatureFactory featureFactory) {
+		public SourceMapFactory(EntityFactory ef) {
 			terrainDefinitions = new List<Terrain>();
-			this.featureFactory = featureFactory;
+			this.ef = ef;
 
 			terrainDefinitions.Add(new Terrain("Grass", "Grass", true, true, 1.0));
 			terrainDefinitions.Add(new Terrain("StoneFloor", "StoneFloor", true, true, 1.0));
@@ -228,9 +228,8 @@ namespace SkrGame.Universe.Factories {
 				for (int x = 0; x < s.Length; x++) {
 					map.SetTerrain(x, y, charIdentifiers[s[x]].Item1);
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
-						var feature = featureFactory.Construct(charIdentifiers[s[x]].Item2);
+						var feature = ef.Get(charIdentifiers[s[x]].Item2).AtLocation(x, y, map).Construct();
 
-						feature.Add(new Location(x, y, map));						
 						map.EntityManager.Create(feature);
 											
 					}

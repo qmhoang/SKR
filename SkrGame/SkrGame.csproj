@@ -134,6 +134,7 @@
     <Compile Include="Universe\Entities\Items\Components\RangeComponent.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
     <Compile Include="Universe\Entities\Items\Components\MeleeComponent.cs" />
+    <Compile Include="Universe\EntityFactory.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\TalentFactory.cs" />
