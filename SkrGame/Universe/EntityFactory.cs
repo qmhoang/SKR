@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
@@ -12,11 +13,13 @@ using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
+using log4net;
 
 namespace SkrGame.Universe {
 	public class EntityFactory {
 		private Dictionary<string, Template> compiledTemplates;
 		private Dictionary<string, Tuple<string, Template>> tempTemplates;
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public EntityFactory() {
 			compiledTemplates = new Dictionary<string, Template>();
@@ -41,14 +44,22 @@ namespace SkrGame.Universe {
 				string id = queues.Dequeue();
 				var inherit = tempTemplates[id].Item1;
 
+				Logger.DebugFormat("Dequequeing {0}{1}.", id, String.IsNullOrEmpty(inherit) ? "" : string.Format(" which inherits from {0}", inherit));
+				if (id == "glock22")
+					Console.WriteLine();
 				if (String.IsNullOrEmpty(inherit)) {
-					compiledTemplates.Add(id, tempTemplates[id].Item2);
+					Logger.DebugFormat("No inheritance, compiling {0}", id);
+					var cs = tempTemplates[id].Item2.Select(c => c.Copy());					
+					compiledTemplates.Add(id, new Template(cs.ToArray()));
 				} else if (compiledTemplates.ContainsKey(inherit)) {
+					Logger.DebugFormat("Inherited class found, compiling {0}", id);
 					var template = compiledTemplates[inherit];
-					template.Add(tempTemplates[id].Item2.ToArray());
+					template.Add(tempTemplates[id].Item2.Select(c => c.Copy()).ToArray());
+
 					compiledTemplates.Add(id, template);
 				} else {
-					queues.Enqueue(inherit);
+					Logger.DebugFormat("No inherited class found, requequeing {0}", id);
+					queues.Enqueue(id);
 				}
 			}
 
@@ -879,6 +890,82 @@ namespace SkrGame.Universe {
 			                                              						ActionDescriptionPlural = "loads",
 			                                              						Type = ".40S&W",
 			                                              				}))));
+
+			tempTemplates.Add("armor",
+			                  new Tuple<string, Template>("item",
+			                                              new Template(new Sprite("ARMOR", Sprite.ITEMS_LAYER),
+			                                                           new ItemRefId("armor"),
+			                                                           new Identifier("Generic Armor"),
+																	   new Item(new Item.Template
+			                                                                    {
+			                                                                    		Type = ItemType.Armor,
+			                                                                    		Value = 100,
+			                                                                    		Weight = 10,
+			                                                                    		Size = 11,
+			                                                                    		StackType = StackType.None,
+			                                                                    		Slot = new List<string>
+			                                                                    		       {
+			                                                                    		       		"Torso",
+			                                                                    		       }
+			                                                                    }),
+			                                                           new ArmorComponent(new ArmorComponent.Template
+			                                                                              {
+			                                                                              		ComponentId = "armor",
+			                                                                              		DonTime = 1,
+			                                                                              		Defenses = new List<ArmorComponent.LocationProtected>
+			                                                                              		           {
+			                                                                              		           		new ArmorComponent.LocationProtected("Torso", 10, new Dictionary<DamageType, int>
+			                                                                              		           		                                                  {
+			                                                                              		           		                                                  		{Combat.DamageTypes["true"], 0},
+			                                                                              		           		                                                  		{Combat.DamageTypes["cut"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["crush"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["impale"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce_small"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce_large"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce_huge"], 1},
+			                                                                              		           		                                                  		{Combat.DamageTypes["burn"], 1},
+			                                                                              		           		                                                  })
+			                                                                              		           }
+			                                                                              }))));
+
+			tempTemplates.Add("footballpads",
+			                  new Tuple<string, Template>("armor",
+			                                              new Template(new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
+			                                                           new ItemRefId("footballpads"),
+			                                                           new Identifier("Football Shoulder Pads"),
+			                                                           new Item(new Item.Template
+			                                                                    {
+			                                                                    		Type = ItemType.Armor,
+			                                                                    		Value = 5000,
+			                                                                    		Weight = 50,
+			                                                                    		Size = 11,
+			                                                                    		StackType = StackType.None,
+			                                                                    		Slot = new List<string>
+			                                                                    		       {
+			                                                                    		       		"Torso",
+			                                                                    		       }
+			                                                                    }),
+			                                                           new ArmorComponent(new ArmorComponent.Template
+			                                                                              {
+			                                                                              		ComponentId = "footballarmor",
+			                                                                              		DonTime = 10,
+			                                                                              		Defenses = new List<ArmorComponent.LocationProtected>
+			                                                                              		           {
+			                                                                              		           		new ArmorComponent.LocationProtected("Torso", 30, new Dictionary<DamageType, int>
+			                                                                              		           		                                                  {
+			                                                                              		           		                                                  		{Combat.DamageTypes["true"], 0},
+			                                                                              		           		                                                  		{Combat.DamageTypes["cut"], 8},
+			                                                                              		           		                                                  		{Combat.DamageTypes["crush"], 15},
+			                                                                              		           		                                                  		{Combat.DamageTypes["impale"], 6},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce_small"], 4},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce"], 4},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce_large"], 4},
+			                                                                              		           		                                                  		{Combat.DamageTypes["pierce_huge"], 4},
+			                                                                              		           		                                                  		{Combat.DamageTypes["burn"], 5},
+			                                                                              		           		                                                  })
+			                                                                              		           }
+			                                                                              }))));
 		}
 	}
 }

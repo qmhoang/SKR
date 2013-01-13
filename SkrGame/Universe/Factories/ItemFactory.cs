@@ -355,6 +355,7 @@ namespace SkrGame.Universe.Factories {
 						weapon.Add(
 								new Sprite("GLOCK17", Sprite.ITEMS_LAYER),
 								new Identifier("Glock 17"),
+								new ItemRefId("glock17"),
 								new Item(new Item.Template
 										 {
 											 Type = ItemType.OneHandedWeapon,
@@ -396,6 +397,7 @@ namespace SkrGame.Universe.Factories {
 					weapon.Add(
 							//							new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
 							new Identifier("Glock 22"),
+							new ItemRefId("glock22"),
 							new Item(new Item.Template
 							         {
 							         		Type = ItemType.OneHandedWeapon,

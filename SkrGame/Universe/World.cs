@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
@@ -68,12 +69,14 @@ namespace SkrGame.Universe {
 		}
 
 		
-		private readonly FeatureFactory featureFactory;
+//		private readonly FeatureFactory featureFactory;
 //		private readonly TalentFactory talentFactory;
 		private readonly MapFactory mapFactory;
 
 		public TagManager TagManager { get; private set; }
 		public GroupManager GroupManager { get; private set; }
+
+		public EntityFactory EntityFactory { get; private set; }
 
 		public static World Instance { get; private set; }
 
@@ -101,13 +104,13 @@ namespace SkrGame.Universe {
 
 			TagManager = new TagManager();
 			GroupManager = new GroupManager();
+			EntityFactory = new EntityFactory();
 
 			MessageBuffer = new List<Message>();
 
 //			talentFactory = new SourceTalentFactory();			
-			featureFactory = new SourceFeatureFactory();
-			mapFactory = new SourceMapFactory(featureFactory);
-
+//			featureFactory = new SourceFeatureFactory();
+			mapFactory = new SourceMapFactory(EntityFactory);
 
 			level = mapFactory.Construct("TestHouse");
 
@@ -156,13 +159,13 @@ namespace SkrGame.Universe {
 										new EquipmentComponent()
 			                     });
 
-			EntityManager.Create(MeleeWeaponTemplate.CreateMelee("smallknife").AtLocation(1, 1, level));
-			EntityManager.Create(GunWeaponTemplate.CreateGun("glock17").AtLocation(1, 1, level));
-			var ammo = EntityManager.Create(AmmoTemplate.CreateAmmo("9x9mm").AtLocation(1, 1, level));
+			EntityManager.Create(EntityFactory.Get("smallknife").AtLocation(1, 1, level).Construct());
+			EntityManager.Create(EntityFactory.Get("glock17").AtLocation(1, 1, level).Construct());
+			var ammo = EntityManager.Create(EntityFactory.Get("9x9mm").AtLocation(1, 1, level).Construct());
 			ammo.Get<Item>().Amount = 30;
-			EntityManager.Create(AmmoTemplate.CreateAmmo("ammo").AtLocation(1, 1, level));
+			EntityManager.Create(EntityFactory.Get("bullet").AtLocation(1, 1, level).Construct());
 
-			var armor = EntityManager.Create(ArmorTemplate.CreateArmor("footballpads"));
+			var armor = EntityManager.Create(EntityFactory.Get("footballpads").AtLocation(0, 0, level).Construct());
 			npc.Get<ContainerComponent>().Add(armor);			
 			npc.Get<EquipmentComponent>().Equip("Torso", armor);
 		}
@@ -215,6 +218,18 @@ namespace SkrGame.Universe {
 
 		public void UpdateSystems() {
 			actionPointSystem.Update();			
+		}
+	}
+
+	public static class TemplateExtension {
+		public static Template AtLocation(this Template template, int x, int y, Map map) {
+			template.Add(new Location(new Point(x, y), map));
+			return template;
+		}
+
+		public static IEnumerable<Component> Construct(this Template template) {
+//			return template.ToList();
+			return template.Select(comp => comp.Copy());
 		}
 	}
 }

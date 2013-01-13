@@ -107,8 +107,10 @@ namespace SkrGame.Universe.Locations {
 //		}		
 		public override Component Copy() {
 			var b = new Blocker(walkable, transparent);
-			b.TransparencyChanged = (EventHandler<EventArgs>)TransparencyChanged.Clone();
-			b.WalkableChanged = (EventHandler<EventArgs>)WalkableChanged.Clone();
+			if (TransparencyChanged != null)
+				b.TransparencyChanged = (EventHandler<EventArgs>)TransparencyChanged.Clone();
+			if (WalkableChanged != null)
+				b.WalkableChanged = (EventHandler<EventArgs>)WalkableChanged.Clone();
 
 			return b;
 		}
