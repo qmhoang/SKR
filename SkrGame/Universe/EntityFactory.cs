@@ -17,6 +17,90 @@ using log4net;
 
 namespace SkrGame.Universe {
 	public class EntityFactory {
+		public class Template : IEnumerable<Component> {
+			private readonly Dictionary<Type, Component> components;
+
+			public Template() {
+				components = new Dictionary<Type, Component>();
+			}
+
+			public Template(IEnumerable<Component> components)
+				: this(components.ToArray()) { }
+
+			public Template(params Component[] components)
+				: this() {
+				if (components == null)
+					return;
+
+				Add(components);
+			}
+
+			/// <summary>
+			/// Add a component to the template
+			/// </summary>
+			/// <param name="component"></param>
+			public Template Add(Component component) {
+				if (components.ContainsKey(component.GetType())) {
+					components[component.GetType()] = component;
+				} else {
+					components.Add(component.GetType(), component);
+				}
+				return this;
+			}
+
+			/// <summary>
+			/// Add a collection of components
+			/// </summary>
+			/// <param name="comps"></param>
+			public Template Add(IEnumerable<Component> comps) {
+				foreach (var component in comps) {
+					Add(component);
+				}
+				return this;
+			}
+
+			/// <summary>
+			/// Add a collection of components
+			/// </summary>
+			/// <param name="comps"></param>
+			public Template Add(params Component[] comps) {
+				return Add(comps as IEnumerable<Component>);
+
+			}
+
+			/// <summary>
+			/// Get a component of a given type
+			/// </summary>
+			/// <typeparam name="T"></typeparam>
+			/// <returns></returns>
+			public T As<T>() where T : Component {
+				Component o;
+				components.TryGetValue(typeof(T), out o);
+				return (T)o;
+			}
+
+			/// <summary>
+			/// Check if the template contains a given type
+			/// </summary>
+			/// <typeparam name="T"></typeparam>
+			/// <returns></returns>
+			public bool Is<T>() where T : Component {
+				return components.ContainsKey(typeof(T));
+			}
+
+			#region IEnumerable
+
+			public IEnumerator<Component> GetEnumerator() {
+				return components.Values.GetEnumerator();
+			}
+
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+				return GetEnumerator();
+			}
+
+			#endregion
+		}
+
 		private Dictionary<string, Template> compiledTemplates;
 		private Dictionary<string, Tuple<string, Template>> tempTemplates;
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -49,12 +133,11 @@ namespace SkrGame.Universe {
 					Console.WriteLine();
 				if (String.IsNullOrEmpty(inherit)) {
 					Logger.DebugFormat("No inheritance, compiling {0}", id);
-					var cs = tempTemplates[id].Item2.Select(c => c.Copy());					
-					compiledTemplates.Add(id, new Template(cs.ToArray()));
+					compiledTemplates.Add(id, tempTemplates[id].Item2);
 				} else if (compiledTemplates.ContainsKey(inherit)) {
 					Logger.DebugFormat("Inherited class found, compiling {0}", id);
-					var template = compiledTemplates[inherit];
-					template.Add(tempTemplates[id].Item2.Select(c => c.Copy()).ToArray());
+					Template template = new Template(compiledTemplates[inherit].Select(c => c.Copy()));
+					template.Add(tempTemplates[id].Item2);
 
 					compiledTemplates.Add(id, template);
 				} else {
@@ -66,8 +149,8 @@ namespace SkrGame.Universe {
 			tempTemplates.Clear();
 		}
 
-		public Template Get(string id) {
-			return compiledTemplates[id];
+		public IEnumerable<Component> Get(string id) {
+			return compiledTemplates[id].Select(c => c.Copy());
 		}
 
 		private ActionResult ActionDoor(Entity user, Entity door, UseableFeature.UseAction action, string assetOpened, string assetClosed) {
@@ -476,7 +559,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("item",
 			                  new Tuple<string, Template>("",
 			                                              new Template(new VisibleComponent(10),
-			                                                           new Sprite("GENERIC_ITEM", Sprite.ITEMS_LAYER),
+			                                                           new Sprite("ITEM", Sprite.ITEMS_LAYER),
 			                                                           new ItemRefId("item"),
 			                                                           new Identifier("Junk", "A piece of junk."),
 			                                                           new Item(
@@ -826,7 +909,8 @@ namespace SkrGame.Universe {
 			                                              				}))));
 			tempTemplates.Add("bullet",
 			                  new Tuple<string, Template>("item",
-			                                              new Template( //new Sprite("BULLET", Sprite.ITEMS_LAYER),
+			                                              new Template(
+																new Sprite("BULLET", Sprite.ITEMS_LAYER),
 			                                              		new ItemRefId("bullet"),
 			                                              		new Identifier("Bullets"),
 			                                              		new Item(

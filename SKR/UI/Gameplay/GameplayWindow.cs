@@ -228,7 +228,6 @@ namespace SKR.UI.Gameplay {
 						                amount => PickUpStackedItem(inventoryEntity, itemEntityFromLevel, amount, items), item.Amount, 0, item.Amount, PromptTemplate));
 			else {
 				inventory.Add(itemEntityFromLevel);
-				itemEntityFromLevel.Get<VisibleComponent>().VisibilityIndex = -1;
 				items.Remove(itemEntityFromLevel);
 			}
 		}
@@ -254,7 +253,6 @@ namespace SKR.UI.Gameplay {
 					inventory.Add(tempItem);
 				} else {
 					inventory.Add(itemEntityFromLevel);
-					itemEntityFromLevel.Get<VisibleComponent>().VisibilityIndex = -1;
 					items.Remove(itemEntityFromLevel);
 				}
 
@@ -282,7 +280,6 @@ namespace SKR.UI.Gameplay {
 						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount, items), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
 			else {
 				inventory.Remove(itemEntityFromInventory);
-				itemEntityFromInventory.Get<VisibleComponent>().Reset();
 				items.Remove(itemEntityFromInventory);
 			}
 		}
@@ -314,7 +311,6 @@ namespace SKR.UI.Gameplay {
 				} else {
 					// if we're removing everything, just remove from the inventory and show it
 					inventory.Remove(itemEntityFromInventory);
-					itemEntityFromInventory.Get<VisibleComponent>().Reset();
 					items.Remove(itemEntityFromInventory);
 				}
 				

@@ -228,9 +228,9 @@ namespace SkrGame.Universe.Factories {
 				for (int x = 0; x < s.Length; x++) {
 					map.SetTerrain(x, y, charIdentifiers[s[x]].Item1);
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
-						var feature = ef.Get(charIdentifiers[s[x]].Item2).AtLocation(x, y, map).Construct();
+						var feature = ef.Get(charIdentifiers[s[x]].Item2);
 
-						map.EntityManager.Create(feature);
+						map.EntityManager.Create(feature).Add(new Location(x, y, map));
 											
 					}
 				}

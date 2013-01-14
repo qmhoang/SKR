@@ -101,6 +101,10 @@ namespace SkrGame.Universe.Entities.Actors {
 			itemContainer.Add(item);
 			OnItemAdded(new EventArgs<Entity>(item));
 
+			if (item.Has<VisibleComponent>()) {
+				item.Get<VisibleComponent>().VisibilityIndex = -1;
+			}
+
 			return true;
 		}
 
@@ -114,6 +118,10 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			OnItemRemoved(new EventArgs<Entity>(item));
 			itemContainer.Remove(item);
+
+			if (item.Has<VisibleComponent>()) {
+				item.Get<VisibleComponent>().Reset();
+			}
 			
 			return true;
 		}

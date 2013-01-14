@@ -1,4 +1,5 @@
-﻿using DEngine.Components;
+﻿using System.Collections.Generic;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using NUnit.Framework;
@@ -18,21 +19,21 @@ namespace SkrGame.Tests.Systems {
 			entityManager = new EntityManager();
 			subsystem = new ItemContainerInteractionSubsystem(entityManager);
 
-			container = entityManager.Create(new Template()
+			container = entityManager.Create(new List<Component>()
 			                                 {
 			                                 		new ContainerComponent(),
 			                                 		new Location(0, 0, null)
 			                                 });
 
 			container.Get<ContainerComponent>().Add(
-					entityManager.Create(new Template
+					entityManager.Create(new List<Component>
 					                     {
 					                     		new Item(new Item.Template()
 					                     		         {}),
 					                     		new Location(4, 2, null)
 					                     }));
 			container.Get<ContainerComponent>().Add(
-					entityManager.Create(new Template
+					entityManager.Create(new List<Component>
 					                     {
 					                     		new Item(new Item.Template()
 					                     		         {}),
@@ -90,7 +91,7 @@ namespace SkrGame.Tests.Systems {
 
 		[Test]
 		public void TestItemRemovedFromContainer() {
-			var itemToBeRemoved = entityManager.Create(new Template
+			var itemToBeRemoved = entityManager.Create(new List<Component>
 			                                  {
 			                                  		new Item(new Item.Template()
 			                                  		         {}),
