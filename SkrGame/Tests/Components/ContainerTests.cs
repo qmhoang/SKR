@@ -19,42 +19,42 @@ namespace SkrGame.Tests.Components {
 
 		private Entity equipableItem;
 		private Entity equipableItem2;
-		
-		[SetUp] 
+
+		[SetUp]
 		public void SetUp() {
 			entityManager = new EntityManager();
 
-			entity = entityManager.Create(new Template()
+			entity = entityManager.Create(new List<Component>
 			                              {
 			                              		new EquipmentComponent(new List<string>
 			                              		                       {
 			                              		                       		"slot1",
-																			"slot2"
+			                              		                       		"slot2"
 			                              		                       })
 			                              });
 			equipment = entity.Get<EquipmentComponent>();
 
-			equipableItem = entityManager.Create(new Template
-			                                {
-			                                		new Item(new Item.Template
-			                                		         {			                                		         		
-																	Slot = new List<string>
-																	       {
-																	       		"slot1"
-																	       }
-			                                		         })
-			                                });
+			equipableItem = entityManager.Create(new List<Component>
+			                                     {
+			                                     		new Item(new Item.Template
+			                                     		         {
+			                                     		         		Slot = new List<string>
+			                                     		         		       {
+			                                     		         		       		"slot1"
+			                                     		         		       }
+			                                     		         })
+			                                     });
 
-			equipableItem2 = entityManager.Create(new Template
-			                                {
-			                                		new Item(new Item.Template
-			                                		         {
-																	Slot = new List<string>
-																	       {
-																	       		"slot1"
-																	       }
-			                                		         })
-			                                });
+			equipableItem2 = entityManager.Create(new List<Component>
+			                                      {
+			                                      		new Item(new Item.Template
+			                                      		         {
+			                                      		         		Slot = new List<string>
+			                                      		         		       {
+			                                      		         		       		"slot1"
+			                                      		         		       }
+			                                      		         })
+			                                      });
 		}
 
 		[Test]
@@ -88,8 +88,8 @@ namespace SkrGame.Tests.Components {
 			Assert.IsFalse(equipment.IsSlotEquipped("slot1"));
 
 			equipment.Unequip("slot2", out removed);
-			
-			Assert.IsNull(removed);			
+
+			Assert.IsNull(removed);
 		}
 
 //		[Test]
@@ -97,8 +97,9 @@ namespace SkrGame.Tests.Components {
 //			Assert.Ignore();
 //		}
 	}
+
 	[TestFixture]
-	class ContainerTests {
+	internal class ContainerTests {
 		private EntityManager entityManager;
 
 		private Entity entity;
@@ -110,18 +111,17 @@ namespace SkrGame.Tests.Components {
 		public void Init() {
 			entityManager = new EntityManager();
 
-			entity = entityManager.Create(new Template()
+			entity = entityManager.Create(new List<Component>()
 			                              {
 			                              		new ContainerComponent()
 			                              });
 			container = entity.Get<ContainerComponent>();
 
-			singleItem = entityManager.Create(new Template
-			                                {
-			                                		new Item(new Item.Template
-			                                		         {})
-			                                });
-
+			singleItem = entityManager.Create(new List<Component>
+			                                  {
+			                                  		new Item(new Item.Template
+			                                  		         {})
+			                                  });
 		}
 
 		[Test]
@@ -130,13 +130,13 @@ namespace SkrGame.Tests.Components {
 
 			Assert.AreEqual(container.Count, 1);
 
-			container.Add(entityManager.Create(new Template
-			                                {
-			                                		new Item(new Item.Template()
-			                                		         {})
-			                                }));
+			container.Add(entityManager.Create(new List<Component>
+			                                   {
+			                                   		new Item(new Item.Template()
+			                                   		         {})
+			                                   }));
 			Assert.AreEqual(container.Count, 2);
-			
+
 			Assert.Throws<ArgumentNullException>(() => container.Add(null));
 
 			// adding an item that exist already returns false
@@ -156,7 +156,7 @@ namespace SkrGame.Tests.Components {
 		}
 
 		[Test]
-		public void TestPredicate() {			
+		public void TestPredicate() {
 			container.Add(singleItem);
 
 			Assert.IsTrue(container.Contains(singleItem));
@@ -164,11 +164,11 @@ namespace SkrGame.Tests.Components {
 			Assert.IsTrue(container.Exist(i => i == singleItem));
 
 			// testing negative
-			var item1 = entityManager.Create(new Template
-			                     {
-			                     		new Item(new Item.Template()
-			                     		         {})
-			                     });
+			var item1 = entityManager.Create(new List<Component>
+			                                 {
+			                                 		new Item(new Item.Template()
+			                                 		         {})
+			                                 });
 			Assert.IsFalse(container.Contains(item1));
 			Assert.IsFalse(container.Exist(i => i == item1));
 		}

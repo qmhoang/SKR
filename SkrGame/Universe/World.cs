@@ -114,7 +114,7 @@ namespace SkrGame.Universe {
 
 			level = mapFactory.Construct("TestHouse");
 
-			Player = EntityManager.Create(new Template
+			Player = EntityManager.Create(new List<Component>
 			                              {
 			                              		new ActionPoint(),
 			                              		new Sprite("player", Sprite.PLAYER_LAYER),
@@ -146,7 +146,7 @@ namespace SkrGame.Universe {
 			           				Parry = 0
 			           		}));
 
-			var npc = EntityManager.Create(new Template
+			var npc = EntityManager.Create(new List<Component>
 			                     {
 			                     		new ActionPoint(),
 			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
@@ -159,13 +159,13 @@ namespace SkrGame.Universe {
 										new EquipmentComponent()
 			                     });
 
-			EntityManager.Create(EntityFactory.Get("smallknife").AtLocation(1, 1, level).Construct());
-			EntityManager.Create(EntityFactory.Get("glock17").AtLocation(1, 1, level).Construct());
-			var ammo = EntityManager.Create(EntityFactory.Get("9x9mm").AtLocation(1, 1, level).Construct());
+			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
+			EntityManager.Create(EntityFactory.Get("glock17")).Add(new Location(1, 1, level));
+			var ammo = EntityManager.Create(EntityFactory.Get("9x9mm")).Add(new Location(1, 1, level));
 			ammo.Get<Item>().Amount = 30;
-			EntityManager.Create(EntityFactory.Get("bullet").AtLocation(1, 1, level).Construct());
+			EntityManager.Create(EntityFactory.Get("bullet")).Add(new Location(1, 1, level));
 
-			var armor = EntityManager.Create(EntityFactory.Get("footballpads").AtLocation(0, 0, level).Construct());
+			var armor = EntityManager.Create(EntityFactory.Get("footballpads")).Add(new Location(1, 1, level));
 			npc.Get<ContainerComponent>().Add(armor);			
 			npc.Get<EquipmentComponent>().Equip("Torso", armor);
 		}
@@ -218,18 +218,6 @@ namespace SkrGame.Universe {
 
 		public void UpdateSystems() {
 			actionPointSystem.Update();			
-		}
-	}
-
-	public static class TemplateExtension {
-		public static Template AtLocation(this Template template, int x, int y, Map map) {
-			template.Add(new Location(new Point(x, y), map));
-			return template;
-		}
-
-		public static IEnumerable<Component> Construct(this Template template) {
-//			return template.ToList();
-			return template.Select(comp => comp.Copy());
 		}
 	}
 }

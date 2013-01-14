@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Reflection;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entity;
 using SkrGame.Universe.Entities.Items;
@@ -67,6 +68,10 @@ namespace SkrGame.Universe.Entities.Actors {
 //			else
 //				removed = null;
 
+			if (item.Has<VisibleComponent>()) {
+				item.Get<VisibleComponent>().VisibilityIndex = -1;
+			}
+
 			equippedItems.Add(slot, item);			
 		}
 
@@ -74,15 +79,20 @@ namespace SkrGame.Universe.Entities.Actors {
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
 			Contract.Ensures(!equippedItems.ContainsKey(slot), "item is still equipped");
 
-			Logger.DebugFormat("{0} is unequipping his item at {1}.", OwnerUId, slot);
 
 			if (!equippedItems.ContainsKey(slot)) {
 				removed = null;
 				return false;
 			} else {
+				Logger.DebugFormat("{0} is unequipping his item at {1}.", OwnerUId, slot);
+
 				Entity old = equippedItems[slot];
 				equippedItems.Remove(slot);
 				removed = old;
+
+				if (removed.Has<VisibleComponent>()) {
+					removed.Get<VisibleComponent>().Reset();
+				}
 
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
 

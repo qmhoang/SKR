@@ -104,6 +104,8 @@ namespace SKR.Universe {
 			assets.Add("MAGAZINE_GLOCK22", new Tuple<char, Pigment>('.', new Pigment(ColorPresets.Brass, ColorPresets.Black)));
 			assets.Add("BULLET_.40S&W", new Tuple<char, Pigment>('.', new Pigment(ColorPresets.Brass, ColorPresets.Black)));
 
+			assets.Add("FOOTBALL_SHOULDER_PADS", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.LightGray, ColorPresets.Black)));
+
 			#endregion
 		}
 
