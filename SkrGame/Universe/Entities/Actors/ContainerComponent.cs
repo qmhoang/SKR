@@ -16,18 +16,18 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		private readonly List<Entity> itemContainer;
 
-		public event EventHandler<EventArgs<Entity>> ItemRemoved;
-		public event EventHandler<EventArgs<Entity>> ItemAdded;
+		public event ComponentEventHandler<EventArgs<Entity>> ItemRemoved;
+		public event ComponentEventHandler<EventArgs<Entity>> ItemAdded;
 
 
 		public void OnItemAdded(EventArgs<Entity> e) {
-			EventHandler<EventArgs<Entity>> handler = ItemAdded;
+			ComponentEventHandler<EventArgs<Entity>> handler = ItemAdded;
 			if (handler != null)
 				handler(this, e);
 		}
 
 		public void OnItemRemoved(EventArgs<Entity> e) {
-			EventHandler<EventArgs<Entity>> handler = ItemRemoved;
+			ComponentEventHandler<EventArgs<Entity>> handler = ItemRemoved;
 			if (handler != null)
 				handler(this, e);
 		}
@@ -147,9 +147,9 @@ namespace SkrGame.Universe.Entities.Actors {
 			}
 			
 			if (ItemAdded != null)
-				container.ItemAdded = (EventHandler<EventArgs<Entity>>)ItemAdded.Clone();
+				container.ItemAdded = (ComponentEventHandler<EventArgs<Entity>>)ItemAdded.Clone();
 			if (ItemRemoved != null)
-				container.ItemRemoved = (EventHandler<EventArgs<Entity>>)ItemRemoved.Clone();
+				container.ItemRemoved = (ComponentEventHandler<EventArgs<Entity>>)ItemRemoved.Clone();
 
 			
 			return container;

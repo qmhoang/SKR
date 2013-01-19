@@ -16,23 +16,27 @@ namespace SkrGame.Universe.Entities.Actors {
 		private readonly Dictionary<string, Entity> equippedItems;
 		private List<string> slots;
 
-		public event EventHandler<EventArgs<string, Entity>> ItemEquipped;
-		public event EventHandler<EventArgs<string, Entity>> ItemUnequipped;
+		public event ComponentEventHandler<EventArgs<string, Entity>> ItemEquipped;
+		public event ComponentEventHandler<EventArgs<string, Entity>> ItemUnequipped;
 
 		public void OnItemEquipped(EventArgs<string, Entity> e) {
-			EventHandler<EventArgs<string, Entity>> handler = ItemEquipped;
+			ComponentEventHandler<EventArgs<string, Entity>> handler = ItemEquipped;
 			if (handler != null)
 				handler(this, e);
 		}
 
 		public void OnItemUnequipped(EventArgs<string, Entity> e) {
-			EventHandler<EventArgs<string, Entity>> handler = ItemUnequipped;
+			ComponentEventHandler<EventArgs<string, Entity>> handler = ItemUnequipped;
 			if (handler != null)
 				handler(this, e);
 		}
 
 		public bool ContainSlot(string slot) {
 			return slots.Contains(slot);
+		}
+
+		public IEnumerable<Entity> EquippedItems {
+			get { return equippedItems.Values; }
 		}
 
 		public IEnumerable<string> Slots {
@@ -50,7 +54,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public EquipmentComponent(IEnumerable<string> slots) {
 			equippedItems = new Dictionary<string, Entity>();
 			this.slots = new List<string>(slots);
-		}
+		}		
 
 		public void Equip(string slot, Entity item) {
 			Contract.Requires<ArgumentNullException>(item != null);
@@ -107,11 +111,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public Entity GetEquippedItemAt(string slot) {
 			Contract.Requires<ArgumentException>(!string.IsNullOrEmpty(slot));
 			Contract.Requires<ArgumentException>(ContainSlot(slot));
-			try {
-				return equippedItems[slot];
-			} catch (Exception) {
-				return null;
-			}
+			return equippedItems.ContainsKey(slot) ? equippedItems[slot] : null;
 		}
 
 		public Entity this[string slot] {
@@ -129,9 +129,9 @@ namespace SkrGame.Universe.Entities.Actors {
 			}
 
 			if (ItemEquipped != null)
-				equipment.ItemEquipped = (EventHandler<EventArgs<string, Entity>>)ItemEquipped.Clone();
+				equipment.ItemEquipped = (ComponentEventHandler<EventArgs<string, Entity>>)ItemEquipped.Clone();
 			if (ItemUnequipped != null)
-				equipment.ItemUnequipped = (EventHandler<EventArgs<string, Entity>>)ItemUnequipped.Clone();
+				equipment.ItemUnequipped = (ComponentEventHandler<EventArgs<string, Entity>>)ItemUnequipped.Clone();
 
 			return equipment;
 		}

@@ -111,9 +111,10 @@ namespace SKR.UI.Gameplay {
 
 			var level = entity.Get<Location>().Level;
 
+			// first we see if there are any entities that we "bump" into when we walk onto new location
 			var bumpablesAtNewLocation = level.GetEntitiesAt(newPosition, typeof(OnBump)).ToList();
-
 			bool blockedMovement = false;
+
 			foreach (var b in bumpablesAtNewLocation) {
 				if (b.Get<OnBump>().Action(entity, b) == OnBump.BumpResult.BlockMovement) {
 					blockedMovement = true;
@@ -123,29 +124,42 @@ namespace SKR.UI.Gameplay {
 			if (blockedMovement)
 				return;
 
-			if (level.IsWalkable(newPosition)) {
-				var actorsAtNewLocation = level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();
+			// then we check for attackables
+			var actorsAtNewLocation = level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();			
 
-				if (actorsAtNewLocation.Count > 0) {
-					var weapons = FilterEquippedItems<MeleeComponent>(entity).ToList();
-					if (weapons.Count > 1) {
-						ParentApplication.Push(
-								new OptionsSelectionPrompt<Entity>("With that weapon?",
-								                                   weapons, e => e.Get<Identifier>().Name,
-								                                   weapon => SelectMeleeTarget(entity, weapon, actorsAtNewLocation),
-								                                   GameplayWindow.PromptTemplate));
-					} else if (weapons.Count == 1)
-						SelectMeleeTarget(entity, weapons.First(), actorsAtNewLocation);
-					else {
-						World.Instance.AddMessage("No possible way of attacking.");
-						Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
-					}
-				} else {
-					entity.Get<Location>().Position = newPosition;
-					entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+			if (actorsAtNewLocation.Count > 0) {				
+				var weapons = FilterEquippedItems<MeleeComponent>(entity).ToList();
+				if (weapons.Count > 1) {
+					ParentApplication.Push(
+							new OptionsSelectionPrompt<Entity>("With that weapon?",
+							                                   weapons, e => e.Get<Identifier>().Name,
+							                                   weapon => SelectMeleeTarget(entity, weapon, actorsAtNewLocation),
+							                                   GameplayWindow.PromptTemplate));
+				} else if (weapons.Count == 1)
+					SelectMeleeTarget(entity, weapons.First(), actorsAtNewLocation);
+				else {
+					World.Instance.AddMessage("No possible way of attacking.");
+					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
 				}
+
+				return;	// attacking doesn't move you
+			}
+
+			// finally move onto the new location
+			if (level.IsWalkable(newPosition)) {
+				entity.Get<Location>().Position = newPosition;
+				entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+
+				// check if we're near anything
+				var nearEntities = level.EntityManager.Get(typeof(PassiveFeature)).ToList();
+
+				foreach (var e in nearEntities) {
+					e.Get<PassiveFeature>().Near(entity, e);
+				}
+
 			} else
 				World.Instance.AddMessage("There is something in the way.");
+
 		}
 
 		private IEnumerable<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entities.Component {

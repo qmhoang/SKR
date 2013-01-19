@@ -20,7 +20,7 @@ namespace SkrGame.Universe.Factories {
 
 
 		public static OnBump.BumpResult DoorOnBump(Entity user, Entity door) {
-			if (door.Get<Opening>().Status == Opening.EntryStatus.Closed) {
+			if (door.Get<Opening>().Status == Opening.OpeningStatus.Closed) {
 				Opening.Action(user, door);
 				return OnBump.BumpResult.BlockMovement;
 			} else {
@@ -109,27 +109,28 @@ namespace SkrGame.Universe.Factories {
 			                               {
 			                               		new UseableFeature.UseAction("Wash hands",
 			                               		                             (entity, user, action) =>
-			                               		                             {
-			                               		                             	World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
-			                               		                             	return ActionResult.Success;
-			                               		                             })
+			                               		                             	{
+			                               		                             		World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
+			                               		                             		return ActionResult.Success;
+			                               		                             	})
 			                               }));
 
 			ef.Inherits("TOILET", "nonblockingfeature",
 			            new Sprite("TOILET", Sprite.FEATURES_LAYER),
-			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
-			                               {
-			                               	if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
-			                               		World.Instance.AddMessage(String.Format("{0} stands on top of the toilet.  Ew.",
-			                               		                                        Identifier.GetNameOrId(entityNear)));
-			                               }));
+			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
+			                               	{
+			                               		var distanceTo = entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>());
+			                               		if (Math.Abs(distanceTo - 0) < Double.Epsilon)
+			                               			World.Instance.AddMessage(String.Format("{0} stands on top of the toilet.  Ew.",
+			                               			                                        Identifier.GetNameOrId(entityNear)));
+			                               	}));
 
 			ef.Inherits("BATHROOMSINK", "nonblockingfeature", 
 				new Sprite("BATHROOMSINK", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("BATH", "nonblockingfeature",
 			            new Sprite("BATH", Sprite.FEATURES_LAYER),
-			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
+			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
 			                               			World.Instance.AddMessage(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
@@ -146,7 +147,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("BED_WOODEN", "nonblockingfeature",
 			            new Sprite("BED_WOODEN", Sprite.FEATURES_LAYER),
-			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
+			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
 			                               			World.Instance.AddMessage(String.Format("{0} jumps on the bed.", Identifier.GetNameOrId(entityNear)));
@@ -160,7 +161,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("TELEVISION", "feature",
 			            new Sprite("TELEVISION", Sprite.FEATURES_LAYER),
-			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
+			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) < 5)
 			                               			World.Instance.AddMessage(String.Format("{0} hears the sound of television.",
@@ -178,7 +179,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("SOFA", "nonblockingfeature",
 			            new Sprite("SOFA", Sprite.FEATURES_LAYER),
-			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
+			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
 			                               			World.Instance.AddMessage(String.Format("{0} jumps on the sofa.  Whee!!", Identifier.GetNameOrId(entityNear)));
@@ -235,8 +236,8 @@ namespace SkrGame.Universe.Factories {
 
 			#region Stairs
 
-			ef.Inherits("STAIR_WOODEN_UP", "feature",new Sprite("STAIR_WOODEN_UP", Sprite.FEATURES_LAYER), new Blocker(true, true));
-			ef.Inherits("STAIR_WOODEN_DOWN", "feature",new Sprite("STAIR_WOODEN_DOWN", Sprite.FEATURES_LAYER), new Blocker(true, true));
+			ef.Inherits("STAIR_WOODEN_UP", "feature", new Sprite("STAIR_WOODEN_UP", Sprite.FEATURES_LAYER), new Blocker(true, true));
+			ef.Inherits("STAIR_WOODEN_DOWN", "feature", new Sprite("STAIR_WOODEN_DOWN", Sprite.FEATURES_LAYER), new Blocker(true, true));
 
 			#endregion
 

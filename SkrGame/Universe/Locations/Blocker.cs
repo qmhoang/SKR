@@ -155,7 +155,7 @@ namespace SkrGame.Universe.Locations {
 	}
 
 	public class PassiveFeature : Component {
-		public delegate void NearDelegate(Entity entityNear, Entity featureEntity, PassiveFeature comp);
+		public delegate void NearDelegate(Entity entityNear, Entity featureEntity);
 		public NearDelegate Near { get; set; }
 
 		public PassiveFeature(NearDelegate near) {

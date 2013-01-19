@@ -97,7 +97,8 @@ namespace SkrGame.Universe {
 
 		private ActionPointSystem actionPointSystem;
 		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
-		private DoorSubsystem doorSubsystem;
+		private ItemEquippingSubsystem itemEquippingSubsystem;
+//		private OpeningSpriteSubsystem openingSpriteSubsystem;
 
 		private World() {
 			Rng.Seed(0);
@@ -125,7 +126,8 @@ namespace SkrGame.Universe {
 			                              		new DefendComponent(),
 												new ContainerComponent(),
 												new EquipmentComponent(),
-												new VisibleComponent(10)
+												new VisibleComponent(10),
+												new Blocker(false, true)
 			                              });
 
 
@@ -151,29 +153,32 @@ namespace SkrGame.Universe {
 			                     		new ActionPoint(),
 			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
 										new Identifier("npc"),
-			                     		new Location(4, 3, level),
+			                     		new Location(7, 2, level),
 			                     		new Actor("npc"),
 			                     		new DefendComponent(),
 										new VisibleComponent(10),
 										new ContainerComponent(),
-										new EquipmentComponent()
+										new EquipmentComponent(),
+										new Blocker(false, true)
 			                     });
 
 			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
+			EntityManager.Create(EntityFactory.Get("axe")).Add(new Location(1, 1, level));
 			EntityManager.Create(EntityFactory.Get("glock17")).Add(new Location(1, 1, level));
 			var ammo = EntityManager.Create(EntityFactory.Get("9x9mm")).Add(new Location(1, 1, level));
 			ammo.Get<Item>().Amount = 30;
 			EntityManager.Create(EntityFactory.Get("bullet")).Add(new Location(1, 1, level));
 
 			var armor = EntityManager.Create(EntityFactory.Get("footballpads")).Add(new Location(1, 1, level));
-			npc.Get<ContainerComponent>().Add(armor);			
+//			npc.Get<ContainerComponent>().Add(armor);
 			npc.Get<EquipmentComponent>().Equip("Torso", armor);
 		}
 
 		public void Initialize() {
 			actionPointSystem = new ActionPointSystem(EntityManager);
 			itemContainerInteractionSubsystem = new ItemContainerInteractionSubsystem(EntityManager);
-			doorSubsystem = new DoorSubsystem(EntityManager);
+			itemEquippingSubsystem = new ItemEquippingSubsystem(EntityManager);
+//			openingSpriteSubsystem = new OpeningSpriteSubsystem(EntityManager);
 		}
 
 //
