@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Locations {
@@ -172,7 +172,7 @@ namespace SkrGame.Universe.Locations {
 
 	public class UseableFeature : Component {
 		public class UseAction {
-			public delegate ActionResult UseDelegate(Entity useableEntity, Entity user, UseAction action);
+			public delegate ActionResult UseDelegate(Entity user, Entity useableEntity, UseAction action);
 			public string Description { get; set; }
 			public UseDelegate Use { get; set; }
 
@@ -198,14 +198,15 @@ namespace SkrGame.Universe.Locations {
 	}
 
 	public class PassiveFeature : Component {
-		public Action<PassiveFeature, Actor, double> Near { get; set; }        
+		public delegate void NearDelegate(Entity entityNear, Entity featureEntity, PassiveFeature comp);
+		public NearDelegate Near { get; set; }
 
-		public PassiveFeature(Action<PassiveFeature, Actor, double> near) {
+		public PassiveFeature(NearDelegate near) {
 			Near = near;            
 		}
 
 		public override Component Copy() {
-			return new PassiveFeature((Action<PassiveFeature, Actor, double>) Near.Clone());
+			return new PassiveFeature((NearDelegate)Near.Clone());
 		}
 	}
 

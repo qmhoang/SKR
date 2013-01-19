@@ -5,7 +5,7 @@ using System.Reflection;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Gameplay.Talent.Components;

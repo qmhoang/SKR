@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using DEngine.Entity;
+using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;

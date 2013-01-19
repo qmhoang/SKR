@@ -1,7 +1,7 @@
 using System;
 using DEngine.Actor;
 using DEngine.Components;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Gameplay.Combat {

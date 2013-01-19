@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 using log4net;
 

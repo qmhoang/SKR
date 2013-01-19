@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using Ogui.UI;
 using SKR.UI.Menus;
 using SkrGame.Gameplay.Combat;

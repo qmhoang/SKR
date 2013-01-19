@@ -6,7 +6,7 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
@@ -235,7 +235,7 @@ namespace SkrGame.Universe {
 			                                              		new Identifier("Wood door"),
 			                                              		new UseableFeature(new List<UseableFeature.UseAction>()
 			                                              		                   {
-			                                              		                   		new UseableFeature.UseAction("Open door", (d, user, action) => ActionDoor(user, d, action, "OpenedDoor", "ClosedDoor"))
+			                                              		                   		new UseableFeature.UseAction("Open door", (user, d, action) => ActionDoor(user, d, action, "OpenedDoor", "ClosedDoor"))
 			                                              		                   })
 			                                              }));
 			tempTemplates.Add("WALL_BRICK_DARK_DOOR_HORZ",
@@ -248,7 +248,7 @@ namespace SkrGame.Universe {
 			                                              		new UseableFeature(new List<UseableFeature.UseAction>()
 			                                              		                   {
 			                                              		                   		new UseableFeature.UseAction("Open door",
-			                                              		                   		                             (d, user, action) =>
+			                                              		                   		                             (user, d, action) =>
 			                                              		                   		                             ActionDoor(user, d, action, "WALL_BRICK_DARK_DOOR_VERT",
 			                                              		                   		                                        "WALL_BRICK_DARK_DOOR_HORZ"))
 			                                              		                   })
@@ -264,7 +264,7 @@ namespace SkrGame.Universe {
 			                                              		new UseableFeature(new List<UseableFeature.UseAction>()
 			                                              		                   {
 			                                              		                   		new UseableFeature.UseAction("Open door",
-			                                              		                   		                             (d, user, action) =>
+			                                              		                   		                             (user, d, action) =>
 			                                              		                   		                             ActionDoor(user, d, action, "WALL_BRICK_DARK_DOOR_HORZ",
 			                                              		                   		                                        "WALL_BRICK_DARK_DOOR_VERT"))
 			                                              		                   })
@@ -385,11 +385,11 @@ namespace SkrGame.Universe {
 			                                              {
 
 			                                              		new Sprite("TOILET", Sprite.FEATURES_LAYER),
-			                                              		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
+			                                              		new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
 			                                              		                   {
-			                                              		                   	if (Math.Abs(distance - 0) < Double.Epsilon)
-			                                              		                   		actor.World.AddMessage(String.Format("{0} stands on top of the toilet.  Ew.",
-			                                              		                   		                                     actor.Name));
+			                                              		                   	if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
+			                                              		                   		World.Instance.AddMessage(String.Format("{0} stands on top of the toilet.  Ew.",
+			                                              		                   		                                     Identifier.GetNameOrId(entityNear)));
 			                                              		                   })
 			                                              }));
 			tempTemplates.Add("BATHROOMSINK",
@@ -403,10 +403,10 @@ namespace SkrGame.Universe {
 			                                              {
 
 			                                              		new Sprite("BATH", Sprite.FEATURES_LAYER),
-			                                              		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
+			                                              		new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
 			                                              		                   {
-			                                              		                   	if (Math.Abs(distance - 0) < Double.Epsilon)
-			                                              		                   		actor.World.AddMessage(String.Format("{0} steps into the bathtub.", actor.Name));
+																					   if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
+																						   World.Instance.AddMessage(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
 			                                              		                   }
 			                                              				)
 			                                              }));
@@ -425,10 +425,10 @@ namespace SkrGame.Universe {
 			                                              {
 
 			                                              		new Sprite("BED_WOODEN", Sprite.FEATURES_LAYER),
-			                                              		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
+			                                              		new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
 			                                              		                   {
-			                                              		                   	if (Math.Abs(distance - 0) < Double.Epsilon)
-			                                              		                   		actor.World.AddMessage(String.Format("{0} jumps on the bed.", actor.Name));
+			                                              		                   	if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
+																						World.Instance.AddMessage(String.Format("{0} jumps on the bed.", Identifier.GetNameOrId(entityNear)));
 			                                              		                   })
 			                                              }));
 			tempTemplates.Add("SHELF_WOOD",
@@ -444,11 +444,11 @@ namespace SkrGame.Universe {
 
 			                                              		new Sprite("TELEVISION", Sprite.FEATURES_LAYER),
 
-			                                              		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
+			                                              		new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
 			                                              		                   {
-			                                              		                   	if (distance < 5)
-			                                              		                   		actor.World.AddMessage(String.Format("{0} hears the sound of television.",
-			                                              		                   		                                     actor.Name));
+			                                              		                   	if (entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) < 5)
+			                                              		                   		World.Instance.AddMessage(String.Format("{0} hears the sound of television.",
+																															 Identifier.GetNameOrId(entityNear)));
 			                                              		                   })
 			                                              }));
 			tempTemplates.Add("FRIDGE",
@@ -466,10 +466,10 @@ namespace SkrGame.Universe {
 			                                              {
 
 			                                              		new Sprite("SOFA", Sprite.FEATURES_LAYER),
-			                                              		new PassiveFeature(delegate(PassiveFeature f, Actor actor, double distance)
+			                                              		new PassiveFeature(delegate(Entity entityNear, Entity featureEntity, PassiveFeature passiveFeature)
 			                                              		                   {
-			                                              		                   	if (Math.Abs(distance - 0) < Double.Epsilon)
-			                                              		                   		actor.World.AddMessage(String.Format("{0} jumps on the sofa.  Whee!!", actor.Name));
+			                                              		                   	if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
+																						World.Instance.AddMessage(String.Format("{0} jumps on the sofa.  Whee!!", Identifier.GetNameOrId(entityNear)));
 			                                              		                   })
 			                                              }));
 			tempTemplates.Add("OVEN",
@@ -560,7 +560,7 @@ namespace SkrGame.Universe {
 			                  new Tuple<string, Template>("",
 			                                              new Template(new VisibleComponent(10),
 			                                                           new Sprite("ITEM", Sprite.ITEMS_LAYER),
-			                                                           new ItemRefId("item"),
+			                                                           new ReferenceId("item"),
 			                                                           new Identifier("Junk", "A piece of junk."),
 			                                                           new Item(
 			                                                           		new Item.Template
@@ -576,7 +576,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("meleeweapon",
 			                  new Tuple<string, Template>("item",
 			                                              new Template(new Sprite("WEAPON", Sprite.ITEMS_LAYER),
-			                                                           new ItemRefId("meleeweapon"),
+			                                                           new ReferenceId("meleeweapon"),
 			                                                           new MeleeComponent(
 			                                                           		new MeleeComponent.Template
 			                                                           		{
@@ -661,7 +661,7 @@ namespace SkrGame.Universe {
 			                  new Tuple<string, Template>("pistol2",
 			                                              new Template( //new Sprite("GLOCK17", Sprite.ITEMS_LAYER),
 			                                              		new Identifier("Glock 17"),
-																new ItemRefId("glock17"),
+																new ReferenceId("glock17"),
 			                                              		new Item(new Item.Template
 			                                              		         {
 			                                              		         		Type = ItemType.OneHandedWeapon,
@@ -688,7 +688,7 @@ namespace SkrGame.Universe {
 			                                              						Shots = 17,
 			                                              						Range = 160,
 			                                              						RoF = 3,
-			                                              						ReloadSpeed = 3,
+			                                              						ReloadSpeed = World.SecondsToSpeed(3),
 			                                              						Recoil = 2,
 			                                              						Reliability = 18,
 			                                              						Strength = 8,
@@ -699,7 +699,7 @@ namespace SkrGame.Universe {
 			                  new Tuple<string, Template>("pistol2",
 			                                              new Template( //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
 			                                              		new Identifier("Glock 22"),
-																new ItemRefId("glock22"),
+																new ReferenceId("glock22"),
 			                                              		new Item(new Item.Template
 			                                              		         {
 			                                              		         		Type = ItemType.OneHandedWeapon,
@@ -727,7 +727,7 @@ namespace SkrGame.Universe {
 			                                              						Shots = 15,
 			                                              						Range = 160,
 			                                              						RoF = 3,
-			                                              						ReloadSpeed = 3,
+																				ReloadSpeed = World.SecondsToSpeed(3),
 			                                              						Recoil = 2,
 			                                              						Reliability = 18,
 			                                              						Strength = 8,
@@ -737,7 +737,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("largeknife",
 			                  new Tuple<string, Template>("meleeweapon",
 			                                              new Template( //new Sprite("LARGE_KNIFE", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("largeknife"),
+			                                              		new ReferenceId("largeknife"),
 			                                              		new Identifier("Knife, Large", "A large knife."),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -772,7 +772,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("smallknife",
 			                  new Tuple<string, Template>("meleeweapon",
 			                                              new Template( //new Sprite("SMALL_KNIFE", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("smallknife"),
+			                                              		new ReferenceId("smallknife"),
 			                                              		new Identifier("Knife", "A knife."),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -807,7 +807,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("axe",
 			                  new Tuple<string, Template>("meleeweapon",
 			                                              new Template( //new Sprite("AXE", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("axe"),
+			                                              		new ReferenceId("axe"),
 			                                              		new Identifier("Axe", "An axe."),
 
 			                                              		new Item(
@@ -843,7 +843,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("hatchet",
 			                  new Tuple<string, Template>("meleeweapon",
 			                                              new Template( //new Sprite("HATCHET", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("hatchet"),
+			                                              		new ReferenceId("hatchet"),
 			                                              		new Identifier("Hatchet", "A hatchet."),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -877,7 +877,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("brassknuckles",
 			                  new Tuple<string, Template>("meleeweapon",
 			                                              new Template( //new Sprite("BRASS_KNUCKLES", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("brassknuckles"),
+			                                              		new ReferenceId("brassknuckles"),
 			                                              		new Identifier("Brass Knuckles"),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -911,7 +911,7 @@ namespace SkrGame.Universe {
 			                  new Tuple<string, Template>("item",
 			                                              new Template(
 																new Sprite("BULLET", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("bullet"),
+			                                              		new ReferenceId("bullet"),
 			                                              		new Identifier("Bullets"),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -933,7 +933,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("9x9mm",
 			                  new Tuple<string, Template>("bullet",
 			                                              new Template( //new Sprite("BULLET_9x19MM", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId("9x9mm"),
+			                                              		new ReferenceId("9x9mm"),
 			                                              		new Identifier("9x9mm", "9x19mm Parabellum bullet"),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -955,7 +955,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add(".40S&W",
 			                  new Tuple<string, Template>("bullet",
 			                                              new Template( //new Sprite("BULLET_.40S&W", Sprite.ITEMS_LAYER),
-			                                              		new ItemRefId(".40S&W"),
+			                                              		new ReferenceId(".40S&W"),
 			                                              		new Identifier(".40S&W", ".40 Smith & Wesson bullet"),
 			                                              		new Item(
 			                                              				new Item.Template
@@ -978,7 +978,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("armor",
 			                  new Tuple<string, Template>("item",
 			                                              new Template(new Sprite("ARMOR", Sprite.ITEMS_LAYER),
-			                                                           new ItemRefId("armor"),
+			                                                           new ReferenceId("armor"),
 			                                                           new Identifier("Generic Armor"),
 																	   new Item(new Item.Template
 			                                                                    {
@@ -1016,7 +1016,7 @@ namespace SkrGame.Universe {
 			tempTemplates.Add("footballpads",
 			                  new Tuple<string, Template>("armor",
 			                                              new Template(new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
-			                                                           new ItemRefId("footballpads"),
+			                                                           new ReferenceId("footballpads"),
 			                                                           new Identifier("Football Shoulder Pads"),
 			                                                           new Item(new Item.Template
 			                                                                    {

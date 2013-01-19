@@ -1,5 +1,5 @@
 ﻿using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Actors.PC {
 	public class Player : Component {

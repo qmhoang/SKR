@@ -1,6 +1,6 @@
 ﻿using System;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items.Components {

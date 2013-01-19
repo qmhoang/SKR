@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
