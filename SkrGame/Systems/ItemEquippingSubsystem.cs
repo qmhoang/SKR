@@ -1,68 +1,62 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 using log4net;
 
 namespace SkrGame.Systems {
-	public class ItemEquippingSubsystem {
-		private FilteredCollection containers;
-		private Dictionary<UniqueId, EquipmentHelper> equipments;
-
-
-		private class EquipmentHelper {
-			private Entity equipment;
-
-			public EquipmentHelper(Entity equipment) {
-				this.equipment = equipment;
+	public sealed class ItemEquippingSubsystem : EventSubsystem {
+		public ItemEquippingSubsystem(EntityManager entityManager) : base(entityManager, typeof(Location), typeof(EquipmentComponent)) {
+			// if containers already exist, add them
+			foreach (var container in Collection) {
+				EntityAddedToCollection(container);
 			}
 
-			public void InventoryHelper_ItemEquipped(object sender, EventArgs<string, Entity> itemEquippedEvent) {
+			Collection.OnEntityAdd += EntityAddedToCollection;
+			Collection.OnEntityRemove += EntityRemovedFromCollection;
+		}
 
-			}
+		protected override void EntityRemovedFromCollection(Entity equipment) {
+			equipment.Get<EquipmentComponent>().ItemEquipped -= ItemEquipped;
+			equipment.Get<EquipmentComponent>().ItemUnequipped -= ItemUnequipped;
+		}
 
-			public void InventoryHelper_ItemUnequipped(object sender, EventArgs<string, Entity> itemUnequippedEvent) {
+		protected override void EntityAddedToCollection(Entity equipment) {
+			equipment.Get<EquipmentComponent>().ItemEquipped += ItemEquipped;
+			equipment.Get<EquipmentComponent>().ItemUnequipped += ItemUnequipped;
 
+			foreach (var equippedItem in equipment.Get<EquipmentComponent>().EquippedItems) {
+				if (equippedItem.Has<Location>()) {
+					equippedItem.Get<Location>().Position = equipment.Get<Location>().Position;
+				}
 			}
 		}
 
-		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		void ItemUnequipped(Component sender, EventArgs<string, Entity> e) {
+			var equipment = GetEntity(sender);
 
+			equipment.Get<Location>().PositionChanged -= PositionChanged;
+		}
 
-		public ItemEquippingSubsystem(EntityManager entityManager) {
-			containers = entityManager.Get(typeof(EquipmentComponent), typeof(DefendComponent));
-			equipments = new Dictionary<UniqueId, EquipmentHelper>();
+		void ItemEquipped(Component sender, EventArgs<string, Entity> e) {
+			var equipment = GetEntity(sender);
 
-			foreach (var container in containers) {
-				Containers_OnContainerAddToManager(container);
+			equipment.Get<Location>().PositionChanged += PositionChanged;
+		}
+
+		void PositionChanged(Component sender, EventArgs<Point> e) {
+			var equipment = GetEntity(sender);
+
+			foreach (var entity in equipment.Get<EquipmentComponent>().EquippedItems) {
+				if (entity.Has<Location>()) {
+					entity.Get<Location>().Position = e.Data;
+				}
 			}
-
-			containers.OnEntityAdd += Containers_OnContainerAddToManager;
-			containers.OnEntityRemove += Containers_OnContainerRemoveFromManager;
 		}
-
-		private void Containers_OnContainerRemoveFromManager(Entity container) {
-			Contract.Requires(equipments.ContainsKey(container.Id));
-
-			var helper = equipments[container.Id];
-
-			container.Get<EquipmentComponent>().ItemEquipped -= helper.InventoryHelper_ItemEquipped;
-			container.Get<EquipmentComponent>().ItemUnequipped -= helper.InventoryHelper_ItemUnequipped;
-			equipments.Remove(container.Id);
-		}
-
-		private void Containers_OnContainerAddToManager(Entity container) {
-			Contract.Requires(!equipments.ContainsKey(container.Id));
-
-			var helper = new EquipmentHelper(container);
-
-			container.Get<EquipmentComponent>().ItemEquipped += helper.InventoryHelper_ItemEquipped;
-			container.Get<EquipmentComponent>().ItemUnequipped += helper.InventoryHelper_ItemUnequipped;
-			equipments.Add(container.Id, helper);
-		}
-
 	}
 }

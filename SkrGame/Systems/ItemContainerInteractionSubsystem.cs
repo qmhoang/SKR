@@ -13,104 +13,56 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Systems {
-	public class ItemContainerInteractionSubsystem {
-		
-		private FilteredCollection containers;
-		private Dictionary<UniqueId, InventoryHelper> inventories;
-
+	public sealed class ItemContainerInteractionSubsystem : EventSubsystem {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private class InventoryHelper {
-			private Entity inventory;
-			private Dictionary<UniqueId, ItemHelper> items;
-
-			public class ItemHelper {
-				Entity item;
-
-				public ItemHelper(Entity item) {
-					this.item = item;
-				}
-
-				public void ItemHelper_PositionChanged(object sender, EventArgs<Point> positionChangedEvent) {
-					if (item.Has<Location>())
-						item.Get<Location>().Position = positionChangedEvent.Data;
-				}
-			}
-
-			public InventoryHelper(Entity inventory) {
-				this.inventory = inventory;
-				items = new Dictionary<UniqueId, ItemHelper>();
-			}			
-
-			[Pure]
-			public void InventoryHelper_ItemAdded(object sender, EventArgs<Entity> itemAddedEvent) {
-				AddListener(itemAddedEvent.Data);
-			}
-
-			[Pure]
-			public void InventoryHelper_ItemRemoved(object sender, EventArgs<Entity> itemRemovedEvent) {
-				Contract.Requires(Contain(itemRemovedEvent.Data.Id));
-
-				var itemHelper = items[itemRemovedEvent.Data.Id];
-				inventory.Get<Location>().PositionChanged -= itemHelper.ItemHelper_PositionChanged;
-				items.Remove(itemRemovedEvent.Data.Id);
-			}
-
-			public void AddListener(Entity item) {
-				Contract.Requires(!Contain(item.Id));
-
-				if (item.Has<Location>())
-					item.Get<Location>().Position = inventory.Get<Location>().Position;
-
-				var itemHelper = new ItemHelper(item);
-				inventory.Get<Location>().PositionChanged += itemHelper.ItemHelper_PositionChanged;
-				items.Add(item.Id, itemHelper);
-			}
-
-			public bool Contain(UniqueId id) {
-				return items.ContainsKey(id);
-			}
-		}
-
-		public ItemContainerInteractionSubsystem(EntityManager entityManager) {
-			containers = entityManager.Get(typeof(ContainerComponent), typeof(Location));
-			inventories = new Dictionary<UniqueId, InventoryHelper>();
-
+		public ItemContainerInteractionSubsystem(EntityManager entityManager) : base(entityManager, typeof(ContainerComponent), typeof(Location)) {			
 			// if containers already exist, add them
-			foreach (var container in containers) {
-				Containers_OnContainerAddToManager(container);
+			foreach (var container in Collection) {
+				EntityAddedToCollection(container);
 			}
 
-			containers.OnEntityAdd += Containers_OnContainerAddToManager;
-			containers.OnEntityRemove += Containers_OnContainerRemoveFromManager;
+			Collection.OnEntityAdd += EntityAddedToCollection;
+			Collection.OnEntityRemove += EntityRemovedFromCollection;
 		}
 
-		private void Containers_OnContainerRemoveFromManager(Entity container) {
-			Contract.Requires(inventories.ContainsKey(container.Id));
-
-			var helper = inventories[container.Id];
-			container.Get<ContainerComponent>().ItemAdded -= helper.InventoryHelper_ItemAdded;
-			container.Get<ContainerComponent>().ItemRemoved -= helper.InventoryHelper_ItemRemoved;
-
-			inventories.Remove(container.Id);
+		protected override void EntityRemovedFromCollection(Entity container) {
+			container.Get<ContainerComponent>().ItemAdded -= ItemAdded;
+			container.Get<ContainerComponent>().ItemRemoved -= ItemRemoved;
 		}
 
-		private void Containers_OnContainerAddToManager(Entity container) {
-			Contract.Requires(!inventories.ContainsKey(container.Id));
+		protected override void EntityAddedToCollection(Entity container) {
+			container.Get<ContainerComponent>().ItemAdded += ItemAdded;
+			container.Get<ContainerComponent>().ItemRemoved += ItemRemoved;
 
-			var helper = new InventoryHelper(container);
-			container.Get<ContainerComponent>().ItemAdded += helper.InventoryHelper_ItemAdded;
-			container.Get<ContainerComponent>().ItemRemoved += helper.InventoryHelper_ItemRemoved;
-
-			inventories.Add(container.Id, helper);
-
-			// we need to add  listeners that are already inside the container
-			foreach (var item in container.Get<ContainerComponent>().Items) {
-				helper.AddListener(item);
+			foreach (var entity in container.Get<ContainerComponent>()) {
+				if (entity.Has<Location>()) {
+					entity.Get<Location>().Position = container.Get<Location>().Position;
+				}
 			}
 		}
-		
+
+		void ItemRemoved(Component sender, EventArgs<Entity> e) {
+			var inventory = GetEntity(sender);
+
+			inventory.Get<Location>().PositionChanged -= PositionChanged;
+		}
+
+		void ItemAdded(Component sender, EventArgs<Entity> e) {
+			var inventory = GetEntity(sender);
+
+			inventory.Get<Location>().PositionChanged += PositionChanged;
+		}
+
+		void PositionChanged(Component sender, EventArgs<Point> e) {
+			var inventory = GetEntity(sender);
+
+			foreach (var entity in inventory.Get<ContainerComponent>()) {
+				if (entity.Has<Location>()) {
+					entity.Get<Location>().Position = e.Data;
+				}
+			}
+		}
+
 	}
-
-	
 }

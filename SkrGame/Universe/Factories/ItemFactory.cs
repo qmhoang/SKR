@@ -169,6 +169,7 @@ namespace SkrGame.Universe.Factories {
 								Slot = new List<string>()
 			            				       {
 			            				       		"Main Hand",
+													"Off Hand"
 			            				       }
 							}),
 						new MeleeComponent(
