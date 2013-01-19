@@ -120,7 +120,7 @@ namespace SKR.UI.Menus {
 					inventory.Add(removed);
 				}
 			} else {
-				var items = inventory.Items.Where(i => i.Get<Item>().Slots.Contains(slot)).ToList();
+				var items = inventory.Items.Where(i => i.Get<Equipable>().Slots.Contains(slot)).ToList();
 				if (items.Count > 0)
 					ParentApplication.Push(new ItemWindow(true,
 					                                      new ListWindowTemplate<Entity>
