@@ -3,67 +3,35 @@ using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Factories {
 	public class FeatureFactory {
-		private static ActionResult ActionDoor(Entity user, Entity door, UseableFeature.UseAction action, string assetOpened, string assetClosed) {
-			if (action.Description == "Open door") {
-				if (door.Has<Blocker>())
-					door.Get<Blocker>().Transparent = door.Get<Blocker>().Walkable = true;
-				if (door.Has<Sprite>())
-					door.Get<Sprite>().Asset = assetOpened;
-				action.Description = "Close door";
-				user.Get<ActionPoint>().ActionPoints -= DOOR_USAGE_AP_COST;
-
-				World.Instance.AddMessage(String.Format("{0} opens the door.", Identifier.GetNameOrId(user)));
-				return ActionResult.Success;
-			} else if (action.Description == "Close door") {
-				// todo add a size component and check if some entity blocks the door from closing
-				if (door.Has<Blocker>())
-					door.Get<Blocker>().Transparent = door.Get<Blocker>().Walkable = false;
-				if (door.Has<Sprite>())
-					door.Get<Sprite>().Asset = assetClosed;
-
-				action.Description = "Open door";
-				user.Get<ActionPoint>().ActionPoints -= DOOR_USAGE_AP_COST;
-
-				World.Instance.AddMessage(String.Format("{0} closes the door.", Identifier.GetNameOrId(user)));
-				return ActionResult.Success;
-			}
-
-			World.Instance.AddMessage("There's something blocking the way.");
-			return ActionResult.Aborted;
-		}
-
-		private static ActionResult ActionWindow(Entity user, Entity window, UseableFeature.UseAction action, string assetOpened, string assetClosed) {
-			if (action.Description == "Open window") {
-				if (window.Has<Blocker>())
-					window.Get<Blocker>().Transparent = true;
-				if (window.Has<Sprite>())
-					window.Get<Sprite>().Asset = assetOpened;
-				action.Description = "Close window";
-				user.Get<ActionPoint>().ActionPoints -= WINDOW_USAGE_AP_COST;
-
-				World.Instance.AddMessage(String.Format("{0} opens the window.", Identifier.GetNameOrId(user)));
-				return ActionResult.Success;
-			} else if (action.Description == "Close window") {
-				if (window.Has<Blocker>())
-					window.Get<Blocker>().Transparent = false;
-				if (window.Has<Sprite>())
-					window.Get<Sprite>().Asset = assetClosed;
-
-				action.Description = "Open window";
-				user.Get<ActionPoint>().ActionPoints -= WINDOW_USAGE_AP_COST;
-
-				World.Instance.AddMessage(String.Format("{0} closes the window.", Identifier.GetNameOrId(user)));
-				return ActionResult.Success;
-			}
-			return ActionResult.Success;
-		}
-
-		private const int DOOR_USAGE_AP_COST = World.DEFAULT_SPEED;
 		private const int WINDOW_USAGE_AP_COST = World.DEFAULT_SPEED;
+
+		private static Opening Door(string openAsset, string closedAsset) {
+			return new Opening(openAsset, closedAsset, "opens the door", "closes the door");
+		}
+
+		private static Opening Window(string openAsset, string closedAsset) {
+			return new Opening(openAsset, closedAsset, "opens the window", "closes the window", false);
+		}
+
+
+		public static OnBump.BumpResult DoorOnBump(Entity user, Entity door) {
+			if (door.Get<Opening>().Status == Opening.EntryStatus.Closed) {
+				Opening.Action(user, door);
+				return OnBump.BumpResult.BlockMovement;
+			} else {
+				return OnBump.BumpResult.NormalMovement;
+			}
+		}
+
+		public static OnBump.BumpResult WindowOnBump(Entity user, Entity door) {
+			Opening.Action(user, door);
+			return OnBump.BumpResult.BlockMovement;
+		}
 
 		public static void Init(EntityFactory ef) {
 			ef.Add("feature",
@@ -76,87 +44,57 @@ namespace SkrGame.Universe.Factories {
 
 			#region Doors and Windows
 
-			ef.Inherits("door", "feature",
+			ef.Inherits("Door", "feature",
 			            new Sprite("ClosedDoor", Sprite.FEATURES_LAYER),
 			            new Identifier("Door", "A basic door"),
+						Door("OpenedDoor", "ClosedDoor"),
+						new OnBump(DoorOnBump),
 			            new UseableFeature(new List<UseableFeature.UseAction>
 			                               {
-			                               		new UseableFeature.UseAction("Open door", (user, d, action) => ActionDoor(user, d, action, "OpenedDoor", "ClosedDoor"))
+			                               		new UseableFeature.UseAction("Use door", (user, featureEntity, action) => Opening.Action(user, featureEntity))
 			                               }));
 
-			ef.Inherits("WALL_BRICK_DARK_DOOR_HORZ", "door",
+			ef.Inherits("WALL_BRICK_DARK_DOOR_HORZ", "Door",
 			            new Sprite("WALL_BRICK_DARK_DOOR_HORZ", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open door",
-			                               		                             (user, d, action) => ActionDoor(user, d, action, "WALL_BRICK_DARK_DOOR_VERT", "WALL_BRICK_DARK_DOOR_HORZ"))
-			                               }));
+			            Door("WALL_BRICK_DARK_DOOR_VERT", "WALL_BRICK_DARK_DOOR_HORZ"));
 
-			ef.Inherits("WALL_BRICK_DARK_DOOR_VERT", "door",
+			ef.Inherits("WALL_BRICK_DARK_DOOR_VERT", "Door",
 			            new Sprite("WALL_BRICK_DARK_DOOR_VERT", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open door",
-			                               		                             (user, d, action) =>
-			                               		                             ActionDoor(user, d, action, "WALL_BRICK_DARK_DOOR_HORZ",
-			                               		                                        "WALL_BRICK_DARK_DOOR_VERT"))
-			                               }));
+						Door("WALL_BRICK_DARK_DOOR_HORZ", "WALL_BRICK_DARK_DOOR_VERT"));
 
-			ef.Inherits("WINDOW_BRICK_DARK_VERT", "door",
-			            new Sprite("WINDOW_BRICK_DARK_VERT", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open window",
-			                               		                             (w, user, action) =>
-			                               		                             ActionWindow(user, w, action, "WINDOW_BRICK_DARK_HORZ",
-			                               		                                          "WINDOW_BRICK_DARK_VERT"))
-			                               }));
-
-			ef.Inherits("WINDOW_BRICK_DARK_HORZ", "door",
-			            new Sprite("WINDOW_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open window",
-			                               		                             (w, user, action) =>
-			                               		                             ActionWindow(user, w, action, "WINDOW_BRICK_DARK_VERT",
-			                               		                                          "WINDOW_BRICK_DARK_HORZ"))
-			                               }));
-
-			ef.Inherits("WINDOW_HOUSE_VERT", "door",
-			            new Sprite("WINDOW_HOUSE_VERT", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>()
-			                               {
-			                               		new UseableFeature.UseAction("Open window",
-			                               		                             (w, user, action) =>
-			                               		                             ActionWindow(user, w, action, "WINDOW_HOUSE_HORZ", "WINDOW_HOUSE_VERT"))
-			                               }));
-
-			ef.Inherits("WINDOW_HOUSE_HORZ", "door",
-			            new Sprite("WINDOW_HOUSE_HORZ", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open window",
-			                               		                             (w, user, action) =>
-			                               		                             ActionWindow(user, w, action, "WINDOW_HOUSE_VERT", "WINDOW_HOUSE_HORZ"))
-			                               }));
-
-			ef.Inherits("DOOR_APART_1_VERT", "door",
+			ef.Inherits("DOOR_APART_1_VERT", "Door",
 			            new Sprite("DOOR_APART_1_VERT", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open window",
-			                               		                             (w, user, action) =>
-			                               		                             ActionWindow(user, w, action, "DOOR_APART_1_HORZ", "DOOR_APART_1_VERT"))
+						Door("DOOR_APART_1_HORZ", "DOOR_APART_1_VERT"));
+
+			ef.Inherits("DOOR_APART_1_HORZ", "Door",
+			            new Sprite("DOOR_APART_1_HORZ", Sprite.FEATURES_LAYER),
+						Door("DOOR_APART_1_VERT", "DOOR_APART_1_HORZ"));
+
+			ef.Inherits("Window", "feature",
+						new Sprite("ClosedWindow", Sprite.FEATURES_LAYER),
+						Window("OpenedWindow", "ClosedWindow"),
+						new Identifier("Window", "A window door"),
+						new OnBump(WindowOnBump),
+						new UseableFeature(new List<UseableFeature.UseAction>
+						                   {
+			                               		new UseableFeature.UseAction("Use window", (user, featureEntity, action) => Opening.Action(user, featureEntity))
 			                               }));
 
-			ef.Inherits("DOOR_APART_1_HORZ", "door",
-			            new Sprite("DOOR_APART_1_HORZ", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Open window",
-			                               		                             (w, user, action) =>
-			                               		                             ActionWindow(user, w, action, "DOOR_APART_1_VERT", "DOOR_APART_1_HORZ"))
-			                               }));
+			ef.Inherits("WINDOW_HOUSE_VERT", "Window",
+			            new Sprite("WINDOW_HOUSE_VERT", Sprite.FEATURES_LAYER),
+						Window("WINDOW_HOUSE_HORZ", "WINDOW_HOUSE_VERT"));
+
+			ef.Inherits("WINDOW_HOUSE_HORZ", "Window",
+						new Sprite("WINDOW_HOUSE_HORZ", Sprite.FEATURES_LAYER),
+						Window("WINDOW_HOUSE_VERT", "WINDOW_HOUSE_HORZ"));
+
+			ef.Inherits("WINDOW_BRICK_DARK_VERT", "Window",
+			            new Sprite("WINDOW_BRICK_DARK_VERT", Sprite.FEATURES_LAYER),
+						Window("WINDOW_BRICK_DARK_HORZ", "WINDOW_BRICK_DARK_VERT"));
+
+			ef.Inherits("WINDOW_BRICK_DARK_HORZ", "Window",
+						new Sprite("WINDOW_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER),
+						Window("WINDOW_BRICK_DARK_VERT", "WINDOW_BRICK_DARK_HORZ"));
 
 			#endregion
 

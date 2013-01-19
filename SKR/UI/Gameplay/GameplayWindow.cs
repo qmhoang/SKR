@@ -17,6 +17,7 @@ using SkrGame.Gameplay.Combat;
 using SkrGame.Systems;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
@@ -110,6 +111,18 @@ namespace SKR.UI.Gameplay {
 
 			var level = entity.Get<Location>().Level;
 
+			var bumpablesAtNewLocation = level.GetEntitiesAt(newPosition, typeof(OnBump)).ToList();
+
+			bool blockedMovement = false;
+			foreach (var b in bumpablesAtNewLocation) {
+				if (b.Get<OnBump>().Action(entity, b) == OnBump.BumpResult.BlockMovement) {
+					blockedMovement = true;
+				}
+			}
+
+			if (blockedMovement)
+				return;
+
 			if (level.IsWalkable(newPosition)) {
 				var actorsAtNewLocation = level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();
 
@@ -121,20 +134,16 @@ namespace SKR.UI.Gameplay {
 								                                   weapons, e => e.Get<Identifier>().Name,
 								                                   weapon => SelectMeleeTarget(entity, weapon, actorsAtNewLocation),
 								                                   GameplayWindow.PromptTemplate));
-					} else if (weapons.Count == 1) {
+					} else if (weapons.Count == 1)
 						SelectMeleeTarget(entity, weapons.First(), actorsAtNewLocation);
-					} else {
-
+					else {
 						World.Instance.AddMessage("No possible way of attacking.");
 						Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
 					}
-
-
 				} else {
 					entity.Get<Location>().Position = newPosition;
 					entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
 				}
-
 			} else
 				World.Instance.AddMessage("There is something in the way.");
 		}

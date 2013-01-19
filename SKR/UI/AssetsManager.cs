@@ -21,6 +21,9 @@ namespace SKR.Universe {
 			assets.Add("Grass", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.Green, ColorPresets.Brown)));
 			assets.Add("StoneFloor", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.SandyBrown, ColorPresets.Brown)));
 
+			assets.Add("OpenedWindow", new Tuple<char, Pigment>('/', new Pigment(ColorPresets.Gray, ColorPresets.Black)));
+			assets.Add("ClosedWindow", new Tuple<char, Pigment>('\\', new Pigment(ColorPresets.Gray, ColorPresets.Black)));
+
 			assets.Add("ROAD", new Tuple<char, Pigment>(' ', new Pigment(ColorPresets.SandyBrown, ColorPresets.DarkGray)));
 			assets.Add("ROAD_DIVIDER", new Tuple<char, Pigment>('-', new Pigment(ColorPresets.Yellow, ColorPresets.DarkGray)));
 
