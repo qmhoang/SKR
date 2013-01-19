@@ -21,7 +21,7 @@ namespace SkrGame.Universe.Entities.Items {
 	}
 
 	public class Item : Component {
-		internal class Template {
+		public class Template {
 			public ItemType Type { get; set; }
 			public int Weight { get; set; }
 			public int Size { get; set; }
@@ -59,7 +59,7 @@ namespace SkrGame.Universe.Entities.Items {
 
 		private Item() { }
 
-		internal Item(Template template) {
+		public Item(Template template) {
 			StackType = template.StackType;
 			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);			
 			amount = 1;

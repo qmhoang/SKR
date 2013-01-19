@@ -117,9 +117,6 @@
     <Compile Include="Systems\DoorSubsystem.cs" />
     <Compile Include="Systems\ItemContainerInteractionSubsystem.cs" />
     <Compile Include="Systems\ItemEquippingSubsystem.cs" />
-    <Compile Include="Tests\Components\ContainerTests.cs" />
-    <Compile Include="Tests\Systems\ItemContainerInteractionSubsystemTests.cs" />
-    <Compile Include="Tests\WorldTest.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
