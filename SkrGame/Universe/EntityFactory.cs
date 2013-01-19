@@ -149,8 +149,6 @@ namespace SkrGame.Universe {
 			return compiledTemplates[id].Select(c => c.Copy());
 		}
 
-
-
 		public void Add(string refId, params Component[] comps) {
 			var t = new Template(comps);
 			t.Add(new ReferenceId(refId));
@@ -179,6 +177,10 @@ namespace SkrGame.Universe {
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(baseEntity));
 
 			inheritanceTemplates.Add(template.Get<ReferenceId>().RefId, new Tuple<string, Template>(baseEntity, template));
+		}
+
+		public Entity Create(string refId, EntityManager em) {
+			return em.Create(Get(refId));
 		}
 	}
 }

@@ -31,30 +31,30 @@ namespace SkrGame.Universe {
 		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
 
 		public static int SecondsToActionPoints(double seconds) {
-			return (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
+			return  (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
 		}
 
 		public static double ActionPointsToSeconds(int ap) {
 			return (double) (ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
 		}
 
-		public static int SpeedToActionPoints(int speed) {
+		public static int SpeedToActionPoints(double speed) {
 			return SecondsToActionPoints(SpeedToSeconds(speed));
 		}
 
-		public static int ActionPointsToSpeed(int ap) {
+		public static double ActionPointsToSpeed(int ap) {
 			return SecondsToSpeed(ActionPointsToSeconds(ap));
 		}
 
-		public static double SpeedToSeconds(int speed) {
+		public static double SpeedToSeconds(double speed) {
 			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / (double) speed;
 		}
 
 		/// <summary>
 		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
 		/// </summary>
-		public static int SecondsToSpeed(double seconds) {
-			return (int) ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
+		public static double SecondsToSpeed(double seconds) {
+			return ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
 		}
 
 		public List<Message> MessageBuffer { get; private set; }

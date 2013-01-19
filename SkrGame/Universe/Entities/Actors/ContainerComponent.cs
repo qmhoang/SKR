@@ -7,6 +7,7 @@ using System.Reflection;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
@@ -96,16 +97,25 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (Contains(item))
 				return false;
 
-			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Id);						
+			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Id);
 
-			itemContainer.Add(item);
-			OnItemAdded(new EventArgs<Entity>(item));
+			if (item.Has<Item>() &&
+				item.Get<Item>().StackType == StackType.Hard &&
+				Exist(e => e.Get<ReferenceId>() == item.Get<ReferenceId>())) {
 
-			if (item.Has<VisibleComponent>()) {
-				item.Get<VisibleComponent>().VisibilityIndex = -1;
+				var existing = GetItem(e => e.Get<ReferenceId>() == item.Get<ReferenceId>());
+				existing.Get<Item>().Amount += item.Get<Item>().Amount;
+				World.Instance.EntityManager.Remove(item);
+			} else {
+				itemContainer.Add(item);
+				OnItemAdded(new EventArgs<Entity>(item));
+
+				if (item.Has<VisibleComponent>()) {
+					item.Get<VisibleComponent>().VisibilityIndex = -1;
+				}
+
+				return true;
 			}
-
-			return true;
 		}
 
 		public bool Remove(Entity item) {

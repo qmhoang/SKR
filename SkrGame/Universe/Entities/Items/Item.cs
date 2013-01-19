@@ -9,25 +9,49 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items.Components;
 
 namespace SkrGame.Universe.Entities.Items {
-	public enum ItemType {
-		// weapons
-		OneHandedWeapon,
-		TwoHandedWeapon,
-		Armor,
-		Shield,
-		Ammo,
-		BodyPart,
-		Misc,
+//	public enum ItemType {
+//		// weapons
+//		OneHandedWeapon,
+//		TwoHandedWeapon,
+//		Armor,
+//		Shield,
+//		Ammo,
+//		BodyPart,
+//		Misc,
+//	}
+
+	public class Equipable : Component {
+		public class Template {
+			public List<string> Slot { get; set; }
+			public bool TwoHanded { get; set; }
+	
+		}
+		public List<string> Slots { get; private set; }
+		public bool TwoHanded { get; private set; }
+
+		private Equipable() {}
+
+		public Equipable(Template template) {
+			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);
+			TwoHanded = template.TwoHanded;
+		}
+
+		public override Component Copy() {
+			return new Equipable()
+			       {
+					   Slots = new List<string>(Slots),
+					   TwoHanded = TwoHanded
+			       };
+		}
 	}
 
 	public class Item : Component {
 		public class Template {
-			public ItemType Type { get; set; }
+//			public ItemType Type { get; set; }
 			public int Weight { get; set; }
 			public int Size { get; set; }
 			public int Value { get; set; }
 			public StackType StackType { get; set; }
-			public List<string> Slot { get; set; }
 		}
 
 		public int Weight { get; private set; }
@@ -54,16 +78,14 @@ namespace SkrGame.Universe.Entities.Items {
 		}
 
 		public StackType StackType { get; private set; }
-		public ItemType Type { get; private set; }
-		public List<string> Slots { get; private set; }
+//		public ItemType Type { get; private set; }
 
 		private Item() { }
 
 		public Item(Template template) {
 			StackType = template.StackType;
-			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);			
 			amount = 1;
-			Type = template.Type;
+//			Type = template.Type;
 			Weight = template.Weight;
 			Size = template.Size;
 			Value = template.Value;
@@ -74,8 +96,7 @@ namespace SkrGame.Universe.Entities.Items {
 			var copy = new Item()
 			           {
 			           		StackType = StackType,
-			           		Slots = new List<string>(Slots),
-			           		Type = Type,
+//			           		Type = Type,
 			           		Weight = Weight,
 			           		Size = Size,
 			           		Value = Value,
@@ -85,6 +106,17 @@ namespace SkrGame.Universe.Entities.Items {
 			return copy;
 		}
 		
+		public static Entity Split(Entity e, int amount) {
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+			Contract.Requires<ArgumentException>(e.Has<Item>());
+			Contract.Requires<ArgumentException>(amount > 0 && amount < e.Get<Item>().Amount);
+
+			e.Get<Item>().Amount -= amount;
+
+			var copy = e.Copy();
+			copy.Get<Item>().Amount = amount;
+			return copy;
+		}
 	}
 
 	public enum StackType {
