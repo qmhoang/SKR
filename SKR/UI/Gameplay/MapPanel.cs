@@ -78,7 +78,7 @@ namespace SKR.UI.Gameplay {
 			}
 
 			// draw entities
-			foreach (var entity in entities.OrderBy(entity => entity.Get<Sprite>().Order)) {
+			foreach (var entity in entities.OrderBy(entity => entity.Get<Sprite>().ZOrder)) {
 				Point localPosition = entity.Get<Location>().Position - ViewOffset;
 				var texture = assets[entity.Get<Sprite>().Asset];
 
