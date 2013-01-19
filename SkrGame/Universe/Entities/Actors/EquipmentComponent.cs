@@ -39,7 +39,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return slots; }
 		}
 
-		internal EquipmentComponent()
+		public EquipmentComponent()
 			: this(new List<string>
 			        {
 			        		"Main Hand",
@@ -47,7 +47,7 @@ namespace SkrGame.Universe.Entities.Actors {
 							"Torso"
 			        }) { }
 
-		internal EquipmentComponent(IEnumerable<string> slots) {
+		public EquipmentComponent(IEnumerable<string> slots) {
 			equippedItems = new Dictionary<string, Entity>();
 			this.slots = new List<string>(slots);
 		}

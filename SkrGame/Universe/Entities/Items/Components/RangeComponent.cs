@@ -155,7 +155,8 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			       		Recoil = Recoil,
 			       		Reliability = Reliability,
 			       		AmmoType = AmmoType,
-			       		ShotsRemaining = Shots = Shots,
+			       		ShotsRemaining = Shots,
+						Shots = Shots,
 			       };
 		}
 	}

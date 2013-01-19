@@ -31,7 +31,7 @@ namespace SkrGame.Universe.Entities.Actors {
 				handler(this, e);
 		}
 
-		internal ContainerComponent() {
+		public ContainerComponent() {
 			itemContainer = new List<Entity>();
 		}
 
