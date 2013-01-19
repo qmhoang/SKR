@@ -5,6 +5,7 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Systems {
@@ -50,29 +51,29 @@ namespace SkrGame.Systems {
 
 				if (e.Has<Blocker>()) {
 					var blocker = e.Get<Blocker>();
-					blocker.Walkable = e.Get<Door>().Status != Door.DoorStatus.Closed;
+					blocker.Walkable = e.Get<Opening>().Status != Opening.EntryStatus.Closed;
 				}
 				if (e.Has<Sprite>()) {
 					var sprite = e.Get<Sprite>();
-					sprite.Asset = e.Get<Door>().Status == Door.DoorStatus.Closed ? e.Get<Door>().ClosedAsset : e.Get<Door>().OpenedAsset;
+					sprite.Asset = e.Get<Opening>().Status == Opening.EntryStatus.Closed ? e.Get<Opening>().ClosedAsset : e.Get<Opening>().OpenedAsset;
 				}
 				
 			}
 
-			public void DoorWrapper_Used(object sender, DEngine.Core.EventArgs<Door.DoorStatus> @event) {
+			public void DoorWrapper_Used(object sender, DEngine.Core.EventArgs<Opening.EntryStatus> @event) {
 				if (e.Has<Blocker>()) {
 					var blocker = e.Get<Blocker>();
-					blocker.Walkable = @event.Data != Door.DoorStatus.Closed;
+					blocker.Walkable = @event.Data != Opening.EntryStatus.Closed;
 				}
 				if (e.Has<Sprite>()) {
 					var sprite = e.Get<Sprite>();
-					sprite.Asset = e.Get<Door>().Status == Door.DoorStatus.Closed ? e.Get<Door>().ClosedAsset : e.Get<Door>().OpenedAsset;
+					sprite.Asset = e.Get<Opening>().Status == Opening.EntryStatus.Closed ? e.Get<Opening>().ClosedAsset : e.Get<Opening>().OpenedAsset;
 				}
 			}
 			
 		}
 
-		public DoorSubsystem(EntityManager entityManager) : base(entityManager, typeof(Door)) {
+		public DoorSubsystem(EntityManager entityManager) : base(entityManager, typeof(Opening)) {
 			foreach (var door in Collection) {
 				CollectionOnCollectionAdd(door);
 			}
@@ -80,12 +81,12 @@ namespace SkrGame.Systems {
 
 		protected override EntityWrapper AbstractOnAdd(Entity entity) {
 			var wrapper = new DoorWrapper(entity);
-			entity.Get<Door>().Used += wrapper.DoorWrapper_Used;
+			entity.Get<Opening>().Used += wrapper.DoorWrapper_Used;
 			return wrapper;
 		}
 
 		protected override void AbstractOnRemove(Entity entity) {
-			entity.Get<Door>().Used -= ((DoorWrapper) WrapperLUT[entity.Id]).DoorWrapper_Used;
+			entity.Get<Opening>().Used -= ((DoorWrapper) WrapperLUT[entity.Id]).DoorWrapper_Used;
 		}
 	}
 }

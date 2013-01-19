@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Components;
-using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
@@ -125,48 +124,6 @@ namespace SkrGame.Universe.Locations {
 			Transparency = transparency;
 			Walkable = walkable;
 			WalkPenalty = walkPenalty;
-		}
-	}
-
-	public class Door : Component {
-		public enum DoorStatus {
-			Opened,
-			Closed
-		}
-		public string ActionDescription { get; set; }
-		public int APCost { get; set; }
-		private DoorStatus status;
-		public DoorStatus Status {
-			get { return status; }
-			set {
-				status = value;
-				OnUsed(new EventArgs<DoorStatus>(status));
-			}
-		}
-
-		public string OpenedAsset { get; set; }
-		public string ClosedAsset { get; set; }
-
-		public event EventHandler<EventArgs<DoorStatus>> Used;
-
-		public const int DEFAULT_DOOR_USE_APCOST = World.DEFAULT_SPEED / World.TURN_LENGTH_IN_SECONDS;
-
-		public void OnUsed(EventArgs<DoorStatus> e) {
-			EventHandler<EventArgs<DoorStatus>> handler = Used;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public Door(string actionDescription, string openedAsset, string closedAsset, int apCost = DEFAULT_DOOR_USE_APCOST, DoorStatus status = DoorStatus.Closed) {
-			this.status = status;
-			ActionDescription = actionDescription;
-			APCost = apCost;
-			OpenedAsset = openedAsset;
-			ClosedAsset = closedAsset;
-		}
-
-		public override Component Copy() {
-			return new Door(ActionDescription, OpenedAsset, ClosedAsset, APCost, Status);
 		}
 	}
 

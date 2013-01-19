@@ -122,6 +122,7 @@
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />
+    <Compile Include="Universe\Entities\Features\OnBump.cs" />
     <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Items\ItemContainer.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Universe\Factories\TalentFactory.cs" />
     <Compile Include="Universe\Factories\FeatureFactory.cs" />
     <Compile Include="Universe\Locations\Blocker.cs" />
+    <Compile Include="Universe\Entities\Features\Opening.cs" />
     <Compile Include="Universe\Locations\Level.cs" />
     <Compile Include="Universe\World.cs" />
   </ItemGroup>

@@ -112,7 +112,7 @@ namespace SkrGame.Universe {
 //			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(EntityFactory);
 
-			level = mapFactory.Construct("TestHouse");
+			level = mapFactory.Construct("TestMap");
 
 			Player = EntityManager.Create(new List<Component>
 			                              {

@@ -107,7 +107,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 				var existing = GetItem(e => e.Get<ReferenceId>() == item.Get<ReferenceId>());
 				existing.Get<Item>().Amount += item.Get<Item>().Amount;
-				World.Instance.EntityManager.Remove(item);
+//				World.Instance.EntityManager.Remove(item);
 				return true;
 			} else {
 				itemContainer.Add(item);
