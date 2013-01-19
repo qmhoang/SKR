@@ -7,7 +7,7 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using DEngine.Extensions;
 using Ogui.UI;
 using SKR.UI.Gameplay.Systems;
@@ -139,7 +139,7 @@ namespace SKR.UI.Gameplay {
 				World.Instance.AddMessage("There is something in the way.");
 		}
 
-		private IEnumerable<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entity.Component {
+		private IEnumerable<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entities.Component {
 			List<Entity> items = new List<Entity>();
 
 			if (entity.Has<EquipmentComponent>()) {
@@ -240,7 +240,7 @@ namespace SKR.UI.Gameplay {
 			var item = itemEntityFromLevel.Get<Item>();
 			
 			// if an item doesn't exist in the inventory
-			if (!inventory.Exist(e => e.Get<ItemRefId>() == itemEntityFromLevel.Get<ItemRefId>())) {
+			if (!inventory.Exist(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>())) {
 
 				// and if we're splitting an item, create a new one
 				if (amount < item.Amount) {
@@ -257,7 +257,7 @@ namespace SKR.UI.Gameplay {
 				}
 
 			} else {
-				inventory.GetItem(e => e.Get<ItemRefId>() == itemEntityFromLevel.Get<ItemRefId>()).Get<Item>().Amount += amount;
+				inventory.GetItem(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>()).Get<Item>().Amount += amount;
 
 				if (amount < item.Amount) {
 					item.Amount -= amount;
@@ -298,7 +298,7 @@ namespace SKR.UI.Gameplay {
 			var itemsInLevel = level.EntityManager.Get(typeof(Location), typeof(Item), typeof(VisibleComponent)).Where(i => i.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
 
 			// if an item doesn't exist in the at the location, create one
-			if (!itemsInLevel.Exists(e => e.Get<ItemRefId>() == itemEntityFromInventory.Get<ItemRefId>() && e.Get<Location>() == inventoryEntity.Get<Location>())) {
+			if (!itemsInLevel.Exists(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == inventoryEntity.Get<Location>())) {
 
 				// if amount drop is less than currently carrying, just substract it, otherwise remove it
 				if (amount < item.Amount) {
@@ -315,7 +315,7 @@ namespace SKR.UI.Gameplay {
 				}
 				
 			} else {
-				itemsInLevel.First(e => e.Get<ItemRefId>() == itemEntityFromInventory.Get<ItemRefId>() && e.Get<Location>() == inventoryEntity.Get<Location>()).Get<Item>().Amount += amount;
+				itemsInLevel.First(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == inventoryEntity.Get<Location>()).Get<Item>().Amount += amount;
 				if (amount < item.Amount) {
 					item.Amount -= amount;
 				} else {
@@ -332,10 +332,10 @@ namespace SKR.UI.Gameplay {
 				ParentApplication.Push(
 						new OptionsSelectionPrompt<UseableFeature.UseAction>(String.Format("Do what with {0}?", Identifier.GetNameOrId(@object)),
 						                                                     actions,
-						                                                     a => a.Description, a => a.Use(@object, user, a),
+						                                                     a => a.Description, a => a.Use(user, @object, a),
 						                                                     GameplayWindow.PromptTemplate));
 			} else if (actions.Count == 1) {
-				actions.First().Use(@object, user, actions.First());
+				actions.First().Use(user, @object, actions.First());
 			} else {
 				World.Instance.AddMessage(String.Format("No possible action on {0}", Identifier.GetNameOrId(@object)));
 			}

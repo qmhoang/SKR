@@ -1,4 +1,4 @@
-﻿using DEngine.Entity;
+﻿using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Gameplay.Talent.Components {

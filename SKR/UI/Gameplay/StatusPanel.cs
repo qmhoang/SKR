@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using DEngine.Entity;
+using DEngine.Entities;
 using Ogui.UI;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;

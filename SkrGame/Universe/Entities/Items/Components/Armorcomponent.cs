@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items.Components {

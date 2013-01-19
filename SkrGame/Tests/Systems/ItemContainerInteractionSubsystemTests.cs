@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities.Actors;

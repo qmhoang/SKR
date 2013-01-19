@@ -1,6 +1,6 @@
 using System;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
 

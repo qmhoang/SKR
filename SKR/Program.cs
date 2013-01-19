@@ -8,7 +8,7 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;

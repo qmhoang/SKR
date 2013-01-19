@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Reflection;
 using DEngine.Components;
 using DEngine.Core;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Universe.Entities.Items;
 using log4net;
 

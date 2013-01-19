@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
-using DEngine.Entity;
+using DEngine.Entities;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Systems {
