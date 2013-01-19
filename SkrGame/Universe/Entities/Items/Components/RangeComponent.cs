@@ -47,7 +47,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			public double Penetration { get; set; }
 			public Action<Actor, Actor> OnHit { get; set; }
 			public int Range { get; set; }
-			public int WeaponSpeed {
+			public double WeaponSpeed {
 				get { return World.ActionPointsToSpeed(APToAttack); }
 				set { APToAttack = World.SpeedToActionPoints(value); }
 			}
@@ -56,7 +56,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 				set { APToAttack = World.SecondsToActionPoints(1.0 / value); }
 			}
 			public int APToAttack { get; set; }
-			public int ReloadSpeed {
+			public double ReloadSpeed {
 				get { return World.ActionPointsToSpeed(APToReload); }
 				set { APToReload = World.SpeedToActionPoints(value); }
 			}

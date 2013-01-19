@@ -54,10 +54,10 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public void Equip(string slot, Entity item) {
 			Contract.Requires<ArgumentNullException>(item != null);
-			Contract.Requires<ArgumentException>(item.Has<Item>());
+			Contract.Requires<ArgumentException>(item.Has<Equipable>());
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
 			Contract.Requires<ArgumentException>(!IsSlotEquipped(slot), "slot already equipped");
-			Contract.Requires<ArgumentException>(item.Get<Item>().Slots.Contains(slot));
+			Contract.Requires<ArgumentException>(item.Get<Equipable>().Slots.Contains(slot));
 			Contract.Ensures(equippedItems.ContainsKey(slot), "item is not equipped");
 
 			Logger.DebugFormat("{0} is equipping {1} to {2}.", OwnerUId, item.Id, slot);

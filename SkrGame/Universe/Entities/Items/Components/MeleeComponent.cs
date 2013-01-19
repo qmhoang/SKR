@@ -10,7 +10,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			public Rand Damage { get; set; }
 			public Action<Entity> OnHit { get; set; }
 			public double Penetration { get; set; }
-			public int WeaponSpeed {
+			public double WeaponSpeed {
 				get { return World.ActionPointsToSpeed(APToAttack); }
 				set { APToAttack = World.SpeedToActionPoints(value); }
 			}

@@ -32,7 +32,7 @@ namespace SKRTests.Components {
 
 			equipableItem = entityManager.Create(new List<Component>
 			                                     {
-			                                     		new Item(new Item.Template
+			                                     		new Equipable(new Equipable.Template
 			                                     		         {
 			                                     		         		Slot = new List<string>
 			                                     		         		       {
@@ -43,7 +43,7 @@ namespace SKRTests.Components {
 
 			equipableItem2 = entityManager.Create(new List<Component>
 			                                      {
-			                                      		new Item(new Item.Template
+			                                      		new Equipable(new Equipable.Template
 			                                      		         {
 			                                      		         		Slot = new List<string>
 			                                      		         		       {

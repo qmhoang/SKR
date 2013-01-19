@@ -6,10 +6,10 @@ namespace SKRTests {
 	class WorldTest {
 		private World world;
 
-		[TestFixtureSetUp]
-		public void SetUp() {
-			world = World.Create();
-		}
+//		[TestFixtureSetUp]
+//		public void SetUp() {
+//			world = World.Create();
+//		}
 
 		[Test]
 		public static void TestAPFunctions() {
@@ -30,6 +30,7 @@ namespace SKRTests {
 		[TestCase(150)]
 		public void TestStaticConversion(int value) {
 			Assert.AreEqual(World.SecondsToSpeed(World.SpeedToSeconds(value)), value);
+			Assert.AreEqual(World.SecondsToActionPoints(World.SpeedToSeconds(World.ActionPointsToSpeed(value))), value);
 		}
 	}
 }

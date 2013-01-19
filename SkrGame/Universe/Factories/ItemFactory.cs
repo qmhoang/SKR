@@ -19,21 +19,20 @@ namespace SkrGame.Universe.Factories {
 			       new Item(
 			       		new Item.Template
 			       		{
-			       				Type = ItemType.Misc,
+//			       				Type = ItemType.Misc,
 			       				Value = 0,
 			       				Weight = 0,
 			       				Size = 0,
 			       				StackType = StackType.None,
-			       				Slot = new List<string>()
 			       		}));
 
 			InitMelees(ef);
-			InitGuns(ef);
+			InitPistols(ef);
 			InitAmmos(ef);
 			InitArmors(ef);
 		}		
 
-		private static void InitGuns(EntityFactory ef) {
+		private static void InitPistols(EntityFactory ef) {
 			ef.Inherits("gun", "meleeweapon",
 			            new Sprite("GUN", Sprite.ITEMS_LAYER),
 			            new RangeComponent(
@@ -56,8 +55,6 @@ namespace SkrGame.Universe.Factories {
 			            				Strength = 8,
 			            				AmmoType = "bullet",
 			            		}));
-
-			#region Pistols
 
 			ef.Inherits("pistol1", "gun",
 						new MeleeComponent(
@@ -100,15 +97,11 @@ namespace SkrGame.Universe.Factories {
 			            new Identifier("Glock 17"),
 						new Item(new Item.Template
 			                     {
-			                     		Type = ItemType.OneHandedWeapon,
+//			                     		Type = ItemType.OneHandedWeapon,
 			                     		Value = 60000,
 			                     		Weight = 19,
 			                     		Size = 2,
 			                     		StackType = StackType.None,
-			                     		Slot = new List<string>
-			                     		       {
-			                     		       		"Main Hand",
-			                     		       }
 			                     }),
 			            new RangeComponent(
 			            		new RangeComponent.Template
@@ -124,7 +117,7 @@ namespace SkrGame.Universe.Factories {
 			            				Shots = 17,
 			            				Range = 160,
 			            				RoF = 3,
-			            				ReloadSpeed = World.SecondsToSpeed(3),
+										APToReload = World.SecondsToActionPoints(3),
 			            				Recoil = 2,
 			            				Reliability = 18,
 			            				Strength = 8,
@@ -136,15 +129,11 @@ namespace SkrGame.Universe.Factories {
 			            new Identifier("Glock 22"),
 						new Item(new Item.Template
 			                     {
-			                     		Type = ItemType.OneHandedWeapon,
+//			                     		Type = ItemType.OneHandedWeapon,
 			                     		Value = 40000,
 			                     		Weight = 21,
 			                     		Size = 2,
 			                     		StackType = StackType.None,
-			                     		Slot = new List<string>()
-			                     		       {
-			                     		       		"Main Hand",
-			                     		       }
 			                     }),
 
 			            new RangeComponent(
@@ -161,20 +150,27 @@ namespace SkrGame.Universe.Factories {
 			            				Shots = 15,
 			            				Range = 160,
 			            				RoF = 3,
-			            				ReloadSpeed = World.SecondsToSpeed(3),
+			            				APToReload = World.SecondsToActionPoints(3),
 			            				Recoil = 2,
 			            				Reliability = 18,
 			            				Strength = 8,
 			            				AmmoType = ".40S&W"
 			            		}));
-
-			#endregion
 			
 		}
 
 		private static void InitMelees(EntityFactory ef) {
 			ef.Inherits("meleeweapon", "item",
 			            new Sprite("WEAPON", Sprite.ITEMS_LAYER),
+						new Equipable(
+							new Equipable.Template
+							{
+								TwoHanded = false,
+								Slot = new List<string>()
+			            				       {
+			            				       		"Main Hand",
+			            				       }
+							}),
 						new MeleeComponent(
 			            		new MeleeComponent.Template
 			            		{
@@ -199,15 +195,12 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.OneHandedWeapon,
+//			            				Type = ItemType.OneHandedWeapon,
 			            				Value = 4000,
 			            				Weight = 10,
 			            				Size = 2,
 			            				StackType = StackType.None,
-			            				Slot = new List<string>()
-			            				       {
-			            				       		"Main Hand",
-			            				       }
+
 			            		}),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
@@ -233,15 +226,11 @@ namespace SkrGame.Universe.Factories {
 						new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.OneHandedWeapon,
+//			            				Type = ItemType.OneHandedWeapon,
 			            				Value = 5000,
 			            				Weight = 40,
 			            				Size = 3,
 			            				StackType = StackType.None,
-			            				Slot = new List<string>()
-			            				       {
-			            				       		"Main Hand",
-			            				       }
 			            		}),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
@@ -267,15 +256,11 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.OneHandedWeapon,
+//			            				Type = ItemType.OneHandedWeapon,
 			            				Value = 4000,
 			            				Weight = 20,
 			            				Size = 2,
 			            				StackType = StackType.None,
-			            				Slot = new List<string>()
-			            				       {
-			            				       		"Main Hand",
-			            				       }
 			            		}),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
@@ -300,14 +285,10 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.OneHandedWeapon,
+//			            				Type = ItemType.OneHandedWeapon,
 			            				Value = 1000,
 			            				Weight = 20,
 			            				StackType = StackType.None,
-			            				Slot = new List<string>()
-			            				       {
-			            				       		"Main Hand",
-			            				       }
 			            		}),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
@@ -332,15 +313,11 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.OneHandedWeapon,
+//			            				Type = ItemType.OneHandedWeapon,
 			            				Value = 3000,
 			            				Weight = 5,
 			            				Size = 1,
 			            				StackType = StackType.None,
-			            				Slot = new List<string>()
-			            				       {
-			            				       		"Main Hand",
-			            				       }
 			            		}),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
@@ -368,7 +345,7 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.Ammo,
+//			            				Type = ItemType.Ammo,
 			            				Value = 30,
 			            				Weight = 0,
 			            				Size = 0,
@@ -389,7 +366,7 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.Ammo,
+//			            				Type = ItemType.Ammo,
 			            				Value = 30,
 			            				Weight = 0,
 			            				Size = 0,
@@ -410,7 +387,7 @@ namespace SkrGame.Universe.Factories {
 			            new Item(
 			            		new Item.Template
 			            		{
-			            				Type = ItemType.Ammo,
+//			            				Type = ItemType.Ammo,
 			            				Value = 30,
 			            				Weight = 0,
 			            				Size = 0,
@@ -432,16 +409,20 @@ namespace SkrGame.Universe.Factories {
 						new Identifier("Generic Armor"),
 			            new Item(new Item.Template
 			                     {
-			                     		Type = ItemType.Armor,
+//			                     		Type = ItemType.Armor,
 			                     		Value = 100,
 			                     		Weight = 10,
 			                     		Size = 11,
 			                     		StackType = StackType.None,
-			                     		Slot = new List<string>
+
+			                     }),
+						new Equipable(new Equipable.Template
+						              {
+										  Slot = new List<string>
 			                     		       {
 			                     		       		"Torso",
 			                     		       }
-			                     }),
+						              }),
 			            new ArmorComponent(new ArmorComponent.Template
 			                               {
 			                               		ComponentId = "armor",
@@ -463,20 +444,16 @@ namespace SkrGame.Universe.Factories {
 			                               		           }
 			                               }));
 
-			ef.Inherits("footballpads", "item",
+			ef.Inherits("footballpads", "armor",
 			            new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
 						new Identifier("Football Shoulder Pads"),
 			            new Item(new Item.Template
 			                     {
-			                     		Type = ItemType.Armor,
+//			                     		Type = ItemType.Armor,
 			                     		Value = 5000,
 			                     		Weight = 50,
 			                     		Size = 11,
 			                     		StackType = StackType.None,
-			                     		Slot = new List<string>
-			                     		       {
-			                     		       		"Torso",
-			                     		       }
 			                     }),
 			            new ArmorComponent(new ArmorComponent.Template
 			                               {
