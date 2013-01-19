@@ -216,8 +216,8 @@ namespace SKR.UI.Gameplay {
 		}
 
 		#region Pickup/Drop items
-		private void PickUpItem(Entity inventoryEntity, Entity itemEntityFromLevel, ICollection<Entity> items) {
-			Contract.Requires<ArgumentNullException>(items != null, "items");
+		private void PickUpItem(Entity inventoryEntity, Entity itemEntityFromLevel, ICollection<Entity> itemsOnDisplay) {
+			Contract.Requires<ArgumentNullException>(itemsOnDisplay != null, "items");
 
 			var inventory = inventoryEntity.Get<ContainerComponent>();
 			var item = itemEntityFromLevel.Get<Item>();
@@ -225,104 +225,134 @@ namespace SKR.UI.Gameplay {
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to pick up?",
-						                amount => PickUpStackedItem(inventoryEntity, itemEntityFromLevel, amount, items), item.Amount, 0, item.Amount, PromptTemplate));
+						                amount => PickUpStackedItem(inventoryEntity, itemEntityFromLevel, amount, itemsOnDisplay), item.Amount, 0, item.Amount, PromptTemplate));
 			else {
 				inventory.Add(itemEntityFromLevel);
-				items.Remove(itemEntityFromLevel);
+				itemsOnDisplay.Remove(itemEntityFromLevel);
 			}
 		}
 
-		private void PickUpStackedItem(Entity inventoryEntity, Entity itemEntityFromLevel, int amount, ICollection<Entity> items) {
+		private void PickUpStackedItem(Entity entityPicking, Entity itemEntityFromLevel, int amount, ICollection<Entity> itemsOnDisplay) {
 			if (amount == 0)
 				return;
 
-			var inventory = inventoryEntity.Get<ContainerComponent>();
-			var item = itemEntityFromLevel.Get<Item>();
-			
-			// if an item doesn't exist in the inventory
-			if (!inventory.Exist(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>())) {
-
-				// and if we're splitting an item, create a new one
-				if (amount < item.Amount) {
-					item.Amount -= amount;
-
-					var tempItem = itemEntityFromLevel.Copy();					
-					tempItem.Get<VisibleComponent>().VisibilityIndex = -1;
-
-					tempItem.Get<Item>().Amount = amount;	// amount starts out as 1
-					inventory.Add(tempItem);
-				} else {
-					inventory.Add(itemEntityFromLevel);
-					items.Remove(itemEntityFromLevel);
-				}
-
+			if (amount < itemEntityFromLevel.Get<Item>().Amount) {
+				var ne = Item.Split(itemEntityFromLevel, amount);
+				entityPicking.Get<ContainerComponent>().Add(ne);
 			} else {
-				inventory.GetItem(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>()).Get<Item>().Amount += amount;
-
-				if (amount < item.Amount) {
-					item.Amount -= amount;
-				} else {
-					manager.Remove(itemEntityFromLevel);
-					items.Remove(itemEntityFromLevel);
-				}
-
+				entityPicking.Get<ContainerComponent>().Add(itemEntityFromLevel);
+				itemsOnDisplay.Remove(itemEntityFromLevel);
 			}
+
+//
+//			var inventory = entityPickingUp.Get<ContainerComponent>();
+//			var item = itemEntityFromLevel.Get<Item>();
+//			
+//			// if an item doesn't exist in the inventory
+//			if (!inventory.Exist(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>())) {
+//
+//				// and if we're splitting an item, create a new one
+//				if (amount < item.Amount) {
+//					item.Amount -= amount;
+//
+//					var tempItem = itemEntityFromLevel.Copy();					
+//					tempItem.Get<VisibleComponent>().VisibilityIndex = -1;
+//
+//					tempItem.Get<Item>().Amount = amount;	// amount starts out as 1
+//					inventory.Add(tempItem);
+//				} else {
+//					inventory.Add(itemEntityFromLevel);
+//					items.Remove(itemEntityFromLevel);
+//				}
+//
+//			} else {
+//				inventory.GetItem(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>()).Get<Item>().Amount += amount;
+//
+//				if (amount < item.Amount) {
+//					item.Amount -= amount;
+//				} else {
+//					manager.Remove(itemEntityFromLevel);
+//					items.Remove(itemEntityFromLevel);
+//				}
+//
+//			}
 		}
 
-		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory, ICollection<Entity> items) {
-			Contract.Requires<ArgumentNullException>(items != null, "items");
+		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory, ICollection<Entity> itemsOnDisplay) {
+			Contract.Requires<ArgumentNullException>(itemsOnDisplay != null, "items");
 			var inventory = inventoryEntity.Get<ContainerComponent>();
 			var item = itemEntityFromInventory.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to drop to the ground?",
-						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount, items), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
+						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount, itemsOnDisplay), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
 			else {
 				inventory.Remove(itemEntityFromInventory);
-				items.Remove(itemEntityFromInventory);
+				itemsOnDisplay.Remove(itemEntityFromInventory);
 			}
 		}
 
-		private void DropStackedItem(Entity inventoryEntity, Entity itemEntityFromInventory, int amount, ICollection<Entity> items) {
+
+		private void DropStackedItem(Entity entityDropping, Entity itemEntityFromInventory, int amount, ICollection<Entity> itemsOnDisplay) {
 			Contract.Requires<ArgumentException>(amount >= 0);
 			if (amount == 0)
 				return;
 
-			var inventory = inventoryEntity.Get<ContainerComponent>();
-			var item = itemEntityFromInventory.Get<Item>();
-			
-			var level = inventoryEntity.Get<Location>().Level;
+			var inventory = entityDropping.Get<ContainerComponent>();
 
-			// this only gets items that are visible at that location.  entities that are being carried aren't visible
-			var itemsInLevel = level.EntityManager.Get(typeof(Location), typeof(Item), typeof(VisibleComponent)).Where(i => i.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
+			if (amount < itemEntityFromInventory.Get<Item>().Amount) {
+				var ne = Item.Split(itemEntityFromInventory, amount);
 
-			// if an item doesn't exist in the at the location, create one
-			if (!itemsInLevel.Exists(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == inventoryEntity.Get<Location>())) {
+				var level = entityDropping.Get<Location>().Level;
+				var itemsInLevel = level.GetEntitiesAt(entityDropping.Get<Location>().Position, typeof(Item), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
 
-				// if amount drop is less than currently carrying, just substract it, otherwise remove it
-				if (amount < item.Amount) {
-					item.Amount -= amount;
-
-					var tempItem = itemEntityFromInventory.Copy();
-					inventory.Remove(tempItem);
-					tempItem.Get<Item>().Amount = amount;	// amount starts out as 1
-
+				if (itemsInLevel.Exists(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>())) {
+					itemsInLevel.First(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>()).Get<Item>().Amount += amount;
 				} else {
-					// if we're removing everything, just remove from the inventory and show it
-					inventory.Remove(itemEntityFromInventory);
-					items.Remove(itemEntityFromInventory);
+					ne.Get<VisibleComponent>().Reset();
 				}
-				
+
 			} else {
-				itemsInLevel.First(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == inventoryEntity.Get<Location>()).Get<Item>().Amount += amount;
-				if (amount < item.Amount) {
-					item.Amount -= amount;
-				} else {
-					items.Remove(itemEntityFromInventory);
-					manager.Remove(itemEntityFromInventory);	// WARNING: will render itemEntityFromInventory componentless
-				}		
+				inventory.Remove(itemEntityFromInventory);
+				itemsOnDisplay.Remove(itemEntityFromInventory);
 			}
+
+
+//			var inventory = entityDropping.Get<ContainerComponent>();
+//			var item = itemEntityFromInventory.Get<Item>();
+//			
+//			var level = entityDropping.Get<Location>().Level;
+//
+//			// this only gets items that are visible at that location.  entities that are being carried aren't visible
+//			var itemsInLevel = level.EntityManager.Get(typeof(Location), typeof(Item), typeof(VisibleComponent)).Where(i => i.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
+//
+//			// if an item doesn't exist in the at the location, create one
+//			if (!itemsInLevel.Exists(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == entityDropping.Get<Location>())) {
+//
+//				// if amount drop is less than currently carrying, just substract it, otherwise remove it
+//				if (amount < item.Amount) {
+//					item.Amount -= amount;
+//
+//					var tempItem = itemEntityFromInventory.Copy();
+//					inventory.Remove(tempItem);
+//					tempItem.Get<Item>().Amount = amount;	// amount starts out as 1
+//
+//				} else {
+//					// if we're removing everything, just remove from the inventory and show it
+//					inventory.Remove(itemEntityFromInventory);
+//					items.Remove(itemEntityFromInventory);
+//				}
+//				
+//			} else {
+//				itemsInLevel.First(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == entityDropping.Get<Location>()).Get<Item>().Amount += amount;
+//				if (amount < item.Amount) {
+//					item.Amount -= amount;
+//				} else {
+//					items.Remove(itemEntityFromInventory);
+//					manager.Remove(itemEntityFromInventory);	// WARNING: will render itemEntityFromInventory componentless
+//				}		
+//			}
 
 		}
 		#endregion

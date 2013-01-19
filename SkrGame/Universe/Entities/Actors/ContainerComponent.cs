@@ -97,15 +97,18 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (Contains(item))
 				return false;
 
-			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, item.Id);
+			Logger.DebugFormat("{0} is adding {1} to his inventory.", OwnerUId, Identifier.GetNameOrId(item));
 
 			if (item.Has<Item>() &&
 				item.Get<Item>().StackType == StackType.Hard &&
 				Exist(e => e.Get<ReferenceId>() == item.Get<ReferenceId>())) {
 
+				Logger.DebugFormat("{0} is stackable and exist in container, merging.", Identifier.GetNameOrId(item));
+
 				var existing = GetItem(e => e.Get<ReferenceId>() == item.Get<ReferenceId>());
 				existing.Get<Item>().Amount += item.Get<Item>().Amount;
 				World.Instance.EntityManager.Remove(item);
+				return true;
 			} else {
 				itemContainer.Add(item);
 				OnItemAdded(new EventArgs<Entity>(item));
@@ -124,7 +127,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (!itemContainer.Contains(item))
 				return false;
 
-			Logger.DebugFormat("{0} is removing {1} to his inventory.", OwnerUId, item.Id);
+			Logger.DebugFormat("{0} is removing {1} to his inventory.", OwnerUId, Identifier.GetNameOrId(item));
 
 			OnItemRemoved(new EventArgs<Entity>(item));
 			itemContainer.Remove(item);
