@@ -6,6 +6,7 @@ using DEngine.Components;
 using DEngine.Entities;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Locations;
 
@@ -24,7 +25,11 @@ namespace SkrGame.Systems {
 				foreach (var entity in entities) {
 					if (!entity.Has<Player>()) {
 						var entityAP = entity.Get<ActionPoint>();
+						
 						entityAP.ActionPoints += entityAP.Speed;
+						if (entityAP.Updateable && entity.Has<NpcIntelligence>()) {
+							entity.Get<NpcIntelligence>().Update(entity);
+						}
 					}
 				}
 

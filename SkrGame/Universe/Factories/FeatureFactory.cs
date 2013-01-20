@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
 

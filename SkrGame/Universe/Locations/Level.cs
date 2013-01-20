@@ -5,6 +5,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Universe.Locations {
 	/// <summary>

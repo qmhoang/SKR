@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
@@ -9,6 +10,7 @@ using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Gameplay.Talent.Components;
+using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Locations;
@@ -237,5 +239,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			//todo
 			return new Actor(Name);
 		}
+
+
 	}
 }

@@ -121,9 +121,9 @@ namespace SKRTests.Components {
 			Assert.AreSame(container.GetItem(i => i.Id == singleItem.Id), singleItem);
 		}
 
-//		[Test]
-//		public void TestCopy() {
-//			Assert.Ignore();
-//		}
+		[Test]
+		public void TestCopy() {
+			
+		}
 	}
 }
