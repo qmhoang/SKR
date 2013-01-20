@@ -13,6 +13,7 @@ using Ogui.UI;
 using SKR.UI.Gameplay.Systems;
 using SKR.UI.Menus;
 using SKR.Universe;
+using SkrGame.Gameplay;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Systems;
 using SkrGame.Universe;
@@ -102,64 +103,6 @@ namespace SKR.UI.Gameplay {
 					};
 
 			AddManager(new PlayerMovementSystem(manager));
-		}
-
-		private void Move(Entity entity, Point direction) {
-			Contract.Requires<ArgumentNullException>(entity != null, "entity");
-
-			Point newPosition = entity.Get<Location>().Position + direction;
-
-			var level = entity.Get<Location>().Level;
-
-			// first we see if there are any entities that we "bump" into when we walk onto new location
-			var bumpablesAtNewLocation = level.GetEntitiesAt(newPosition, typeof(OnBump)).ToList();
-			bool blockedMovement = false;
-
-			foreach (var b in bumpablesAtNewLocation) {
-				if (b.Get<OnBump>().Action(entity, b) == OnBump.BumpResult.BlockMovement) {
-					blockedMovement = true;
-				}
-			}
-
-			if (blockedMovement)
-				return;
-
-			// then we check for attackables
-			var actorsAtNewLocation = level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();			
-
-			if (actorsAtNewLocation.Count > 0) {				
-				var weapons = FilterEquippedItems<MeleeComponent>(entity).ToList();
-				if (weapons.Count > 1) {
-					ParentApplication.Push(
-							new OptionsSelectionPrompt<Entity>("With that weapon?",
-							                                   weapons, e => e.Get<Identifier>().Name,
-							                                   weapon => SelectMeleeTarget(entity, weapon, actorsAtNewLocation),
-							                                   GameplayWindow.PromptTemplate));
-				} else if (weapons.Count == 1)
-					SelectMeleeTarget(entity, weapons.First(), actorsAtNewLocation);
-				else {
-					World.Instance.AddMessage("No possible way of attacking.");
-					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
-				}
-
-				return;	// attacking doesn't move you
-			}
-
-			// finally move onto the new location
-			if (level.IsWalkable(newPosition)) {
-				entity.Get<Location>().Position = newPosition;
-				entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-
-				// check if we're near anything
-				var nearEntities = level.EntityManager.Get(typeof(PassiveFeature)).ToList();
-
-				foreach (var e in nearEntities) {
-					e.Get<PassiveFeature>().Near(entity, e);
-				}
-
-			} else
-				World.Instance.AddMessage("There is something in the way.");
-
 		}
 
 		private IEnumerable<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entities.Component {
@@ -392,6 +335,43 @@ namespace SKR.UI.Gameplay {
 			} else {
 				World.Instance.AddMessage(String.Format("No possible action on {0}", Identifier.GetNameOrId(@object)));
 			}
+
+		}
+
+		private void Move(Entity user, Point direction) {
+			var result = Movement.BumpDirection(user, direction);
+
+			// if an entity prevents movement, we can't do anything
+			if (!result) {
+				return;
+			}
+
+			Point newPosition = user.Get<Location>().Position + direction;
+
+			// we check for attackables
+			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();
+
+			if (actorsAtNewLocation.Count > 0) {
+				var weapons = FilterEquippedItems<MeleeComponent>(user).ToList();
+				if (weapons.Count > 1) {
+					ParentApplication.Push(
+							new OptionsSelectionPrompt<Entity>("With that weapon?",
+															   weapons, e => e.Get<Identifier>().Name,
+															   weapon => SelectMeleeTarget(user, weapon, actorsAtNewLocation),
+															   GameplayWindow.PromptTemplate));
+				} else if (weapons.Count == 1)
+					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
+				else {
+					World.Instance.AddMessage("No possible way of attacking.");
+					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
+				}
+
+				return;
+			}
+
+			
+
+			Movement.MoveEntity(user, newPosition);
 
 		}
 

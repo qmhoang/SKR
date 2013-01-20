@@ -1,53 +1,89 @@
-//using System.Collections.Generic;
-//using System.Reflection;
-//using DEngine.Actor;
-//using DEngine.Core;
-//using SkrGame.Gameplay.Talent.Components;
-//using SkrGame.Universe.Entities.Actors.PC;
-//using log4net;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using DEngine.Actor;
+using DEngine.Components;
+using DEngine.Core;
+using DEngine.Entities;
+using SkrGame.Gameplay;
+using SkrGame.Gameplay.Combat;
+using SkrGame.Gameplay.Talent.Components;
+using SkrGame.Universe.Entities.Actors.PC;
+using log4net;
+
+namespace SkrGame.Universe.Entities.Actors.NPC.AI {
+
+	public class SimpleIntelligence : NpcIntelligence.AI {
+		private AStarPathFinder pf;
+		private VisibilityMap vision;
+		private Point oldPos;
+
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+//		public SimpleIntelligence() {
+//			pf = new AStarPathFinder(monster.Level, 1.41f);			
+//		}
 //
-//namespace SkrGame.Universe.Entities.Actors.NPC.AI {
-//
-//	internal class SimpleIntelligence : NpcIntelligence {
-//		private AStarPathFinder pf;
-//		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-//		
 //		public SimpleIntelligence(Npc monster)
 //			: base(monster) {
 //			pf = new AStarPathFinder(monster.Level, 1.41f);
 //		}
-//
-//		public override void Update() {
-//			Player player = World.Instance.Player;
-//			
-//			if (Actor.HasLineOfSight(player.Position)) {
-//				var distance = Actor.Position.DistanceTo(player.Position);
-//				if (distance <= 1) {
-//					Actor.MeleeAttack().As<ActiveTalentComponent>().InvokeAction(player.Position);
-//					Actor.ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-//				} else if (distance <= 1.5)		// we are diagonally next to the player
-//				{
-//					Actor.Wait();		// todo add diagonal attacks
-//				} else {
-//					pf.Compute(Actor.Position.X, Actor.Position.Y, player.Position.X, player.Position.Y);					
-//					int nx = Actor.Position.X, ny = Actor.Position.Y;
-//
-//					if (pf.Walk(ref nx, ref ny, false)) {
-//						Point dir = new Point(nx, ny) - Actor.Position;
-//						if (Actor.Move(dir) == ActionResult.Success) {
-//
-//						}
-//					} else {
-//						Actor.Wait();
-//					}
-//				}
-//
-//			} else {
+
+		private void ComputeFOV(Location location) {
+			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, location.Level, location.Position.X, location.Position.Y, 10, true);
+		}
+
+		public override void Update(Entity user) {
+			var position = user.Get<Location>().Position;
+
+			if (pf == null) {
+				pf = new AStarPathFinder(user.Get<Location>().Level, 1.41f);
+				vision = new VisibilityMap(user.Get<Location>().Level.Size);
+				ComputeFOV(user.Get<Location>());
+				oldPos = position;
+			}
+
+			if (oldPos != position) {
+				ComputeFOV(user.Get<Location>());
+			}
+
+			Entity player = World.Instance.Player;
+
+			var target = player.Get<Location>().Position;
+			if (vision.IsVisible(target)) {
+				var distance = position.DistanceTo(target);
+
+				if (distance <= 1.5) {
+					Combat.MeleeAttack(user, user, player, player.Get<DefendComponent>().DefaultPart, World.MEAN);
+				} else {
+					pf.Compute(position.X, position.Y, target.X, target.Y);
+					int nx = position.X, ny = position.Y;
+
+					if (pf.Walk(ref nx, ref ny, false)) {
+						var newPosition = new Point(nx, ny);
+						Point dir = newPosition - position;
+
+						var result = Movement.BumpDirection(user, dir);
+
+						// if an entity prevents movement, we can't do anything
+						if (!result) {
+							return;
+						}
+
+						Movement.MoveEntity(user, newPosition);
+
+					} else {
+						//					Actor.Wait();
+						user.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+					}
+				}				
+			} else {
 //				Actor.Wait();
-//			}
-//		}
-//	}
-//
+				user.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+			}
+		}
+	}
+
 //	internal class BasicHumanIntelligence : SimpleIntelligence {
 //
 //
@@ -70,4 +106,4 @@
 //			target = World.Instance.Player;
 //		}
 //	}
-//}
+}

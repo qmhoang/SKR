@@ -10,7 +10,9 @@ using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Actors.PC;
+using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
@@ -127,7 +129,7 @@ namespace SkrGame.Universe {
 												new ContainerComponent(),
 												new EquipmentComponent(),
 												new VisibleComponent(10),
-												new Blocker(false, true)
+//												new Blocker(false, true)
 			                              });
 
 
@@ -159,7 +161,7 @@ namespace SkrGame.Universe {
 										new VisibleComponent(10),
 										new ContainerComponent(),
 										new EquipmentComponent(),
-										new Blocker(false, true)
+										new NpcIntelligence(new SimpleIntelligence())
 			                     });
 
 			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
@@ -172,6 +174,22 @@ namespace SkrGame.Universe {
 			var armor = EntityManager.Create(EntityFactory.Get("footballpads")).Add(new Location(1, 1, level));
 //			npc.Get<ContainerComponent>().Add(armor);
 			npc.Get<EquipmentComponent>().Equip("Torso", armor);
+			npc.Add(new MeleeComponent(
+				new MeleeComponent.Template
+				{
+					ComponentId = "punch",
+					ActionDescription = "punch",
+					ActionDescriptionPlural = "punches",
+					Skill = "skill_unarmed",
+					HitBonus = 0,
+					Damage = Rand.Constant(-5),
+					DamageType = Combat.DamageTypes["crush"],
+					Penetration = 1,
+					WeaponSpeed = 100,
+					Reach = 0,
+					Strength = 0,
+					Parry = 0
+				}));
 		}
 
 		public void Initialize() {

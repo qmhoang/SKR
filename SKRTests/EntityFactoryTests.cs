@@ -6,6 +6,7 @@ using DEngine.Components;
 using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities.Actors;
 
 namespace SKRTests {
 	[TestFixture]
