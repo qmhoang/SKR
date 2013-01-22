@@ -106,66 +106,85 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public static ActionResult MeleeAttack(Entity attacker, Entity weapon, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
-			Contract.Requires<ArgumentException>(weapon.Has<MeleeComponent>());
-			Contract.Requires<ArgumentException>(attacker.Has<ActionPoint>());
-			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>());
-			Contract.Requires<ArgumentException>(bodyPartTargetted.Owner.OwnerUId == defender.Id);
+			Contract.Requires<ArgumentNullException>(attacker != null, "attacker");
+			Contract.Requires<ArgumentNullException>(weapon != null, "weapon");
+			Contract.Requires<ArgumentNullException>(defender != null, "defender");
+			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
 
-			var meleeComponent = weapon.Get<MeleeComponent>();
+			Contract.Requires<ArgumentException>(weapon.Has<MeleeComponent>(), "weapon cannot melee attack");
+			Contract.Requires<ArgumentException>(attacker.Has<ActionPoint>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(attacker.Has<Location>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
+			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
+			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
+			Contract.Requires<ArgumentException>(defender.Get<Location>().Level == attacker.Get<Location>().Level, "attacker is not on the same level as defender");
 
-			var result = Combat.Attack(Identifier.GetNameOrId(attacker), Identifier.GetNameOrId(defender), hitBonus + meleeComponent.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
+
+			var melee = weapon.Get<MeleeComponent>();
+
+			//apply skill
+			if (attacker.Has<Actor>()) {
+				hitBonus += attacker.Get<Actor>().GetSkill(melee.Skill);				
+			} else {
+				hitBonus += World.MEAN;
+			}
+
+			var result = Combat.Attack(Identifier.GetNameOrId(attacker), Identifier.GetNameOrId(defender), hitBonus + melee.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
 
 			if (result == CombatEventResult.Hit) {
 				const int TEMP_STR_BONUS = World.MEAN;
-				var damage = Math.Max(meleeComponent.Damage.Roll() + GetStrengthDamage(TEMP_STR_BONUS).Roll(), 1);
+				var damage = Math.Max(melee.Damage.Roll() + GetStrengthDamage(TEMP_STR_BONUS).Roll(), 1);
 				int damageResistance, realDamage;
 
-				Combat.Damage(damage, meleeComponent.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
+				Combat.Damage(damage, melee.Penetration, melee.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
 				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-				                  Identifier.GetNameOrId(attacker), meleeComponent.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
+				                  Identifier.GetNameOrId(attacker), melee.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
 
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {
 				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-				                  Identifier.GetNameOrId(attacker), meleeComponent.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
+				                  Identifier.GetNameOrId(attacker), melee.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
 				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-				                  Identifier.GetNameOrId(attacker), meleeComponent.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
+				                  Identifier.GetNameOrId(attacker), melee.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
 			}
 
-			attacker.Get<ActionPoint>().ActionPoints -= meleeComponent.APToAttack;
+			attacker.Get<ActionPoint>().ActionPoints -= melee.APToAttack;
 			return ActionResult.Success;
 		}
 
 		public static ActionResult RangeAttack(Entity attacker, Entity rangeWeapon, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
-			if (!rangeWeapon.Has<RangeComponent>())
-				throw new ArgumentException("rangeWeapon cannot range attack", "rangeWeapon");
-			if (!attacker.Has<ActionPoint>())
-				throw new ArgumentException("entity cannot act", "attacker");
-			if (!attacker.Has<Location>())
-				throw new ArgumentException("entity doesn't have a location", "attacker");
+			Contract.Requires<ArgumentNullException>(attacker != null, "attacker");
+			Contract.Requires<ArgumentNullException>(rangeWeapon != null, "rangeWeapon");
+			Contract.Requires<ArgumentNullException>(defender != null, "defender");
+			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
 
-			if (!defender.Has<DefendComponent>())
-				throw new ArgumentException("entity cannot be attacked", "defender");
-			if (!defender.Has<Location>())
-				throw new ArgumentException("entity doesn't have a location", "defender");
-			if (defender.Get<DefendComponent>() != bodyPartTargetted.Owner)
-				throw new ArgumentException("entity does not contain body part", "bodyPartTargetted");
-			if (defender.Get<Location>().Level != attacker.Get<Location>().Level)
-				throw new ArgumentException("attacker is not on the same level as target");
-			Contract.EndContractBlock();
+			Contract.Requires<ArgumentException>(rangeWeapon.Has<RangeComponent>(), "rangeWeapon cannot range attack");
+			Contract.Requires<ArgumentException>(attacker.Has<ActionPoint>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(attacker.Has<Location>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
+			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
+			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
+			Contract.Requires<ArgumentException>(defender.Get<Location>().Level == attacker.Get<Location>().Level, "attacker is not on the same level as defender");
 
 			var weapon = rangeWeapon.Get<RangeComponent>();
 			var attackerName = Identifier.GetNameOrId(attacker);
 			var attackerLocation = attacker.Get<Location>();
 			var targetLocation = defender.Get<Location>();
+
+			//apply skill
+			if (attacker.Has<Actor>()) {
+				hitBonus += attacker.Get<Actor>().GetSkill(weapon.Skill);
+			} else {
+				hitBonus += World.MEAN;
+			}
 
 			if (weapon.ShotsRemaining <= 0) {
 				World.Instance.AddMessage(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
@@ -177,7 +196,7 @@ namespace SkrGame.Gameplay.Combat {
 			weapon.ShotsRemaining--;
 			attacker.Get<ActionPoint>().ActionPoints -= weapon.APToAttack;
 
-			var locationsOnPath = Bresenham.GeneratePointsFromLine(attackerLocation.Position, targetLocation.Position).ToList();
+//			var locationsOnPath = Bresenham.GeneratePointsFromLine(attackerLocation.Position, targetLocation.Position).ToList();
 
 			var entitiesOnPath = Combat.GetTargetsOnPath(attackerLocation.Position, targetLocation.Position).ToList();
 
@@ -203,7 +222,7 @@ namespace SkrGame.Gameplay.Combat {
 					var damage = Math.Max(weapon.Damage.Roll(), 1);
 					int damageResistance, realDamage;
 
-					Combat.Damage(weapon.Damage.Roll(), weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
+					Combat.Damage(weapon.Damage.Roll(), weapon.Penetration, weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
 					World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
 					                                        attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
@@ -293,8 +312,7 @@ namespace SkrGame.Gameplay.Combat {
 
 			var pointsOnPath = Bresenham.GeneratePointsFromLine(start, end);
 
-			for (int index = 0; index < pointsOnPath.Count; index++) {
-				var location = pointsOnPath[index];
+			foreach (var location in pointsOnPath) {
 				if (!currentLevel.IsWalkable(location)) {
 					Logger.InfoFormat("We hit a location:({0}) where it is not walkable.", location);
 					yield break;
@@ -305,12 +323,15 @@ namespace SkrGame.Gameplay.Combat {
 					foreach (var entity in entitiesAt) {
 						yield return entity;
 					}
-				}				
+				}
 			}
 		}
 
-		public static void Damage(int damage, DamageType type, Entity defender, DefendComponent.AttackablePart bodyPart, out int damageResistance, out int damageDealt) {
-			Contract.Requires(bodyPart.Owner.OwnerUId == defender.Id);
+		public static void Damage(int damage, double penetration, DamageType type, Entity defender, DefendComponent.AttackablePart bodyPart, out int damageResistance, out int damageDealt) {
+			if (defender.Id != bodyPart.Owner.OwnerUId)
+				throw new ArgumentException("entity does not contain body part", "bodyPart");
+			Contract.EndContractBlock();
+
 			damageDealt = damage;
 			damageResistance = 0;
 
@@ -322,7 +343,7 @@ namespace SkrGame.Gameplay.Combat {
 					if (armor.Defenses.ContainsKey(bodyPart.Name)) {
 
 						if (Rng.Chance(armor.Defenses[bodyPart.Name].Coverage / 100.0)) {
-							damageResistance = armor.Defenses[bodyPart.Name].Resistances[type];
+							damageResistance = (int) Math.Floor(armor.Defenses[bodyPart.Name].Resistances[type] / penetration);
 							damageDealt = Math.Max(damage - damageResistance, 0);
 							Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, armor.OwnerUId, damageResistance, damage);
 						} else {

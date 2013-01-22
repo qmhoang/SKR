@@ -110,8 +110,8 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public Entity GetEquippedItemAt(string slot) {
 			Contract.Requires<ArgumentException>(!string.IsNullOrEmpty(slot));
-			Contract.Requires<ArgumentException>(ContainSlot(slot));
-			return equippedItems.ContainsKey(slot) ? equippedItems[slot] : null;
+
+			return !ContainSlot(slot) ? null : (equippedItems.ContainsKey(slot) ? equippedItems[slot] : null);
 		}
 
 		public Entity this[string slot] {

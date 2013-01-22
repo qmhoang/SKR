@@ -15,7 +15,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 
 	public class SimpleIntelligence : NpcIntelligence.AI {
 		private AStarPathFinder pf;
-		private VisibilityMap vision;
+		private VisionMap vision;
 		private Point oldPos;
 
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -38,7 +38,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 
 			if (pf == null) {
 				pf = new AStarPathFinder(user.Get<Location>().Level, 1.41f);
-				vision = new VisibilityMap(user.Get<Location>().Level.Size);
+				vision = new VisionMap(user.Get<Location>().Level.Size);
 				ComputeFOV(user.Get<Location>());
 				oldPos = position;
 			}
@@ -54,7 +54,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 				var distance = position.DistanceTo(target);
 
 				if (distance <= 1.5) {
-					Combat.MeleeAttack(user, user, player, player.Get<DefendComponent>().DefaultPart, World.MEAN);
+					Combat.MeleeAttack(user, user, player, player.Get<DefendComponent>().GetRandomPart());
 				} else {
 					pf.Compute(position.X, position.Y, target.X, target.Y);
 					int nx = position.X, ny = position.Y;

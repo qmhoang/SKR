@@ -75,7 +75,7 @@ namespace SkrGame.Universe.Entities.Features {
 				World.Instance.AddMessage(String.Format("{0} {1}.", Identifier.GetNameOrId(user), d.OpenedDescription));
 				return ActionResult.Success;
 			} else if (d.Status == OpeningStatus.Opened) {
-				if (entry.Get<Location>().Level.IsWalkable(entry.Get<Location>().Position)) {
+				if (entry.Get<Location>().Level.IsWalkable(entry.Get<Location>().Position) || !d.WalkableOpened) {
 					if (entry.Has<Blocker>())
 						entry.Get<Blocker>().Transparent = entry.Get<Blocker>().Walkable = false;
 					if (entry.Has<Sprite>())

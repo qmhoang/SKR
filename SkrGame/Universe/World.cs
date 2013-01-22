@@ -17,6 +17,7 @@ using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
+using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe {
 	public class World {
@@ -49,7 +50,7 @@ namespace SkrGame.Universe {
 		}
 
 		public static double SpeedToSeconds(double speed) {
-			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / (double) speed;
+			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / speed;
 		}
 
 		/// <summary>
@@ -70,9 +71,6 @@ namespace SkrGame.Universe {
 				handler(this, e);
 		}
 
-		
-//		private readonly FeatureFactory featureFactory;
-//		private readonly TalentFactory talentFactory;
 		private readonly MapFactory mapFactory;
 
 		public TagManager TagManager { get; private set; }
@@ -111,8 +109,6 @@ namespace SkrGame.Universe {
 
 			MessageBuffer = new List<Message>();
 
-//			talentFactory = new SourceTalentFactory();			
-//			featureFactory = new SourceFeatureFactory();
 			mapFactory = new SourceMapFactory(EntityFactory);
 
 			level = mapFactory.Construct("TestMap");
@@ -124,12 +120,11 @@ namespace SkrGame.Universe {
 												new Identifier("Player"),
 			                              		new Location(0, 0, level),
 			                              		new Player(),
-			                              		new Actor("player"),			                              		
+			                              		new Actor(),			                              		
 			                              		new DefendComponent(),
 												new ContainerComponent(),
 												new EquipmentComponent(),
 												new VisibleComponent(10),
-//												new Blocker(false, true)
 			                              });
 
 
@@ -156,7 +151,7 @@ namespace SkrGame.Universe {
 			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
 										new Identifier("npc"),
 			                     		new Location(7, 2, level),
-			                     		new Actor("npc"),
+			                     		new Actor(),
 			                     		new DefendComponent(),
 										new VisibleComponent(10),
 										new ContainerComponent(),

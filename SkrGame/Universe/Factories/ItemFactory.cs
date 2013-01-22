@@ -182,7 +182,7 @@ namespace SkrGame.Universe.Factories {
 			            				HitBonus = 0,
 			            				Damage = Rand.Constant(-10),
 			            				DamageType = Combat.DamageTypes["crush"],
-			            				Penetration = 0,
+			            				Penetration = 1,
 			            				WeaponSpeed = 100,
 			            				APToReady = 10,
 			            				Reach = 1,

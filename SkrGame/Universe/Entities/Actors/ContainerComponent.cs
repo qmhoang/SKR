@@ -63,6 +63,15 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return itemContainer.Count; }
 		}
 
+		/// <summary>
+		/// Total number of items (stacked items aren't counted as 1 item)
+		/// </summary>
+		public int TotalCount {
+			get {				
+				return itemContainer.Sum(i => i.Has<Item>() ? i.Get<Item>().Amount : 1);
+			}
+		}
+
 		public bool IsReadOnly {
 			get { return false; }
 		}

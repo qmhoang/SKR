@@ -4,6 +4,7 @@ using System.Linq;
 using DEngine.Components;
 using DEngine.Core;
 using SkrGame.Universe.Locations;
+using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe.Factories {
 	public abstract class MapFactory : Factory<string, Level> {}

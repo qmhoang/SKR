@@ -60,184 +60,79 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
+	public class Skill {
+		public Actor Owner { get; set; }
+		/// <summary>
+		/// raw rank represents this talent's skill, unmodified by anything
+		/// </summary>
+		public int RawRank { get; set; }
+		/// <summary>
+		/// RealRank will call the function supplied in the template to calculate this talent's modified rank, it can be anything
+		/// from a simple adding another attribute to it or something much more complicated
+		/// </summary>
+		public int Rank { get { return calculateRealRank(Owner, this); } }
+		public int MaxRank { get; private set; }
+
+		private readonly Func<Actor, Skill, int> calculateRealRank;
+
+		public Skill(Actor owner, int maxRank, int initialRank = 0, Func<Actor, Skill, int> calcRealRank = null) {
+			Owner = owner;
+			RawRank = initialRank;
+			MaxRank = maxRank;
+
+			if (calcRealRank == null)
+				calculateRealRank = (self, t) => t.RawRank;
+			else {
+				calculateRealRank = calcRealRank;				
+			}
+		}
+	}
+
 	public class Actor : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private readonly Dictionary<string, Talent> talents;
-		private readonly Dictionary<string, int> tags;
+		public int Strength { get; set; }
+		public int Agility { get; set; }
+		public int Constitution { get; set; }
 
-		public event EventHandler<TagChangedEvent> TagChanged;
+		public int Intellect { get; set; }
+		public int Cunning { get; set; }
+		public int Resolve { get; set; }
 
-		public void OnTagChanged(TagChangedEvent e) {
-			EventHandler<TagChangedEvent> handler = TagChanged;
-			if (handler != null)
-				handler(this, e);
-		}
+		public int Presence { get; set; }
+		public int Grace { get; set; }
+		public int Willpower { get; set; }
 
-		public int GetTag(string id) {
-			return tags.ContainsKey(id) ? tags[id] : 0;
-		}
-
-		public void SetTag(string id, int value) {
-			OnTagChanged(new TagChangedEvent(id, value - GetTag(id), value));
-			tags[id] = value;
-		}
-
-		public void IncrementTag(string id, int increment = 1) {
-			if (tags.ContainsKey(id)) {
-				tags[id] += increment;
-				OnTagChanged(new TagChangedEvent(id, increment, GetTag(id)));
-			} else {
-				SetTag(id, increment);
-			}
-		}
+		private readonly Dictionary<string, Skill> skills;
 
 		public World World {
 			get { return World.Instance; }
 		}
 
 		public int Lift {
-			get {
-				return
-						(int)
-						(GetTalent("attrb_strength").As<AttributeComponent>().Rank * GetTalent("attrb_strength").As<AttributeComponent>().Rank * 18 * Math.Pow(World.STANDARD_DEVIATION, -2.0));
-			}
+			get { return Strength * Strength * 18 * (int) Math.Pow(World.STANDARD_DEVIATION, -2.0); }
+		}
+		
+		public int GetSkill(string skill) {
+			return skills[skill].Rank;
 		}
 
-
-
-		public string Name { get; set; }
-
-		public Actor(string name) {
-			Name = name;
-
-			talents = new Dictionary<string, Talent>();
-			tags = new Dictionary<string, int>();
-
-			//			LearnTalent("action_attack");
-			//			LearnTalent("action_range");
-			//			LearnTalent("action_reload");
-			//			LearnTalent("action_activate");
-			//
-			//			LearnTalent("attrb_strength");
-			//			LearnTalent("attrb_agility");
-			//			LearnTalent("attrb_constitution");
-			//			LearnTalent("attrb_intellect");
-			//			LearnTalent("attrb_cunning");
-			//			LearnTalent("attrb_resolve");
-			//			LearnTalent("attrb_presence");
-			//			LearnTalent("attrb_grace");
-			//			LearnTalent("attrb_composure");
-			//
-			//			GetTalent("attrb_strength").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_agility").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_constitution").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_intellect").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_cunning").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_resolve").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_presence").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_grace").As<AttributeComponent>().Rank = World.MEAN;
-			//			GetTalent("attrb_composure").As<AttributeComponent>().Rank = World.MEAN;
-			//
-			//			LearnTalent("skill_sword");
-			//			LearnTalent("skill_knife");
-			//
-			//			LearnTalent("skill_pistol");
-			//			LearnTalent("skill_bow");
-			//
-			//			LearnTalent("skill_unarmed");			
+		public Actor() {
+			Strength = Agility = Constitution = Intellect = Cunning = Resolve = Presence = Grace = Willpower = World.MEAN;		
+			skills = new Dictionary<string, Skill>
+			         {
+			         		{"skill_unarmed", new Skill(this, 100, 0, (user, t) => t.Owner.Agility)},
+							{"skill_pistol", new Skill(this, 100, 0, (user, t) => t.Owner.Agility)},
+							{"skill_knife", new Skill(this, 100, 0, (user, t) => t.Owner.Agility)},
+							{"skill_axe", new Skill(this, 100, 0, (user, t) => t.Owner.Agility)},
+			         };
 
 		}
 
-
-		public event EventHandler<EventArgs<Condition, int>> ConditionChanged;
-
-		public void OnConditionChanged(EventArgs<Condition, int> e) {
-			EventHandler<EventArgs<Condition, int>> handler = ConditionChanged;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public event EventHandler<CombatEventArgs> Attacking;
-		public event EventHandler<CombatEventArgs> Defending;
-
-		public void OnAttacking(CombatEventArgs e) {
-			EventHandler<CombatEventArgs> handler = Attacking;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public void OnDefending(CombatEventArgs e) {
-			EventHandler<CombatEventArgs> handler = Defending;
-			if (handler != null)
-				handler(this, e);
-		}
-
-
-		#region Talents
-
-		public bool KnowTalent(string skillRefId) {
-			return talents.ContainsKey(skillRefId);
-		}
-
-		public bool CanLearnTalent(string talent) {
-			throw new NotImplementedException();
-		}
-
-		public void LearnTalent(string skillRefId) {
-			if (KnowTalent(skillRefId))
-				Logger.WarnFormat("{0} already knows {1}.", Name, skillRefId);
-			else {
-				// add talent
-				//				var t = World.GetTalent(skillRefId);
-				//				t.Owner = this;
-				//				talents.Add(skillRefId, t);
-				//				t.OnLearn();
-				//
-				//				OnTalentLearned(new EventArgs<Talent>(t));
-				//				Logger.DebugFormat("{0} has learned {1}.", Name, skillRefId);
-			}
-		}
-
-		public void UnlearnTalent(string skillRefId) {
-			if (!KnowTalent(skillRefId)) {
-				Logger.WarnFormat("{0} doesn't know {1} to unlearn.", Name, skillRefId);
-			} else {
-				var t = GetTalent(skillRefId);
-				t.OnUnlearn();
-
-				talents.Remove(skillRefId);
-
-				OnTalentUnlearned(new EventArgs<Talent>(t));
-				Logger.DebugFormat("{0} has unlearned {1}.", Name, skillRefId);
-			}
-		}
-
-		public Talent GetTalent(string skillRefId) {
-			return talents[skillRefId];
-		}
-
-		public event EventHandler<EventArgs<Talent>> TalentLearned;
-
-		public void OnTalentLearned(EventArgs<Talent> e) {
-			EventHandler<EventArgs<Talent>> handler = TalentLearned;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		public event EventHandler<EventArgs<Talent>> TalentUnlearned;
-
-		public void OnTalentUnlearned(EventArgs<Talent> e) {
-			EventHandler<EventArgs<Talent>> handler = TalentUnlearned;
-			if (handler != null)
-				handler(this, e);
-		}
-
-		#endregion
 
 		public override Component Copy() {
 			//todo
-			return new Actor(Name);
+			return new Actor();
 		}
 
 
