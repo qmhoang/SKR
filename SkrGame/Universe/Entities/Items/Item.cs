@@ -72,6 +72,7 @@ namespace SkrGame.Universe.Entities.Items {
 			}
 			set {
 				Contract.Requires<ArgumentException>(StackType == StackType.Hard);
+				Contract.Requires<ArgumentException>(value > 0);
 				amount = value;				
 			}
 		}
@@ -110,6 +111,7 @@ namespace SkrGame.Universe.Entities.Items {
 		public static Entity Split(Entity e, int amount) {
 			Contract.Requires<ArgumentNullException>(e != null, "e");
 			Contract.Requires<ArgumentException>(e.Has<Item>());
+			Contract.Requires<ArgumentException>(e.Get<Item>().StackType == StackType.Hard);
 			Contract.Requires<ArgumentException>(amount > 0 && amount < e.Get<Item>().Amount);
 
 			e.Get<Item>().Amount -= amount;

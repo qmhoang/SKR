@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
@@ -88,7 +89,10 @@ namespace SkrGame.Universe {
 
 		public Entity Player {
 			get { return TagManager.GetEntity("player"); }
-			set { TagManager.Register("player", value); }
+			set {				
+				Contract.Requires<ArgumentNullException>(value != null, "value");
+				TagManager.Register("player", value);
+			}
 		}
 
 		public EntityManager EntityManager {
@@ -128,22 +132,24 @@ namespace SkrGame.Universe {
 			                              });
 
 
-			Player.Add(new MeleeComponent(
-			           		new MeleeComponent.Template
-			           		{
-			           				ComponentId = "punch",
-			           				ActionDescription = "punch",
-			           				ActionDescriptionPlural = "punches",
-			           				Skill = "skill_unarmed",
-			           				HitBonus = 0,
-			           				Damage = Rand.Constant(-5),
-			           				DamageType = Combat.DamageTypes["crush"],
-			           				Penetration = 1,
-			           				WeaponSpeed = 100,
-			           				Reach = 0,
-			           				Strength = 0,
-			           				Parry = 0
-			           		}));
+			var punch =
+					new MeleeComponent.Template
+					{
+							ComponentId = "punch",
+							ActionDescription = "punch",
+							ActionDescriptionPlural = "punches",
+							Skill = "skill_unarmed",
+							HitBonus = 0,
+							Damage = Rand.Constant(-5),
+							DamageType = Combat.DamageTypes["crush"],
+							Penetration = 1,
+							WeaponSpeed = 100,
+							APToReady = 1,
+							Reach = 0,
+							Strength = 1,
+							Parry = 0
+					};
+			Player.Add(new MeleeComponent(punch));
 
 			var npc = EntityManager.Create(new List<Component>
 			                     {
@@ -169,22 +175,7 @@ namespace SkrGame.Universe {
 			var armor = EntityManager.Create(EntityFactory.Get("footballpads")).Add(new Location(1, 1, level));
 //			npc.Get<ContainerComponent>().Add(armor);
 			npc.Get<EquipmentComponent>().Equip("Torso", armor);
-			npc.Add(new MeleeComponent(
-				new MeleeComponent.Template
-				{
-					ComponentId = "punch",
-					ActionDescription = "punch",
-					ActionDescriptionPlural = "punches",
-					Skill = "skill_unarmed",
-					HitBonus = 0,
-					Damage = Rand.Constant(-5),
-					DamageType = Combat.DamageTypes["crush"],
-					Penetration = 1,
-					WeaponSpeed = 100,
-					Reach = 0,
-					Strength = 0,
-					Parry = 0
-				}));
+			npc.Add(new MeleeComponent(punch));
 		}
 
 		public void Initialize() {

@@ -85,6 +85,7 @@ namespace SkrGame.Universe {
 			/// </summary>
 			/// <typeparam name="T"></typeparam>
 			/// <returns></returns>
+			[Pure]
 			public bool Has<T>() where T : Component {
 				return components.ContainsKey(typeof(T));
 			}
@@ -146,12 +147,13 @@ namespace SkrGame.Universe {
 		}
 
 		public IEnumerable<Component> Get(string id) {
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(id));
 			return compiledTemplates[id].Select(c => c.Copy());
 		}
 
 		public void Add(string refId, params Component[] comps) {
-			var t = new Template(comps);
-			t.Add(new ReferenceId(refId));
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(refId));
+			var t = new Template(comps) {new ReferenceId(refId)};
 			Add(t);
 		}
 
@@ -164,9 +166,10 @@ namespace SkrGame.Universe {
 		}
 
 		public void Inherits(string refId, string baseEntity, params Component[] comps) {
-			var t = new Template(comps);
-			t.Add(new ReferenceId(refId));
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(baseEntity));
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(refId));
 
+			var t = new Template(comps) {new ReferenceId(refId)};
 			Inherits(baseEntity, t);
 		}
 
