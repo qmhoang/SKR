@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 using DEngine.Components;
@@ -31,6 +32,7 @@ namespace SkrGame.Universe.Entities.Actors {
 				handler(this, e);
 		}
 
+		[Pure]
 		public bool ContainSlot(string slot) {
 			return slots.Contains(slot);
 		}
@@ -54,11 +56,18 @@ namespace SkrGame.Universe.Entities.Actors {
 		public EquipmentComponent(IEnumerable<string> slots) {
 			equippedItems = new Dictionary<string, Entity>();
 			this.slots = new List<string>(slots);
-		}		
+		}
+
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(slots != null);
+			Contract.Invariant(equippedItems != null);
+		}
 
 		public void Equip(string slot, Entity item) {
 			Contract.Requires<ArgumentNullException>(item != null);
-			Contract.Requires<ArgumentException>(item.Has<Equipable>());
+			Contract.Requires<ArgumentException>(item.Has<Equipable>() && item.Get<Equipable>() != null);
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
 			Contract.Requires<ArgumentException>(!IsSlotEquipped(slot), "slot already equipped");
 			Contract.Requires<ArgumentException>(item.Get<Equipable>().Slots.Contains(slot));
@@ -104,18 +113,22 @@ namespace SkrGame.Universe.Entities.Actors {
 			}
 		}
 
+		[Pure]
 		public bool IsSlotEquipped(string slot) {
 			return equippedItems.ContainsKey(slot);
 		}
 
 		public Entity GetEquippedItemAt(string slot) {
+			Contract.Requires<ArgumentException>(ContainSlot(slot));
 			Contract.Requires<ArgumentException>(!string.IsNullOrEmpty(slot));
 
 			return !ContainSlot(slot) ? null : (equippedItems.ContainsKey(slot) ? equippedItems[slot] : null);
 		}
 
 		public Entity this[string slot] {
-			get { return GetEquippedItemAt(slot); }			
+			get {				
+				return GetEquippedItemAt(slot);
+			}			
 		}
 
 		public override Component Copy() {

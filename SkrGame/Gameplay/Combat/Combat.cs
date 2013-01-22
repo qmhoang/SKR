@@ -118,10 +118,9 @@ namespace SkrGame.Gameplay.Combat {
 			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
 			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
 			Contract.Requires<ArgumentException>(defender.Get<Location>().Level == attacker.Get<Location>().Level, "attacker is not on the same level as defender");
+			Contract.Requires<ArgumentException>(defender.Id == bodyPartTargetted.Owner.OwnerUId);
 
-
-			var melee = weapon.Get<MeleeComponent>();
-
+			var melee = weapon.Get<MeleeComponent>();			
 			//apply skill
 			if (attacker.Has<Actor>()) {
 				hitBonus += attacker.Get<Actor>().GetSkill(melee.Skill);				
@@ -173,7 +172,7 @@ namespace SkrGame.Gameplay.Combat {
 			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
 			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
 			Contract.Requires<ArgumentException>(defender.Get<Location>().Level == attacker.Get<Location>().Level, "attacker is not on the same level as defender");
-
+			
 			var weapon = rangeWeapon.Get<RangeComponent>();
 			var attackerName = Identifier.GetNameOrId(attacker);
 			var attackerLocation = attacker.Get<Location>();
@@ -328,31 +327,37 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public static void Damage(int damage, double penetration, DamageType type, Entity defender, DefendComponent.AttackablePart bodyPart, out int damageResistance, out int damageDealt) {
-			if (defender.Id != bodyPart.Owner.OwnerUId)
-				throw new ArgumentException("entity does not contain body part", "bodyPart");
-			Contract.EndContractBlock();
-
+			Contract.Requires<ArgumentNullException>(bodyPart != null, "bodyPart");
+			Contract.Requires<ArgumentNullException>(defender != null, "defender");
+			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>() && defender.Get<DefendComponent>() != null);
+			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPart.Owner, "defender does not contain supplied body part");
+			Contract.Ensures(Contract.ValueAtReturn(out damageDealt) >= 0);
+			Contract.Ensures(Contract.ValueAtReturn(out damageResistance) >= 0);
+			
 			damageDealt = damage;
 			damageResistance = 0;
 
 			if (defender.Has<EquipmentComponent>()) {
-				var armorEntity = defender.Get<EquipmentComponent>().GetEquippedItemAt(bodyPart.Name);
-				if (armorEntity != null && armorEntity.Has<ArmorComponent>()) {
-					var armor = armorEntity.Get<ArmorComponent>();
+				if (defender.Get<EquipmentComponent>().ContainSlot(bodyPart.Name)) {
+					var armorEntity = defender.Get<EquipmentComponent>().GetEquippedItemAt(bodyPart.Name);
+					if (armorEntity != null && armorEntity.Has<ArmorComponent>()) {
+						var armor = armorEntity.Get<ArmorComponent>();
 
-					if (armor.Defenses.ContainsKey(bodyPart.Name)) {
+						if (armor.Defenses.ContainsKey(bodyPart.Name)) {
 
-						if (Rng.Chance(armor.Defenses[bodyPart.Name].Coverage / 100.0)) {
-							damageResistance = (int) Math.Floor(armor.Defenses[bodyPart.Name].Resistances[type] / penetration);
-							damageDealt = Math.Max(damage - damageResistance, 0);
-							Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, armor.OwnerUId, damageResistance, damage);
-						} else {
-							// we hit a chink in the armor
-							damageResistance = 0;
-							Logger.InfoFormat("Hit a chink in the armor, DR = 0");
+							if (Rng.Chance(armor.Defenses[bodyPart.Name].Coverage / 100.0)) {
+								damageResistance = (int) Math.Floor(armor.Defenses[bodyPart.Name].Resistances[type] / penetration);
+								damageDealt = Math.Max(damage - damageResistance, 0);
+								Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, armor.OwnerUId, damageResistance, damage);
+							} else {
+								// we hit a chink in the armor
+								damageResistance = 0;
+								Logger.InfoFormat("Hit a chink in the armor, DR = 0");
+							}
 						}
 					}
 				}
+
 			}
 
 			if (damageDealt > bodyPart.MaxHealth) {
@@ -373,6 +378,7 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public static void ProcessCombat(CombatEventArgs e) {
+			Contract.Requires<ArgumentNullException>(e != null, "e");
 //			e.Attacker.OnAttacking(e);
 //			e.Defender.OnDefending(e);
 			Logger.Info(e.ToString());

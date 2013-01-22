@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,12 @@ namespace SkrGame.Universe.Entities.Actors {
 			itemContainer = new List<Entity>();
 		}
 
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(itemContainer != null);			
+		}
+
 		public IEnumerator<Entity> GetEnumerator() {
 			return itemContainer.GetEnumerator();
 		}
@@ -67,7 +74,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// Total number of items (stacked items aren't counted as 1 item)
 		/// </summary>
 		public int TotalCount {
-			get {				
+			get {
 				return itemContainer.Sum(i => i.Has<Item>() ? i.Get<Item>().Amount : 1);
 			}
 		}
@@ -81,6 +88,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public bool Exist(Predicate<Entity> match) {
+			Contract.Requires<ArgumentNullException>(match != null, "match");
 			return itemContainer.Exists(match);
 		}
 
@@ -90,6 +98,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// <param name="match"></param>
 		/// <returns></returns>
 		public Entity GetItem(Predicate<Entity> match) {
+			Contract.Requires<ArgumentNullException>(match != null, "match");
 			return itemContainer.Find(match);
 		}
 

@@ -284,62 +284,27 @@ namespace SKR.UI.Gameplay {
 				inventory.Remove(itemEntityFromInventory);
 				itemsOnDisplay.Remove(itemEntityFromInventory);
 			}
-
-
-//			var inventory = entityDropping.Get<ContainerComponent>();
-//			var item = itemEntityFromInventory.Get<Item>();
-//			
-//			var level = entityDropping.Get<Location>().Level;
-//
-//			// this only gets items that are visible at that location.  entities that are being carried aren't visible
-//			var itemsInLevel = level.EntityManager.Get(typeof(Location), typeof(Item), typeof(VisibleComponent)).Where(i => i.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
-//
-//			// if an item doesn't exist in the at the location, create one
-//			if (!itemsInLevel.Exists(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == entityDropping.Get<Location>())) {
-//
-//				// if amount drop is less than currently carrying, just substract it, otherwise remove it
-//				if (amount < item.Amount) {
-//					item.Amount -= amount;
-//
-//					var tempItem = itemEntityFromInventory.Copy();
-//					inventory.Remove(tempItem);
-//					tempItem.Get<Item>().Amount = amount;	// amount starts out as 1
-//
-//				} else {
-//					// if we're removing everything, just remove from the inventory and show it
-//					inventory.Remove(itemEntityFromInventory);
-//					items.Remove(itemEntityFromInventory);
-//				}
-//				
-//			} else {
-//				itemsInLevel.First(e => e.Get<ReferenceId>() == itemEntityFromInventory.Get<ReferenceId>() && e.Get<Location>() == entityDropping.Get<Location>()).Get<Item>().Amount += amount;
-//				if (amount < item.Amount) {
-//					item.Amount -= amount;
-//				} else {
-//					items.Remove(itemEntityFromInventory);
-//					manager.Remove(itemEntityFromInventory);	// WARNING: will render itemEntityFromInventory componentless
-//				}		
-//			}
-
 		}
 		#endregion
 
-		private void DoWhat(Entity user, Entity @object, List<UseableFeature.UseAction> actions) {
+		private void SelectUsableAction(Entity user, Entity thing, List<UseableFeature.UseAction> actions) {
 			if (actions.Count > 1) {
 				ParentApplication.Push(
-						new OptionsSelectionPrompt<UseableFeature.UseAction>(String.Format("Do what with {0}?", Identifier.GetNameOrId(@object)),
+						new OptionsSelectionPrompt<UseableFeature.UseAction>(String.Format("Do what with {0}?", Identifier.GetNameOrId(thing)),
 						                                                     actions,
-						                                                     a => a.Description, a => a.Use(user, @object, a),
+						                                                     a => a.Description, a => a.Use(user, thing, a),
 						                                                     GameplayWindow.PromptTemplate));
 			} else if (actions.Count == 1) {
-				actions.First().Use(user, @object, actions.First());
+				actions.First().Use(user, thing, actions.First());
 			} else {
-				World.Instance.AddMessage(String.Format("No possible action on {0}", Identifier.GetNameOrId(@object)));
+				World.Instance.AddMessage(String.Format("No possible action on {0}", Identifier.GetNameOrId(thing)));
 			}
 
 		}
 
 		private void Move(Entity user, Point direction) {
+			Contract.Requires<ArgumentNullException>(user != null, "user");
+
 			var result = Movement.BumpDirection(user, direction);
 
 			// if an entity prevents movement, we can't do anything
@@ -456,10 +421,10 @@ namespace SKR.UI.Gameplay {
 									                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
 									                      					                                   useables,
 									                      					                                   Identifier.GetNameOrId,
-									                      					                                   e => DoWhat(player, e, e.Get<UseableFeature>().Uses.ToList()),
+									                      					                                   e => SelectUsableAction(player, e, e.Get<UseableFeature>().Uses.ToList()),
 									                      					                                   GameplayWindow.PromptTemplate));
 									                      		} else if (useables.Count == 1) {
-									                      			DoWhat(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
+									                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
 									                      		} else {
 									                      			World.Instance.AddMessage("Nothing there to use.");
 									                      		}
@@ -467,7 +432,7 @@ namespace SKR.UI.Gameplay {
 									                      GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'd') {
 							var inventory = player.Get<ContainerComponent>();
-							if (inventory.Count() > 0)
+							if (inventory.Count > 0)
 								ParentApplication.Push(new ItemWindow(false,
 								                                      new ListWindowTemplate<Entity>
 								                                      {
@@ -547,8 +512,6 @@ namespace SKR.UI.Gameplay {
 												MapPanel,
 												GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'z') {
-							var item = player.Get<ContainerComponent>().Where(i => i.Has<Item>() && i.Get<Item>().StackType == StackType.Hard).ToList()[0];
-							item.Get<Item>().Amount = -1;
 						}
 						
 					

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
@@ -29,9 +30,18 @@ namespace SkrGame.Universe.Entities.Actors {
 			public int RelativeSize { get; private set; }
 			public int TargettingPenalty { get; private set; }
 
+			[ContractInvariantMethod]
+			[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+			private void ObjectInvariant() {
+				Contract.Invariant(MaxHealth > 0);
+				Contract.Invariant(RelativeSize > 0);				
+			}
+
 			public AttackablePart(string name, int maxHealth, int relsize, int targettingPenalty, DefendComponent owner) {
 				Contract.Requires<ArgumentException>(maxHealth > 0);
 				Contract.Requires<ArgumentException>(relsize > 0);
+				Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(name));
+
 				Name = name;
 				Health = maxHealth;
 				MaxHealth = maxHealth;
@@ -88,12 +98,13 @@ namespace SkrGame.Universe.Entities.Actors {
 			var r = Rng.Int(totalSize);
 			int total = 0;
 			foreach (var attackablePart in BodyPartsList) {
-				if (r <= attackablePart.RelativeSize + total)
-					return attackablePart;
 				total += attackablePart.RelativeSize;
+
+				if (r <= total)
+					return attackablePart;
 			}
 
-			throw new Exception("how did we get here?");			
+			throw new Exception("how did we get here?");
 		}
 
 		public int Dodge {
@@ -118,11 +129,18 @@ namespace SkrGame.Universe.Entities.Actors {
 			totalSize = bodyParts.Sum(bp => bp.RelativeSize);
 		}
 
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(health <= maxHealth);
+			Contract.Invariant(maxHealth > 0);			
+		}
+
 		public override Component Copy() {
 			var defend = new DefendComponent()
 			             {
+								MaxHealth = MaxHealth,
 			             		Health = Health,
-			             		MaxHealth = MaxHealth,
 								bodyParts = bodyParts.Select(part => part.Copy()).ToList()
 			             };
 

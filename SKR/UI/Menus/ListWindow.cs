@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Collections.Generic;
 using DEngine.Core;
@@ -23,6 +25,9 @@ namespace SKR.UI.Menus {
 
 		protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
 				: base(template) {
+			Contract.Requires<ArgumentNullException>(template != null, "template");
+			Contract.Requires<ArgumentNullException>(template.Items != null, "template.Items");
+
 			this.selectItem = selectItem;
 			HasFrame = template.HasFrame;
 			List = template.Items;
@@ -33,6 +38,12 @@ namespace SKR.UI.Menus {
 //				Items.Add((char) ('A' + count), i);
 //				count++;
 //			}
+		}
+
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(List != null);
 		}
 
 		protected override void OnMouseMoved(MouseData mouseData) {
@@ -76,7 +87,8 @@ namespace SKR.UI.Menus {
 		protected abstract void CustomDraw(Rect rect);
 
 		protected virtual void OnSelectItem(T item) {
-			selectItem(item);
+			if (selectItem != null)
+				selectItem(item);
 
 			if (List.Count() <= 0)
 				ExitWindow();
