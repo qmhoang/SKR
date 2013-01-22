@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Actor;
@@ -70,9 +71,7 @@ namespace SkrGame.Universe.Entities.Items {
 				return amount;
 			}
 			set {
-				Contract.Requires<ArgumentException>(value > 0);
 				Contract.Requires<ArgumentException>(StackType == StackType.Hard);
-				Contract.Ensures(value > 0);
 				amount = value;				
 			}
 		}
@@ -80,7 +79,9 @@ namespace SkrGame.Universe.Entities.Items {
 		public StackType StackType { get; private set; }
 //		public ItemType Type { get; private set; }
 
-		private Item() { }
+		private Item() {
+			amount = 1;			
+		}
 
 		public Item(Template template) {
 			StackType = template.StackType;
@@ -116,6 +117,12 @@ namespace SkrGame.Universe.Entities.Items {
 			var copy = e.Copy();
 			copy.Get<Item>().Amount = amount;
 			return copy;
+		}
+
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(amount > 0);			
 		}
 	}
 

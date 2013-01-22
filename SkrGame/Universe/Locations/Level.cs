@@ -27,7 +27,7 @@ namespace SkrGame.Universe.Locations {
 		}
 	}
 
-	public class Level : Map {
+	public class Level : DEngine.Core.Level {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected string[,] Map;
@@ -43,7 +43,7 @@ namespace SkrGame.Universe.Locations {
 		public Level(Size size, string fill, IEnumerable<Terrain> terrainDefinitions) : base(size) {
 			Uid = new UniqueId();
 
-			Map = new string[Width, Height];
+			Map = new string[Size.Width, Size.Height];
 			TerrainDefinitions = new Dictionary<string, Terrain>();
 
 			foreach (var terrain in terrainDefinitions) {
@@ -68,24 +68,6 @@ namespace SkrGame.Universe.Locations {
 			entities.OnEntityAdd += entities_OnEntityAdd;
 			entities.OnEntityRemove += entities_OnEntityRemove;
 		}
-
-		void entities_OnEntityRemove(Entity entity) {
-			if (entity.Has<Blocker>()) {
-				ResetTransparency(entity.Get<Location>().Position);
-				ResetWalkable(entity.Get<Location>().Position);
-				entity.Get<Blocker>().WalkableChanged -= FeatureWalkableChanged;
-				entity.Get<Blocker>().TransparencyChanged -= FeatureTransparencyChanged;
-			}
-		}
-
-		void entities_OnEntityAdd(Entity entity) {
-			if (entity.Has<Blocker>()) {
-				ResetTransparency(entity.Get<Location>().Position);
-				ResetWalkable(entity.Get<Location>().Position);
-				entity.Get<Blocker>().WalkableChanged += FeatureWalkableChanged;
-				entity.Get<Blocker>().TransparencyChanged += FeatureTransparencyChanged;
-			}
-		}
 		
 		public void SetTerrain(int x, int y, string t) {
 			if (!IsInBoundsOrBorder(x, y))
@@ -109,25 +91,24 @@ namespace SkrGame.Universe.Locations {
 			return TerrainDefinitions[Map[x, y]];
 		}
 
-//		/// <summary>
-//		/// Generate FOV from tiles and features
-//		/// </summary>
-//		public void GenerateData() {
-//			// tiles
-//			for (int x = 0; x < Map.GetLength(0); x++)
-//				for (int y = 0; y < Map.GetLength(1); y++) {
-//					var t = GetTerrain(x, y);
-//					if (t == null)
-//						SetProperties(x, y, false, false);
-//					else
-//						SetProperties(x, y, t.Transparent, t.Walkable);
-//				}
-//
-//			// features
-////			Features.Each(feature => SetProperties(feature.Position.X, feature.Position.Y, feature.Transparent, feature.Walkable));
-//		}
-		
-		// these are basically delegates that are added to every feature to detect when they change
+		private void entities_OnEntityRemove(Entity entity) {
+			if (entity.Has<Blocker>()) {
+				ResetTransparency(entity.Get<Location>().Position);
+				ResetWalkable(entity.Get<Location>().Position);
+				entity.Get<Blocker>().WalkableChanged -= FeatureWalkableChanged;
+				entity.Get<Blocker>().TransparencyChanged -= FeatureTransparencyChanged;
+			}
+		}
+
+		private void entities_OnEntityAdd(Entity entity) {
+			if (entity.Has<Blocker>()) {
+				ResetTransparency(entity.Get<Location>().Position);
+				ResetWalkable(entity.Get<Location>().Position);
+				entity.Get<Blocker>().WalkableChanged += FeatureWalkableChanged;
+				entity.Get<Blocker>().TransparencyChanged += FeatureTransparencyChanged;
+			}
+		}
+
 		private void FeatureWalkableChanged(object sender, EventArgs e) {
 			var p = EntityManager[((Component) sender).OwnerUId].Get<Location>().Position;
 

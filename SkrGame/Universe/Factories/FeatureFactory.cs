@@ -16,7 +16,7 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private static Opening Window(string openAsset, string closedAsset) {
-			return new Opening(openAsset, closedAsset, "opens the window", "closes the window", false);
+			return new Opening(openAsset, closedAsset, "opens the window", "closes the window", false, WINDOW_USAGE_AP_COST);
 		}
 
 

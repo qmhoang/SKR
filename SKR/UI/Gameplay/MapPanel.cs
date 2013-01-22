@@ -13,6 +13,7 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Locations;
 using libtcod;
+using Level = SkrGame.Universe.Locations.Level;
 
 namespace SKR.UI.Gameplay {
 	public class MapPanel : Panel {
@@ -23,7 +24,7 @@ namespace SKR.UI.Gameplay {
 		private FilteredCollection entities;
 		private Entity player;
 		private Point oldPos;
-		private VisibilityMap playerVision;
+		private VisionMap playerVision;
 
 		public MapPanel(EntityManager manager, AssetsManager assetsManager, PanelTemplate template)
 				: base(template) {			
@@ -35,7 +36,7 @@ namespace SKR.UI.Gameplay {
 			player = World.Instance.Player;
 			var location = player.Get<Location>();
 			oldPos = location.Position;
-			playerVision = new VisibilityMap(location.Level.Size);
+			playerVision = new VisionMap(location.Level.Size);
 			ComputePlayerFOV(location);
 //			location.Level.CalculateFOV(location.Position, 10);
 

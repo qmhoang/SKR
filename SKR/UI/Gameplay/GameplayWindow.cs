@@ -25,6 +25,7 @@ using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
 using libtcod;
 using log4net;
+using Level = SkrGame.Universe.Locations.Level;
 
 namespace SKR.UI.Gameplay {
 	public class GameplayWindow : Window {
@@ -122,12 +123,12 @@ namespace SKR.UI.Gameplay {
 
 		private void SelectMeleeTarget(Entity entity, Entity weapon, List<Entity> actorsAtNewLocation) {
 			if (actorsAtNewLocation.Count == 1) {
-				Combat.MeleeAttack(entity, weapon, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
+				Combat.MeleeAttack(entity, weapon, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().GetRandomPart());
 			} else {
 				ParentApplication.Push(
 						new OptionsSelectionPrompt<Entity>("Attack what?", actorsAtNewLocation,
 						                                   e => e.ToString(),
-						                                   e => Combat.MeleeAttack(entity, weapon, e, e.Get<DefendComponent>().DefaultPart, World.MEAN),
+														   e => Combat.MeleeAttack(entity, weapon, e, e.Get<DefendComponent>().GetRandomPart()),
 						                                   GameplayWindow.PromptTemplate));
 			}
 
@@ -145,12 +146,12 @@ namespace SKR.UI.Gameplay {
 
 											if (entitiesAtLocation.Count > 0) {
 												if (entitiesAtLocation.Count == 1) {
-													Combat.RangeAttack(entity, weapon, entitiesAtLocation.First(), entitiesAtLocation.First().Get<DefendComponent>().DefaultPart, World.MEAN);
+													Combat.RangeAttack(entity, weapon, entitiesAtLocation.First(), entitiesAtLocation.First().Get<DefendComponent>().GetRandomPart());
 												} else {
 													ParentApplication.Push(
 															new OptionsSelectionPrompt<Entity>("Shoot at what?", entitiesAtLocation,
 																							   e => e.ToString(),
-																							   e => Combat.RangeAttack(entity, weapon, e, e.Get<DefendComponent>().DefaultPart, World.MEAN),
+																							   e => Combat.RangeAttack(entity, weapon, e, e.Get<DefendComponent>().GetRandomPart()),
 																							   GameplayWindow.PromptTemplate));
 												}
 											} else {
@@ -419,9 +420,9 @@ namespace SKR.UI.Gameplay {
 							if (weapons.Count > 1) {
 								ParentApplication.Push(
 										new OptionsSelectionPrompt<Entity>("With what weapon?",
-																		   weapons, e => e.Get<Identifier>().Name,
-																		   weapon => SelectRangeTarget(player, weapon),
-																		   GameplayWindow.PromptTemplate));
+										                                   weapons, e => e.Get<Identifier>().Name,
+										                                   weapon => SelectRangeTarget(player, weapon),
+										                                   GameplayWindow.PromptTemplate));
 							} else if (weapons.Count == 1) {
 								SelectRangeTarget(player, weapons.First());
 							} else {
@@ -447,34 +448,34 @@ namespace SKR.UI.Gameplay {
 									new DirectionalPrompt("What direction?",
 									                      location.Position,
 									                      p =>
-									                      {
-									                      	var useables = location.Level.GetEntitiesAt(p, typeof(UseableFeature), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
+									                      	{
+									                      		var useables = location.Level.GetEntitiesAt(p, typeof(UseableFeature), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
 
-															if (useables.Count > 1) {
-																ParentApplication.Push(
-																		new OptionsSelectionPrompt<Entity>("What object do you want to use?",
-																		                                   useables,
-																		                                   Identifier.GetNameOrId,
-																		                                   e => DoWhat(player, e, e.Get<UseableFeature>().Uses.ToList()), 
-																										   GameplayWindow.PromptTemplate));
-															} else if (useables.Count == 1) {
-																DoWhat(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
-															} else {
-																World.Instance.AddMessage("Nothing there to use.");
-															}
-									                      },
+									                      		if (useables.Count > 1) {
+									                      			ParentApplication.Push(
+									                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
+									                      					                                   useables,
+									                      					                                   Identifier.GetNameOrId,
+									                      					                                   e => DoWhat(player, e, e.Get<UseableFeature>().Uses.ToList()),
+									                      					                                   GameplayWindow.PromptTemplate));
+									                      		} else if (useables.Count == 1) {
+									                      			DoWhat(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
+									                      		} else {
+									                      			World.Instance.AddMessage("Nothing there to use.");
+									                      		}
+									                      	},
 									                      GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'd') {
 							var inventory = player.Get<ContainerComponent>();
 							if (inventory.Count() > 0)
 								ParentApplication.Push(new ItemWindow(false,
-																	  new ListWindowTemplate<Entity>
-																	  {
-																		  Size = MapPanel.Size,
-																		  IsPopup = true,
-																		  HasFrame = true,
-																		  Items = inventory,
-																	  }, i => DropItem(player, i, inventory)));
+								                                      new ListWindowTemplate<Entity>
+								                                      {
+								                                      		Size = MapPanel.Size,
+								                                      		IsPopup = true,
+								                                      		HasFrame = true,
+								                                      		Items = inventory,
+								                                      }, i => DropItem(player, i, inventory)));
 							else
 								World.Instance.AddMessage("You are carrying no items to drop.");
 						} else if (keyData.Character == 'g') {
@@ -486,36 +487,36 @@ namespace SKR.UI.Gameplay {
 
 							if (items.Count() > 0)
 								ParentApplication.Push(new ItemWindow(false,
-																	  new ListWindowTemplate<Entity>
-																	  {
-																		  Size = MapPanel.Size,
-																		  IsPopup = true,
-																		  HasFrame = true,
-																		  Items = items,
-																	  },
-																	  i => PickUpItem(player, i, items)));
+								                                      new ListWindowTemplate<Entity>
+								                                      {
+								                                      		Size = MapPanel.Size,
+								                                      		IsPopup = true,
+								                                      		HasFrame = true,
+								                                      		Items = items,
+								                                      },
+								                                      i => PickUpItem(player, i, items)));
 							else
 								World.Instance.AddMessage("No items here to pick up.");
 						} else if (keyData.Character == 'i') {
 							var inventory = player.Get<ContainerComponent>();
 
 							ParentApplication.Push(new ItemWindow(false,
-																  new ListWindowTemplate<Entity>
-																  {
-																	  Size = MapPanel.Size,
-																	  IsPopup = true,
-																	  HasFrame = true,
-																	  Items = inventory,
-																  },
-																  i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight))));
+							                                      new ListWindowTemplate<Entity>
+							                                      {
+							                                      		Size = MapPanel.Size,
+							                                      		IsPopup = true,
+							                                      		HasFrame = true,
+							                                      		Items = inventory,
+							                                      },
+							                                      i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight))));
 						} else if (keyData.Character == 'w')
 							ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
-																	   {
-																		   Size = MapPanel.Size,
-																		   IsPopup = true,
-																		   HasFrame = true,
-																		   Items = player.Get<EquipmentComponent>().Slots.ToList(),
-																	   }));
+							                                           {
+							                                           		Size = MapPanel.Size,
+							                                           		IsPopup = true,
+							                                           		HasFrame = true,
+							                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
+							                                           }));
 						else if (keyData.Character == 'l') {
 							if (keyData.ControlKeys == ControlKeys.LeftControl) {
 								//									ParentApplication.Push(new LookWindow(location.Position,
@@ -528,25 +529,30 @@ namespace SKR.UI.Gameplay {
 										new LookWindow(
 												location.Position,
 												delegate(Point p)
-												{
-													StringBuilder sb = new StringBuilder();
-													var entitiesAtLocation = location.Level.GetEntitiesAt(p);
-													sb.AppendLine(((Level)location.Level).GetTerrain(p).Definition);
-													foreach (var entity in entitiesAtLocation) {
-														sb.AppendFormat("Entity: {0} ", entity.Id);
-														sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
-														if (entity.Has<Blocker>())
-															sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+													{
+														StringBuilder sb = new StringBuilder();
+														var entitiesAtLocation = location.Level.GetEntitiesAt(p);
+														sb.AppendLine(((Level) location.Level).GetTerrain(p).Definition);
+														foreach (var entity in entitiesAtLocation) {
+															sb.AppendFormat("Entity: {0} ", entity.Id);
+															sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
+															if (entity.Has<Blocker>())
+																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
 
-														sb.AppendLine();
-													}
+															sb.AppendLine();
+														}
 
-													return sb.ToString();
-												},
+														return sb.ToString();
+													},
 												MapPanel,
 												GameplayWindow.PromptTemplate));
+						} else if (keyData.Character == 'z') {
+							var item = player.Get<ContainerComponent>().Where(i => i.Has<Item>() && i.Get<Item>().StackType == StackType.Hard).ToList()[0];
+							item.Get<Item>().Amount = -1;
 						}
+						
 					
+
 						break;
 					}
 				}
