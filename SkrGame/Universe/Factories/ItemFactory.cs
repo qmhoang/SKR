@@ -38,7 +38,7 @@ namespace SkrGame.Universe.Factories {
 			            new RangeComponent(
 			            		new RangeComponent.Template
 			            		{
-			            				ComponentId = "genericgun",
+//			            				ComponentId = "genericgun",
 			            				ActionDescription = "shoot",
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
@@ -50,6 +50,7 @@ namespace SkrGame.Universe.Factories {
 			            				Range = 100,
 			            				RoF = 1,
 			            				APToReady = World.SecondsToActionPoints(1f),
+										APToReload = World.SecondsToActionPoints(1f),
 			            				Recoil = 1,
 			            				Reliability = 18,
 			            				Strength = 8,
@@ -69,6 +70,7 @@ namespace SkrGame.Universe.Factories {
 									DamageType = Combat.DamageTypes["crush"],
 									Penetration = 1,
 									WeaponSpeed = 85,
+									APToReady = 100,
 									Reach = 0,
 									Strength = 8,
 									Parry = -2
@@ -87,6 +89,7 @@ namespace SkrGame.Universe.Factories {
 									DamageType = Combat.DamageTypes["crush"],
 									Penetration = 1,
 									WeaponSpeed = 85,
+									APToReady = 100,
 									Reach = 0,
 									Strength = 8,
 									Parry = -2
@@ -106,7 +109,7 @@ namespace SkrGame.Universe.Factories {
 			            new RangeComponent(
 			            		new RangeComponent.Template
 			            		{
-			            				ComponentId = "glock17shoot",
+//			            				ComponentId = "glock17shoot",
 			            				ActionDescription = "shoot",
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
@@ -117,6 +120,7 @@ namespace SkrGame.Universe.Factories {
 			            				Shots = 17,
 			            				Range = 160,
 			            				RoF = 3,
+										APToReady = World.SecondsToActionPoints(1f),
 										APToReload = World.SecondsToActionPoints(3),
 			            				Recoil = 2,
 			            				Reliability = 18,
@@ -139,7 +143,7 @@ namespace SkrGame.Universe.Factories {
 			            new RangeComponent(
 			            		new RangeComponent.Template
 			            		{
-			            				ComponentId = "glock22shoot",
+//			            				ComponentId = "glock22shoot",
 			            				ActionDescription = "shoot",
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
@@ -150,6 +154,7 @@ namespace SkrGame.Universe.Factories {
 			            				Shots = 15,
 			            				Range = 160,
 			            				RoF = 3,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				APToReload = World.SecondsToActionPoints(3),
 			            				Recoil = 2,
 			            				Reliability = 18,
@@ -184,7 +189,7 @@ namespace SkrGame.Universe.Factories {
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
 			            				WeaponSpeed = 100,
-			            				APToReady = 10,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 1,
 			            				Parry = -3
@@ -215,7 +220,7 @@ namespace SkrGame.Universe.Factories {
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
 			            				WeaponSpeed = 100,
-			            				APToReady = 15,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 6,
 			            				Parry = -1
@@ -245,7 +250,7 @@ namespace SkrGame.Universe.Factories {
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
 			            				WeaponSpeed = 90,
-			            				APToReady = 25,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 11,
 			            				Parry = 0
@@ -275,6 +280,7 @@ namespace SkrGame.Universe.Factories {
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
 			            				WeaponSpeed = 92,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 8,
 			            				Parry = 0
@@ -303,6 +309,7 @@ namespace SkrGame.Universe.Factories {
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
 			            				WeaponSpeed = 100,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 0,
 			            				Strength = 1,
 			            				Parry = -1
@@ -332,7 +339,7 @@ namespace SkrGame.Universe.Factories {
 			            				DamageType = Combat.DamageTypes["impale"],
 			            				Penetration = 1,
 			            				WeaponSpeed = 110,
-			            				APToReady = 5,
+										APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 6,
 			            				Parry = -1
@@ -426,7 +433,7 @@ namespace SkrGame.Universe.Factories {
 						              }),
 			            new ArmorComponent(new ArmorComponent.Template
 			                               {
-			                               		ComponentId = "armor",
+//			                               		ComponentId = "armor",
 			                               		DonTime = 1,
 			                               		Defenses = new List<ArmorComponent.LocationProtected>
 			                               		           {
@@ -458,7 +465,7 @@ namespace SkrGame.Universe.Factories {
 			                     }),
 			            new ArmorComponent(new ArmorComponent.Template
 			                               {
-			                               		ComponentId = "footballarmor",
+//			                               		ComponentId = "footballarmor",
 			                               		DonTime = 10,
 			                               		Defenses = new List<ArmorComponent.LocationProtected>
 			                               		           {

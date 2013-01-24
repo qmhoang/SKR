@@ -4,8 +4,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 
 	public class NpcIntelligence : Component {
 		public abstract class AI {
-			
-			public abstract void Update(Entity user);
+			public abstract void Update();
 		}
 
 		private AI ai;
@@ -14,8 +13,8 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 			this.ai = ai;
 		}
 
-		public void Update(Entity actor) {
-			ai.Update(actor);
+		public void Update() {
+			ai.Update();
 		}
 		public override Component Copy() {
 			//todo

@@ -27,11 +27,17 @@ namespace SkrGame.Systems {
 		}
 
 		protected override void EntityRemovedFromCollection(Entity container) {
+			Contract.Requires<ArgumentNullException>(container != null, "container");
+			Contract.Requires<ArgumentException>(container.Has<ContainerComponent>());
+
 			container.Get<ContainerComponent>().ItemAdded -= ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved -= ItemRemoved;
 		}
 
 		protected override void EntityAddedToCollection(Entity container) {
+			Contract.Requires<ArgumentNullException>(container != null, "container");
+			Contract.Requires<ArgumentException>(container.Has<ContainerComponent>());
+
 			container.Get<ContainerComponent>().ItemAdded += ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved += ItemRemoved;
 
@@ -43,18 +49,27 @@ namespace SkrGame.Systems {
 		}
 
 		void ItemRemoved(Component sender, EventArgs<Entity> e) {
+			Contract.Requires<ArgumentNullException>(sender != null, "sender");
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+
 			var inventory = GetEntity(sender);
 
 			inventory.Get<Location>().PositionChanged -= PositionChanged;
 		}
 
 		void ItemAdded(Component sender, EventArgs<Entity> e) {
+			Contract.Requires<ArgumentNullException>(sender != null, "sender");
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+
 			var inventory = GetEntity(sender);
 
 			inventory.Get<Location>().PositionChanged += PositionChanged;
 		}
 
 		void PositionChanged(Component sender, EventArgs<Point> e) {
+			Contract.Requires<ArgumentNullException>(sender != null, "sender");
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+
 			var inventory = GetEntity(sender);
 
 			foreach (var entity in inventory.Get<ContainerComponent>()) {

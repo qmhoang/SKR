@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
@@ -19,6 +21,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		private AmmoComponent() { }
 
 		internal AmmoComponent(Template template) {
+			Contract.Requires<ArgumentNullException>(template != null, "template");
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 
@@ -66,8 +69,6 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			public string AmmoType { get; set; }
 			public int Shots { get; set; }
 
-			public string ComponentId { get; set; }
-
 			public string ActionDescription { get; set; }
 			public string ActionDescriptionPlural { get; set; }
 
@@ -112,7 +113,65 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		public int Shots { get; set; }
 		public int ShotsRemaining { get; set; }
 
-		private RangeComponent() { }
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(Recoil >= 0);
+			Contract.Invariant(Shots >= ShotsRemaining);
+			Contract.Invariant(Shots > 0);
+			Contract.Invariant(ShotsRemaining >= 0);
+			Contract.Invariant(Accuracy >= 0);
+			Contract.Invariant(Penetration > 0.0f);
+			Contract.Invariant(Damage != null);
+			Contract.Invariant(Strength > 0);
+			Contract.Invariant(Range > 0);
+			Contract.Invariant(APToAttack > 0);
+			Contract.Invariant(APToReady > 0);
+			Contract.Invariant(APToReload > 0);
+			Contract.Invariant(!String.IsNullOrEmpty(AmmoType));
+			Contract.Invariant(!String.IsNullOrEmpty(Skill));
+			Contract.Invariant(DamageType != null);
+			Contract.Invariant(!String.IsNullOrEmpty(ActionDescription));
+			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
+		}
+
+		private RangeComponent(	int str,
+								int acc,
+								Rand dmg,
+								DamageType type,
+								double pen,
+								Action<Actor, Actor> onhit,
+								int range,
+								int apready,
+								int apAtk,
+								int apReload,
+								int recoil,
+								int rel,
+								string ammo,
+								int shots,
+								int shotsRem,
+								string skill,
+								string actionDesc,
+								string actionDescPlural) {
+			Strength = str;
+			Accuracy = acc;
+			Damage = dmg;
+			DamageType = type;
+			Penetration = pen;
+			OnHit = onhit;
+			Range = range;
+			APToReady = apready;
+			APToAttack = apAtk;
+			APToReload = apReload;
+			Recoil = recoil;
+			Reliability = rel;
+			AmmoType = ammo;
+			Shots = shots;
+			ShotsRemaining = shotsRem;
+			Skill = skill;
+			ActionDescription = actionDesc;
+			ActionDescriptionPlural = actionDescPlural;
+		}
 
 		internal RangeComponent(Template template) {
 			ActionDescription = template.ActionDescription;
@@ -120,14 +179,15 @@ namespace SkrGame.Universe.Entities.Items.Components {
 
 			Skill = template.Skill;
 
+			Strength = template.Strength;
 			Accuracy = template.Accuracy;
 			Damage = template.Damage;
 			DamageType = template.DamageType;
 			Penetration = template.Penetration;
 			OnHit = template.OnHit;
+			Range = template.Range;
 			APToReady = template.APToReady;
 			APToAttack = template.APToAttack;
-			Range = template.Range;
 			APToReload = template.APToReload;
 			Recoil = template.Recoil;
 			Reliability = template.Reliability;
@@ -136,28 +196,8 @@ namespace SkrGame.Universe.Entities.Items.Components {
 		}
 
 		public override Component Copy() {
-			return new RangeComponent()
-			       {
-			       		ActionDescription = ActionDescription,
-			       		ActionDescriptionPlural = ActionDescriptionPlural,
-
-			       		Skill = Skill,
-
-			       		Accuracy = Accuracy,
-			       		Damage = Damage,
-			       		DamageType = DamageType,
-			       		Penetration = Penetration,
-			       		OnHit = OnHit,
-			       		APToReady = APToReady,
-			       		APToAttack = APToAttack,
-			       		Range = Range,
-			       		APToReload = APToReload,
-			       		Recoil = Recoil,
-			       		Reliability = Reliability,
-			       		AmmoType = AmmoType,
-			       		ShotsRemaining = Shots,
-						Shots = Shots,
-			       };
+			return new RangeComponent(Strength, Accuracy, Damage, DamageType, Penetration, OnHit, Range, APToReady, APToAttack, APToReload, Recoil, Reliability, AmmoType, Shots, ShotsRemaining, Skill, ActionDescription,
+			                          ActionDescriptionPlural);
 		}
 	}
 }

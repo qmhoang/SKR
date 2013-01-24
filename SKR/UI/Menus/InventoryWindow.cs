@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using DEngine.Actor;
@@ -31,6 +32,9 @@ namespace SKR.UI.Menus {
 
 		public InventoryWindow(ListWindowTemplate<string> template)
 			: base(null, template) {
+			Contract.Requires<ArgumentNullException>(template != null, "template");
+			Contract.Requires<ArgumentNullException>(template.Items != null, "template.Items");
+
 			inventory = World.Instance.Player.Get<ContainerComponent>();
 			equipment = World.Instance.Player.Get<EquipmentComponent>();
 			bodyPartWidth = 25; // todo replace to code            

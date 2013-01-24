@@ -1,7 +1,8 @@
 ﻿using DEngine.Actor;
+using DEngine.Components;
 
 namespace SkrGame.Universe {
-	public class Calendar {
+	public class Calendar : ActionPoint {
 		public int Second { get; private set; }
 		public int Minute { get; private set; }
 		public int Hour { get; private set; }
@@ -10,12 +11,6 @@ namespace SkrGame.Universe {
 		public int Week { get { return DayOfTheMonth / 7 + 1; } }
 		public int DayOfTheMonth { get { return DayOfTheYear % 28; } }
 		public int DayOfTheWeek { get { return DayOfTheYear % 7; } }
-
-		public int ActionPoints { get; set; }
-
-		public int Speed {
-			get { return World.DEFAULT_SPEED; }
-		}
 
 		public void Update() {
 
@@ -41,10 +36,6 @@ namespace SkrGame.Universe {
 
 		public void OnDeath() {
 
-		}
-
-		public bool Updateable {
-			get { return ActionPoints > 0; }
 		}
 	}
 }

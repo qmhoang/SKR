@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using DEngine.Actor;
 using DEngine.Components;
@@ -36,12 +37,16 @@ namespace SkrGame.Universe.Entities.Features {
 		public const int DEFAULT_DOOR_USE_APCOST = World.DEFAULT_SPEED / World.TURN_LENGTH_IN_SECONDS;
 
 		public void OnUsed(EventArgs<OpeningStatus> e) {
+			Contract.Requires<ArgumentNullException>(e != null, "e");
 			ComponentEventHandler<EventArgs<OpeningStatus>> handler = Used;
 			if (handler != null)
 				handler(this, e);
 		}
 
 		public Opening(string openedAsset, string closedAsset, string openDescription, string closedDescription, bool walkableWhenOpened = true, int apCost = DEFAULT_DOOR_USE_APCOST, OpeningStatus status = OpeningStatus.Closed) {
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(openedAsset));
+
 			this.status = status;
 			APCost = apCost;
 			OpenedAsset = openedAsset;
@@ -49,7 +54,14 @@ namespace SkrGame.Universe.Entities.Features {
 			WalkableOpened = walkableWhenOpened;
 			OpenedDescription = openDescription;
 			ClosedDescription = closedDescription;
-		}		
+		}
+
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(!String.IsNullOrEmpty(OpenedAsset));
+			Contract.Invariant(!String.IsNullOrEmpty(ClosedAsset));
+		}
 
 		public override Component Copy() {
 			var opening = new Opening(OpenedAsset, ClosedAsset, OpenedDescription, ClosedDescription, WalkableOpened, APCost, Status);
@@ -59,7 +71,10 @@ namespace SkrGame.Universe.Entities.Features {
 		}
 
 		public static ActionResult Action(Entity user, Entity entry) {
+			Contract.Requires<ArgumentNullException>(user != null, "user");
+			Contract.Requires<ArgumentNullException>(entry != null, "entry");
 			Contract.Requires<ArgumentException>(entry.Has<Opening>());
+			Contract.Requires<ArgumentException>(user.Has<ActionPoint>());
 			var d = entry.Get<Opening>();
 			
 			if (d.Status == OpeningStatus.Closed) {

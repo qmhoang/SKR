@@ -12,7 +12,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 
 			public int DonTime { get; set; }
 
-			public string ComponentId { get; set; }
+//			public string ComponentId { get; set; }
 		}
 
 		public class LocationProtected {

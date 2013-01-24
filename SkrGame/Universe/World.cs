@@ -121,14 +121,14 @@ namespace SkrGame.Universe {
 			                              {
 			                              		new ActionPoint(),
 			                              		new Sprite("player", Sprite.PLAYER_LAYER),
-												new Identifier("Player"),
+			                              		new Identifier("Player"),
 			                              		new Location(0, 0, level),
 			                              		new Player(),
-			                              		new Actor(),			                              		
+			                              		new Actor(),
 			                              		new DefendComponent(),
-												new ContainerComponent(),
-												new EquipmentComponent(),
-												new VisibleComponent(10),
+			                              		new ContainerComponent(),
+			                              		new EquipmentComponent(),
+			                              		new VisibleComponent(10),
 			                              });
 
 
@@ -149,21 +149,23 @@ namespace SkrGame.Universe {
 							Strength = 1,
 							Parry = 0
 					};
+
 			Player.Add(new MeleeComponent(punch));
 
 			var npc = EntityManager.Create(new List<Component>
-			                     {
-			                     		new ActionPoint(),
-			                     		new Sprite("npc", Sprite.ACTOR_LAYER),
-										new Identifier("npc"),
-			                     		new Location(7, 2, level),
-			                     		new Actor(),
-			                     		new DefendComponent(),
-										new VisibleComponent(10),
-										new ContainerComponent(),
-										new EquipmentComponent(),
-										new NpcIntelligence(new SimpleIntelligence())
-			                     });
+			                               {
+			                               		new ActionPoint(),
+			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
+			                               		new Identifier("npc"),
+			                               		new Location(7, 2, level),
+			                               		new Actor(),
+			                               		new DefendComponent(),
+			                               		new VisibleComponent(10),
+			                               		new ContainerComponent(),
+			                               		new EquipmentComponent(),
+			                               		new Updateable(e => e.Get<NpcIntelligence>().Update()),
+			                               });
+			npc.Add(new NpcIntelligence(new SimpleAI(npc)));
 
 			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
 			EntityManager.Create(EntityFactory.Get("axe")).Add(new Location(1, 1, level));

@@ -54,7 +54,7 @@
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
     <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
@@ -132,7 +132,7 @@
     <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Items\ItemContainer.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />
-    <Compile Include="Universe\Entities\Actors\NPC\AI\SimpleIntelligence.cs" />
+    <Compile Include="Universe\Entities\Actors\NPC\AI\SimpleAI.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\Npc.cs" />
     <Compile Include="Universe\Entities\Actors\PC\Player.cs" />
     <Compile Include="Universe\Entities\Items\Components\RangeComponent.cs" />
