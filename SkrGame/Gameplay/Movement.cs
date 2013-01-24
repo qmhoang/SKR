@@ -38,6 +38,8 @@ namespace SkrGame.Gameplay {
 		}
 
 		public static void MoveEntity(Entity entity, Point newPosition) {
+			Contract.Requires<ArgumentNullException>(entity != null, "entity");
+
 			// finally move onto the new location
 			if (entity.Get<Location>().Level.IsWalkable(newPosition)) {
 				entity.Get<Location>().Position = newPosition;

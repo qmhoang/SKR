@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
@@ -39,6 +41,12 @@ namespace SkrGame.Universe.Locations {
 		public World World { get; set; }
 
 		private FilteredCollection entities;
+
+		[ContractInvariantMethod]
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		private void ObjectInvariant() {
+			Contract.Invariant(TerrainDefinitions != null);
+		}
 		
 		public Level(Size size, string fill, IEnumerable<Terrain> terrainDefinitions) : base(size) {
 			Uid = new UniqueId();
@@ -92,6 +100,7 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		private void entities_OnEntityRemove(Entity entity) {
+			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			if (entity.Has<Blocker>()) {
 				ResetTransparency(entity.Get<Location>().Position);
 				ResetWalkable(entity.Get<Location>().Position);
@@ -101,6 +110,7 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		private void entities_OnEntityAdd(Entity entity) {
+			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			if (entity.Has<Blocker>()) {
 				ResetTransparency(entity.Get<Location>().Position);
 				ResetWalkable(entity.Get<Location>().Position);
@@ -109,8 +119,11 @@ namespace SkrGame.Universe.Locations {
 			}
 		}
 
-		private void FeatureWalkableChanged(object sender, EventArgs e) {
-			var p = EntityManager[((Component) sender).OwnerUId].Get<Location>().Position;
+		private void FeatureWalkableChanged(Component sender, EventArgs e) {
+			Contract.Requires<ArgumentNullException>(sender != null, "sender");
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+
+			var p = EntityManager[sender.OwnerUId].Get<Location>().Position;
 
 			ResetWalkable(p);
 		}
@@ -125,8 +138,11 @@ namespace SkrGame.Universe.Locations {
 				SetWalkable(p.X, p.Y, false);
 		}
 
-		private void FeatureTransparencyChanged(object sender, EventArgs e) {
-			var p = EntityManager[((Component)sender).OwnerUId].Get<Location>().Position;
+		private void FeatureTransparencyChanged(Component sender, EventArgs e) {
+			Contract.Requires<ArgumentNullException>(sender != null, "sender");
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+
+			var p = EntityManager[sender.OwnerUId].Get<Location>().Position;
 
 			ResetTransparency(p);
 		}

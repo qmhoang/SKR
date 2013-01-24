@@ -512,6 +512,7 @@ namespace SKR.UI.Gameplay {
 												MapPanel,
 												GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'z') {
+							player.Broadcast(new Sprite.SpriteMessage("ITEM", 1));
 						}
 						
 					

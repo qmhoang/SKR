@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
@@ -12,15 +13,22 @@ namespace SkrGame.Universe.Factories {
 		private const int WINDOW_USAGE_AP_COST = World.DEFAULT_SPEED;
 
 		private static Opening Door(string openAsset, string closedAsset) {
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(openAsset));
 			return new Opening(openAsset, closedAsset, "opens the door", "closes the door");
 		}
 
 		private static Opening Window(string openAsset, string closedAsset) {
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(openAsset));
 			return new Opening(openAsset, closedAsset, "opens the window", "closes the window", false, WINDOW_USAGE_AP_COST);
 		}
 
 
 		public static OnBump.BumpResult DoorOnBump(Entity user, Entity door) {
+			Contract.Requires<ArgumentNullException>(door != null, "door");
+			Contract.Requires<ArgumentNullException>(user != null, "user");
+			Contract.Requires<ArgumentException>(door.Has<Opening>());
 			if (door.Get<Opening>().Status == Opening.OpeningStatus.Closed) {
 				Opening.Action(user, door);
 				return OnBump.BumpResult.BlockMovement;
@@ -30,11 +38,14 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		public static OnBump.BumpResult WindowOnBump(Entity user, Entity door) {
+			Contract.Requires<ArgumentNullException>(door != null, "door");
+			Contract.Requires<ArgumentNullException>(user != null, "user");
 			Opening.Action(user, door);
 			return OnBump.BumpResult.BlockMovement;
 		}
 
 		public static void Init(EntityFactory ef) {
+			Contract.Requires<ArgumentNullException>(ef != null, "ef");
 			ef.Add("feature",
 			       new VisibleComponent(10),
 			       new Sprite("FEATURE", Sprite.FEATURES_LAYER),

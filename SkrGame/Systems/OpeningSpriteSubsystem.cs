@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using DEngine.Actor;
@@ -16,15 +18,17 @@ namespace SkrGame.Systems {
 			}
 		}
 
-		void EntryUsed(Component sender, DEngine.Core.EventArgs<Opening.OpeningStatus> @event) {
-			var e = GetEntity(sender);
-			if (e.Has<Blocker>()) {
-				var blocker = e.Get<Blocker>();
-				blocker.Walkable = @event.Data != Opening.OpeningStatus.Closed;
+		void EntryUsed(Component sender, DEngine.Core.EventArgs<Opening.OpeningStatus> e) {
+			Contract.Requires<ArgumentNullException>(sender != null, "sender");
+			Contract.Requires<ArgumentNullException>(e != null, "e");
+			var entity = GetEntity(sender);
+			if (entity.Has<Blocker>()) {
+				var blocker = entity.Get<Blocker>();
+				blocker.Walkable = e.Data != Opening.OpeningStatus.Closed;
 			}
-			if (e.Has<Sprite>()) {
-				var sprite = e.Get<Sprite>();
-				sprite.Asset = e.Get<Opening>().Status == Opening.OpeningStatus.Closed ? e.Get<Opening>().ClosedAsset : e.Get<Opening>().OpenedAsset;
+			if (entity.Has<Sprite>()) {
+				var sprite = entity.Get<Sprite>();
+				sprite.Asset = entity.Get<Opening>().Status == Opening.OpeningStatus.Closed ? entity.Get<Opening>().ClosedAsset : entity.Get<Opening>().OpenedAsset;
 			}
 		}
 

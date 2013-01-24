@@ -23,6 +23,7 @@ namespace SKR.UI.Menus {
 
 		public ItemWindow(bool selectSingleItem, ListWindowTemplate<Entity> template, Action<Entity> itemSelected)
 				: base(itemSelected, template) {
+			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires(Contract.ForAll(template.Items, i => i.Has<Item>()));
 			singleItem = selectSingleItem;            
 			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
