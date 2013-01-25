@@ -13,6 +13,7 @@ using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Gameplay;
+using SKR.UI.Menus;
 using SKR.Universe;
 using SkrGame.Universe;
 using libtcod;
@@ -25,7 +26,7 @@ namespace SKR {
 		protected override void Setup(ApplicationInfo info) {
 			base.Setup(info);
 			world = World.Create();
-			Push(new GameplayWindow(world.EntityManager, new WindowTemplate()));
+			Push(new CharGen(new WindowTemplate()));
 		
 		}
 

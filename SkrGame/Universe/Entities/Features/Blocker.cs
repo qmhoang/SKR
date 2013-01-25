@@ -48,36 +48,7 @@ namespace SkrGame.Universe.Entities.Features {
 			if (handler != null)
 				handler(this, EventArgs.Empty);
 		}
-
-//		public void Use(Actor user, string action) {
-//			foreach (var component in components) {
-//				if (component is ActiveFeatureComponent) {
-//					var activefeature = (ActiveFeatureComponent) component;
-//					if (activefeature.Action == action) {
-//						ActionResult result = activefeature.Use(component as ActiveFeatureComponent, user);
-//
-//						switch (result) {
-//							case ActionResult.SuccessNoTime:
-//							case ActionResult.Aborted:
-//								// no AP is used
-//								break;
-//							case ActionResult.Failed:
-//							case ActionResult.Success:
-//								user.ActionPoints -= activefeature.ActionPointCost;
-//								break;
-//						}
-//					}
-//				}
-//					
-//			}
-//		}
-
-//		public void Near(Actor user) {
-//			foreach (var component in components) {
-//				if (component is PassiveFeatureComponent)
-//					((PassiveFeatureComponent) component).Near(component as PassiveFeatureComponent, user, user.Position.DistanceTo(Position));
-//			}
-//		}		
+		
 		public override Component Copy() {
 			var b = new Blocker(walkable, transparent);
 			if (TransparencyChanged != null)
@@ -86,6 +57,10 @@ namespace SkrGame.Universe.Entities.Features {
 				b.WalkableChanged = (ComponentEventHandler<EventArgs>)WalkableChanged.Clone();
 
 			return b;
+		}
+
+		public override string ToString() {
+			return String.Format("Transparent: {0}, Walkable: {1}", Transparent, Walkable);
 		}
 	}
 	

@@ -129,6 +129,12 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("TOILET", "nonblockingfeature",
 			            new Sprite("TOILET", Sprite.FEATURES_LAYER),
+			            new UseableFeature(new UseableFeature.UseAction("Use toilet",
+			                                                            (entity, user, action) =>
+			                                                            	{
+			                                                            		World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
+			                                                            		return ActionResult.Success;
+			                                                            	})),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		var distanceTo = entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>());

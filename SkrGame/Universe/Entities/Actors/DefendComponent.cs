@@ -34,7 +34,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 			private void ObjectInvariant() {
 				Contract.Invariant(MaxHealth > 0);
-				Contract.Invariant(RelativeSize > 0);				
+				Contract.Invariant(RelativeSize > 0);
 			}
 
 			public AttackablePart(string name, int maxHealth, int relsize, int targettingPenalty, DefendComponent owner) {
