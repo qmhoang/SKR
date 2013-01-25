@@ -17,30 +17,18 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 		private AStarPathFinder pf;
 		private VisionMap vision;
 		private Point oldPos;
-		public Entity Entity { get; set; }
-
+		
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-//		public SimpleIntelligence() {
-//			pf = new AStarPathFinder(monster.Level, 1.41f);			
-//		}
-//
-//		public SimpleIntelligence(Npc monster)
-//			: base(monster) {
-//			pf = new AStarPathFinder(monster.Level, 1.41f);
-//		}
-
-		public SimpleAI(Entity entity) {
-			this.Entity = entity;
-
-			pf = new AStarPathFinder(entity.Get<Location>().Level, 1.41f);
-			vision = new VisionMap(entity.Get<Location>().Level.Size);
-			ComputeFOV(entity.Get<Location>());
-			oldPos = entity.Get<Location>().Position;
-		}
 
 		private void ComputeFOV(Location location) {
 			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, location.Level, location.Position.X, location.Position.Y, 10, true);
+		}
+
+		protected override void OnEntitySet() {
+			pf = new AStarPathFinder(Entity.Get<Location>().Level, 1.41f);
+			vision = new VisionMap(Entity.Get<Location>().Level.Size);
+			ComputeFOV(Entity.Get<Location>());
+			oldPos = Entity.Get<Location>().Position;
 		}
 
 		public override void Update() {

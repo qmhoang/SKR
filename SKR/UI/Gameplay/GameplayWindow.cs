@@ -13,6 +13,7 @@ using Ogui.UI;
 using SKR.UI.Gameplay.Systems;
 using SKR.UI.Menus;
 using SKR.Universe;
+using SkrGame.Core;
 using SkrGame.Gameplay;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Systems;
@@ -210,39 +211,6 @@ namespace SKR.UI.Gameplay {
 				entityPicking.Get<ContainerComponent>().Add(itemEntityFromLevel);
 				itemsOnDisplay.Remove(itemEntityFromLevel);
 			}
-
-//
-//			var inventory = entityPickingUp.Get<ContainerComponent>();
-//			var item = itemEntityFromLevel.Get<Item>();
-//			
-//			// if an item doesn't exist in the inventory
-//			if (!inventory.Exist(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>())) {
-//
-//				// and if we're splitting an item, create a new one
-//				if (amount < item.Amount) {
-//					item.Amount -= amount;
-//
-//					var tempItem = itemEntityFromLevel.Copy();					
-//					tempItem.Get<VisibleComponent>().VisibilityIndex = -1;
-//
-//					tempItem.Get<Item>().Amount = amount;	// amount starts out as 1
-//					inventory.Add(tempItem);
-//				} else {
-//					inventory.Add(itemEntityFromLevel);
-//					items.Remove(itemEntityFromLevel);
-//				}
-//
-//			} else {
-//				inventory.GetItem(e => e.Get<ReferenceId>() == itemEntityFromLevel.Get<ReferenceId>()).Get<Item>().Amount += amount;
-//
-//				if (amount < item.Amount) {
-//					item.Amount -= amount;
-//				} else {
-//					manager.Remove(itemEntityFromLevel);
-//					items.Remove(itemEntityFromLevel);
-//				}
-//
-//			}
 		}
 
 		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory, ICollection<Entity> itemsOnDisplay) {
@@ -484,11 +452,7 @@ namespace SKR.UI.Gameplay {
 							                                           }));
 						else if (keyData.Character == 'l') {
 							if (keyData.ControlKeys == ControlKeys.LeftControl) {
-								//									ParentApplication.Push(new LookWindow(location.Position,
-								//									                                      p => string.Format("{0}\n{1}\nVisible: {2}, Transparent: {3}, Walkable: {4}", player.Level.GetTerrain(p).Definition,
-								//									                                                         (player.Level.DoesFeatureExistAtLocation(p) ? player.Level.GetFeatureAtLocation(p).Asset : ""),
-								//									                                                         player.Level.IsVisible(p), player.Level.IsTransparent(p), player.Level.IsWalkable(p)),
-								//									                                      MapPanel, GameplayWindow.PromptTemplate));
+
 							} else
 								ParentApplication.Push(
 										new LookWindow(
@@ -512,11 +476,10 @@ namespace SKR.UI.Gameplay {
 												MapPanel,
 												GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'z') {
-							player.Broadcast(new Sprite.SpriteMessage("ITEM", 1));
+							player.Add(new LongAction(500, e => World.Instance.AddMessage(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
+							player.Get<ActionPoint>().ActionPoints -= 100;
 						}
 						
-					
-
 						break;
 					}
 				}

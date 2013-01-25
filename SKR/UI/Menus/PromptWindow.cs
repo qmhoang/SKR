@@ -17,11 +17,9 @@ using log4net;
 namespace SKR.UI.Menus {
 	public abstract class PromptWindow : Window {
 		protected abstract string Text { get; }
-
-
+		
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-
+		
 		protected PromptWindow(WindowTemplate template)
 			: base(template) {
 			IsPopup = true;
@@ -183,7 +181,7 @@ namespace SKR.UI.Menus {
 	}
 
 	public class LookWindow : PromptWindow {
-		private Point selectedPosition;
+		protected Point SelectedPosition;
 		private MapPanel panel;
 		private Func<Point, string> descriptor;
 
@@ -191,13 +189,12 @@ namespace SKR.UI.Menus {
 			: base(template) {
 			this.panel = panel;
 			this.descriptor = descriptor;
-			selectedPosition = origin;
+			SelectedPosition = origin;
 		}
 
 		protected override string Text {
 			get {
-				var level = World.Instance.CurrentLevel;
-				return String.Format("Use [789456123] to look around.\n{0}", descriptor(selectedPosition));				
+				return String.Format("Use [789456123] to look around.\n{0}", descriptor(SelectedPosition));				
 			}
 		}
 
@@ -217,16 +214,16 @@ namespace SKR.UI.Menus {
 				return;
 			var mapPanel = (MapPanel)sender;
 
-			var adjusted = selectedPosition - mapPanel.ViewOffset;
+			var adjusted = SelectedPosition - mapPanel.ViewOffset;
 
 			mapPanel.Canvas.Console.setCharBackground(adjusted.X, adjusted.Y,
 													  ColorPresets.Green.TCODColor,
 													  TCODSystem.getElapsedMilli() % 1000 > 500 ? TCODBackgroundFlag.Lighten : TCODBackgroundFlag.None);
 		}
 
-		private void MovePosition(Point direction) {
-			selectedPosition += direction;
-		}
+		protected virtual void MovePosition(Point direction) {
+			SelectedPosition += direction;
+		}		
 
 		protected override void OnKeyPressed(KeyboardData key) {
 			base.OnKeyPressed(key);

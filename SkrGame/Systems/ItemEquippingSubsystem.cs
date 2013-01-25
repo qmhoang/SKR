@@ -16,21 +16,25 @@ namespace SkrGame.Systems {
 			foreach (var container in Collection) {
 				EntityAddedToCollection(container);
 			}
-
-			Collection.OnEntityAdd += EntityAddedToCollection;
-			Collection.OnEntityRemove += EntityRemovedFromCollection;
 		}
 
 		protected override void EntityRemovedFromCollection(Entity equipment) {
 			equipment.Get<EquipmentComponent>().ItemEquipped -= ItemEquipped;
 			equipment.Get<EquipmentComponent>().ItemUnequipped -= ItemUnequipped;
+			equipment.Get<Location>().PositionChanged -= PositionChanged;
+
 		}
 
 		protected override void EntityAddedToCollection(Entity equipment) {
 			equipment.Get<EquipmentComponent>().ItemEquipped += ItemEquipped;
 			equipment.Get<EquipmentComponent>().ItemUnequipped += ItemUnequipped;
+			equipment.Get<Location>().PositionChanged += PositionChanged;
 
 			foreach (var equippedItem in equipment.Get<EquipmentComponent>().EquippedItems) {
+				if (equippedItem.Has<VisibleComponent>()) {
+					equippedItem.Get<VisibleComponent>().VisibilityIndex = -1;
+				}
+
 				if (equippedItem.Has<Location>()) {
 					equippedItem.Get<Location>().Position = equipment.Get<Location>().Position;
 				}
@@ -39,12 +43,20 @@ namespace SkrGame.Systems {
 
 		void ItemUnequipped(Component sender, EventArgs<string, Entity> e) {
 			var equipment = GetEntity(sender);
+			
+			if (e.Data2.Has<VisibleComponent>()) {
+				e.Data2.Get<VisibleComponent>().Reset();
+			}
 
 			equipment.Get<Location>().PositionChanged -= PositionChanged;
 		}
 
 		void ItemEquipped(Component sender, EventArgs<string, Entity> e) {
 			var equipment = GetEntity(sender);
+
+			if (e.Data2.Has<VisibleComponent>()) {
+				e.Data2.Get<VisibleComponent>().VisibilityIndex = -1;
+			}
 
 			equipment.Get<Location>().PositionChanged += PositionChanged;
 		}

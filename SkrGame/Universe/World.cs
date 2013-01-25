@@ -28,6 +28,7 @@ namespace SkrGame.Universe {
 		public const int DEFAULT_SPEED = 100; // 
 
 		public const int TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
+		public const int TURN_LENGTH_IN_AP = DEFAULT_SPEED;	// how long is a turn in seconds
 
 		public const int MEAN = 50;						// what is the mean score for an attribute
 		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
@@ -102,7 +103,6 @@ namespace SkrGame.Universe {
 		private ActionPointSystem actionPointSystem;
 		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
 		private ItemEquippingSubsystem itemEquippingSubsystem;
-//		private OpeningSpriteSubsystem openingSpriteSubsystem;
 
 		private World() {
 			Rng.Seed(0);
@@ -163,9 +163,8 @@ namespace SkrGame.Universe {
 			                               		new VisibleComponent(10),
 			                               		new ContainerComponent(),
 			                               		new EquipmentComponent(),
-			                               		new Updateable(e => e.Get<NpcIntelligence>().Update()),
 			                               });
-			npc.Add(new NpcIntelligence(new SimpleAI(npc)));
+			npc.Add(new NpcIntelligence(new SimpleAI()));
 
 			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
 			EntityManager.Create(EntityFactory.Get("axe")).Add(new Location(1, 1, level));

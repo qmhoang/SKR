@@ -22,6 +22,10 @@ namespace SkrGame.Universe.Entities.Features {
 			get { return uses; }
 		}
 
+		public UseableFeature(params UseAction[] actions) {
+			this.uses = new List<UseAction>(actions);
+		}
+
 		public UseableFeature(IEnumerable<UseAction> uses) {
 			this.uses = new List<UseAction>(uses);
 		}

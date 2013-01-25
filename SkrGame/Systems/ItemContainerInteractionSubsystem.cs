@@ -21,9 +21,6 @@ namespace SkrGame.Systems {
 			foreach (var container in Collection) {
 				EntityAddedToCollection(container);
 			}
-
-			Collection.OnEntityAdd += EntityAddedToCollection;
-			Collection.OnEntityRemove += EntityRemovedFromCollection;
 		}
 
 		protected override void EntityRemovedFromCollection(Entity container) {
@@ -32,6 +29,7 @@ namespace SkrGame.Systems {
 
 			container.Get<ContainerComponent>().ItemAdded -= ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved -= ItemRemoved;
+			container.Get<Location>().PositionChanged -= PositionChanged;
 		}
 
 		protected override void EntityAddedToCollection(Entity container) {
@@ -40,8 +38,12 @@ namespace SkrGame.Systems {
 
 			container.Get<ContainerComponent>().ItemAdded += ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved += ItemRemoved;
-
+			container.Get<Location>().PositionChanged += PositionChanged;
+			
 			foreach (var entity in container.Get<ContainerComponent>()) {
+				if (entity.Has<VisibleComponent>()) {
+					entity.Get<VisibleComponent>().VisibilityIndex = -1;
+				}
 				if (entity.Has<Location>()) {
 					entity.Get<Location>().Position = container.Get<Location>().Position;
 				}
@@ -53,6 +55,10 @@ namespace SkrGame.Systems {
 			Contract.Requires<ArgumentNullException>(e != null, "e");
 
 			var inventory = GetEntity(sender);
+			
+			if (e.Data.Has<VisibleComponent>()) {
+				e.Data.Get<VisibleComponent>().Reset();
+			}
 
 			inventory.Get<Location>().PositionChanged -= PositionChanged;
 		}
@@ -62,6 +68,10 @@ namespace SkrGame.Systems {
 			Contract.Requires<ArgumentNullException>(e != null, "e");
 
 			var inventory = GetEntity(sender);
+
+			if (e.Data.Has<VisibleComponent>()) {
+				e.Data.Get<VisibleComponent>().VisibilityIndex = -1;
+			}
 
 			inventory.Get<Location>().PositionChanged += PositionChanged;
 		}

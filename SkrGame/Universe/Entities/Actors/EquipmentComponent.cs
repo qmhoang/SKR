@@ -81,9 +81,6 @@ namespace SkrGame.Universe.Entities.Actors {
 //			else
 //				removed = null;
 
-			if (item.Has<VisibleComponent>()) {
-				item.Get<VisibleComponent>().VisibilityIndex = -1;
-			}
 
 			equippedItems.Add(slot, item);			
 		}
@@ -102,10 +99,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				Entity old = equippedItems[slot];
 				equippedItems.Remove(slot);
 				removed = old;
-
-				if (removed.Has<VisibleComponent>()) {
-					removed.Get<VisibleComponent>().Reset();
-				}
 
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
 
