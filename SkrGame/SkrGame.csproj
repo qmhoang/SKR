@@ -119,7 +119,7 @@
     <Compile Include="Systems\AISystem.cs" />
     <Compile Include="Core\LongAction.cs" />
     <Compile Include="Systems\OpeningSpriteSubsystem.cs" />
-    <Compile Include="Systems\ItemContainerInteractionSubsystem.cs" />
+    <Compile Include="Systems\ItemContainerSubsystem.cs" />
     <Compile Include="Systems\ItemEquippingSubsystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />

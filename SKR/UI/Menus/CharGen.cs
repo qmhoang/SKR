@@ -11,7 +11,6 @@ using libtcod;
 
 namespace SKR.UI.Menus {
 	public class CharGen : Window {
-		private ListBox raceListBox;
 		private ListBox occupationListBox;
 		private MenuButton sexButton;
 		private TextEntry nameEntry;
@@ -111,7 +110,7 @@ namespace SKR.UI.Menus {
 			                         		HasFrameBorder = false,
 			                         		MinimumWidth = 22,
 			                         		MaximumValue = 100,
-			                         		StartingValue = 50,
+			                         		StartingValue = 50,											
 			                         };
 
 			sliderTestTemplate.AlignTo(LayoutDirection.South, occupationTemplate);

@@ -68,7 +68,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public void Equip(string slot, Entity item) {
 			Contract.Requires<ArgumentNullException>(item != null);
 			Contract.Requires<ArgumentException>(item.Has<Equipable>() && item.Get<Equipable>() != null);
-			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
+			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
 			Contract.Requires<ArgumentException>(!IsSlotEquipped(slot), "slot already equipped");
 			Contract.Requires<ArgumentException>(item.Get<Equipable>().Slots.Contains(slot));
 			Contract.Ensures(equippedItems.ContainsKey(slot), "item is not equipped");
@@ -85,21 +85,19 @@ namespace SkrGame.Universe.Entities.Actors {
 			equippedItems.Add(slot, item);			
 		}
 
-		public bool Unequip(string slot, out Entity removed) {
-			Contract.Requires<ArgumentException>(ContainSlot(slot), "invalid slot");
+		public bool Unequip(string slot) {
+			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
 			Contract.Ensures(!equippedItems.ContainsKey(slot), "item is still equipped");
 
 
 			if (!equippedItems.ContainsKey(slot)) {
-				removed = null;
 				return false;
 			} else {
 				Logger.DebugFormat("{0} is unequipping his item at {1}.", OwnerUId, slot);
 
 				Entity old = equippedItems[slot];
 				equippedItems.Remove(slot);
-				removed = old;
-
+				
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
 
 				return true;
@@ -112,27 +110,17 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public Entity GetEquippedItemAt(string slot) {
-			Contract.Requires<ArgumentException>(ContainSlot(slot));
-			Contract.Requires<ArgumentException>(!string.IsNullOrEmpty(slot));
+			Contract.Requires<ArgumentException>(IsSlotEquipped(slot), "No item is equipped at slot.");
+			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty");			
 
-			return !ContainSlot(slot) ? null : (equippedItems.ContainsKey(slot) ? equippedItems[slot] : null);
+			return equippedItems[slot];					
 		}
 
 		public Entity this[string slot] {
 			get {				
 				return GetEquippedItemAt(slot);
 			}			
-		}
-
-		public override void Receive(string message, EventArgs e) {
-			base.Receive(message, e);
-			Point nLoc;
-			if (Location.ProcessPositionChangedEvent(message, e, out nLoc)) {
-				foreach (var item in EquippedItems) {
-					if (item.Has<Location>())
-						item.Get<Location>().Position = nLoc;
-				}
-			}
 		}
 
 		public override Component Copy() {

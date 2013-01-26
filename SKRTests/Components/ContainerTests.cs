@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DEngine.Components;
+using DEngine.Core;
 using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Universe.Entities.Actors;
@@ -28,25 +30,30 @@ namespace SKRTests.Components {
 
 			entity = entityManager.Create(new List<Component>()
 			                              {
+			                             		new Location(0, 0, null),
 			                              		new ContainerComponent()
 			                              });
 			container = entity.Get<ContainerComponent>();
 
 			item0 = entityManager.Create(new List<Component>
-			                                  {
-			                                  		new Item(new Item.Template
-			                                  		         {})
-			                                  });
+			                             {
+			                             		new Location(-1, -1, null),
+			                             		new Item(new Item.Template
+			                             		         {})
+
+			                             });
 			item1 = entityManager.Create(new List<Component>
-			                                  {
-			                                  		new Item(new Item.Template
-			                                  		         {})
-			                                  });
+			                             {
+			                             		new Location(-1, -1, null),
+			                             		new Item(new Item.Template
+			                             		         {})
+			                             });
 			item2 = entityManager.Create(new List<Component>
-			                                  {
-			                                  		new Item(new Item.Template
-			                                  		         {})
-			                                  });
+			                             {
+			                             		new Location(-1, -1, null),
+			                             		new Item(new Item.Template
+			                             		         {})
+			                             });
 
 			stack1 = entityManager.Create(new List<Component>
 			                              {
@@ -107,7 +114,6 @@ namespace SKRTests.Components {
 			Assert.IsTrue(container.Remove(item0));
 			Assert.AreEqual(container.Count, 0);
 
-			Assert.Throws<ArgumentNullException>(() => container.Remove(null));
 			Assert.IsFalse(container.Remove(item0));
 		}
 
@@ -152,10 +158,14 @@ namespace SKRTests.Components {
 			Assert.AreEqual(nc.TotalCount, 3);
 			CollectionAssert.AllItemsAreUnique(nc);
 
-			// items should be copied also (making new copies)
-			CollectionAssert.DoesNotContain(nc, item0);
-			CollectionAssert.DoesNotContain(nc, item1);
-			CollectionAssert.DoesNotContain(nc, item2);
+			// items in conainer aren't in new container
+			foreach (var e in container) {
+				CollectionAssert.DoesNotContain(nc, e);
+			}
+			// vice versa
+			foreach (var e in nc) {
+				CollectionAssert.DoesNotContain(container, e);
+			}
 		}
 	}
 }
