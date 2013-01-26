@@ -13,8 +13,5 @@ namespace SkrGame.Systems {
 		public AISystem(EntityManager em) {
 			entities = em.Get(typeof(ActionPoint), typeof(NpcIntelligence));
 		}
-
-
-
 	}
 }

@@ -137,8 +137,8 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 		
 		public bool Remove(Entity item) {
-			Contract.Requires<ArgumentNullException>(item != null);
-
+			if (item == null)
+				return false;
 			if (!itemContainer.Contains(item))
 				return false;
 

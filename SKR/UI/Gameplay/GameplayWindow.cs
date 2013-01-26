@@ -180,7 +180,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void Wait(Entity entity) {
-			entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);	
+			Movement.Wait(entity);
 		}
 
 		#region Pickup/Drop items

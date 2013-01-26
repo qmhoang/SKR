@@ -117,22 +117,19 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("SINK", "feature",
 			            new Sprite("SINK", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Wash hands",
-			                               		                             (entity, user, action) =>
-			                               		                             	{
-			                               		                             		World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
-			                               		                             		return ActionResult.Success;
-			                               		                             	})
-			                               }));
+			            new UseableFeature(new UseableFeature.UseAction("Wash hands",
+			                                                            (entity, user, action) =>
+			                                                            	{
+			                                                            		World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
+			                                                            		return ActionResult.Success;
+			                                                            	})));
 
 			ef.Inherits("TOILET", "nonblockingfeature",
 			            new Sprite("TOILET", Sprite.FEATURES_LAYER),
 			            new UseableFeature(new UseableFeature.UseAction("Use toilet",
 			                                                            (entity, user, action) =>
 			                                                            	{
-			                                                            		World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
+			                                                            		World.Instance.AddMessage(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
 			                                                            		return ActionResult.Success;
 			                                                            	})),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
@@ -143,7 +140,7 @@ namespace SkrGame.Universe.Factories {
 			                               			                                        Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
-			ef.Inherits("BATHROOMSINK", "nonblockingfeature", 
+			ef.Inherits("BATHROOMSINK", "SINK", 
 				new Sprite("BATHROOMSINK", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("BATH", "nonblockingfeature",

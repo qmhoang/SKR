@@ -24,18 +24,12 @@ namespace SkrGame.Systems {
 		}
 
 		protected override void EntityRemovedFromCollection(Entity container) {
-			Contract.Requires<ArgumentNullException>(container != null, "container");
-			Contract.Requires<ArgumentException>(container.Has<ContainerComponent>());
-
 			container.Get<ContainerComponent>().ItemAdded -= ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved -= ItemRemoved;
 			container.Get<Location>().PositionChanged -= PositionChanged;
 		}
 
 		protected override void EntityAddedToCollection(Entity container) {
-			Contract.Requires<ArgumentNullException>(container != null, "container");
-			Contract.Requires<ArgumentException>(container.Has<ContainerComponent>());
-
 			container.Get<ContainerComponent>().ItemAdded += ItemAdded;
 			container.Get<ContainerComponent>().ItemRemoved += ItemRemoved;
 			container.Get<Location>().PositionChanged += PositionChanged;

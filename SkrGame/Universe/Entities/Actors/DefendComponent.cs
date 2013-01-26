@@ -116,7 +116,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			maxHealth = health = 50;
 			bodyParts = new List<AttackablePart>()
 			            {
-			            		new AttackablePart("Torso", health, 100, 0, this),
+			            		new AttackablePart("Torso", health, 125, 0, this),
 			            		new AttackablePart("Head", health, 15, -World.STANDARD_DEVIATION * 5 / 3, this),
 			            		new AttackablePart("Right Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3, this),
 			            		new AttackablePart("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3, this),

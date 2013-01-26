@@ -39,6 +39,8 @@ namespace SkrGame.Gameplay {
 
 		public static void MoveEntity(Entity entity, Point newPosition) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
+			Contract.Requires<ArgumentException>(entity.Has<Location>());
+			Contract.Requires<ArgumentException>(entity.Has<ActionPoint>());
 
 			// finally move onto the new location
 			if (entity.Get<Location>().Level.IsWalkable(newPosition)) {
@@ -54,6 +56,13 @@ namespace SkrGame.Gameplay {
 
 			} else
 				World.Instance.AddMessage("There is something in the way.");
+		}
+
+		public static void Wait(Entity e) {
+			Contract.Requires<ArgumentNullException>(e != null, "entity");
+			Contract.Requires<ArgumentException>(e.Has<ActionPoint>());
+
+			e.Get<ActionPoint>().ActionPoints -= e.Get<ActionPoint>().Speed;
 		}
 
 //		public static void Move(Entity entity, Point direction, Func<Entity, Entity> selectWeapon, Func<IEnumerable<Entity>, Entity> selectTarget) {
