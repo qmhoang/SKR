@@ -24,21 +24,21 @@ namespace SKR.UI.Menus {
 			base.OnSettingUp();
 
 			var nameTemplate = new TextEntryTemplate()
-			{
-				Label = "Name: ",
-				MaximumCharacters = 20,
-				//                                           HasFrameBorder = false,
-				TopLeftPos = new Point(2, 2),
-				Tooltip = "Enter your character's name",
-				StartingField = "player",
-				CanHaveKeyboardFocus = true,
-				Pigments = new PigmentAlternatives()
-																	  {
-																			  {PigmentType.FrameNormal, new Pigment(ColorPresets.White, ColorPresets.Black)},
-																			   {PigmentType.ViewNormal, new Pigment(ColorPresets.White, ColorPresets.Black)},
-																			   {PigmentType.ViewSelected, new Pigment(ColorPresets.Green, ColorPresets.Black)}
-																	  }
-			};
+			                   {
+			                   		Label = "Name: ",
+			                   		MaximumCharacters = 20,
+//                                  HasFrameBorder = false,
+			                   		TopLeftPos = new Point(2, 2),
+			                   		Tooltip = "Enter your character's name",
+			                   		StartingField = "player",
+			                   		CanHaveKeyboardFocus = true,
+			                   		Pigments = new PigmentAlternatives()
+			                   		           {
+			                   		           		{PigmentType.FrameNormal, new Pigment(ColorPresets.White, ColorPresets.Black)},
+			                   		           		{PigmentType.ViewNormal, new Pigment(ColorPresets.White, ColorPresets.Black)},
+			                   		           		{PigmentType.ViewSelected, new Pigment(ColorPresets.Green, ColorPresets.Black)}
+			                   		           }
+			                   };
 			nameEntry = new TextEntry(nameTemplate);
 
 			AddControl(nameEntry);
@@ -50,32 +50,32 @@ namespace SKR.UI.Menus {
 			}
 
 			var occupationTemplate = new ListBoxTemplate()
-			{
-				Title = "Occupation",
-				TitleAlignment = HorizontalAlignment.Center,
-				MinimumListBoxWidth = 15,
-				FrameTitle = true,
-				AutoSizeOverride = new Size(15, 10),
-				Items = jobs
-			};
+			                         {
+			                         		Title = "Occupation",
+			                         		TitleAlignment = HorizontalAlignment.Center,
+			                         		MinimumListBoxWidth = 15,
+			                         		FrameTitle = true,
+			                         		AutoSizeOverride = new Size(15, 10),
+			                         		Items = jobs
+			                         };
 			occupationTemplate.AlignTo(LayoutDirection.South, nameTemplate);
 			occupationListBox = new ListBox(occupationTemplate);
 			AddControl(occupationListBox);
 			jobs.Add(new ListItemData("test"));
 
 			var sexTemplate = new MenuButtonTemplate()
-			{
-				Label = "Sex",
-				//                                          MinimumWidth = 15,
-				TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(3, 0),
-				RightClickMenu = true,
-				//                                          Tooltip = "Click to switch sex, right click to choose from a menu",
-				Items = new List<string>()
-													  {
-															  "Male",
-															  "Female"
-													  },
-			};
+			                  {
+			                  		Label = "Sex",
+//                                  MinimumWidth = 15,
+			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(3, 0),
+			                  		RightClickMenu = true,
+//                                  Tooltip = "Click to switch sex, right click to choose from a menu",
+			                  		Items = new List<string>()
+			                  		        {
+			                  		        		"Male",
+			                  		        		"Female"
+			                  		        },
+			                  };
 			sexButton = new MenuButton(sexTemplate);
 			AddControl(sexButton);
 

@@ -101,6 +101,7 @@ namespace SkrGame.Universe {
 		}
 
 		private ActionPointSystem actionPointSystem;
+		private VisionSubsystem visionSubsystem;
 		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
 		private ItemEquippingSubsystem itemEquippingSubsystem;
 
@@ -129,6 +130,7 @@ namespace SkrGame.Universe {
 			                              		new ContainerComponent(),
 			                              		new EquipmentComponent(),
 			                              		new VisibleComponent(10),
+												new SightComponent()
 			                              });
 
 
@@ -163,6 +165,7 @@ namespace SkrGame.Universe {
 			                               		new VisibleComponent(10),
 			                               		new ContainerComponent(),
 			                               		new EquipmentComponent(),
+												new SightComponent()
 			                               });
 			npc.Add(new NpcIntelligence(new SimpleAI()));
 
@@ -183,34 +186,8 @@ namespace SkrGame.Universe {
 			actionPointSystem = new ActionPointSystem(EntityManager);
 			itemContainerInteractionSubsystem = new ItemContainerInteractionSubsystem(EntityManager);
 			itemEquippingSubsystem = new ItemEquippingSubsystem(EntityManager);
-//			openingSpriteSubsystem = new OpeningSpriteSubsystem(EntityManager);
+			visionSubsystem = new VisionSubsystem(EntityManager);
 		}
-
-//
-//		private void Temp() {
-//			var level = mapFactory.Construct("TestHouse");
-//			level.GenerateFov();
-//			level.World = this;
-//			
-//			Player = new Player(level) { Position = new Point(0, 0) };
-//
-//			Player.AddItem(CreateItem("largeknife"));
-//
-//			var i = CreateItem("brassknuckles");
-//			Player.AddItem(i);
-//			Player.Equip(BodySlot.OffHand, i);
-//
-//			Player.AddItem(CreateItem("glock22"));
-//			Player.AddItem(CreateItem(".40S&W"));
-//			var ammo = CreateItem(".40S&W");
-//			ammo.Amount = 20;
-//			level.AddItem(ammo, Player.Position);
-//
-//			Npc npc1 = new Npc(level) { Position = new Point(3, 4) };
-//			npc1.Intelligence = new SimpleIntelligence(npc1);
-//			level.AddActor(npc1);
-//			AddEntity(npc1);
-//		}
 
 
 		public void AddMessage(string message, MessageType priority = MessageType.Normal) {
@@ -227,7 +204,8 @@ namespace SkrGame.Universe {
 		}
 
 		public void UpdateSystems() {
-			actionPointSystem.Update();			
+			actionPointSystem.Update();
+			visionSubsystem.Update();
 		}
 	}
 }

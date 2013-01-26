@@ -24,7 +24,6 @@ namespace SKR.UI.Gameplay {
 		private FilteredCollection entities;
 		private Entity player;
 		private Point oldPos;
-		private VisionMap playerVision;
 
 		public MapPanel(EntityManager manager, AssetsManager assetsManager, PanelTemplate template)
 				: base(template) {			
@@ -35,25 +34,18 @@ namespace SKR.UI.Gameplay {
 
 			player = World.Instance.Player;
 			var location = player.Get<Location>();
-			oldPos = location.Position;
-			playerVision = new VisionMap(location.Level.Size);
-			ComputePlayerFOV(location);
-//			location.Level.CalculateFOV(location.Position, 10);
-
+			oldPos = location.Position;			
 		}
 
-		private void ComputePlayerFOV(Location location) {
-			ShadowCastingFOV.ComputeRecursiveShadowcasting(playerVision, location.Level, location.Position.X, location.Position.Y, 10, true);
-		}
 
-		protected override void Update() {
-			base.Update();
-
-			if (oldPos != player.Get<Location>().Position) {
-//				player.Get<Location>().Level.CalculateFOV(player.Get<Location>().Position, 10);
-				ComputePlayerFOV(player.Get<Location>());
-			}
-		}
+//		protected override void Update() {
+//			base.Update();
+//
+//			if (oldPos != player.Get<Location>().Position) {
+////				player.Get<Location>().Level.CalculateFOV(player.Get<Location>().Position, 10);
+//				ComputePlayerFOV(player.Get<Location>());
+//			}
+//		}
 
 		protected override void Redraw() {
 			base.Redraw();
@@ -76,7 +68,7 @@ namespace SKR.UI.Gameplay {
 						continue;
 					if (IsPointWithinPanel(localPosition)) {
 						if (!Program.SeeAll.Enabled) {
-							if (playerVision.IsVisible(localPosition)) {								
+							if (player.Get<SightComponent>().IsVisible(localPosition)) {								
 								Canvas.PrintChar(x, y, texture.Item1, texture.Item2);
 							}
 						} else {
@@ -95,7 +87,7 @@ namespace SKR.UI.Gameplay {
 				if (IsPointWithinPanel(localPosition)) {
 
 					if (!Program.SeeAll.Enabled) {
-						if (playerVision.IsVisible(entity.Get<Location>().Position)) {
+						if (player.Get<SightComponent>().IsVisible(entity.Get<Location>().Position)) {
 							if (entity.Get<VisibleComponent>().VisibilityIndex > 0)
 								Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);
 						}
@@ -106,14 +98,6 @@ namespace SKR.UI.Gameplay {
 			}
 
 		}
-
-//		private void DrawTexture(Point localPosition, Point mapPosition, Tuple<char, Pigment> texture) {
-//			if (!Program.SeeAll.Enabled) {
-//				if (player.HasLineOfSight(mapPosition))
-//					Canvas.PrintChar(localPosition.X, localPosition.Y, texture.Item1, texture.Item2);
-//			} else if (IsPointWithinPanel(localPosition))
-//				Canvas.PrintChar(localPosition.X, localPosition.Y, texture.Item1, texture.Item2);
-//		}
 
 		private bool IsPointWithinPanel(Point p) {
 			return p.X < Size.Width && p.Y < Size.Height && p.X >= 0 && p.Y >= 0;

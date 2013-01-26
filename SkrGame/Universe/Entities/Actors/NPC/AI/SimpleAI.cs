@@ -64,13 +64,11 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 						Movement.MoveEntity(Entity, newPosition);
 
 					} else {
-						//					Actor.Wait();
-						Entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+						Movement.Wait(Entity);
 					}
 				}				
 			} else {
-//				Actor.Wait();
-				Entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
+				Movement.Wait(Entity);				
 			}
 		}
 	}

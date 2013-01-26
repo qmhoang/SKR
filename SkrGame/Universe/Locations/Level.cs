@@ -93,9 +93,9 @@ namespace SkrGame.Universe.Locations {
 			return GetTerrain(p.X, p.Y);
 		}
 
+		[Pure]
 		public Terrain GetTerrain(int x, int y) {
-			if (!IsInBoundsOrBorder(x, y))
-				throw new ArgumentOutOfRangeException();
+			Contract.Requires<ArgumentOutOfRangeException>(IsInBoundsOrBorder(x, y));			
 			return TerrainDefinitions[Map[x, y]];
 		}
 
