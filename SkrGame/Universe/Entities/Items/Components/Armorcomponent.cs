@@ -8,15 +8,14 @@ using SkrGame.Gameplay.Combat;
 namespace SkrGame.Universe.Entities.Items.Components {
 	public class ArmorComponent : Component {
 		public class Template {
-			public List<LocationProtected> Defenses { get; set; }
+			public List<Part> Defenses { get; set; }
 
 			public int DonTime { get; set; }
 
 //			public string ComponentId { get; set; }
 		}
 
-		public class LocationProtected {
-
+		public class Part {
 			public string BodyPart { get; private set; }
 			/// <summary>
 			/// How much area the armor covers that body part.
@@ -24,22 +23,22 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			public int Coverage { get; private set; }
 			public Dictionary<DamageType, int> Resistances { get; private set; }
 
-			public LocationProtected(string bodyPart, int coverage, Dictionary<DamageType, int> resistances) {
+			public Part(string bodyPart, int coverage, Dictionary<DamageType, int> resistances) {
 				BodyPart = bodyPart;
 				Coverage = coverage;
 				Resistances = resistances;
 			}
 		}
-		public Dictionary<string, LocationProtected> Defenses { get; private set; }
+		public Dictionary<string, Part> Defenses { get; private set; }
 		
 		public int DonTime { get; protected set; }
 
 		private ArmorComponent() {
-			Defenses = new Dictionary<string, LocationProtected>();
+			Defenses = new Dictionary<string, Part>();
 		}
 
 		internal ArmorComponent(Template template) {
-			Defenses = new Dictionary<string, LocationProtected>();
+			Defenses = new Dictionary<string, Part>();
 
 			foreach (var locationProtected in template.Defenses) {
 				var resistances = new Dictionary<DamageType, int>(locationProtected.Resistances);
@@ -51,7 +50,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 					}
 				}
 
-				Defenses.Add(locationProtected.BodyPart, new LocationProtected(locationProtected.BodyPart, locationProtected.Coverage, resistances));
+				Defenses.Add(locationProtected.BodyPart, new Part(locationProtected.BodyPart, locationProtected.Coverage, resistances));
 			}
 
 			DonTime = template.DonTime;
@@ -63,7 +62,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			            		DonTime = DonTime
 			            };
 			foreach (var defense in Defenses) {
-				armor.Defenses.Add(defense.Key, new LocationProtected(defense.Value.BodyPart, defense.Value.Coverage, new Dictionary<DamageType, int>(defense.Value.Resistances)));
+				armor.Defenses.Add(defense.Key, new Part(defense.Value.BodyPart, defense.Value.Coverage, new Dictionary<DamageType, int>(defense.Value.Resistances)));
 			}			
 			return new ArmorComponent();
 		}

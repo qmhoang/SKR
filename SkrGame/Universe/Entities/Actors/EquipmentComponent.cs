@@ -124,6 +124,17 @@ namespace SkrGame.Universe.Entities.Actors {
 			}			
 		}
 
+		public override void Receive(string message, EventArgs e) {
+			base.Receive(message, e);
+			Point nLoc;
+			if (Location.ProcessPositionChangedEvent(message, e, out nLoc)) {
+				foreach (var item in EquippedItems) {
+					if (item.Has<Location>())
+						item.Get<Location>().Position = nLoc;
+				}
+			}
+		}
+
 		public override Component Copy() {
 			var equipment = new EquipmentComponent()
 			{
