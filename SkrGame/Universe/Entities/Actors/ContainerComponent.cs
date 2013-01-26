@@ -8,6 +8,7 @@ using System.Reflection;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Systems;
 using SkrGame.Universe.Entities.Items;
 using log4net;
 
@@ -19,7 +20,6 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public event ComponentEventHandler<EventArgs<Entity>> ItemRemoved;
 		public event ComponentEventHandler<EventArgs<Entity>> ItemAdded;
-
 
 		public void OnItemAdded(EventArgs<Entity> e) {
 			ComponentEventHandler<EventArgs<Entity>> handler = ItemAdded;
@@ -34,7 +34,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public ContainerComponent() {
-			itemContainer = new List<Entity>();
+			itemContainer = new List<Entity>();			
 		}
 
 		[ContractInvariantMethod]
@@ -126,7 +126,8 @@ namespace SkrGame.Universe.Entities.Actors {
 
 				var existing = GetItem(e => e.Get<ReferenceId>() == item.Get<ReferenceId>());
 				existing.Get<Item>().Amount += item.Get<Item>().Amount;
-//				World.Instance.EntityManager.Remove(item);
+				item.IsActive = false;				
+
 				return true;
 			} else {
 				itemContainer.Add(item);
@@ -148,17 +149,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			itemContainer.Remove(item);
 			
 			return true;
-		}
-
-		public override void Receive(string message, EventArgs e) {
-			base.Receive(message, e);
-			Point nLoc;
-			if (Location.ProcessPositionChangedEvent(message, e, out nLoc)) {
-				foreach (var item in Items) {
-					if (item.Has<Location>())
-						item.Get<Location>().Position = nLoc;
-				}
-			}
 		}
 		
 		public override Component Copy() {

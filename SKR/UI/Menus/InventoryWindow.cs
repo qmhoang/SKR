@@ -44,8 +44,8 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSelectItem(string slot) {
 			if (equipment.IsSlotEquipped(slot)) {
-				Entity removed;
-				equipment.Unequip(slot, out removed);
+				Entity removed = equipment[slot];
+				equipment.Unequip(slot);
 
 				if (removed != null) {
 					inventory.Add(removed);

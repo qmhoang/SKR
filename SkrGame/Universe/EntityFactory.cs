@@ -3,17 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using DEngine.Actor;
 using DEngine.Components;
-using DEngine.Core;
 using DEngine.Entities;
-using SkrGame.Gameplay.Combat;
-using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
-using SkrGame.Universe.Locations;
 using log4net;
 
 namespace SkrGame.Universe {
@@ -74,6 +66,7 @@ namespace SkrGame.Universe {
 			/// </summary>
 			/// <typeparam name="T"></typeparam>
 			/// <returns></returns>
+			[Pure]
 			public T Get<T>() where T : Component {
 				Component o;
 				components.TryGetValue(typeof(T), out o);
