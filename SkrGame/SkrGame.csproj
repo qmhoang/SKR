@@ -106,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Message.cs" />
-    <Compile Include="Core\ComponentMessages\UpdateMessage.cs" />
+    <Compile Include="Core\ComponentMessages\UpdateEvent.cs" />
     <Compile Include="Gameplay\Combat\Combat.cs" />
     <Compile Include="Gameplay\Combat\CombatEventArgs.cs" />
     <Compile Include="Gameplay\Movement.cs" />

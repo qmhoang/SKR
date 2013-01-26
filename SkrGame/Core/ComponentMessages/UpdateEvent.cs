@@ -1,12 +1,13 @@
+using System;
 using DEngine.Entities;
 
 namespace SkrGame.Core.ComponentMessages {
-	public class UpdateMessage : IComponentMessage {
+	public class UpdateEvent : EventArgs {
 		public int APDifference { get; private set; }
 		public Entity Entity { get; private set; }
 
 
-		public UpdateMessage(Entity entity, int apDifference) {
+		public UpdateEvent(Entity entity, int apDifference) {
 			APDifference = apDifference;
 			this.Entity = entity;
 		}

@@ -28,13 +28,13 @@ namespace SkrGame.Systems {
 						var entityAP = entity.Get<ActionPoint>();						
 						entityAP.ActionPoints += entityAP.Speed;
 						if (entityAP.Updateable) {
-							entity.Broadcast(new UpdateMessage(entity, entityAP.ActionPoints - playerAP.ActionPoints));
+							entity.Broadcast("Update", new UpdateEvent(entity, entityAP.ActionPoints - playerAP.ActionPoints));
 						}
 					}
 				}
 
 				playerAP.ActionPoints += playerAP.Speed;
-				player.Broadcast(new UpdateMessage(player, playerAP.Speed));
+				player.Broadcast("Update", new UpdateEvent(player, playerAP.Speed));
 			}
 		}
 	}
