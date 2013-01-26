@@ -435,9 +435,9 @@ namespace SkrGame.Universe.Factories {
 			                               {
 //			                               		ComponentId = "armor",
 			                               		DonTime = 1,
-			                               		Defenses = new List<ArmorComponent.LocationProtected>
+			                               		Defenses = new List<ArmorComponent.Part>
 			                               		           {
-			                               		           		new ArmorComponent.LocationProtected("Torso", 10, new Dictionary<DamageType, int>
+			                               		           		new ArmorComponent.Part("Torso", 10, new Dictionary<DamageType, int>
 			                               		           		                                                  {
 			                               		           		                                                  		{Combat.DamageTypes["true"], 0},
 			                               		           		                                                  		{Combat.DamageTypes["cut"], 1},
@@ -467,9 +467,9 @@ namespace SkrGame.Universe.Factories {
 			                               {
 //			                               		ComponentId = "footballarmor",
 			                               		DonTime = 10,
-			                               		Defenses = new List<ArmorComponent.LocationProtected>
+			                               		Defenses = new List<ArmorComponent.Part>
 			                               		           {
-			                               		           		new ArmorComponent.LocationProtected("Torso", 30, new Dictionary<DamageType, int>
+			                               		           		new ArmorComponent.Part("Torso", 30, new Dictionary<DamageType, int>
 			                               		           		                                                  {
 			                               		           		                                                  		{Combat.DamageTypes["true"], 0},
 			                               		           		                                                  		{Combat.DamageTypes["cut"], 8},
