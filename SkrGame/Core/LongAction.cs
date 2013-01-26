@@ -15,11 +15,11 @@ namespace SkrGame.Core {
 			ActionComplete = action;
 		}
 
-		public override void Receive(IComponentMessage data) {
-			base.Receive(data);
+		public override void Receive(string message, EventArgs e) {
+			base.Receive(message, e);
 
-			if (data is UpdateMessage) {
-				var m = (UpdateMessage) data;
+			if (message == "Update") {
+				var m = (UpdateEvent) e;
 				m.Entity.Get<ActionPoint>().ActionPoints -= m.Entity.Get<ActionPoint>().Speed;
 				APLength -= m.Entity.Get<ActionPoint>().Speed;
 

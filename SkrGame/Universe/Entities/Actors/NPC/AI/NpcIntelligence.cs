@@ -1,3 +1,4 @@
+using System;
 using DEngine.Entities;
 using SkrGame.Core.ComponentMessages;
 using SkrGame.Systems;
@@ -30,13 +31,13 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 			ai.Entity = e;
 		}
 
-		public override void Receive(IComponentMessage data) {
-			base.Receive(data);
+		public override void Receive(string message, EventArgs e) {
+			base.Receive(message, e);
 
-			if (data is UpdateMessage) {
-				var message = (UpdateMessage) data;
+			if (message == "Update") {
+				var m = (UpdateEvent) e;
 
-				if (message.APDifference >= World.TURN_LENGTH_IN_AP) {
+				if (m.APDifference >= World.TURN_LENGTH_IN_AP) {
 					ai.Update();
 				}
 			}
