@@ -13,8 +13,7 @@ using libtcod;
 
 namespace SKR.UI.Menus {
 	public class ItemWindow : ListWindow<Entity> {        
-		private readonly bool singleItem;        
-		private int displayIndex;   //todo scrolling
+		private readonly bool singleItem;        		
 		private Rect sizeList;
 
 		protected override Rect ListRect {

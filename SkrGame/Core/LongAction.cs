@@ -7,11 +7,11 @@ using SkrGame.Universe;
 
 namespace SkrGame.Core {
 	public class LongAction : Component {
-		public int APLength { get; set; }
+		public int ActionLengthInAP { get; set; }
 		public Action<Entity> ActionComplete { get; set; }
 
-		public LongAction(int apLength, Action<Entity> action) {
-			APLength = apLength;
+		public LongAction(int actionLengthInAP, Action<Entity> action) {
+			ActionLengthInAP = actionLengthInAP;
 			ActionComplete = action;
 		}
 
@@ -20,18 +20,18 @@ namespace SkrGame.Core {
 
 			if (message == "Update") {
 				var m = (UpdateEvent) e;
-				m.Entity.Get<ActionPoint>().ActionPoints -= m.Entity.Get<ActionPoint>().Speed;
-				APLength -= m.Entity.Get<ActionPoint>().Speed;
+				m.Entity.Get<ActionPoint>().ActionPoints -= m.Entity.Get<ActionPoint>().ActionPointPerTurn;
+				ActionLengthInAP -= m.Entity.Get<ActionPoint>().ActionPointPerTurn;
 
-				if (APLength <= 0) {
+				if (ActionLengthInAP <= 0) {
 					m.Entity.Remove<LongAction>();
 					ActionComplete(m.Entity);
 				}
-			}
+			}			
 		}
 
 		public override Component Copy() {
-			return new LongAction(APLength, ActionComplete);
+			return new LongAction(ActionLengthInAP, ActionComplete);
 		}
 	}
 }

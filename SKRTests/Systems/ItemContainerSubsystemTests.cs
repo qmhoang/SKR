@@ -95,7 +95,7 @@ namespace SKRTests.Systems {
 
 			Assert.AreNotEqual(newContainer.Get<Location>(), entity.Get<Location>());			
 
-			foreach (var e in newContainer.Get<ContainerComponent>()) {
+			foreach (var e in newContainer.Get<ContainerComponent>().Items) {
 				Assert.AreEqual(e.Get<Location>(), newContainer.Get<Location>());
 			}
 		}

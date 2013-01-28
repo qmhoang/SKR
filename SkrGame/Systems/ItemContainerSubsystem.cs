@@ -34,7 +34,7 @@ namespace SkrGame.Systems {
 			container.Get<ContainerComponent>().ItemRemoved += ItemRemoved;
 			container.Get<Location>().PositionChanged += PositionChanged;
 			
-			foreach (var entity in container.Get<ContainerComponent>()) {
+			foreach (var entity in container.Get<ContainerComponent>().Items) {
 				AddItem(container, entity);
 			}
 		}
@@ -79,7 +79,7 @@ namespace SkrGame.Systems {
 
 			var inventory = GetEntity(sender);
 
-			foreach (var entity in inventory.Get<ContainerComponent>()) {
+			foreach (var entity in inventory.Get<ContainerComponent>().Items) {
 				if (entity.Has<Location>()) {
 					entity.Get<Location>().Position = e.Data;
 				}

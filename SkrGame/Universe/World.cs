@@ -102,8 +102,8 @@ namespace SkrGame.Universe {
 
 		private ActionPointSystem actionPointSystem;
 		private VisionSubsystem visionSubsystem;
-//		private ItemContainerInteractionSubsystem itemContainerInteractionSubsystem;
-//		private ItemEquippingSubsystem itemEquippingSubsystem;
+		private ItemContainerSubsystem itemContainerInteractionSubsystem;
+		private ItemEquippingSubsystem itemEquippingSubsystem;
 
 		private World() {
 			Rng.Seed(0);
@@ -184,8 +184,8 @@ namespace SkrGame.Universe {
 
 		public void Initialize() {
 			actionPointSystem = new ActionPointSystem(EntityManager);
-//			itemContainerInteractionSubsystem = new ItemContainerInteractionSubsystem(EntityManager);
-//			itemEquippingSubsystem = new ItemEquippingSubsystem(EntityManager);
+			itemContainerInteractionSubsystem = new ItemContainerSubsystem(EntityManager);
+			itemEquippingSubsystem = new ItemEquippingSubsystem(EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
 		}
 

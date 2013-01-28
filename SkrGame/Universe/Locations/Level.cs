@@ -68,9 +68,7 @@ namespace SkrGame.Universe.Locations {
 					else
 						SetProperties(x, y, t.Transparent, t.Walkable);
 				}
-			}
-
-			EntityManager = new EntityManager();
+			}			
 
 			entities = EntityManager.Get(typeof(Blocker), typeof(Location));
 			entities.OnEntityAdd += entities_OnEntityAdd;

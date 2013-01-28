@@ -62,7 +62,7 @@ namespace SkrGame.Gameplay {
 			Contract.Requires<ArgumentNullException>(e != null, "entity");
 			Contract.Requires<ArgumentException>(e.Has<ActionPoint>());
 
-			e.Get<ActionPoint>().ActionPoints -= e.Get<ActionPoint>().Speed;
+			e.Get<ActionPoint>().ActionPoints -= e.Get<ActionPoint>().ActionPointPerTurn;
 		}
 
 //		public static void Move(Entity entity, Point direction, Func<Entity, Entity> selectWeapon, Func<IEnumerable<Entity>, Entity> selectTarget) {
