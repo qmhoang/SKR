@@ -13,7 +13,7 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class ContainerComponent : Component, ICollection<Entity> {
+	public class ContainerComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly List<Entity> itemContainer;
@@ -43,30 +43,10 @@ namespace SkrGame.Universe.Entities.Actors {
 			Contract.Invariant(itemContainer != null);			
 		}
 
-		public IEnumerator<Entity> GetEnumerator() {
-			return itemContainer.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
-		
-		void ICollection<Entity>.Clear() {
-			Contract.Ensures(Count == 0);
-			foreach (var entity in itemContainer) {
-				Remove(entity);
-			}
-			itemContainer.Clear();
-		}
-
 		public bool Contains(Entity item) {
 			return itemContainer.Contains(item);
 		}
-
-		public void CopyTo(Entity[] array, int arrayIndex) {
-			itemContainer.CopyTo(array, arrayIndex);
-		}
-
+		
 		public int Count {
 			get { return itemContainer.Count; }
 		}
@@ -78,10 +58,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			get {
 				return itemContainer.Sum(i => i.Has<Item>() ? i.Get<Item>().Amount : 1);
 			}
-		}
-
-		public bool IsReadOnly {
-			get { return false; }
 		}
 		
 		public IEnumerable<Entity> Items {
@@ -101,10 +77,6 @@ namespace SkrGame.Universe.Entities.Actors {
 		public Entity GetItem(Predicate<Entity> match) {
 			Contract.Requires<ArgumentNullException>(match != null, "match");
 			return itemContainer.Find(match);
-		}
-
-		void ICollection<Entity>.Add(Entity item) {
-			Add(item);
 		}
 
 		/// <summary>

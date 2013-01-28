@@ -149,22 +149,22 @@ namespace SKRTests.Components {
 			container.Add(item2);
 
 			Assert.AreEqual(container.TotalCount, 3);
-			CollectionAssert.AllItemsAreUnique(container);
-			CollectionAssert.Contains(container, item0);
-			CollectionAssert.Contains(container, item1);
-			CollectionAssert.Contains(container, item2);
+			CollectionAssert.AllItemsAreUnique(container.Items);
+			CollectionAssert.Contains(container.Items, item0);
+			CollectionAssert.Contains(container.Items, item1);
+			CollectionAssert.Contains(container.Items, item2);
 
 			var nc = entity.Copy().Get<ContainerComponent>();
 			Assert.AreEqual(nc.TotalCount, 3);
-			CollectionAssert.AllItemsAreUnique(nc);
+			CollectionAssert.AllItemsAreUnique(nc.Items);
 
 			// items in conainer aren't in new container
-			foreach (var e in container) {
-				CollectionAssert.DoesNotContain(nc, e);
+			foreach (var e in container.Items) {
+				CollectionAssert.DoesNotContain(nc.Items, e);
 			}
 			// vice versa
-			foreach (var e in nc) {
-				CollectionAssert.DoesNotContain(container, e);
+			foreach (var e in nc.Items) {
+				CollectionAssert.DoesNotContain(container.Items, e);
 			}
 		}
 	}

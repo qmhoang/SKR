@@ -356,10 +356,10 @@ namespace SKR.UI.Menus {
 		private Func<T, string> descriptorFunction;
 		private string message;
 
-		public OptionsSelectionPrompt(string message, List<T> options, Func<T, string> descriptor, Action<T> actionCount, WindowTemplate template)
+		public OptionsSelectionPrompt(string message, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, WindowTemplate template)
 			: base(template) {
 			this.actionCount = actionCount;
-			this.options = options;
+			this.options = new List<T>(options);
 			this.descriptorFunction = descriptor;
 			this.message = message;
 		}

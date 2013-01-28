@@ -166,7 +166,7 @@ namespace SKR.UI.Gameplay {
 		private void Reload(Entity user, Entity weapon) {
 			Contract.Requires<ArgumentException>(user.Has<ContainerComponent>());
 
-			var ammos = user.Get<ContainerComponent>().Where(e => e.Has<AmmoComponent>() && e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList();
+			var ammos = user.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() && e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList();
 
 			if (ammos.Count > 1) {
 				ParentApplication.Push(new OptionsSelectionPrompt<Entity>("What ammo?", ammos,
@@ -213,23 +213,21 @@ namespace SKR.UI.Gameplay {
 			}
 		}
 
-		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory, ICollection<Entity> itemsOnDisplay) {
-			Contract.Requires<ArgumentNullException>(itemsOnDisplay != null, "items");
+		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory) {
 			var inventory = inventoryEntity.Get<ContainerComponent>();
 			var item = itemEntityFromInventory.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to drop to the ground?",
-						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount, itemsOnDisplay), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
+						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
 			else {
-				inventory.Remove(itemEntityFromInventory);
-				itemsOnDisplay.Remove(itemEntityFromInventory);
+				inventory.Remove(itemEntityFromInventory);				
 			}
 		}
 
 
-		private void DropStackedItem(Entity entityDropping, Entity itemEntityFromInventory, int amount, ICollection<Entity> itemsOnDisplay) {
+		private void DropStackedItem(Entity entityDropping, Entity itemEntityFromInventory, int amount) {
 			Contract.Requires<ArgumentException>(amount >= 0);
 			if (amount == 0)
 				return;
@@ -249,8 +247,7 @@ namespace SKR.UI.Gameplay {
 				}
 
 			} else {
-				inventory.Remove(itemEntityFromInventory);
-				itemsOnDisplay.Remove(itemEntityFromInventory);
+				inventory.Remove(itemEntityFromInventory);				
 			}
 		}
 		#endregion
@@ -302,8 +299,6 @@ namespace SKR.UI.Gameplay {
 
 				return;
 			}
-
-			
 
 			Movement.MoveEntity(user, newPosition);
 
@@ -382,16 +377,16 @@ namespace SKR.UI.Gameplay {
 									                      location.Position,
 									                      p =>
 									                      	{
-									                      		var useables = location.Level.GetEntitiesAt(p, typeof(UseableFeature), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
+									                      		var useables = location.Level.GetEntitiesAt(p, typeof(UseableFeature), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0);
 
-									                      		if (useables.Count > 1) {
+									                      		if (useables.Count() > 1) {
 									                      			ParentApplication.Push(
 									                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
 									                      					                                   useables,
 									                      					                                   Identifier.GetNameOrId,
 									                      					                                   e => SelectUsableAction(player, e, e.Get<UseableFeature>().Uses.ToList()),
 									                      					                                   GameplayWindow.PromptTemplate));
-									                      		} else if (useables.Count == 1) {
+									                      		} else if (useables.Count() == 1) {
 									                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
 									                      		} else {
 									                      			World.Instance.AddMessage("Nothing there to use.");
@@ -407,8 +402,8 @@ namespace SKR.UI.Gameplay {
 								                                      		Size = MapPanel.Size,
 								                                      		IsPopup = true,
 								                                      		HasFrame = true,
-								                                      		Items = inventory,
-								                                      }, i => DropItem(player, i, inventory)));
+																			Items = inventory.Items,
+																	  }, i => DropItem(player, i)));
 							else
 								World.Instance.AddMessage("You are carrying no items to drop.");
 						} else if (keyData.Character == 'g') {
@@ -439,7 +434,7 @@ namespace SKR.UI.Gameplay {
 							                                      		Size = MapPanel.Size,
 							                                      		IsPopup = true,
 							                                      		HasFrame = true,
-							                                      		Items = inventory,
+																		Items = inventory.Items,
 							                                      },
 							                                      i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight))));
 						} else if (keyData.Character == 'w')

@@ -8,7 +8,7 @@ using Ogui.UI;
 
 namespace SKR.UI.Menus {
 	public class ListWindowTemplate<T> : WindowTemplate {
-		public ICollection<T> Items { get; set; }
+		public IEnumerable<T> Items { get; set; }
 	}
 
 	public abstract class ListWindow<T> : Window {
@@ -21,7 +21,7 @@ namespace SKR.UI.Menus {
 		protected abstract Rect ListRect { get; }
 
 //		protected Dictionary<char, T> Items;
-		protected ICollection<T> List;
+		protected IEnumerable<T> List;
 
 		protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
 				: base(template) {
@@ -57,7 +57,7 @@ namespace SKR.UI.Menus {
 			base.OnMouseButtonDown(mouseData);			
 
 			int index = MouseToIndex(mouseData);
-			if (index >= 0 && index < List.Count) {				
+			if (index >= 0 && index < List.Count()) {				
 				var t = List.ElementAt(index);
 				OnSelectItem(t);
 			}
@@ -66,7 +66,7 @@ namespace SKR.UI.Menus {
 		protected override void OnKeyPressed(KeyboardData keyData) {
 			if (Char.IsLetter(keyData.Character)) {
 				int index = Char.ToUpper(keyData.Character) - 'A';
-				if (index < List.Count)
+				if (index < List.Count())
 					OnSelectItem(List.ElementAt(index));
 			}
 		}
