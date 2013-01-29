@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using DEngine.Components;
 using DEngine.Core;
+using DEngine.Entities;
 using SkrGame.Universe.Locations;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe.Factories {
-	public abstract class MapFactory : Factory<string, Level> {}
+//	public abstract class MapFactory : Factory<string, Level> {}
 
-	public class SourceMapFactory : MapFactory {
+	public class MapFactory {
 		private List<Terrain> terrainDefinitions;
 		private EntityFactory ef;
+		private EntityManager em;
 
-		public SourceMapFactory(EntityFactory ef) {
+		public MapFactory(EntityManager em, EntityFactory ef) {
 			terrainDefinitions = new List<Terrain>();
 			this.ef = ef;
+			this.em = em;
 
 			terrainDefinitions.Add(new Terrain("Grass", "Grass", true, true, 1.0));
 			terrainDefinitions.Add(new Terrain("StoneFloor", "StoneFloor", true, true, 1.0));
@@ -34,7 +37,7 @@ namespace SkrGame.Universe.Factories {
 			terrainDefinitions.Add(new Terrain("CONCRETE_CRACK_1", "CONCRETE_CRACK_1", true, true, 1.0));
 		}
 
-		public override Level Construct(string identifier) {
+		public Level Construct(string identifier) {
 			switch (identifier) {
 					#region TestMap
 
@@ -218,7 +221,7 @@ namespace SkrGame.Universe.Factories {
 			int width = definition[0].Length;
 			int height = definition.Count();
 
-			var map = new Level(new Size(width, height), "Grass", terrainDefinitions);
+			var map = new Level(new Size(width, height), em, "Grass", terrainDefinitions);
 
 			for (int y = 0; y < height; y++) {
 				var s = definition[y];
@@ -231,7 +234,7 @@ namespace SkrGame.Universe.Factories {
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
 						var feature = ef.Get(charIdentifiers[s[x]].Item2);
 
-						map.EntityManager.Create(feature).Add(new Location(x, y, map));
+						em.Create(feature).Add(new Location(x, y, map));
 											
 					}
 				}

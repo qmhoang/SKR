@@ -75,8 +75,8 @@ namespace SkrGame.Universe {
 
 		private readonly MapFactory mapFactory;
 
-		public TagManager TagManager { get; private set; }
-		public GroupManager GroupManager { get; private set; }
+		public TagManager<string> TagManager { get; private set; }
+		public GroupManager<string> GroupManager { get; private set; }
 
 		public EntityFactory EntityFactory { get; private set; }
 
@@ -92,13 +92,11 @@ namespace SkrGame.Universe {
 			get { return TagManager.GetEntity("player"); }
 			set {				
 				Contract.Requires<ArgumentNullException>(value != null, "value");
-				TagManager.Register("player", value);
+				TagManager.Register(value, "player");
 			}
 		}
 
-		public EntityManager EntityManager {
-			get { return level.EntityManager; }
-		}
+		public EntityManager EntityManager { get; private set; }
 
 		private ActionPointSystem actionPointSystem;
 		private VisionSubsystem visionSubsystem;
@@ -108,13 +106,14 @@ namespace SkrGame.Universe {
 		private World() {
 			Rng.Seed(0);
 
-			TagManager = new TagManager();
-			GroupManager = new GroupManager();
+			TagManager = new TagManager<string>();
+			GroupManager = new GroupManager<string>();
+			EntityManager = new EntityManager();
 			EntityFactory = new EntityFactory();
-
+			
 			MessageBuffer = new List<Message>();
 
-			mapFactory = new SourceMapFactory(EntityFactory);
+			mapFactory = new MapFactory(EntityManager, EntityFactory);
 
 			level = mapFactory.Construct("TestMap");
 

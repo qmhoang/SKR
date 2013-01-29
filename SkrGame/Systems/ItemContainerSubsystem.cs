@@ -73,7 +73,7 @@ namespace SkrGame.Systems {
 			inventory.Get<Location>().PositionChanged += PositionChanged;
 		}
 
-		void PositionChanged(Component sender, EventArgs<Point> e) {
+		void PositionChanged(Component sender, PositionChangedEvent e) {
 			Contract.Requires<ArgumentNullException>(sender != null, "sender");
 			Contract.Requires<ArgumentNullException>(e != null, "e");
 
@@ -81,7 +81,7 @@ namespace SkrGame.Systems {
 
 			foreach (var entity in inventory.Get<ContainerComponent>().Items) {
 				if (entity.Has<Location>()) {
-					entity.Get<Location>().Position = e.Data;
+					entity.Get<Location>().Position = e.Current;
 				}
 			}
 		}

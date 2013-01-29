@@ -34,21 +34,30 @@ namespace SkrGame.Universe.Locations {
 
 		protected string[,] Map;
 		protected Dictionary<string, Terrain> TerrainDefinitions;
-		
+
+		private FilteredCollection entities;
+		private FilteredCollection blockers;
+
+		internal struct Cell {
+			public bool Transparent;
+			public bool Walkable;
+		}
+
+		internal Cell[,] Cells;
+
 		public string RefId { get; protected set; }
 		public UniqueId Uid { get; protected set; }
 
 		public World World { get; set; }
-
-		private FilteredCollection entities;
 
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
 			Contract.Invariant(TerrainDefinitions != null);
 		}
-		
-		public Level(Size size, string fill, IEnumerable<Terrain> terrainDefinitions) : base(size) {
+
+		public Level(Size size, EntityManager em, string fill, IEnumerable<Terrain> terrainDefinitions)
+			: base(size) {
 			Uid = new UniqueId();
 
 			Map = new string[Size.Width, Size.Height];
@@ -58,29 +67,62 @@ namespace SkrGame.Universe.Locations {
 				TerrainDefinitions.Add(terrain.Definition, terrain);
 			}
 
+			entities = em.Get<Location>();
+			blockers = em.Get(typeof(Location), typeof(Blocker));
+			Cells = new Cell[size.Width, size.Height];
+
 			for (int x = 0; x < Map.GetLength(0); x++) {
 				for (int y = 0; y < Map.GetLength(1); y++) {
 					Map[x, y] = fill;
 
-					var t = TerrainDefinitions[fill];
-					if (t == null)
-						SetProperties(x, y, false, false);
-					else
-						SetProperties(x, y, t.Transparent, t.Walkable);
-				}
-			}			
 
-			entities = EntityManager.Get(typeof(Blocker), typeof(Location));
-			entities.OnEntityAdd += entities_OnEntityAdd;
-			entities.OnEntityRemove += entities_OnEntityRemove;
+					var t = TerrainDefinitions[fill];
+					if (t == null) {
+						Cells[x, y].Walkable = false;
+						Cells[x, y].Transparent = false;
+					} else {
+						Cells[x, y].Walkable = t.Walkable;
+						Cells[x, y].Transparent = t.Transparent;
+					}
+				}
+			}
+
+			foreach (var entity in entities) {
+				entities_OnEntityAdd(entity);
+			}
+
+			blockers.OnEntityAdd += entities_OnEntityAdd;
+			blockers.OnEntityRemove += entities_OnEntityRemove;
 		}
-		
+
+		private void entities_OnEntityRemove(Entity entity) {
+			var position = entity.Get<Location>().Position;
+			SetBlocker(position);
+			entity.Get<Location>().PositionChanged -= level_PositionChanged;
+		}
+
+		private void entities_OnEntityAdd(Entity entity) {
+			var position = entity.Get<Location>().Position;
+			SetBlocker(position);
+			entity.Get<Location>().PositionChanged += level_PositionChanged;
+		}
+
+		private void level_PositionChanged(Component sender, PositionChangedEvent e) {
+			SetBlocker(e.Current);
+			SetBlocker(e.Previous);
+		}
+
+		private void SetBlocker(Point position) {
+			if (GetTerrain(position).Walkable)
+				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Walkable);
+			if (GetTerrain(position).Transparent)
+				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Transparent);
+		}
+
 		public void SetTerrain(int x, int y, string t) {
 			if (!IsInBoundsOrBorder(x, y))
 				throw new ArgumentOutOfRangeException();
-			Map[x, y] = t;			
-			ResetTransparency(new Point(x, y));
-			ResetWalkable(new Point(x, y));
+			Map[x, y] = t;
 		}
 
 		public void SetTerrain(Point p, string t) {
@@ -93,66 +135,32 @@ namespace SkrGame.Universe.Locations {
 
 		[Pure]
 		public Terrain GetTerrain(int x, int y) {
-			Contract.Requires<ArgumentOutOfRangeException>(IsInBoundsOrBorder(x, y));			
+			Contract.Requires<ArgumentOutOfRangeException>(IsInBoundsOrBorder(x, y));
 			return TerrainDefinitions[Map[x, y]];
 		}
 
-		private void entities_OnEntityRemove(Entity entity) {
-			Contract.Requires<ArgumentNullException>(entity != null, "entity");
-			if (entity.Has<Blocker>()) {
-				ResetTransparency(entity.Get<Location>().Position);
-				ResetWalkable(entity.Get<Location>().Position);
-				entity.Get<Blocker>().WalkableChanged -= FeatureWalkableChanged;
-				entity.Get<Blocker>().TransparencyChanged -= FeatureTransparencyChanged;
-			}
+		public override bool IsTransparent(int x, int y) {
+			return IsTransparent(new Point(x, y));
 		}
 
-		private void entities_OnEntityAdd(Entity entity) {
-			Contract.Requires<ArgumentNullException>(entity != null, "entity");
-			if (entity.Has<Blocker>()) {
-				ResetTransparency(entity.Get<Location>().Position);
-				ResetWalkable(entity.Get<Location>().Position);
-				entity.Get<Blocker>().WalkableChanged += FeatureWalkableChanged;
-				entity.Get<Blocker>().TransparencyChanged += FeatureTransparencyChanged;
-			}
+		public override bool IsWalkable(int x, int y) {
+			return IsWalkable(new Point(x, y));
 		}
 
-		private void FeatureWalkableChanged(Component sender, EventArgs e) {
-			Contract.Requires<ArgumentNullException>(sender != null, "sender");
-			Contract.Requires<ArgumentNullException>(e != null, "e");
-
-			var p = EntityManager[sender.OwnerUId].Get<Location>().Position;
-
-			ResetWalkable(p);
+		public override bool IsWalkable(Point v) {
+			return Cells[v.X, v.Y].Walkable;
 		}
 
-		private void ResetWalkable(Point p) {
-			if (GetTerrain(p.X, p.Y).Walkable) {
-				var entitiesAt = GetEntitiesAt(p, typeof(Blocker));
-				var isWalkable = entitiesAt.All(entity => entity.Get<Blocker>().Walkable);
-
-				SetWalkable(p.X, p.Y, isWalkable);
-			} else
-				SetWalkable(p.X, p.Y, false);
+		public override bool IsTransparent(Point v) {
+			return Cells[v.X, v.Y].Transparent;
 		}
 
-		private void FeatureTransparencyChanged(Component sender, EventArgs e) {
-			Contract.Requires<ArgumentNullException>(sender != null, "sender");
-			Contract.Requires<ArgumentNullException>(e != null, "e");
-
-			var p = EntityManager[sender.OwnerUId].Get<Location>().Position;
-
-			ResetTransparency(p);
+		public override IEnumerable<Entity> GetEntitiesAt(Point location) {
+			return GetEntities().Where(e => e.Get<Location>().Position == location);
 		}
 
-		private void ResetTransparency(Point p) {
-			if (GetTerrain(p.X, p.Y).Transparent) {
-				var entitiesAt = GetEntitiesAt(p, typeof(Blocker));
-				var isTransparent = entitiesAt.All(entity => entity.Get<Blocker>().Transparent);
-
-				SetTransparency(p.X, p.Y, isTransparent);
-			} else
-				SetTransparency(p.X, p.Y, false);
+		public override IEnumerable<Entity> GetEntities() {
+			return entities;
 		}
 	}
 }
