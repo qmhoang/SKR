@@ -143,10 +143,10 @@ namespace SKR.UI.Gameplay {
 										targetLocation =>
 										{
 											var level = entity.Get<Location>().Level;
-											var entitiesAtLocation = level.GetEntitiesAt(targetLocation, typeof(DefendComponent)).ToList();
+											var entitiesAtLocation = level.GetEntitiesAt(targetLocation).Where(e => e.Has<DefendComponent>());
 
-											if (entitiesAtLocation.Count > 0) {
-												if (entitiesAtLocation.Count == 1) {
+											if (entitiesAtLocation.Count() > 0) {
+												if (entitiesAtLocation.Count() == 1) {
 													Combat.RangeAttack(entity, weapon, entitiesAtLocation.First(), entitiesAtLocation.First().Get<DefendComponent>().GetRandomPart());
 												} else {
 													ParentApplication.Push(
@@ -238,7 +238,9 @@ namespace SKR.UI.Gameplay {
 				var ne = Item.Split(itemEntityFromInventory, amount);
 
 				var level = entityDropping.Get<Location>().Level;
-				var itemsInLevel = level.GetEntitiesAt(entityDropping.Get<Location>().Position, typeof(Item), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
+				var itemsInLevel = level.GetEntitiesAt(entityDropping.Get<Location>().Position).Where(e => e.Has<Item>() &&
+				                                                                                           e.Has<VisibleComponent>() &&
+				                                                                                           e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
 
 				if (itemsInLevel.Exists(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>())) {
 					itemsInLevel.First(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>()).Get<Item>().Amount += amount;
@@ -280,7 +282,7 @@ namespace SKR.UI.Gameplay {
 			Point newPosition = user.Get<Location>().Position + direction;
 
 			// we check for attackables
-			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newPosition, typeof(DefendComponent)).ToList();
+			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newPosition).Where(e => e.Has<DefendComponent>()).ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
 				var weapons = FilterEquippedItems<MeleeComponent>(user).ToList();
@@ -377,8 +379,9 @@ namespace SKR.UI.Gameplay {
 									                      location.Position,
 									                      p =>
 									                      	{
-									                      		var useables = location.Level.GetEntitiesAt(p, typeof(UseableFeature), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0);
-
+									                      		var useables = location.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
+									                      		                                                          e.Has<VisibleComponent>() &&
+									                      		                                                          e.Get<VisibleComponent>().VisibilityIndex > 0);									                      		
 									                      		if (useables.Count() > 1) {
 									                      			ParentApplication.Push(
 									                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
@@ -411,7 +414,11 @@ namespace SKR.UI.Gameplay {
 							var inventory = player.Get<ContainerComponent>();
 
 							// get all items that have a location (eg present on the map) that are at the location where are player is
-							var items = level.GetEntitiesAt(location.Position, typeof(Item), typeof(VisibleComponent)).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0 && (!inventory.Items.Contains(e))).ToList();
+							var items =
+									location.Level.GetEntitiesAt(location.Position).Where(e => e.Has<Item>() &&
+									                                                           e.Has<VisibleComponent>() &&
+									                                                           e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+									                                                           (!inventory.Items.Contains(e))).ToList();
 
 							if (items.Count() > 0)
 								ParentApplication.Push(new ItemWindow(false,

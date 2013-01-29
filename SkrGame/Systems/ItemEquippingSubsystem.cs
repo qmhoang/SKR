@@ -63,12 +63,12 @@ namespace SkrGame.Systems {
 			equipment.Get<Location>().PositionChanged += PositionChanged;
 		}
 
-		void PositionChanged(Component sender, EventArgs<Point> e) {
+		void PositionChanged(Component sender, PositionChangedEvent e) {
 			var equipment = GetEntity(sender);
 
 			foreach (var entity in equipment.Get<EquipmentComponent>().EquippedItems) {
 				if (entity.Has<Location>()) {
-					entity.Get<Location>().Position = e.Data;
+					entity.Get<Location>().Position = e.Current;
 				}
 			}
 		}

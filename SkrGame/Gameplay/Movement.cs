@@ -25,7 +25,7 @@ namespace SkrGame.Gameplay {
 			var level = entity.Get<Location>().Level;
 
 			// first we see if there are any entities that we "bump" into when we walk onto new location
-			var bumpablesAtNewLocation = level.GetEntitiesAt(newPosition, typeof(OnBump)).ToList();
+			var bumpablesAtNewLocation = level.GetEntitiesAt(newPosition).Where(e => e.Has<OnBump>());
 			bool blockedMovement = false;
 
 			foreach (var b in bumpablesAtNewLocation) {
@@ -48,7 +48,7 @@ namespace SkrGame.Gameplay {
 				entity.Get<ActionPoint>().ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
 
 				// check if we're near anything
-				var nearEntities = entity.Get<Location>().Level.EntityManager.Get(typeof(PassiveFeature)).ToList();
+				var nearEntities = entity.Get<Location>().Level.GetEntities().Where(e => e.Has<PassiveFeature>());
 
 				foreach (var e in nearEntities) {
 					e.Get<PassiveFeature>().Near(entity, e);

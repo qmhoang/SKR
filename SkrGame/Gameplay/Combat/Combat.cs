@@ -317,7 +317,7 @@ namespace SkrGame.Gameplay.Combat {
 					yield break;
 				}
 
-				var entitiesAt = currentLevel.GetEntitiesAt(location, typeof(DefendComponent)).ToList();
+				var entitiesAt = currentLevel.GetEntitiesAt(location).Where(e => e.Has<DefendComponent>()).ToList();
 				if (entitiesAt.Count() > 0) {					
 					foreach (var entity in entitiesAt) {
 						yield return entity;
@@ -338,9 +338,12 @@ namespace SkrGame.Gameplay.Combat {
 			damageResistance = 0;
 
 			if (defender.Has<EquipmentComponent>()) {
-				if (defender.Get<EquipmentComponent>().ContainSlot(bodyPart.Name)) {
-					var armorEntity = defender.Get<EquipmentComponent>().GetEquippedItemAt(bodyPart.Name);
-					if (armorEntity != null && armorEntity.Has<ArmorComponent>()) {
+				var equipment = defender.Get<EquipmentComponent>();
+
+				if (equipment.ContainSlot(bodyPart.Name) && equipment.IsSlotEquipped(bodyPart.Name)) {
+					var armorEntity = equipment.GetEquippedItemAt(bodyPart.Name);
+
+					if (armorEntity.Has<ArmorComponent>()) {
 						var armor = armorEntity.Get<ArmorComponent>();
 
 						if (armor.Defenses.ContainsKey(bodyPart.Name)) {
@@ -357,7 +360,6 @@ namespace SkrGame.Gameplay.Combat {
 						}
 					}
 				}
-
 			}
 
 			if (damageDealt > bodyPart.MaxHealth) {

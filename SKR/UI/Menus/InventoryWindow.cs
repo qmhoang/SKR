@@ -90,13 +90,22 @@ namespace SKR.UI.Menus {
 			int positionY = 0;
 			char letter = 'A';
 			foreach (var bodyPart in List) {
-				var item = equipment.GetEquippedItemAt(bodyPart);				
-
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", letter, bodyPart, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
 				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
-				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, equipment.IsSlotEquipped(bodyPart) ?
-					String.Format("{0}{1}", item.Get<Identifier>().Name, (item.Has<RangeComponent>() ? string.Format(" ({0}/{1})", item.Get<RangeComponent>().ShotsRemaining, item.Get<RangeComponent>().Shots) : "")) : 
-					"-");
+
+				if (equipment.IsSlotEquipped(bodyPart)) {
+					var item = equipment.GetEquippedItemAt(bodyPart);			
+					Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY,
+					                   String.Format("{0}{1}",
+					                                 item.Get<Identifier>().Name,
+					                                 (item.Has<RangeComponent>()
+					                                  		? string.Format(" ({0}/{1})",
+					                                  		                item.Get<RangeComponent>().ShotsRemaining, item.Get<RangeComponent>().Shots)
+					                                  		: String.Empty)));
+				} else {
+					Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, "-");
+				}
+
 
 				for (int i = 0; i < rect.Size.Width; i++) {
 					if ((letter - 'A') == MouseOverIndex)
