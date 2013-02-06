@@ -88,28 +88,42 @@ namespace SkrGame.Universe.Locations {
 			}
 
 			foreach (var entity in entities) {
-				entities_OnEntityAdd(entity);
+				InitializeBlocker(entity);
 			}
 
-			blockers.OnEntityAdd += entities_OnEntityAdd;
-			blockers.OnEntityRemove += entities_OnEntityRemove;
+			blockers.OnEntityAdd += InitializeBlocker;
+			blockers.OnEntityRemove += OnRemoveBlocker;
 		}
 
-		private void entities_OnEntityRemove(Entity entity) {
+		private void OnRemoveBlocker(Entity entity) {
 			var position = entity.Get<Location>().Position;
 			SetBlocker(position);
-			entity.Get<Location>().PositionChanged -= level_PositionChanged;
+			entity.Get<Location>().PositionChanged -= OnBlockerPositionChanged;
+			entity.Get<Blocker>().WalkableChanged -= OnblockerWalkableChanged;
+			entity.Get<Blocker>().TransparencyChanged -= OnBlockerTransparencyChanged;
 		}
 
-		private void entities_OnEntityAdd(Entity entity) {
+		private void InitializeBlocker(Entity entity) {
 			var position = entity.Get<Location>().Position;
 			SetBlocker(position);
-			entity.Get<Location>().PositionChanged += level_PositionChanged;
+			entity.Get<Location>().PositionChanged += OnBlockerPositionChanged;
+			entity.Get<Blocker>().WalkableChanged += OnblockerWalkableChanged;
+			entity.Get<Blocker>().TransparencyChanged += OnBlockerTransparencyChanged;
 		}
 
-		private void level_PositionChanged(Component sender, PositionChangedEvent e) {
+		private void OnBlockerTransparencyChanged(Component sender, EventArgs @event) {
+			var position = sender.Entity.Get<Location>().Position;
+			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Transparent);
+		}
+
+		private void OnblockerWalkableChanged(Component sender, EventArgs @event) {
+			var position = sender.Entity.Get<Location>().Position;
+			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Walkable);			
+		}
+
+		private void OnBlockerPositionChanged(Component sender, PositionChangedEvent e) {
 			SetBlocker(e.Current);
-			SetBlocker(e.Previous);
+			SetBlocker(e.Previous);			
 		}
 
 		private void SetBlocker(Point position) {

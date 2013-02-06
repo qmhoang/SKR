@@ -79,6 +79,19 @@ namespace SkrGame.Universe.Entities.Actors {
 			return itemContainer.Find(match);
 		}
 
+		public override void Receive(string message, EventArgs e) {
+			base.Receive(message, e);
+
+			if (message == "OnPositionChanged") {
+				var pe = (PositionChangedEvent) e;
+
+				foreach (var item in Items) {
+					if (item.Has<Location>())
+						item.Get<Location>().Position = pe.Current;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Add item into inventory
 		/// </summary>
@@ -105,6 +118,14 @@ namespace SkrGame.Universe.Entities.Actors {
 				itemContainer.Add(item);
 				OnItemAdded(new EventArgs<Entity>(item));
 
+				// make the item we just added invisible
+				if (item.Has<VisibleComponent>())
+					item.Get<VisibleComponent>().VisibilityIndex = -1;
+
+				// just in case, move the item to the entity's location
+				if (item.Has<Location>())
+					item.Get<Location>().Position = Entity.Get<Location>().Position;
+
 				return true;
 			}
 		}
@@ -119,10 +140,14 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			OnItemRemoved(new EventArgs<Entity>(item));
 			itemContainer.Remove(item);
-			
+
+			if (item.Has<VisibleComponent>()) {
+				item.Get<VisibleComponent>().Reset();
+			}
+
 			return true;
 		}
-		
+
 		public override Component Copy() {
 			var container = new ContainerComponent();
 
