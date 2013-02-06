@@ -30,7 +30,7 @@ namespace SkrGame.Universe.Factories {
 			Contract.Requires<ArgumentNullException>(user != null, "user");
 			Contract.Requires<ArgumentException>(door.Has<Opening>());
 			if (door.Get<Opening>().Status == Opening.OpeningStatus.Closed) {
-				Opening.Action(user, door);
+				door.Get<Opening>().Action(user);				
 				return OnBump.BumpResult.BlockMovement;
 			} else {
 				return OnBump.BumpResult.NormalMovement;
@@ -40,7 +40,7 @@ namespace SkrGame.Universe.Factories {
 		public static OnBump.BumpResult WindowOnBump(Entity user, Entity door) {
 			Contract.Requires<ArgumentNullException>(door != null, "door");
 			Contract.Requires<ArgumentNullException>(user != null, "user");
-			Opening.Action(user, door);
+			door.Get<Opening>().Action(user);
 			return OnBump.BumpResult.BlockMovement;
 		}
 
@@ -63,7 +63,12 @@ namespace SkrGame.Universe.Factories {
 						new OnBump(DoorOnBump),
 			            new UseableFeature(new List<UseableFeature.UseAction>
 			                               {
-			                               		new UseableFeature.UseAction("Use door", (user, featureEntity, action) => Opening.Action(user, featureEntity))
+			                               		new UseableFeature.UseAction("Use door", (user, featureEntity, action) =>
+			                               		                                         	{
+																								if (featureEntity.Has<Opening>())
+																									return featureEntity.Get<Opening>().Action(user);
+			                               		                                         		return ActionResult.Aborted;
+			                               		                                         	})
 			                               }));
 
 			ef.Inherits("WALL_BRICK_DARK_DOOR_HORZ", "Door",
@@ -89,7 +94,12 @@ namespace SkrGame.Universe.Factories {
 						new OnBump(WindowOnBump),
 						new UseableFeature(new List<UseableFeature.UseAction>
 						                   {
-			                               		new UseableFeature.UseAction("Use window", (user, featureEntity, action) => Opening.Action(user, featureEntity))
+			                               		new UseableFeature.UseAction("Use window", (user, featureEntity, action) =>
+			                               		                                           	{
+			                               		                                           		if (featureEntity.Has<Opening>())
+			                               		                                           			return featureEntity.Get<Opening>().Action(user);
+			                               		                                           		return ActionResult.Aborted;
+			                               		                                           	})
 			                               }));
 
 			ef.Inherits("WINDOW_HOUSE_VERT", "Window",

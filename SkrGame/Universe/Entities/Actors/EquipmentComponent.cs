@@ -81,6 +81,13 @@ namespace SkrGame.Universe.Entities.Actors {
 //			else
 //				removed = null;
 
+			// make the item we just added invisible
+			if (item.Has<VisibleComponent>())
+				item.Get<VisibleComponent>().VisibilityIndex = -1;
+
+			// just in case, move the item to the entity's location
+			if (item.Has<Location>())
+				item.Get<Location>().Position = Entity.Get<Location>().Position;
 
 			equippedItems.Add(slot, item);			
 		}
@@ -88,7 +95,6 @@ namespace SkrGame.Universe.Entities.Actors {
 		public bool Unequip(string slot) {
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
 			Contract.Ensures(!equippedItems.ContainsKey(slot), "item is still equipped");
-
 
 			if (!equippedItems.ContainsKey(slot)) {
 				return false;
@@ -100,7 +106,24 @@ namespace SkrGame.Universe.Entities.Actors {
 				
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
 
+				if (old.Has<VisibleComponent>()) {
+					old.Get<VisibleComponent>().Reset();
+				}
+
 				return true;
+			}
+		}
+
+		public override void Receive(string message, EventArgs e) {
+			base.Receive(message, e);
+
+			if (message == "OnPositionChanged") {
+				var pe = (PositionChangedEvent) e;
+
+				foreach (var item in EquippedItems) {
+					if (item.Has<Location>())
+						item.Get<Location>().Position = pe.Current;
+				}
 			}
 		}
 

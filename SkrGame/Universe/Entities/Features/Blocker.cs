@@ -1,4 +1,5 @@
 using System;
+using DEngine.Components;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {

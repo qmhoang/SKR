@@ -118,6 +118,7 @@
     <Compile Include="Systems\ActionPointSystem.cs" />
     <Compile Include="Systems\AISystem.cs" />
     <Compile Include="Core\LongAction.cs" />
+    <Compile Include="Systems\BlockerSubsystem.cs" />
     <Compile Include="Systems\OpeningSpriteSubsystem.cs" />
     <Compile Include="Systems\ItemContainerSubsystem.cs" />
     <Compile Include="Systems\ItemEquippingSubsystem.cs" />

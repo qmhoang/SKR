@@ -18,7 +18,7 @@ namespace SkrGame.Universe.Entities.Features {
 		private OpeningStatus status;
 		public OpeningStatus Status {
 			get { return status; }
-			set {
+			private set {
 				status = value;
 				OnUsed(new EventArgs<OpeningStatus>(status));
 			}
@@ -70,40 +70,37 @@ namespace SkrGame.Universe.Entities.Features {
 			return opening;
 		}
 
-		public static ActionResult Action(Entity user, Entity entry) {
+		public ActionResult Action(Entity user) {
 			Contract.Requires<ArgumentNullException>(user != null, "user");
-			Contract.Requires<ArgumentNullException>(entry != null, "entry");
-			Contract.Requires<ArgumentException>(entry.Has<Opening>());
 			Contract.Requires<ArgumentException>(user.Has<ActionPoint>());
-			var d = entry.Get<Opening>();
 			
-			if (d.Status == OpeningStatus.Closed) {
-				if (entry.Has<Blocker>())
-					entry.Get<Blocker>().Transparent = true;
-					entry.Get<Blocker>().Walkable = d.WalkableOpened;
-				if (entry.Has<Sprite>())
-					entry.Get<Sprite>().Asset = d.OpenedAsset;
+			if (Status == OpeningStatus.Closed) {
+				if (Entity.Has<Blocker>())
+					Entity.Get<Blocker>().Transparent = true;
+				Entity.Get<Blocker>().Walkable = WalkableOpened;
+				if (Entity.Has<Sprite>())
+					Entity.Get<Sprite>().Asset = OpenedAsset;
 
-				d.Status = OpeningStatus.Opened;
-				user.Get<ActionPoint>().ActionPoints -= d.APCost;
+				Status = OpeningStatus.Opened;
+				user.Get<ActionPoint>().ActionPoints -= APCost;
 
-				World.Instance.AddMessage(String.Format("{0} {1}.", Identifier.GetNameOrId(user), d.OpenedDescription));
+				World.Instance.AddMessage(String.Format("{0} {1}.", Identifier.GetNameOrId(user), OpenedDescription));
 				return ActionResult.Success;
-			} else if (d.Status == OpeningStatus.Opened) {
-				if (entry.Get<Location>().Level.IsWalkable(entry.Get<Location>().Position) || !d.WalkableOpened) {
-					if (entry.Has<Blocker>())
-						entry.Get<Blocker>().Transparent = entry.Get<Blocker>().Walkable = false;
-					if (entry.Has<Sprite>())
-						entry.Get<Sprite>().Asset = d.ClosedAsset;
+			} else if (Status == OpeningStatus.Opened) {
+				if (Entity.Get<Location>().Level.IsWalkable(Entity.Get<Location>().Position) || !WalkableOpened) {
+					if (Entity.Has<Blocker>())
+						Entity.Get<Blocker>().Transparent = Entity.Get<Blocker>().Walkable = false;
+					if (Entity.Has<Sprite>())
+						Entity.Get<Sprite>().Asset = ClosedAsset;
 
-					d.Status = OpeningStatus.Closed;
-					user.Get<ActionPoint>().ActionPoints -= d.APCost;
+					Status = OpeningStatus.Closed;
+					user.Get<ActionPoint>().ActionPoints -= APCost;
 
-					World.Instance.AddMessage(String.Format("{0} {1}.", Identifier.GetNameOrId(user), d.ClosedDescription));
+					World.Instance.AddMessage(String.Format("{0} {1}.", Identifier.GetNameOrId(user), ClosedDescription));
 					return ActionResult.Success;
 				} else {
-					user.Get<ActionPoint>().ActionPoints -= d.APCost;
-					World.Instance.AddMessage(String.Format("{0} tries to {1}, but can't.", Identifier.GetNameOrId(user), d.ClosedDescription));
+					user.Get<ActionPoint>().ActionPoints -= APCost;
+					World.Instance.AddMessage(String.Format("{0} tries to {1}, but can't.", Identifier.GetNameOrId(user), ClosedDescription));
 					return ActionResult.Failed;					
 				}				
 			}

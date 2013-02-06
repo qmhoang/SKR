@@ -27,7 +27,7 @@ namespace SkrGame.Core {
 					m.Entity.Remove<LongAction>();
 					ActionComplete(m.Entity);
 				}
-			}			
+			}
 		}
 
 		public override Component Copy() {
