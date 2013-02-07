@@ -28,7 +28,7 @@ namespace SKR.UI.Menus {
 			}
 		}
 
-		protected override void MovePosition(Point direction) {
+		protected override void MovePosition(Direction direction) {
 			base.MovePosition(direction);
 			if (v != null && ContainsControl(v))
 				RemoveControl(v);
