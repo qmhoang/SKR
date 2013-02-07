@@ -116,12 +116,7 @@
     <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\ActionPointSystem.cs" />
-    <Compile Include="Systems\AISystem.cs" />
     <Compile Include="Core\LongAction.cs" />
-    <Compile Include="Systems\BlockerSubsystem.cs" />
-    <Compile Include="Systems\OpeningSpriteSubsystem.cs" />
-    <Compile Include="Systems\ItemContainerSubsystem.cs" />
-    <Compile Include="Systems\ItemEquippingSubsystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Actors\Actor.cs" />
@@ -156,6 +151,9 @@
       <Project>{FAA2CEF2-1844-4043-A582-AD4CDE346ADD}</Project>
       <Name>DEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Universe\Entities\Actions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

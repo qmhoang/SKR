@@ -478,8 +478,25 @@ namespace SKR.UI.Gameplay {
 												MapPanel,
 												GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'z') {
-							player.Add(new LongAction(500, e => World.Instance.AddMessage(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
-							player.Get<ActionPoint>().ActionPoints -= 100;
+							ParentApplication.Push(
+									new LookWindow(
+											location.Position,
+											delegate(Point p)
+												{
+													var entitiesAtLocation = location.Level.GetEntitiesAt(p);
+													foreach (var entity in entitiesAtLocation) {
+														if (entity.Has<Blocker>()) {
+															entity.Get<Blocker>().Walkable = !entity.Get<Blocker>().Walkable;
+															entity.Get<Blocker>().Transparent = !entity.Get<Blocker>().Transparent;
+														}
+													}
+
+													return "";
+												},
+											MapPanel,
+											GameplayWindow.PromptTemplate));
+//							player.Add(new LongAction(500, e => World.Instance.AddMessage(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
+//							player.Get<ActionPoint>().ActionPoints -= 100;
 						}
 						
 						break;

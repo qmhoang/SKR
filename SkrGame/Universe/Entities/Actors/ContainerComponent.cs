@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using DEngine.Components;
+using DEngine.Components.Actions;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Systems;
@@ -13,7 +14,7 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class ContainerComponent : Component {
+	public class ContainerComponent : Component, IPositionChanged {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly List<Entity> itemContainer;
@@ -77,19 +78,6 @@ namespace SkrGame.Universe.Entities.Actors {
 		public Entity GetItem(Predicate<Entity> match) {
 			Contract.Requires<ArgumentNullException>(match != null, "match");
 			return itemContainer.Find(match);
-		}
-
-		public override void Receive(string message, EventArgs e) {
-			base.Receive(message, e);
-
-			if (message == "OnPositionChanged") {
-				var pe = (PositionChangedEvent) e;
-
-				foreach (var item in Items) {
-					if (item.Has<Location>())
-						item.Get<Location>().Position = pe.Current;
-				}
-			}
 		}
 
 		/// <summary>
@@ -162,6 +150,13 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			
 			return container;
+		}
+
+		public void Move(Point prev, Point curr) {
+			foreach (var item in Items) {
+				if (item.Has<Location>())
+					item.Get<Location>().Position = curr;
+			}
 		}
 	}
 }
