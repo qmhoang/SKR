@@ -153,28 +153,28 @@ namespace SKR.UI.Menus {
 			base.OnKeyPressed(key);
 
 			if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
-				actionPosition(origin + Point.North);
+				actionPosition(origin + Direction.North);
 
 			if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
-				actionPosition(origin + Point.South);
+				actionPosition(origin + Direction.South);
 
 			if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
-				actionPosition(origin + Point.West);
+				actionPosition(origin + Direction.West);
 
 			if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
-				actionPosition(origin + Point.East);
+				actionPosition(origin + Direction.East);
 
 			if (key.KeyCode == TCODKeyCode.KeypadSeven)
-				actionPosition(origin + Point.Northwest);
+				actionPosition(origin + Direction.Northwest);
 
 			if (key.KeyCode == TCODKeyCode.KeypadNine)
-				actionPosition(origin + Point.Northeast);
+				actionPosition(origin + Direction.Northeast);
 
 			if (key.KeyCode == TCODKeyCode.KeypadOne)
-				actionPosition(origin + Point.Southwest);
+				actionPosition(origin + Direction.Southwest);
 
 			if (key.KeyCode == TCODKeyCode.KeypadThree)
-				actionPosition(origin + Point.Southeast);
+				actionPosition(origin + Direction.Southeast);
 
 			ExitWindow();
 		}
@@ -221,7 +221,7 @@ namespace SKR.UI.Menus {
 													  TCODSystem.getElapsedMilli() % 1000 > 500 ? TCODBackgroundFlag.Lighten : TCODBackgroundFlag.None);
 		}
 
-		protected virtual void MovePosition(Point direction) {
+		protected virtual void MovePosition(Direction direction) {
 			SelectedPosition += direction;
 		}		
 
@@ -229,28 +229,28 @@ namespace SKR.UI.Menus {
 			base.OnKeyPressed(key);
 
 			if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
-				MovePosition(Point.North);
+				MovePosition(Direction.North);
 
 			if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
-				MovePosition(Point.South);
+				MovePosition(Direction.South);
 
 			if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
-				MovePosition(Point.West);
+				MovePosition(Direction.West);
 
 			if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
-				MovePosition(Point.East);
+				MovePosition(Direction.East);
 
 			if (key.KeyCode == TCODKeyCode.KeypadSeven)
-				MovePosition(Point.Northwest);
+				MovePosition(Direction.Northwest);
 
 			if (key.KeyCode == TCODKeyCode.KeypadNine)
-				MovePosition(Point.Northeast);
+				MovePosition(Direction.Northeast);
 
 			if (key.KeyCode == TCODKeyCode.KeypadOne)
-				MovePosition(Point.Southwest);
+				MovePosition(Direction.Southwest);
 
 			if (key.KeyCode == TCODKeyCode.KeypadThree)
-				MovePosition(Point.Southeast);
+				MovePosition(Direction.Southeast);
 
 			if (key.KeyCode == TCODKeyCode.Escape)
 				ExitWindow();
@@ -317,28 +317,28 @@ namespace SKR.UI.Menus {
 			base.OnKeyPressed(key);
 
 			if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
-				selectedPosition += Point.North;
+				selectedPosition += Direction.North;
 
 			if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
-				selectedPosition += Point.South;
+				selectedPosition += Direction.South;
 
 			if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
-				selectedPosition += Point.West;
+				selectedPosition += Direction.West;
 
 			if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
-				selectedPosition += Point.East;
+				selectedPosition += Direction.East;
 
 			if (key.KeyCode == TCODKeyCode.KeypadSeven)
-				selectedPosition += Point.Northwest;
+				selectedPosition += Direction.Northwest;
 
 			if (key.KeyCode == TCODKeyCode.KeypadNine)
-				selectedPosition += Point.Northeast;
+				selectedPosition += Direction.Northeast;
 
 			if (key.KeyCode == TCODKeyCode.KeypadOne)
-				selectedPosition += Point.Southwest;
+				selectedPosition += Direction.Southwest;
 
 			if (key.KeyCode == TCODKeyCode.KeypadThree)
-				selectedPosition += Point.Southeast;
+				selectedPosition += Direction.Southeast;
 
 			if (key.KeyCode == TCODKeyCode.Escape)
 				ExitWindow();

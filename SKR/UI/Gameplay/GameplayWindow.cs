@@ -32,7 +32,6 @@ namespace SKR.UI.Gameplay {
 	public class GameplayWindow : Window {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-
 		private readonly World world;
 
 		public MapPanel MapPanel { get; private set; }
@@ -269,7 +268,7 @@ namespace SKR.UI.Gameplay {
 
 		}
 
-		private void Move(Entity user, Point direction) {
+		private void Move(Entity user, Direction direction) {
 			Contract.Requires<ArgumentNullException>(user != null, "user");
 
 			var result = Movement.BumpDirection(user, direction);
@@ -312,34 +311,34 @@ namespace SKR.UI.Gameplay {
 				switch (keyData.KeyCode) {
 					case TCODKeyCode.Up:
 					case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
-						Move(player, Point.North);
+						Move(player, Direction.North);
 						break;
 					case TCODKeyCode.Down:
 					case TCODKeyCode.KeypadTwo:
-						Move(player, Point.South);
+						Move(player, Direction.South);
 						break;
 					case TCODKeyCode.Left:
 					case TCODKeyCode.KeypadFour:
-						Move(player, Point.West);
+						Move(player, Direction.West);
 						break;
 					case TCODKeyCode.KeypadFive:
 						Wait(player);
 						break;
 					case TCODKeyCode.Right:
 					case TCODKeyCode.KeypadSix:
-						Move(player, Point.East);
+						Move(player, Direction.East);
 						break;
 					case TCODKeyCode.KeypadSeven:
-						Move(player, Point.Northwest);
+						Move(player, Direction.Northwest);
 						break;
 					case TCODKeyCode.KeypadNine:
-						Move(player, Point.Northeast);
+						Move(player, Direction.Northeast);
 						break;
 					case TCODKeyCode.KeypadOne:
-						Move(player, Point.Southwest);
+						Move(player, Direction.Southwest);
 						break;
 					case TCODKeyCode.KeypadThree:
-						Move(player, Point.Southeast);
+						Move(player, Direction.Southeast);
 						break;
 					default:
 					{

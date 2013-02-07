@@ -52,7 +52,7 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 
 					if (pf.Walk(ref nx, ref ny, false)) {
 						var newPosition = new Point(nx, ny);
-						Point dir = newPosition - position;
+						Direction dir = Direction.Towards(newPosition - position);
 
 						var result = Movement.BumpDirection(Entity, dir);
 

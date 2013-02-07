@@ -17,7 +17,7 @@ namespace SkrGame.Gameplay {
 	public static class Movement {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static bool BumpDirection(Entity entity, Point direction) {
+		public static bool BumpDirection(Entity entity, Direction direction) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 
 			Point newPosition = entity.Get<Location>().Position + direction;
