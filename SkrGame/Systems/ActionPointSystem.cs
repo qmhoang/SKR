@@ -28,13 +28,15 @@ namespace SkrGame.Systems {
 						var entityAP = entity.Get<ActionPoint>();						
 						entityAP.ActionPoints += entityAP.ActionPointPerTurn;
 						if (entityAP.Updateable) {
-							entity.Broadcast("Update", new UpdateEvent(entity, entityAP.ActionPoints - playerAP.ActionPoints));
+							entity.Broadcast<IUpdateable>(c => c.Update());
+//							entity.Broadcast("Update", new UpdateEvent(entity, entityAP.ActionPoints - playerAP.ActionPoints));
 						}
 					}
 				}
 
 				playerAP.ActionPoints += playerAP.ActionPointPerTurn;
-				player.Broadcast("Update", new UpdateEvent(player, playerAP.ActionPointPerTurn));
+				player.Broadcast<IUpdateable>(c => c.Update());
+//				player.Broadcast("Update", new UpdateEvent(player, playerAP.ActionPointPerTurn));
 			}
 		}
 	}

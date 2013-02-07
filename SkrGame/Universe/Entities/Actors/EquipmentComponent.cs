@@ -5,13 +5,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 using DEngine.Components;
+using DEngine.Components.Actions;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class EquipmentComponent : Component {
+	public class EquipmentComponent : Component, IPositionChanged {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly Dictionary<string, Entity> equippedItems;
@@ -114,19 +115,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			}
 		}
 
-		public override void Receive(string message, EventArgs e) {
-			base.Receive(message, e);
-
-			if (message == "OnPositionChanged") {
-				var pe = (PositionChangedEvent) e;
-
-				foreach (var item in EquippedItems) {
-					if (item.Has<Location>())
-						item.Get<Location>().Position = pe.Current;
-				}
-			}
-		}
-
 		[Pure]
 		public bool IsSlotEquipped(string slot) {
 			return equippedItems.ContainsKey(slot);
@@ -162,6 +150,13 @@ namespace SkrGame.Universe.Entities.Actors {
 				equipment.ItemUnequipped = (ComponentEventHandler<EventArgs<string, Entity>>)ItemUnequipped.Clone();
 
 			return equipment;
+		}
+
+		public void Move(Point prev, Point curr) {
+			foreach (var item in EquippedItems) {
+				if (item.Has<Location>())
+					item.Get<Location>().Position = curr;
+			}
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using NUnit.Framework;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
@@ -107,6 +108,54 @@ namespace SKRTests.Components {
 
 			equipment.Unequip("slot1");
 			Assert.IsFalse(equipment.IsSlotEquipped("slot1"));
+		}
+
+		[Test]
+		public void TestMove() {
+			equipment.Equip("slot1", slot1item0);
+			equipment.Equip("slot2", slot2item0);
+
+			equipment.EquippedItems.Each(e => Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position));
+			
+			var p1 = new Point(4, 8);
+			entity.Get<Location>().Position = p1;
+
+			Assert.AreEqual(p1, entity.Get<Location>().Position);
+			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
+				Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position);
+			}
+
+			var p2 = new Point(9, -8);
+			entity.Get<Location>().Position = p2;
+
+			Assert.AreEqual(p2, entity.Get<Location>().Position);
+			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
+				Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position);
+			}
+		}
+
+
+		[Test]
+		public void TestUnequippedMove() {
+			equipment.Equip("slot1", slot1item0);
+			equipment.Equip("slot2", slot2item0);
+
+			var loc = new Point(0, 3812);
+			entity.Get<Location>().Position = loc;
+
+			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
+				Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position);
+			}
+
+
+			entity.Get<EquipmentComponent>().Unequip("slot2");
+
+			entity.Get<Location>().Position = new Point(51, -9);
+			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
+				Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position);
+			}
+
+			Assert.AreEqual(slot2item0.Get<Location>().Position, loc);
 		}
 
 		[Test]
