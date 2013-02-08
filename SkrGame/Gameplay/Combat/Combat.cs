@@ -123,7 +123,7 @@ namespace SkrGame.Gameplay.Combat {
 			var melee = weapon.Get<MeleeComponent>();			
 			//apply skill
 			if (attacker.Has<Actor>()) {
-				hitBonus += attacker.Get<Actor>().GetSkill(melee.Skill);				
+				hitBonus += attacker.Get<Person>().GetSkill(melee.Skill);				
 			} else {
 				hitBonus += World.MEAN;
 			}
@@ -140,37 +140,37 @@ namespace SkrGame.Gameplay.Combat {
 
 				Combat.Damage(damage, melee.Penetration, melee.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
-				if (World.Instance.Player == attacker) {
-					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
-				} else {
-					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
-				}
+//				if (World.Instance.Player == attacker) {
+//					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
+//				} else {
+//					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
+//				}
 
 
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {
-				if (World.Instance.Player == attacker) {
-					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
-					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-				} else {
-					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
-					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-				}
+//				if (World.Instance.Player == attacker) {
+//					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
+//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+//				} else {
+//					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
+//					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+//				}
 
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
-				if (World.Instance.Player == attacker) {
-					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-				} else {
-					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-				}
+//				if (World.Instance.Player == attacker) {
+//					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+//				} else {
+//					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+//					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+//				}
 				
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Dodge));
@@ -202,14 +202,14 @@ namespace SkrGame.Gameplay.Combat {
 
 			//apply skill
 			if (attacker.Has<Actor>()) {
-				hitBonus += attacker.Get<Actor>().GetSkill(weapon.Skill);
+				hitBonus += attacker.Get<Person>().GetSkill(weapon.Skill);
 			} else {
 				hitBonus += World.MEAN;
 			}
 
 			if (weapon.ShotsRemaining <= 0) {
-				World.Instance.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
-				                                        attackerName));
+//				World.Instance.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
+//				                                        attackerName));
 				attacker.Get<ActionPoint>().ActionPoints -= weapon.APToAttack;
 				return ActionResult.Failed;
 			}
@@ -244,23 +244,23 @@ namespace SkrGame.Gameplay.Combat {
 					int damageResistance, realDamage;
 
 					Combat.Damage(weapon.Damage.Roll(), weapon.Penetration, weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
-
-					World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                                        attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
+//
+//					World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+//					                                        attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Hit, damage,
 					                                         damageResistance, realDamage));
 					return ActionResult.Success;
 				} else if (result == CombatEventResult.Miss) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
-																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+//						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
+//																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted));
 				} else if (result == CombatEventResult.Dodge) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+//						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+//																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Dodge));
 				}
@@ -269,7 +269,7 @@ namespace SkrGame.Gameplay.Combat {
 
 			// todo drop ammo casing
 
-			World.Instance.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
+//			World.Instance.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
 			return ActionResult.Failed;
 		}
 
@@ -293,9 +293,9 @@ namespace SkrGame.Gameplay.Combat {
 				weapon.ShotsRemaining = 0;
 				droppedAmmo.Get<VisibleComponent>().Reset();
 
-				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
+//				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
 			} else {
-				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
+//				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
 			}
 
 			if (ammo.StackType == StackType.Hard) {
@@ -309,7 +309,7 @@ namespace SkrGame.Gameplay.Combat {
 						user.Get<ContainerComponent>().Remove(ammoEntity);
 					}
 
-					World.Instance.EntityManager.Remove(ammoEntity);
+//					World.Instance.EntityManager.Remove(ammoEntity);
 				}
 			}
 
@@ -325,26 +325,27 @@ namespace SkrGame.Gameplay.Combat {
 		public const double RANGE_PENALTY_TILE_OCCUPIED = -World.MEAN * 4 / 3;
 
 		public static IEnumerable<Entity> GetTargetsOnPath(Point start, Point end) {
-			var currentLevel = World.Instance.CurrentLevel;
+//			var currentLevel = World.Instance.CurrentLevel;
 
-			if (!currentLevel.IsWalkable(start))
-				throw new ArgumentException("starting point has to be walkable", "start");
+//			if (!currentLevel.IsWalkable(start))
+//				throw new ArgumentException("starting point has to be walkable", "start");
 
 			var pointsOnPath = Bresenham.GeneratePointsFromLine(start, end);
 
-			foreach (var location in pointsOnPath) {
-				if (!currentLevel.IsWalkable(location)) {
-					Logger.InfoFormat("We hit a location:({0}) where it is not walkable.", location);
-					yield break;
-				}
-
-				var entitiesAt = currentLevel.GetEntitiesAt(location).Where(e => e.Has<DefendComponent>()).ToList();
-				if (entitiesAt.Count() > 0) {					
-					foreach (var entity in entitiesAt) {
-						yield return entity;
-					}
-				}
-			}
+//			foreach (var location in pointsOnPath) {
+//				if (!currentLevel.IsWalkable(location)) {
+//					Logger.InfoFormat("We hit a location:({0}) where it is not walkable.", location);
+//					yield break;
+//				}
+//
+//				var entitiesAt = currentLevel.GetEntitiesAt(location).Where(e => e.Has<DefendComponent>()).ToList();
+//				if (entitiesAt.Count() > 0) {					
+//					foreach (var entity in entitiesAt) {
+//						yield return entity;
+//					}
+//				}
+//			}
+			yield return null;
 		}
 
 		public static void Damage(int damage, double penetration, DamageType type, Entity defender, DefendComponent.AttackablePart bodyPart, out int damageResistance, out int damageDealt) {

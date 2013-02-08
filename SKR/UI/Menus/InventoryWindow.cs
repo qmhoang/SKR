@@ -13,30 +13,34 @@ using Ogui.UI;
 using SKR.Universe;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Entities.Items.Components;
 using libtcod;
 
 namespace SKR.UI.Menus {
+	public class InventoryWindowTemplate : ListWindowTemplate<string> {
+		
+	}
+
 	public class InventoryWindow : ListWindow<string> {
 		private int bodyPartWidth;
 		private ContainerComponent inventory;
 		private EquipmentComponent equipment;
 
 		private Rect sizeList;
-
+		
 		protected override Rect ListRect {
 			get { return sizeList; }
 		}
 
-		public InventoryWindow(ListWindowTemplate<string> template)
+		public InventoryWindow(InventoryWindowTemplate template)
 			: base(null, template) {
 			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires<ArgumentNullException>(template.Items != null, "template.Items");
+			Contract.Requires<ArgumentNullException>(template.World != null, "player");			
 
-			inventory = World.Instance.Player.Get<ContainerComponent>();
-			equipment = World.Instance.Player.Get<EquipmentComponent>();
+			inventory = template.World.Player.Get<ContainerComponent>();
+			equipment = template.World.Player.Get<EquipmentComponent>();
 			bodyPartWidth = 25; // todo replace to code            
 			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
@@ -53,22 +57,22 @@ namespace SKR.UI.Menus {
 			} else {
 				var items = inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().Slots.Contains(slot)).ToList();
 				if (items.Count > 0)
-					ParentApplication.Push(new ItemWindow(true,
-					                                      new ListWindowTemplate<Entity>
+					ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
 					                                      {
 					                                      		Size = Size,
 					                                      		IsPopup = IsPopup,
 					                                      		HasFrame = true,
 					                                      		Items = items,
-					                                      },
-					                                      delegate(Entity i)
-					                                      	{
-					                                      		inventory.Remove(i);
-					                                      		equipment.Equip(slot, i);
-					                                      	}));
+					                                      		World = World,
+					                                      		SelectSingleItem = true,
+					                                      		ItemSelected = delegate(Entity i)
+					                                      		               	{
+					                                      		               		inventory.Remove(i);
+					                                      		               		equipment.Equip(slot, i);
+					                                      		               	},
+					                                      }));					
 				else
-					World.Instance.Log.Normal("No items in inventory that go there.");
-
+					World.Log.Normal("No items in inventory that go there.");				
 			}
 
 		}

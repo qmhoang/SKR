@@ -10,14 +10,12 @@ using Ogui.UI;
 using SKR.Universe;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Locations;
 using libtcod;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SKR.UI.Gameplay {
 	public class MapPanel : Panel {
-		
 		internal Point ViewOffset { get; private set; }
 		private AssetsManager assets;
 
@@ -25,14 +23,18 @@ namespace SKR.UI.Gameplay {
 		private Entity player;
 		private Point oldPos;
 
-		public MapPanel(EntityManager manager, AssetsManager assetsManager, PanelTemplate template)
+		public World World { get; private set; }
+
+		public MapPanel(World world, AssetsManager assetsManager, PanelTemplate template)
 				: base(template) {			
 			ViewOffset = new Point(0, 0);
 			assets = assetsManager;
 
-			entities = manager.Get(typeof(Location), typeof(Sprite), typeof(VisibleComponent));
+			World = world;
+			
+			entities = world.EntityManager.Get(typeof(Location), typeof(Sprite), typeof(VisibleComponent));
 
-			player = World.Instance.Player;
+			player = world.Player;
 			var location = player.Get<Location>();
 			oldPos = location.Position;			
 		}

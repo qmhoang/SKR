@@ -7,7 +7,6 @@ using SkrGame.Core.ComponentMessages;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.NPC.AI;
-using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Systems {
@@ -15,9 +14,9 @@ namespace SkrGame.Systems {
 		private FilteredCollection entities;
 		private Entity player;
 
-		public ActionPointSystem(EntityManager entityManager) {
+		public ActionPointSystem(Entity player, EntityManager entityManager) {
 			entities = entityManager.Get(typeof(ActionPoint));
-			player = World.Instance.Player;
+			this.player = player;
 		}
 
 		public void Update() {

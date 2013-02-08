@@ -54,8 +54,9 @@ namespace SkrGame.Gameplay {
 					e.Get<PassiveFeature>().Near(entity, e);
 				}
 
-			} else
-				World.Instance.Log.Normal("There is something in the way.");
+			} else {
+				//				World.Instance.Log.Normal("There is something in the way.");
+			}
 		}
 
 		public static void Wait(Entity e) {

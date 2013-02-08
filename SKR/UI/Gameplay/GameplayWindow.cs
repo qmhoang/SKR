@@ -10,7 +10,6 @@ using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
 using Ogui.UI;
-using SKR.UI.Gameplay.Systems;
 using SKR.UI.Menus;
 using SKR.Universe;
 using SkrGame.Core;
@@ -40,19 +39,19 @@ namespace SKR.UI.Gameplay {
 		public LogPanel LogPanel { get; private set; }
 		public AssetsManager AssetsManager { get; private set; }
 
-		public static WindowTemplate PromptTemplate;
+		public static PromptWindowTemplate PromptTemplate;
 
 		private Entity player;
 		
 		private EntityManager manager;
 
-		public GameplayWindow(EntityManager manager, WindowTemplate template)
+		public GameplayWindow(World world, WindowTemplate template)
 				: base(template) {
-			world = World.Instance;
+			this.world = world;
 			AssetsManager = new AssetsManager();
 
-			this.manager = manager;
-			player = World.Instance.Player;
+			this.manager = world.EntityManager;
+			player = world.Player;
 		}
 
 		protected override void OnSettingUp() {
@@ -66,7 +65,7 @@ namespace SKR.UI.Gameplay {
 							TopLeftPos = new Point(0, 0),
 					};
 
-			MapPanel = new MapPanel(manager, AssetsManager, mapTemplate);
+			MapPanel = new MapPanel(world, AssetsManager, mapTemplate);
 
 			AddControl(MapPanel);
 
@@ -78,14 +77,14 @@ namespace SKR.UI.Gameplay {
 					};
 			statusTemplate.AlignTo(LayoutDirection.East, mapTemplate);
 
-			StatusPanel = new StatusPanel(manager, statusTemplate);
+			StatusPanel = new StatusPanel(world.Player, statusTemplate);
 
 			AddControl(StatusPanel);
 
 			var logTemplate = new LogPanelTemplate()
 			                       {
 			                       		HasFrame = true,
-			                       		Log = World.Instance.Log,
+			                       		Log = world.Log,
 			                       		Size = new Size(Size.Width, Size.Height - mapTemplate.Size.Height),
 			                       		TopLeftPos = mapTemplate.CalculateRect().BottomLeft.Shift(0, 1)
 			                       };
@@ -93,15 +92,15 @@ namespace SKR.UI.Gameplay {
 			AddControl(LogPanel);
 
 			PromptTemplate =
-					new WindowTemplate
+					new PromptWindowTemplate
 					{
 							HasFrame = false,
 							IsPopup = true,
 							TopLeftPos = logTemplate.TopLeftPos.Shift(1, 1),
+							Log = world.Log,
 							Size = new Size(Size.Width - 2, Size.Height - mapTemplate.Size.Height - 2)
 					};
 
-			AddManager(new PlayerMovementSystem(manager));
 		}
 
 		private IEnumerable<Entity> FilterEquippedItems<T>(Entity entity) where T : DEngine.Entities.Component {
@@ -153,7 +152,7 @@ namespace SKR.UI.Gameplay {
 																							   GameplayWindow.PromptTemplate));
 												}
 											} else {
-												World.Instance.Log.Normal("Nothing there to shoot.");
+												world.Log.Normal("Nothing there to shoot.");
 											}
 										},
 										MapPanel,
@@ -173,7 +172,7 @@ namespace SKR.UI.Gameplay {
 			} else if (ammos.Count == 1)
 				Combat.ReloadWeapon(user, weapon, ammos.First());
 			else
-				World.Instance.Log.Normal("No possible ammo for selected weapon.");
+				world.Log.Normal("No possible ammo for selected weapon.");
 		}
 
 		private void Wait(Entity entity) {
@@ -261,7 +260,7 @@ namespace SKR.UI.Gameplay {
 			} else if (actions.Count == 1) {
 				actions.First().Use(user, thing, actions.First());
 			} else {
-				World.Instance.Log.Normal(String.Format("No possible action on {0}", Identifier.GetNameOrId(thing)));
+				world.Log.Normal(String.Format("No possible action on {0}", Identifier.GetNameOrId(thing)));
 			}
 
 		}
@@ -292,7 +291,7 @@ namespace SKR.UI.Gameplay {
 				} else if (weapons.Count == 1)
 					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
 				else {
-					World.Instance.Log.Normal("No possible way of attacking.");
+					world.Log.Normal("No possible way of attacking.");
 					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
 				}
 
@@ -353,7 +352,7 @@ namespace SKR.UI.Gameplay {
 							} else if (weapons.Count == 1) {
 								SelectRangeTarget(player, weapons.First());
 							} else {
-								World.Instance.Log.Normal("No possible way of shooting target.");
+								world.Log.Normal("No possible way of shooting target.");
 							}
 
 						} else if (keyData.Character == 'r') {
@@ -368,7 +367,7 @@ namespace SKR.UI.Gameplay {
 							} else if (weapons.Count == 1) {
 								Reload(player, weapons.First());
 							} else {
-								World.Instance.Log.Normal("No weapons to reload.");
+								world.Log.Normal("No weapons to reload.");
 							}
 						} else if (keyData.Character == 'u') {
 							ParentApplication.Push(
@@ -389,23 +388,24 @@ namespace SKR.UI.Gameplay {
 									                      		} else if (useables.Count() == 1) {
 									                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
 									                      		} else {
-									                      			World.Instance.Log.Normal("Nothing there to use.");
+									                      			world.Log.Normal("Nothing there to use.");
 									                      		}
 									                      	},
 									                      GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'd') {
 							var inventory = player.Get<ContainerComponent>();
 							if (inventory.Count > 0)
-								ParentApplication.Push(new ItemWindow(false,
-								                                      new ListWindowTemplate<Entity>
+								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
 								                                      {
 								                                      		Size = MapPanel.Size,
 								                                      		IsPopup = true,
 								                                      		HasFrame = true,
 																			Items = inventory.Items,
-																	  }, i => DropItem(player, i)));
+																			SelectSingleItem = false,
+																			ItemSelected = i => DropItem(player, i),
+								                                      }));
 							else
-								World.Instance.Log.Normal("You are carrying no items to drop.");
+								world.Log.Normal("You are carrying no items to drop.");
 						} else if (keyData.Character == 'g') {
 							var level = location.Level;
 							var inventory = player.Get<ContainerComponent>();
@@ -418,35 +418,36 @@ namespace SKR.UI.Gameplay {
 									                                                           (!inventory.Items.Contains(e))).ToList();
 
 							if (items.Count() > 0)
-								ParentApplication.Push(new ItemWindow(false,
-								                                      new ListWindowTemplate<Entity>
+								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
 								                                      {
 								                                      		Size = MapPanel.Size,
 								                                      		IsPopup = true,
 								                                      		HasFrame = true,
-								                                      		Items = items,
-								                                      },
-								                                      i => PickUpItem(player, i, items)));
+																			Items = inventory.Items,
+																			SelectSingleItem = false,
+																			ItemSelected = i => PickUpItem(player, i, items),
+								                                      }));
 							else
-								World.Instance.Log.Normal("No items here to pick up.");
+								world.Log.Normal("No items here to pick up.");
 						} else if (keyData.Character == 'i') {
 							var inventory = player.Get<ContainerComponent>();
-
-							ParentApplication.Push(new ItemWindow(false,
-							                                      new ListWindowTemplate<Entity>
+							ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
 							                                      {
 							                                      		Size = MapPanel.Size,
 							                                      		IsPopup = true,
 							                                      		HasFrame = true,
-																		Items = inventory.Items,
-							                                      },
-							                                      i => World.Instance.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight))));
+							                                      		Items = inventory.Items,
+							                                      		SelectSingleItem = false,
+							                                      		ItemSelected = i => world.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight)),
+							                                      }));
+
 						} else if (keyData.Character == 'w')
-							ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
+							ParentApplication.Push(new InventoryWindow(new InventoryWindowTemplate()
 							                                           {
 							                                           		Size = MapPanel.Size,
 							                                           		IsPopup = true,
 							                                           		HasFrame = true,
+																			World = world,
 							                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
 							                                           }));
 						else if (keyData.Character == 'l') {
@@ -475,8 +476,8 @@ namespace SKR.UI.Gameplay {
 												MapPanel,
 												GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'z') {
-							World.Instance.Log.Special("Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
-//							player.Add(new LongAction(500, e => World.Instance.Log.Normal(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
+							world.Log.Special("Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
+//							player.Add(new LongAction(500, e => world.Log.Normal(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
 //							player.Get<ActionPoint>().ActionPoints -= 100;
 						}
 						

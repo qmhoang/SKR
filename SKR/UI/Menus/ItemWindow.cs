@@ -12,19 +12,23 @@ using SkrGame.Universe.Entities.Items.Components;
 using libtcod;
 
 namespace SKR.UI.Menus {
+	public class ItemWindowTemplate : ListWindowTemplate<Entity> {
+		public Action<Entity> ItemSelected { get; set; }
+		public bool SelectSingleItem { get; set; }
+	}
 	public class ItemWindow : ListWindow<Entity> {        
 		private readonly bool singleItem;        		
-		private Rect sizeList;
+		private Rect sizeList;		
 
 		protected override Rect ListRect {
 			get { return sizeList; }
 		}
 
-		public ItemWindow(bool selectSingleItem, ListWindowTemplate<Entity> template, Action<Entity> itemSelected)
-				: base(itemSelected, template) {
+		public ItemWindow(ItemWindowTemplate template)
+				: base(template.ItemSelected, template) {
 			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires(Contract.ForAll(template.Items, i => i.Has<Item>()));
-			singleItem = selectSingleItem;            
+			singleItem = template.SelectSingleItem;            
 			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 		}
 
@@ -60,9 +64,9 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-
+			
 			if (List.Count() <= 0) {
-				World.Instance.Log.Normal("No items.");
+				World.Log.Normal("No items.");
 				ExitWindow();
 			}
 		}

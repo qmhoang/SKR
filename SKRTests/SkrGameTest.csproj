@@ -88,9 +88,7 @@
     <Compile Include="Components\ContainerTests.cs" />
     <Compile Include="Components\DefendComponentTests.cs" />
     <Compile Include="Components\EquipmentTests.cs" />
-    <Compile Include="EntityFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
