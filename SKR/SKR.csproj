@@ -105,7 +105,9 @@
     <Content Include="Data\Font\consolas12x12_gs_tc.png" />
     <Content Include="Data\Font\consolas_unicode_10x10.png" />
     <Content Include="Data\Font\consolas_unicode_12x12.png" />
-    <Content Include="Data\Font\lucida10x10_gs_tc.png" />
+    <Content Include="Data\Font\lucida10x10_gs_tc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Font\terminal12x12_gs_ro.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
