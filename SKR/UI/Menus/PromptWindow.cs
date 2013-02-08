@@ -10,19 +10,25 @@ using Ogui.UI;
 using SKR.UI.Gameplay;
 using SKR.Universe;
 using SkrGame.Universe;
-using SkrGame.Universe.Entities.Actors.PC;
 using libtcod;
 using log4net;
 
 namespace SKR.UI.Menus {
+	public class PromptWindowTemplate : WindowTemplate {
+		public Log Log { get; set; }
+	}
+
 	public abstract class PromptWindow : Window {
 		protected abstract string Text { get; }
 		
-		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		protected static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+		protected Log GameLog;
 		
-		protected PromptWindow(WindowTemplate template)
+		protected PromptWindow(PromptWindowTemplate template)
 			: base(template) {
 			IsPopup = true;
+			GameLog = template.Log;
 		}
 
 		protected override void Redraw() {
@@ -39,7 +45,7 @@ namespace SKR.UI.Menus {
 		private readonly bool defaultBooleanAction;
 		private string message;
 
-		public BooleanPrompt(string message, bool defaultBooleanAction, Action<bool> actionBoolean, WindowTemplate template)
+		public BooleanPrompt(string message, bool defaultBooleanAction, Action<bool> actionBoolean, PromptWindowTemplate template)
 			: base(template) {
 			this.defaultBooleanAction = defaultBooleanAction;
 			this.actionBoolean = actionBoolean;
@@ -73,7 +79,7 @@ namespace SKR.UI.Menus {
 		private bool firstUse;
 		private string message;
 
-		public CountPrompt(string message, Action<int> actionCount, int maxValue, int minValue, int initialValue, WindowTemplate template)
+		public CountPrompt(string message, Action<int> actionCount, int maxValue, int minValue, int initialValue, PromptWindowTemplate template)
 			: base(template) {
 			this.actionCount = actionCount;
 			this.maxValue = maxValue;
@@ -138,7 +144,7 @@ namespace SKR.UI.Menus {
 		/// <param name="message"></param>
 		/// <param name = "origin"></param>
 		/// <param name="actionPosition"></param>
-		public DirectionalPrompt(string message, Point origin, Action<Point> actionPosition, WindowTemplate template)
+		public DirectionalPrompt(string message, Point origin, Action<Point> actionPosition, PromptWindowTemplate template)
 			: base(template) {
 			this.actionPosition = actionPosition;
 			this.origin = origin;
@@ -185,7 +191,7 @@ namespace SKR.UI.Menus {
 		private MapPanel panel;
 		private Func<Point, string> descriptor;
 
-		public LookWindow(Point origin, Func<Point, string> descriptor, MapPanel panel, WindowTemplate template)
+		public LookWindow(Point origin, Func<Point, string> descriptor, MapPanel panel, PromptWindowTemplate template)
 			: base(template) {
 			this.panel = panel;
 			this.descriptor = descriptor;
@@ -264,7 +270,7 @@ namespace SKR.UI.Menus {
 		private MapPanel panel;
 		private string message;
 
-		public TargetPrompt(string message, Point origin, Action<Point> actionPosition, MapPanel panel, WindowTemplate template)
+		public TargetPrompt(string message, Point origin, Action<Point> actionPosition, MapPanel panel, PromptWindowTemplate template)
 			: base(template) {
 			this.actionPosition = actionPosition;
 			selectedPosition = origin;
@@ -295,7 +301,7 @@ namespace SKR.UI.Menus {
 			for (int i = 0; i < pointList.Count; i++) {
 				var point = pointList[i];
 				if (path)
-					path = World.Instance.CurrentLevel.IsWalkable(point);
+					path = mapPanel.World.CurrentLevel.IsWalkable(point);
 
 				var adjusted = point - mapPanel.ViewOffset;
 				if (i == pointList.Count - 1)
@@ -356,7 +362,7 @@ namespace SKR.UI.Menus {
 		private Func<T, string> descriptorFunction;
 		private string message;
 
-		public OptionsSelectionPrompt(string message, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, WindowTemplate template)
+		public OptionsSelectionPrompt(string message, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, PromptWindowTemplate template)
 			: base(template) {
 			this.actionCount = actionCount;
 			this.options = new List<T>(options);
@@ -367,7 +373,7 @@ namespace SKR.UI.Menus {
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 			if (options.Count <= 0) {
-				World.Instance.Log.Normal("No options to select from.");
+				GameLog.Normal("No options to select from.");
 				ExitWindow();
 			}
 		}

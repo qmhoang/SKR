@@ -8,7 +8,6 @@ using DEngine.Entities;
 using SkrGame.Gameplay;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent.Components;
-using SkrGame.Universe.Entities.Actors.PC;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors.NPC.AI {
@@ -32,44 +31,44 @@ namespace SkrGame.Universe.Entities.Actors.NPC.AI {
 		}
 
 		public override void Update() {
-			var position = Entity.Get<Location>().Position;
-
-			if (oldPos != position) {
-				ComputeFOV(Entity.Get<Location>());
-			}
-
-			Entity player = World.Instance.Player;
-
-			var target = player.Get<Location>().Position;
-			if (vision.IsVisible(target)) {
-				var distance = position.DistanceTo(target);
-
-				if (distance <= 1.5) {
-					Combat.MeleeAttack(Entity, Entity, player, player.Get<DefendComponent>().GetRandomPart());
-				} else {
-					pf.Compute(position.X, position.Y, target.X, target.Y);
-					int nx = position.X, ny = position.Y;
-
-					if (pf.Walk(ref nx, ref ny, false)) {
-						var newPosition = new Point(nx, ny);
-						Direction dir = Direction.Towards(newPosition - position);
-
-						var result = Movement.BumpDirection(Entity, dir);
-
-						// if an entity prevents movement, we can't do anything
-						if (!result) {
-							return;
-						}
-
-						Movement.MoveEntity(Entity, newPosition);
-
-					} else {
-						Movement.Wait(Entity);
-					}
-				}				
-			} else {
-				Movement.Wait(Entity);				
-			}
+//			var position = Entity.Get<Location>().Position;
+//
+//			if (oldPos != position) {
+//				ComputeFOV(Entity.Get<Location>());
+//			}
+//
+//			Entity player = World.Instance.Player;
+//
+//			var target = player.Get<Location>().Position;
+//			if (vision.IsVisible(target)) {
+//				var distance = position.DistanceTo(target);
+//
+//				if (distance <= 1.5) {
+//					Combat.MeleeAttack(Entity, Entity, player, player.Get<DefendComponent>().GetRandomPart());
+//				} else {
+//					pf.Compute(position.X, position.Y, target.X, target.Y);
+//					int nx = position.X, ny = position.Y;
+//
+//					if (pf.Walk(ref nx, ref ny, false)) {
+//						var newPosition = new Point(nx, ny);
+//						Direction dir = Direction.Towards(newPosition - position);
+//
+//						var result = Movement.BumpDirection(Entity, dir);
+//
+//						// if an entity prevents movement, we can't do anything
+//						if (!result) {
+//							return;
+//						}
+//
+//						Movement.MoveEntity(Entity, newPosition);
+//
+//					} else {
+//						Movement.Wait(Entity);
+//					}
+//				}				
+//			} else {
+//				Movement.Wait(Entity);				
+//			}
 		}
 	}
 

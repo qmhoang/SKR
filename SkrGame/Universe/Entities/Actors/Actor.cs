@@ -61,7 +61,7 @@ namespace SkrGame.Universe.Entities.Actors {
 	}
 
 	public class Skill {
-		public Actor Owner { get; set; }
+		public Person Owner { get; set; }
 		/// <summary>
 		/// raw rank represents this talent's skill, unmodified by anything
 		/// </summary>
@@ -73,9 +73,9 @@ namespace SkrGame.Universe.Entities.Actors {
 		public int Rank { get { return calculateRealRank(Owner, this); } }
 		public int MaxRank { get; private set; }
 
-		private readonly Func<Actor, Skill, int> calculateRealRank;
+		private readonly Func<Person, Skill, int> calculateRealRank;
 
-		public Skill(Actor owner, int maxRank, int initialRank = 0, Func<Actor, Skill, int> calcRealRank = null) {
+		public Skill(Person owner, int maxRank, int initialRank = 0, Func<Person, Skill, int> calcRealRank = null) {
 			Owner = owner;
 			RawRank = initialRank;
 			MaxRank = maxRank;
@@ -88,7 +88,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 	}
 
-	public class Actor : Component {
+	public class Person : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public int Strength { get; set; }
@@ -104,10 +104,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public int Willpower { get; set; }
 
 		private readonly Dictionary<string, Skill> skills;
-
-		public World World {
-			get { return World.Instance; }
-		}
+		
 
 		public int Lift {
 			get { return Strength * Strength * 18 * (int) Math.Pow(World.STANDARD_DEVIATION, -2.0); }
@@ -117,7 +114,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			return skills[skill].Rank;
 		}
 
-		public Actor() {
+		public Person() {
 			Strength = Agility = Constitution = Intellect = Cunning = Resolve = Presence = Grace = Willpower = World.MEAN;		
 			skills = new Dictionary<string, Skill>
 			         {
@@ -132,7 +129,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public override Component Copy() {
 			//todo
-			return new Actor();
+			return new Person();
 		}
 
 

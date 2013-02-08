@@ -48,7 +48,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 			public int Accuracy { get; set; }
 			public Rand Damage { get; set; }
 			public double Penetration { get; set; }
-			public Action<Actor, Actor> OnHit { get; set; }
+			public Action<Entity, Entity> OnHit { get; set; }
 			public int Range { get; set; }
 			public double WeaponSpeed {
 				get { return World.ActionPointsToSpeed(APToAttack); }
@@ -92,7 +92,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 
 		public int Accuracy { get; protected set; }
 
-		public Action<Actor, Actor> OnHit { get; private set; }
+		public Action<Entity, Entity> OnHit { get; private set; }
 
 		public DamageType DamageType { get; protected set; }
 		public double Penetration { get; protected set; }
@@ -140,7 +140,7 @@ namespace SkrGame.Universe.Entities.Items.Components {
 								Rand dmg,
 								DamageType type,
 								double pen,
-								Action<Actor, Actor> onhit,
+								Action<Entity, Entity> onhit,
 								int range,
 								int apready,
 								int apAtk,

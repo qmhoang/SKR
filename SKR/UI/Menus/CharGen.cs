@@ -14,9 +14,10 @@ namespace SKR.UI.Menus {
 		private ListBox occupationListBox;
 		private MenuButton sexButton;
 		private TextEntry nameEntry;
+		private World world;
 
-		public CharGen(WindowTemplate template) : base(template) {
-			
+		public CharGen(World world, WindowTemplate template) : base(template) {
+			this.world = world;
 		}
 
 		protected override void OnSettingUp() {
@@ -132,7 +133,7 @@ namespace SKR.UI.Menus {
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
 
-			ParentApplication.Push(new GameplayWindow(World.Instance.EntityManager, new WindowTemplate()));
+			ParentApplication.Push(new GameplayWindow(world, new WindowTemplate()));
 		}
 
 		protected override void OnKeyPressed(KeyboardData keyData) {

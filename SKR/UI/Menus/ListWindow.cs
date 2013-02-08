@@ -5,13 +5,14 @@ using System.Linq;
 using System.Collections.Generic;
 using DEngine.Core;
 using Ogui.UI;
+using SkrGame.Universe;
 
 namespace SKR.UI.Menus {
-	public class ListWindowTemplate<T> : WindowTemplate {
+	public class ListWindowTemplate<T> : SkrWindowTemplate {
 		public IEnumerable<T> Items { get; set; }
 	}
 
-	public abstract class ListWindow<T> : Window {
+	public abstract class ListWindow<T> : SkrWindow {
 		private readonly Action<T> selectItem;
 		protected int MouseOverIndex;
 

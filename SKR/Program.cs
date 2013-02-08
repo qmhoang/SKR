@@ -20,13 +20,13 @@ using libtcod;
 using log4net.Config;
 
 namespace SKR {
-	public class RoguelikeApp : Application {
+	public class SKRApp : Application {
 		private World world;
 
 		protected override void Setup(ApplicationInfo info) {
 			base.Setup(info);
-			world = World.Create();
-			Push(new CharGen(new WindowTemplate()));
+			world = new World();
+			Push(new CharGen(world, new WindowTemplate()));
 		
 		}
 
@@ -52,12 +52,12 @@ namespace SKR {
 
 		public static void Main(string[] args) {
 			XmlConfigurator.Configure(new FileInfo("Log.xml"));	
-
+			
 			Logger.InfoFormat("TCODConsole.root initialized {0}", ScreenSize);
 			Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", INITIAL_DELAY,
 			                  INTERVAL_DELAY);
 			Logger.InfoFormat("FPS Limit: {0}.", FPS_LIMIT);
-			using (RoguelikeApp app = new RoguelikeApp())
+			using (SKRApp app = new SKRApp())
 				app.Start(new ApplicationInfo()
 				          {
 				          		Title = "SKR",

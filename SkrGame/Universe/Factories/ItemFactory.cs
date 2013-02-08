@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using DEngine.Components;
 using DEngine.Core;
+using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
