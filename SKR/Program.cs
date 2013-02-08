@@ -48,7 +48,7 @@ namespace SKR {
 		public static readonly Size ScreenSize = new Size(80, 60);
 
 		public static BooleanSwitch SeeAll = new BooleanSwitch("SeeAll", "See everything (no FOV checking)");
-		public static BooleanSwitch GodMod = new BooleanSwitch("GodMode", "God mode");
+		public static BooleanSwitch GodMod = new BooleanSwitch("GodMode", "God mode");		
 
 		public static void Main(string[] args) {
 			XmlConfigurator.Configure(new FileInfo("Log.xml"));	
