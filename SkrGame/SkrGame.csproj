@@ -105,6 +105,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Log.cs" />
     <Compile Include="Core\MessageEntry.cs" />
     <Compile Include="Core\ComponentMessages\UpdateEvent.cs" />
     <Compile Include="Gameplay\Combat\Combat.cs" />
