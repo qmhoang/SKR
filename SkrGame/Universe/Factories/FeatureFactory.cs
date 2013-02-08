@@ -130,7 +130,7 @@ namespace SkrGame.Universe.Factories {
 			            new UseableFeature(new UseableFeature.UseAction("Wash hands",
 			                                                            (entity, user, action) =>
 			                                                            	{
-			                                                            		World.Instance.AddMessage(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
+																				World.Instance.Log.Normal(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
 			                                                            		return ActionResult.Success;
 			                                                            	})));
 
@@ -139,14 +139,14 @@ namespace SkrGame.Universe.Factories {
 			            new UseableFeature(new UseableFeature.UseAction("Use toilet",
 			                                                            (entity, user, action) =>
 			                                                            	{
-			                                                            		World.Instance.AddMessage(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
+																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
 			                                                            		return ActionResult.Success;
 			                                                            	})),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		var distanceTo = entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>());
 			                               		if (Math.Abs(distanceTo - 0) < Double.Epsilon)
-			                               			World.Instance.AddMessage(String.Format("{0} stands on top of the toilet.  Ew.",
+													World.Instance.Log.Normal(String.Format("{0} stands on top of the toilet.  Ew.",
 			                               			                                        Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
@@ -158,7 +158,7 @@ namespace SkrGame.Universe.Factories {
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
-			                               			World.Instance.AddMessage(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
+													World.Instance.Log.Normal(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
 			ef.Inherits("SHOWER", "nonblockingfeature", 
@@ -175,7 +175,7 @@ namespace SkrGame.Universe.Factories {
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
-			                               			World.Instance.AddMessage(String.Format("{0} jumps on the bed.", Identifier.GetNameOrId(entityNear)));
+													World.Instance.Log.Normal(String.Format("{0} jumps on the bed.", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
 			ef.Inherits("SHELF_WOOD", "feature", 
@@ -189,7 +189,7 @@ namespace SkrGame.Universe.Factories {
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) < 5)
-			                               			World.Instance.AddMessage(String.Format("{0} hears the sound of television.",
+													World.Instance.Log.Normal(String.Format("{0} hears the sound of television.",
 			                               			                                        Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
@@ -207,7 +207,7 @@ namespace SkrGame.Universe.Factories {
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
-			                               			World.Instance.AddMessage(String.Format("{0} jumps on the sofa.  Whee!!", Identifier.GetNameOrId(entityNear)));
+													World.Instance.Log.Normal(String.Format("{0} jumps on the sofa.  Whee!!", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
 			ef.Inherits("OVEN", "feature", 

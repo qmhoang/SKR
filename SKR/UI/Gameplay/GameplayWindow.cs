@@ -36,7 +36,8 @@ namespace SKR.UI.Gameplay {
 
 		public MapPanel MapPanel { get; private set; }
 		public StatusPanel StatusPanel { get; private set; }
-		public MessagePanel MessagePanel { get; private set; }
+//		public MessagePanel MessagePanel { get; private set; }
+		public LogPanel LogPanel { get; private set; }
 		public AssetsManager AssetsManager { get; private set; }
 
 		public static WindowTemplate PromptTemplate;
@@ -81,25 +82,22 @@ namespace SKR.UI.Gameplay {
 
 			AddControl(StatusPanel);
 
-			var msgTemplate =
-					new PanelTemplate
-					{
-							HasFrame = true,
-							Size = new Size(Size.Width, Size.Height - mapTemplate.Size.Height),
-							TopLeftPos = mapTemplate.CalculateRect().BottomLeft.Shift(0, 1)
-					};
-
-			MessagePanel = new MessagePanel(msgTemplate);
-			AddControl(MessagePanel);
-
-			world.MessageAdded += (sender, args) => MessagePanel.HandleMessage(args.Data);
+			var logTemplate = new LogPanelTemplate()
+			                       {
+			                       		HasFrame = true,
+			                       		Log = World.Instance.Log,
+			                       		Size = new Size(Size.Width, Size.Height - mapTemplate.Size.Height),
+			                       		TopLeftPos = mapTemplate.CalculateRect().BottomLeft.Shift(0, 1)
+			                       };
+			LogPanel = new LogPanel(logTemplate);
+			AddControl(LogPanel);
 
 			PromptTemplate =
 					new WindowTemplate
 					{
 							HasFrame = false,
 							IsPopup = true,
-							TopLeftPos = msgTemplate.TopLeftPos.Shift(1, 1),
+							TopLeftPos = logTemplate.TopLeftPos.Shift(1, 1),
 							Size = new Size(Size.Width - 2, Size.Height - mapTemplate.Size.Height - 2)
 					};
 
@@ -155,7 +153,7 @@ namespace SKR.UI.Gameplay {
 																							   GameplayWindow.PromptTemplate));
 												}
 											} else {
-												World.Instance.AddMessage("Nothing there to shoot.");
+												World.Instance.Log.Normal("Nothing there to shoot.");
 											}
 										},
 										MapPanel,
@@ -175,7 +173,7 @@ namespace SKR.UI.Gameplay {
 			} else if (ammos.Count == 1)
 				Combat.ReloadWeapon(user, weapon, ammos.First());
 			else
-				World.Instance.AddMessage("No possible ammo for selected weapon.");
+				World.Instance.Log.Normal("No possible ammo for selected weapon.");
 		}
 
 		private void Wait(Entity entity) {
@@ -263,7 +261,7 @@ namespace SKR.UI.Gameplay {
 			} else if (actions.Count == 1) {
 				actions.First().Use(user, thing, actions.First());
 			} else {
-				World.Instance.AddMessage(String.Format("No possible action on {0}", Identifier.GetNameOrId(thing)));
+				World.Instance.Log.Normal(String.Format("No possible action on {0}", Identifier.GetNameOrId(thing)));
 			}
 
 		}
@@ -294,7 +292,7 @@ namespace SKR.UI.Gameplay {
 				} else if (weapons.Count == 1)
 					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
 				else {
-					World.Instance.AddMessage("No possible way of attacking.");
+					World.Instance.Log.Normal("No possible way of attacking.");
 					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
 				}
 
@@ -355,7 +353,7 @@ namespace SKR.UI.Gameplay {
 							} else if (weapons.Count == 1) {
 								SelectRangeTarget(player, weapons.First());
 							} else {
-								World.Instance.AddMessage("No possible way of shooting target.");
+								World.Instance.Log.Normal("No possible way of shooting target.");
 							}
 
 						} else if (keyData.Character == 'r') {
@@ -370,7 +368,7 @@ namespace SKR.UI.Gameplay {
 							} else if (weapons.Count == 1) {
 								Reload(player, weapons.First());
 							} else {
-								World.Instance.AddMessage("No weapons to reload.");
+								World.Instance.Log.Normal("No weapons to reload.");
 							}
 						} else if (keyData.Character == 'u') {
 							ParentApplication.Push(
@@ -391,7 +389,7 @@ namespace SKR.UI.Gameplay {
 									                      		} else if (useables.Count() == 1) {
 									                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
 									                      		} else {
-									                      			World.Instance.AddMessage("Nothing there to use.");
+									                      			World.Instance.Log.Normal("Nothing there to use.");
 									                      		}
 									                      	},
 									                      GameplayWindow.PromptTemplate));
@@ -407,7 +405,7 @@ namespace SKR.UI.Gameplay {
 																			Items = inventory.Items,
 																	  }, i => DropItem(player, i)));
 							else
-								World.Instance.AddMessage("You are carrying no items to drop.");
+								World.Instance.Log.Normal("You are carrying no items to drop.");
 						} else if (keyData.Character == 'g') {
 							var level = location.Level;
 							var inventory = player.Get<ContainerComponent>();
@@ -430,7 +428,7 @@ namespace SKR.UI.Gameplay {
 								                                      },
 								                                      i => PickUpItem(player, i, items)));
 							else
-								World.Instance.AddMessage("No items here to pick up.");
+								World.Instance.Log.Normal("No items here to pick up.");
 						} else if (keyData.Character == 'i') {
 							var inventory = player.Get<ContainerComponent>();
 
@@ -442,7 +440,7 @@ namespace SKR.UI.Gameplay {
 							                                      		HasFrame = true,
 																		Items = inventory.Items,
 							                                      },
-							                                      i => World.Instance.AddMessage(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight))));
+							                                      i => World.Instance.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight))));
 						} else if (keyData.Character == 'w')
 							ParentApplication.Push(new InventoryWindow(new ListWindowTemplate<string>
 							                                           {
@@ -477,24 +475,8 @@ namespace SKR.UI.Gameplay {
 												MapPanel,
 												GameplayWindow.PromptTemplate));
 						} else if (keyData.Character == 'z') {
-							ParentApplication.Push(
-									new LookWindow(
-											location.Position,
-											delegate(Point p)
-												{
-													var entitiesAtLocation = location.Level.GetEntitiesAt(p);
-													foreach (var entity in entitiesAtLocation) {
-														if (entity.Has<Blocker>()) {
-															entity.Get<Blocker>().Walkable = !entity.Get<Blocker>().Walkable;
-															entity.Get<Blocker>().Transparent = !entity.Get<Blocker>().Transparent;
-														}
-													}
-
-													return "";
-												},
-											MapPanel,
-											GameplayWindow.PromptTemplate));
-//							player.Add(new LongAction(500, e => World.Instance.AddMessage(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
+							World.Instance.Log.Special("Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
+//							player.Add(new LongAction(500, e => World.Instance.Log.Normal(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
 //							player.Get<ActionPoint>().ActionPoints -= 100;
 						}
 						

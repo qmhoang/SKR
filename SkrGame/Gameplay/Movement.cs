@@ -55,7 +55,7 @@ namespace SkrGame.Gameplay {
 				}
 
 			} else
-				World.Instance.AddMessage("There is something in the way.");
+				World.Instance.Log.Normal("There is something in the way.");
 		}
 
 		public static void Wait(Entity e) {

@@ -128,7 +128,10 @@ namespace SkrGame.Gameplay.Combat {
 				hitBonus += World.MEAN;
 			}
 
-			var result = Combat.Attack(Identifier.GetNameOrId(attacker), Identifier.GetNameOrId(defender), hitBonus + melee.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
+			var defenderName = Identifier.GetNameOrId(defender);
+			var attackerName = Identifier.GetNameOrId(attacker);
+
+			var result = Combat.Attack(attackerName, defenderName, hitBonus + melee.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
 
 			if (result == CombatEventResult.Hit) {
 				const int TEMP_STR_BONUS = World.MEAN;
@@ -137,22 +140,40 @@ namespace SkrGame.Gameplay.Combat {
 
 				Combat.Damage(damage, melee.Penetration, melee.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
-				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-				                  Identifier.GetNameOrId(attacker), melee.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
+				if (World.Instance.Player == attacker) {
+					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
+				} else {
+					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
+				}
 
 
-				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
+
+				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {
-				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-				                  Identifier.GetNameOrId(attacker), melee.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
+				if (World.Instance.Player == attacker) {
+					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
+					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+				} else {
+					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
+					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+				}
 
-				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
+
+				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
-				World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-				                  Identifier.GetNameOrId(attacker), melee.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
+				if (World.Instance.Player == attacker) {
+					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+				} else {
+					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
+				}
+				
 
-				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
+				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Dodge));
 			}
 
 			attacker.Get<ActionPoint>().ActionPoints -= melee.APToAttack;
@@ -175,6 +196,7 @@ namespace SkrGame.Gameplay.Combat {
 			
 			var weapon = rangeWeapon.Get<RangeComponent>();
 			var attackerName = Identifier.GetNameOrId(attacker);
+			var defenderName = Identifier.GetNameOrId(defender);
 			var attackerLocation = attacker.Get<Location>();
 			var targetLocation = defender.Get<Location>();
 
@@ -186,7 +208,7 @@ namespace SkrGame.Gameplay.Combat {
 			}
 
 			if (weapon.ShotsRemaining <= 0) {
-				World.Instance.AddMessage(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
+				World.Instance.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
 				                                        attackerName));
 				attacker.Get<ActionPoint>().ActionPoints -= weapon.APToAttack;
 				return ActionResult.Failed;
@@ -204,8 +226,8 @@ namespace SkrGame.Gameplay.Combat {
 				var defenderLocation = currentEntity.Get<Location>();
 
 				double range = defenderLocation.DistanceTo(attackerLocation) * World.TILE_LENGTH_IN_METER;
-				double rangePenalty = Math.Min(0, -World.STANDARD_DEVIATION * Combat.RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.STANDARD_DEVIATION * 2 / 3);
-				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, Identifier.GetNameOrId(defender));
+				double rangePenalty = Math.Min(0, -World.STANDARD_DEVIATION * Combat.RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.STANDARD_DEVIATION * 2 / 3);				
+				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, defenderName);
 
 				// not being targetted gives a sigma (std dev) penalty
 				rangePenalty -= defender.Id == currentEntity.Id ? 0 : World.STANDARD_DEVIATION;
@@ -215,7 +237,7 @@ namespace SkrGame.Gameplay.Combat {
 								  difficultyOfShot, bodyPartTargetted.TargettingPenalty, hitBonus,
 								  defender.Id == currentEntity.Id);
 
-				var result = Combat.Attack(attackerName, Identifier.GetNameOrId(defender), difficultyOfShot);
+				var result = Combat.Attack(attackerName, defenderName, difficultyOfShot);
 
 				if (result == CombatEventResult.Hit) {
 					var damage = Math.Max(weapon.Damage.Roll(), 1);
@@ -223,32 +245,31 @@ namespace SkrGame.Gameplay.Combat {
 
 					Combat.Damage(weapon.Damage.Roll(), weapon.Penetration, weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
-					World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                                        attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name, "todo-description"));
+					World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					                                        attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
 
-
-					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Hit, damage,
+					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Hit, damage,
 					                                         damageResistance, realDamage));
 					return ActionResult.Success;
 				} else if (result == CombatEventResult.Miss) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-						World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and misses.",
-																attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
+						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
+																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 
-					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted));
+					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted));
 				} else if (result == CombatEventResult.Dodge) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-						World.Instance.AddMessage(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-																attackerName, weapon.ActionDescriptionPlural, Identifier.GetNameOrId(defender), bodyPartTargetted.Name));
+						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 
-					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, bodyPartTargetted, CombatEventResult.Dodge));
+					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Dodge));
 				}
 				targetsInTheWay++;
 			}
 
 			// todo drop ammo casing
 
-			World.Instance.AddMessage(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
+			World.Instance.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
 			return ActionResult.Failed;
 		}
 
@@ -272,9 +293,9 @@ namespace SkrGame.Gameplay.Combat {
 				weapon.ShotsRemaining = 0;
 				droppedAmmo.Get<VisibleComponent>().Reset();
 
-				World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
+				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
 			} else {
-				World.Instance.AddMessage(String.Format("{0} reloads {1} with {2}.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
+				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
 			}
 
 			if (ammo.StackType == StackType.Hard) {
@@ -382,7 +403,7 @@ namespace SkrGame.Gameplay.Combat {
 		public static void ProcessCombat(CombatEventArgs e) {
 			Contract.Requires<ArgumentNullException>(e != null, "e");
 //			e.Attacker.OnAttacking(e);
-//			e.Defender.OnDefending(e);
+//			e.Defender.OnDefending(e);			
 			Logger.Info(e.ToString());
 		}
 	}

@@ -62,7 +62,7 @@ namespace SKR.UI.Menus {
 			base.OnSettingUp();
 
 			if (List.Count() <= 0) {
-				World.Instance.AddMessage("No items.");
+				World.Instance.Log.Normal("No items.");
 				ExitWindow();
 			}
 		}

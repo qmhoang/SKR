@@ -67,7 +67,7 @@ namespace SKR.UI.Menus {
 					                                      		equipment.Equip(slot, i);
 					                                      	}));
 				else
-					World.Instance.AddMessage("No items in inventory that go there.");
+					World.Instance.Log.Normal("No items in inventory that go there.");
 
 			}
 

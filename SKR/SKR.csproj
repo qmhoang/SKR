@@ -91,7 +91,7 @@
     <Compile Include="UI\AssetsManager.cs" />
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
     <Compile Include="UI\Gameplay\MapPanel.cs" />
-    <Compile Include="UI\Gameplay\MessagePanel.cs" />
+    <Compile Include="UI\Gameplay\LogPanel.cs" />
     <Compile Include="UI\Gameplay\Systems\PlayerMovementSystem.cs" />
     <Compile Include="UI\Gameplay\StatusPanel.cs" />
     <Compile Include="UI\Menus\CharGen.cs" />
