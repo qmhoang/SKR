@@ -367,7 +367,7 @@ namespace SKR.UI.Menus {
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 			if (options.Count <= 0) {
-				World.Instance.AddMessage("No options to select from.");
+				World.Instance.Log.Normal("No options to select from.");
 				ExitWindow();
 			}
 		}

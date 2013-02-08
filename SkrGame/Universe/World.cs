@@ -62,16 +62,7 @@ namespace SkrGame.Universe {
 			return ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
 		}
 
-		public List<Message> MessageBuffer { get; private set; }
-
-		public event EventHandler<EventArgs<Message>> MessageAdded;
-		public Message CurrentMessage;
-
-		public void OnMessageAdded(EventArgs<Message> e) {
-			EventHandler<EventArgs<Message>> handler = MessageAdded;
-			if (handler != null)
-				handler(this, e);
-		}
+		public Log Log { get; private set; }
 
 		private readonly MapFactory mapFactory;
 
@@ -108,8 +99,7 @@ namespace SkrGame.Universe {
 			GroupManager = new GroupManager<string>();
 			EntityManager = new EntityManager();
 			EntityFactory = new EntityFactory();
-			
-			MessageBuffer = new List<Message>();
+			Log = new Log();
 
 			mapFactory = new MapFactory(EntityManager, EntityFactory);
 
@@ -184,13 +174,6 @@ namespace SkrGame.Universe {
 			visionSubsystem = new VisionSubsystem(EntityManager);
 		}
 
-
-		public void AddMessage(string message, MessageType priority = MessageType.Normal) {
-			var currentMessage = new Message(message, priority);
-
-			MessageBuffer.Add(currentMessage);
-			OnMessageAdded(new EventArgs<Message>(currentMessage));
-		}
 
 		public static World Create() {
 			Instance = new World();

@@ -13,13 +13,10 @@ using libtcod;
 namespace SKR.UI.Menus {
 	public class DebugLookWindow : LookWindow {
 		private TreeView v;
-		public DebugLookWindow(Point origin, MapPanel panel, WindowTemplate template) : base(origin, null, panel, template) {
-
-		}
+		public DebugLookWindow(Point origin, MapPanel panel, WindowTemplate template) : base(origin, null, panel, template) { }
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-
 		}
 
 		protected override string Text {
