@@ -76,7 +76,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestAdd() {
+		public void Add() {
 			container.Add(item0);
 
 			Assert.AreEqual(container.Count, 1);
@@ -96,7 +96,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestAddStackItem() {
+		public void AddStackItem() {
 			container.Add(stack1);
 			Assert.AreEqual(container.Count, 1);
 			Assert.AreEqual(container.TotalCount, 1);
@@ -108,7 +108,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestRemove() {
+		public void Remove() {
 			container.Add(item0);
 			Assert.AreEqual(container.Count, 1);
 
@@ -119,7 +119,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestPredicate() {
+		public void Predicate() {
 			container.Add(item0);
 
 			Assert.IsTrue(container.Contains(item0));
@@ -137,14 +137,14 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestGet() {
+		public void Get() {
 			container.Add(item0);
 			Assert.IsNull(container.GetItem(i => i.Id.ToString() == ""));
 			Assert.AreSame(container.GetItem(i => i.Id == item0.Id), item0);
 		}
 
 		[Test]
-		public void TestMove() {
+		public void Move() {
 			container.Add(item0);
 			container.Add(item1);
 
@@ -160,7 +160,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestMoveAlot() {
+		public void MoveAlot() {
 			container.Add(item0);
 			container.Add(item1);
 			container.Add(item2);
@@ -176,7 +176,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestCopyMove() {
+		public void CopyMove() {
 			container.Add(item0);
 			container.Add(item1);
 			container.Add(item2);
@@ -193,7 +193,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestRemovedNotMoved() {
+		public void RemovedNotMoved() {
 			container.Add(item0);
 			container.Add(item1);
 
@@ -211,7 +211,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestCopy() {
+		public void Copy() {
 			container.Add(item0);
 			container.Add(item1);
 			container.Add(item2);
