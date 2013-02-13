@@ -127,13 +127,13 @@
     <Compile Include="Universe\Entities\Features\OnBump.cs" />
     <Compile Include="Universe\Entities\Features\PassiveFeature.cs" />
     <Compile Include="Universe\Entities\Features\UseableFeature.cs" />
-    <Compile Include="Universe\Entities\Items\Components\ArmorComponent.cs" />
-    <Compile Include="Universe\Entities\Items\ItemContainer.cs" />
+    <Compile Include="Universe\Entities\Items\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\NpcIntelligence.cs" />
     <Compile Include="Universe\Entities\Actors\NPC\AI\SimpleAI.cs" />
-    <Compile Include="Universe\Entities\Items\Components\RangeComponent.cs" />
+    <Compile Include="Universe\Entities\Items\RangeComponent.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
-    <Compile Include="Universe\Entities\Items\Components\MeleeComponent.cs" />
+    <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
+    <Compile Include="Universe\Entities\Location.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\TalentFactory.cs" />
@@ -152,6 +152,7 @@
   <ItemGroup>
     <Folder Include="Universe\Entities\Actions\" />
     <Folder Include="Universe\Entities\Actors\PC\" />
+    <Folder Include="Universe\Entities\Items\Components\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

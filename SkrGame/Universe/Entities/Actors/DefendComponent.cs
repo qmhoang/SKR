@@ -9,7 +9,6 @@ using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent.Components;
-using SkrGame.Universe.Entities.Items.Components;
 using log4net;
 using log4net.Repository.Hierarchy;
 

@@ -12,7 +12,6 @@ using SkrGame.Gameplay.Talent;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Locations;
 using log4net;
 

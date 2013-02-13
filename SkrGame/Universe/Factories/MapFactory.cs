@@ -4,6 +4,7 @@ using System.Linq;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Locations;
 using Level = SkrGame.Universe.Locations.Level;
 

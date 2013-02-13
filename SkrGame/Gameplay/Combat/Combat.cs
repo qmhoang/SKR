@@ -8,9 +8,9 @@ using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 
 namespace SkrGame.Gameplay.Combat {
 	public class DamageType {
@@ -112,7 +112,7 @@ namespace SkrGame.Gameplay.Combat {
 			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
 
 			Contract.Requires<ArgumentException>(weapon.Has<MeleeComponent>(), "weapon cannot melee attack");
-			Contract.Requires<ArgumentException>(attacker.Has<ActionPoint>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(attacker.Has<ActorComponent>(), "attacker doesn't have a location");
 			Contract.Requires<ArgumentException>(attacker.Has<Location>(), "attacker doesn't have a location");
 			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
 			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
@@ -176,7 +176,7 @@ namespace SkrGame.Gameplay.Combat {
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Dodge));
 			}
 
-			attacker.Get<ActionPoint>().ActionPoints -= melee.APToAttack;
+			attacker.Get<ActorComponent>().AP.ActionPoints -= melee.APToAttack;
 			return ActionResult.Success;
 		}
 
@@ -187,7 +187,7 @@ namespace SkrGame.Gameplay.Combat {
 			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
 
 			Contract.Requires<ArgumentException>(rangeWeapon.Has<RangeComponent>(), "rangeWeapon cannot range attack");
-			Contract.Requires<ArgumentException>(attacker.Has<ActionPoint>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(attacker.Has<ActorComponent>(), "attacker doesn't have a location");
 			Contract.Requires<ArgumentException>(attacker.Has<Location>(), "attacker doesn't have a location");
 			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
 			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
@@ -210,16 +210,16 @@ namespace SkrGame.Gameplay.Combat {
 			if (weapon.ShotsRemaining <= 0) {
 //				World.Instance.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
 //				                                        attackerName));
-				attacker.Get<ActionPoint>().ActionPoints -= weapon.APToAttack;
+				attacker.Get<ActorComponent>().AP.ActionPoints -= weapon.APToAttack;
 				return ActionResult.Failed;
 			}
 
 			weapon.ShotsRemaining--;
-			attacker.Get<ActionPoint>().ActionPoints -= weapon.APToAttack;
+			attacker.Get<ActorComponent>().AP.ActionPoints -= weapon.APToAttack;
 
-//			var locationsOnPath = Bresenham.GeneratePointsFromLine(attackerLocation.Position, targetLocation.Position).ToList();
+//			var locationsOnPath = Bresenham.GeneratePointsFromLine(attackerLocation.Location, targetLocation.Location).ToList();
 
-			var entitiesOnPath = Combat.GetTargetsOnPath(attackerLocation.Position, targetLocation.Position).ToList();
+			var entitiesOnPath = Combat.GetTargetsOnPath(attackerLocation.Point, targetLocation.Point).ToList();
 
 			int targetsInTheWay = 0;
 			foreach (var currentEntity in entitiesOnPath) {			
@@ -277,7 +277,7 @@ namespace SkrGame.Gameplay.Combat {
 			Contract.Requires<ArgumentException>(weaponEntity.Has<RangeComponent>());
 			Contract.Requires<ArgumentException>(ammoEntity.Has<AmmoComponent>());
 			Contract.Requires<ArgumentException>(user.Has<Location>());
-			Contract.Requires<ArgumentException>(user.Has<ActionPoint>());
+			Contract.Requires<ArgumentException>(user.Has<ActorComponent>());
 			Contract.Requires<ArgumentException>(weaponEntity.Get<RangeComponent>().AmmoType == ammoEntity.Get<AmmoComponent>().Type);
 
 			var weapon = weaponEntity.Get<RangeComponent>();
@@ -313,7 +313,7 @@ namespace SkrGame.Gameplay.Combat {
 				}
 			}
 
-			user.Get<ActionPoint>().ActionPoints -= weapon.APToReload;
+			user.Get<ActorComponent>().AP.ActionPoints -= weapon.APToReload;
 			return ActionResult.Success;
 		}
 
