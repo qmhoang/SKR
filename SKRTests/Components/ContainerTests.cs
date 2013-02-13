@@ -6,6 +6,7 @@ using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
 using NUnit.Framework;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
@@ -148,15 +149,15 @@ namespace SKRTests.Components {
 			container.Add(item0);
 			container.Add(item1);
 
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position));
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
 
 			var p1 = new Point(4, 8);
-			entity.Get<Location>().Position = p1;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, p1));
+			entity.Get<Location>().Point = p1;
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, p1));
 
 			var p2 = new Point(9, -8);
-			entity.Get<Location>().Position = p2;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, p2));
+			entity.Get<Location>().Point = p2;
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, p2));
 		}
 
 		[Test]
@@ -165,14 +166,14 @@ namespace SKRTests.Components {
 			container.Add(item1);
 			container.Add(item2);
 
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position));
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
 
-			entity.Get<Location>().Position = new Point(4, 8);
-			entity.Get<Location>().Position = new Point(51, -9);
+			entity.Get<Location>().Point = new Point(4, 8);
+			entity.Get<Location>().Point = new Point(51, -9);
 
-			var position = new Point(0, 3812);
-			entity.Get<Location>().Position = position;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, position));
+			var Location = new Point(0, 3812);
+			entity.Get<Location>().Point = Location;
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, Location));
 		}
 
 		[Test]
@@ -186,10 +187,10 @@ namespace SKRTests.Components {
 			Assert.AreEqual(copy.Get<ContainerComponent>().Count, entity.Get<ContainerComponent>().Count);
 
 
-			copy.Get<Location>().Position = new Point(934, -83);
+			copy.Get<Location>().Point = new Point(934, -83);
 
-			Assert.AreNotEqual(entity.Get<Location>().Position, copy.Get<Location>().Position);
-			copy.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, copy.Get<Location>().Position));
+			Assert.AreNotEqual(entity.Get<Location>().Point, copy.Get<Location>().Point);
+			copy.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, copy.Get<Location>().Point));
 		}
 
 		[Test]
@@ -198,16 +199,16 @@ namespace SKRTests.Components {
 			container.Add(item1);
 
 			var oldLoc = new Point(0, 3812);
-			entity.Get<Location>().Position = oldLoc;
+			entity.Get<Location>().Point = oldLoc;
 
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, oldLoc));
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, oldLoc));
 
 			container.Remove(item1);
 			var newLoc = new Point(51, -9);
-			entity.Get<Location>().Position = newLoc;
+			entity.Get<Location>().Point = newLoc;
 
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, newLoc));
-			Assert.AreEqual(item1.Get<Location>().Position, oldLoc);
+			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, newLoc));
+			Assert.AreEqual(item1.Get<Location>().Point, oldLoc);
 		}
 
 		[Test]

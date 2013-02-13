@@ -72,7 +72,7 @@ namespace SkrGame.Universe.Entities.Features {
 
 		public ActionResult Action(Entity user) {
 			Contract.Requires<ArgumentNullException>(user != null, "user");
-			Contract.Requires<ArgumentException>(user.Has<ActionPoint>());
+			Contract.Requires<ArgumentException>(user.Has<ActorComponent>());
 			
 			if (Status == OpeningStatus.Closed) {
 				if (Entity.Has<Blocker>())
@@ -82,24 +82,24 @@ namespace SkrGame.Universe.Entities.Features {
 					Entity.Get<Sprite>().Asset = OpenedAsset;
 
 				Status = OpeningStatus.Opened;
-				user.Get<ActionPoint>().ActionPoints -= APCost;
+				user.Get<ActorComponent>().AP.ActionPoints -= APCost;
 
 //				World.Instance.Log.Normal(String.Format("{0} {1}.", Identifier.GetNameOrId(user), OpenedDescription));
 				return ActionResult.Success;
 			} else if (Status == OpeningStatus.Opened) {
-				if (Entity.Get<Location>().Level.IsWalkable(Entity.Get<Location>().Position) || !WalkableOpened) {
+				if (Entity.Get<Location>().Level.IsWalkable(Entity.Get<Location>().Point) || !WalkableOpened) {
 					if (Entity.Has<Blocker>())
 						Entity.Get<Blocker>().Transparent = Entity.Get<Blocker>().Walkable = false;
 					if (Entity.Has<Sprite>())
 						Entity.Get<Sprite>().Asset = ClosedAsset;
 
 					Status = OpeningStatus.Closed;
-					user.Get<ActionPoint>().ActionPoints -= APCost;
+					user.Get<ActorComponent>().AP.ActionPoints -= APCost;
 
 //					World.Instance.Log.Normal(String.Format("{0} {1}.", Identifier.GetNameOrId(user), ClosedDescription));
 					return ActionResult.Success;
 				} else {
-					user.Get<ActionPoint>().ActionPoints -= APCost;
+					user.Get<ActorComponent>().AP.ActionPoints -= APCost;
 //					World.Instance.Log.Normal(String.Format("{0} tries to {1}, but can't.", Identifier.GetNameOrId(user), ClosedDescription));
 					return ActionResult.Failed;					
 				}				

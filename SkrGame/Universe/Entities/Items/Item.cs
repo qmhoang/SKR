@@ -7,7 +7,6 @@ using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Items.Components;
 
 namespace SkrGame.Universe.Entities.Items {
 //	public enum ItemType {

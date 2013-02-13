@@ -8,7 +8,6 @@ using Ogui.Core;
 using Ogui.UI;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 using libtcod;
 
 namespace SKR.UI.Menus {

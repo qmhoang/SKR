@@ -112,7 +112,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 				// just in case, move the item to the entity's location
 				if (item.Has<Location>())
-					item.Get<Location>().Position = Entity.Get<Location>().Position;
+					item.Get<Location>().Point = Entity.Get<Location>().Point;
 
 				return true;
 			}
@@ -155,7 +155,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public void Move(Point prev, Point curr) {
 			foreach (var item in Items) {
 				if (item.Has<Location>())
-					item.Get<Location>().Position = curr;
+					item.Get<Location>().Point = curr;
 			}
 		}
 	}

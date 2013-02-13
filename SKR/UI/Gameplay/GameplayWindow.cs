@@ -12,15 +12,15 @@ using DEngine.Extensions;
 using Ogui.UI;
 using SKR.UI.Menus;
 using SKR.Universe;
-using SkrGame.Core;
+using SkrGame.Actions;
 using SkrGame.Gameplay;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Systems;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
 using libtcod;
@@ -135,7 +135,7 @@ namespace SKR.UI.Gameplay {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 
 			ParentApplication.Push(new TargetPrompt("Shoot where?",
-										entity.Get<Location>().Position,
+										entity.Get<Location>().Point,
 										targetLocation =>
 										{
 											var level = entity.Get<Location>().Level;
@@ -173,10 +173,6 @@ namespace SKR.UI.Gameplay {
 				Combat.ReloadWeapon(user, weapon, ammos.First());
 			else
 				world.Log.Normal("No possible ammo for selected weapon.");
-		}
-
-		private void Wait(Entity entity) {
-			Movement.Wait(entity);
 		}
 
 		#region Pickup/Drop items
@@ -234,7 +230,7 @@ namespace SKR.UI.Gameplay {
 				var ne = Item.Split(itemEntityFromInventory, amount);
 
 				var level = entityDropping.Get<Location>().Level;
-				var itemsInLevel = level.GetEntitiesAt(entityDropping.Get<Location>().Position).Where(e => e.Has<Item>() &&
+				var itemsInLevel = level.GetEntitiesAt(entityDropping.Get<Location>().Point).Where(e => e.Has<Item>() &&
 				                                                                                           e.Has<VisibleComponent>() &&
 				                                                                                           e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
 
@@ -265,172 +261,145 @@ namespace SKR.UI.Gameplay {
 
 		}
 
-		private void Move(Entity user, Direction direction) {
-			Contract.Requires<ArgumentNullException>(user != null, "user");
-
-			var result = Movement.BumpDirection(user, direction);
-
-			// if an entity prevents movement, we can't do anything
-			if (!result) {
-				return;
-			}
-
-			Point newPosition = user.Get<Location>().Position + direction;
-
-			// we check for attackables
-			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newPosition).Where(e => e.Has<DefendComponent>()).ToList();
-
-			if (actorsAtNewLocation.Count > 0) {
-				var weapons = FilterEquippedItems<MeleeComponent>(user).ToList();
-				if (weapons.Count > 1) {
-					ParentApplication.Push(
-							new OptionsSelectionPrompt<Entity>("With that weapon?",
-															   weapons, e => e.Get<Identifier>().Name,
-															   weapon => SelectMeleeTarget(user, weapon, actorsAtNewLocation),
-															   GameplayWindow.PromptTemplate));
-				} else if (weapons.Count == 1)
-					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
-				else {
-					world.Log.Normal("No possible way of attacking.");
-					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
-				}
-
-				return;
-			}
-
-			Movement.MoveEntity(user, newPosition);
-
-		}
+//		private void Move(Entity user, Direction direction) {
+//			Contract.Requires<ArgumentNullException>(user != null, "user");
+//
+//			var result = Movement.BumpDirection(user, direction);
+//
+//			// if an entity prevents movement, we can't do anything
+//			if (!result) {
+//				return;
+//			}
+//
+//			Point newLocation = user.Get<Location>().Point + direction;
+//
+//			// we check for attackables
+//			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
+//
+//			if (actorsAtNewLocation.Count > 0) {
+//				var weapons = FilterEquippedItems<MeleeComponent>(user).ToList();
+//				if (weapons.Count > 1) {
+//					ParentApplication.Push(
+//							new OptionsSelectionPrompt<Entity>("With that weapon?",
+//															   weapons, e => e.Get<Identifier>().Name,
+//															   weapon => SelectMeleeTarget(user, weapon, actorsAtNewLocation),
+//															   GameplayWindow.PromptTemplate));
+//				} else if (weapons.Count == 1)
+//					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
+//				else {
+//					world.Log.Normal("No possible way of attacking.");
+//					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
+//				}
+//
+//				return;
+//			}
+//
+//			Movement.MoveEntity(user, newLocation);
+//
+//		}
 
 		protected override void OnKeyPressed(KeyboardData keyData) {
 			base.OnKeyReleased(keyData);
-			if (player.Get<ActionPoint>().Updateable) {
-				switch (keyData.KeyCode) {
-					case TCODKeyCode.Up:
-					case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
-						Move(player, Direction.North);
-						break;
-					case TCODKeyCode.Down:
-					case TCODKeyCode.KeypadTwo:
-						Move(player, Direction.South);
-						break;
-					case TCODKeyCode.Left:
-					case TCODKeyCode.KeypadFour:
-						Move(player, Direction.West);
-						break;
-					case TCODKeyCode.KeypadFive:
-						Wait(player);
-						break;
-					case TCODKeyCode.Right:
-					case TCODKeyCode.KeypadSix:
-						Move(player, Direction.East);
-						break;
-					case TCODKeyCode.KeypadSeven:
-						Move(player, Direction.Northwest);
-						break;
-					case TCODKeyCode.KeypadNine:
-						Move(player, Direction.Northeast);
-						break;
-					case TCODKeyCode.KeypadOne:
-						Move(player, Direction.Southwest);
-						break;
-					case TCODKeyCode.KeypadThree:
-						Move(player, Direction.Southeast);
-						break;
-					default:
-					{
-						var location = player.Get<Location>();
-						if (keyData.Character == 'f') {
-							var weapons = FilterEquippedItems<RangeComponent>(player).ToList();
+//			if (!player.Get<ActionPoint>().Updateable)
+//				return;
+			switch (keyData.KeyCode) {
+				case TCODKeyCode.Up:
+				case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
+//						Move(player, Direction.North);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.N));
+					break;
+				case TCODKeyCode.Down:
+				case TCODKeyCode.KeypadTwo:
+//						Move(player, Direction.South);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.S));
+					break;
+				case TCODKeyCode.Left:
+				case TCODKeyCode.KeypadFour:
+//						Move(player, Direction.West);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.W));
+					break;
+				case TCODKeyCode.KeypadFive:
+					player.Get<ActorComponent>().Enqueue(new WaitAction(player));
+					break;
+				case TCODKeyCode.Right:
+				case TCODKeyCode.KeypadSix:
+//						Move(player, Direction.East);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.E));
+					break;
+				case TCODKeyCode.KeypadSeven:
+//						Move(player, Direction.Northwest);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.NW));
+					break;
+				case TCODKeyCode.KeypadNine:
+//						Move(player, Direction.Northeast);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.NE));
+					break;
+				case TCODKeyCode.KeypadOne:
+//						Move(player, Direction.Southwest);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.SW));
+					break;
+				case TCODKeyCode.KeypadThree:
+//						Move(player, Direction.Southeast);
+					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.SE));
+					break;
+				default:
+				{
+					var location = player.Get<Location>();
+					if (keyData.Character == 'f') {
+						var weapons = FilterEquippedItems<RangeComponent>(player).ToList();
 
-							if (weapons.Count > 1) {
-								ParentApplication.Push(
-										new OptionsSelectionPrompt<Entity>("With what weapon?",
-										                                   weapons, e => e.Get<Identifier>().Name,
-										                                   weapon => SelectRangeTarget(player, weapon),
-										                                   GameplayWindow.PromptTemplate));
-							} else if (weapons.Count == 1) {
-								SelectRangeTarget(player, weapons.First());
-							} else {
-								world.Log.Normal("No possible way of shooting target.");
-							}
-
-						} else if (keyData.Character == 'r') {
-							var weapons = FilterEquippedItems<RangeComponent>(player).ToList();
-
-							if (weapons.Count > 1) {
-								ParentApplication.Push(
-										new OptionsSelectionPrompt<Entity>("Reload what weapon?",
-										                                   weapons, e => e.Get<Identifier>().Name,
-										                                   weapon => Reload(player, weapon),
-										                                   GameplayWindow.PromptTemplate));
-							} else if (weapons.Count == 1) {
-								Reload(player, weapons.First());
-							} else {
-								world.Log.Normal("No weapons to reload.");
-							}
-						} else if (keyData.Character == 'u') {
+						if (weapons.Count > 1) {
 							ParentApplication.Push(
-									new DirectionalPrompt("What direction?",
-									                      location.Position,
-									                      p =>
-									                      	{
-									                      		var useables = location.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
-									                      		                                                          e.Has<VisibleComponent>() &&
-									                      		                                                          e.Get<VisibleComponent>().VisibilityIndex > 0);									                      		
-									                      		if (useables.Count() > 1) {
-									                      			ParentApplication.Push(
-									                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
-									                      					                                   useables,
-									                      					                                   Identifier.GetNameOrId,
-									                      					                                   e => SelectUsableAction(player, e, e.Get<UseableFeature>().Uses.ToList()),
-									                      					                                   GameplayWindow.PromptTemplate));
-									                      		} else if (useables.Count() == 1) {
-									                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
-									                      		} else {
-									                      			world.Log.Normal("Nothing there to use.");
-									                      		}
-									                      	},
-									                      GameplayWindow.PromptTemplate));
-						} else if (keyData.Character == 'd') {
-							var inventory = player.Get<ContainerComponent>();
-							if (inventory.Count > 0)
-								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
-								                                      {
-								                                      		Size = MapPanel.Size,
-								                                      		IsPopup = true,
-								                                      		HasFrame = true,
-																			Items = inventory.Items,
-																			SelectSingleItem = false,
-																			ItemSelected = i => DropItem(player, i),
-								                                      }));
-							else
-								world.Log.Normal("You are carrying no items to drop.");
-						} else if (keyData.Character == 'g') {
-							var level = location.Level;
-							var inventory = player.Get<ContainerComponent>();
+									new OptionsSelectionPrompt<Entity>("With what weapon?",
+									                                   weapons, e => e.Get<Identifier>().Name,
+									                                   weapon => SelectRangeTarget(player, weapon),
+									                                   GameplayWindow.PromptTemplate));
+						} else if (weapons.Count == 1) {
+							SelectRangeTarget(player, weapons.First());
+						} else {
+							world.Log.Normal("No possible way of shooting target.");
+						}
 
-							// get all items that have a location (eg present on the map) that are at the location where are player is
-							var items =
-									location.Level.GetEntitiesAt(location.Position).Where(e => e.Has<Item>() &&
-									                                                           e.Has<VisibleComponent>() &&
-									                                                           e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-									                                                           (!inventory.Items.Contains(e))).ToList();
+					} else if (keyData.Character == 'r') {
+						var weapons = FilterEquippedItems<RangeComponent>(player).ToList();
 
-							if (items.Count() > 0)
-								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
-								                                      {
-								                                      		Size = MapPanel.Size,
-								                                      		IsPopup = true,
-								                                      		HasFrame = true,
-																			Items = inventory.Items,
-																			SelectSingleItem = false,
-																			ItemSelected = i => PickUpItem(player, i, items),
-								                                      }));
-							else
-								world.Log.Normal("No items here to pick up.");
-						} else if (keyData.Character == 'i') {
-							var inventory = player.Get<ContainerComponent>();
+						if (weapons.Count > 1) {
+							ParentApplication.Push(
+									new OptionsSelectionPrompt<Entity>("Reload what weapon?",
+									                                   weapons, e => e.Get<Identifier>().Name,
+									                                   weapon => Reload(player, weapon),
+									                                   GameplayWindow.PromptTemplate));
+						} else if (weapons.Count == 1) {
+							Reload(player, weapons.First());
+						} else {
+							world.Log.Normal("No weapons to reload.");
+						}
+					} else if (keyData.Character == 'u') {
+						ParentApplication.Push(
+								new DirectionalPrompt("What direction?",
+								                      location.Point,
+								                      p =>
+								                      	{
+								                      		var useables = location.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
+								                      		                                                          e.Has<VisibleComponent>() &&
+								                      		                                                          e.Get<VisibleComponent>().VisibilityIndex > 0);									                      		
+								                      		if (useables.Count() > 1) {
+								                      			ParentApplication.Push(
+								                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
+								                      					                                   useables,
+								                      					                                   Identifier.GetNameOrId,
+								                      					                                   e => SelectUsableAction(player, e, e.Get<UseableFeature>().Uses.ToList()),
+								                      					                                   GameplayWindow.PromptTemplate));
+								                      		} else if (useables.Count() == 1) {
+								                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
+								                      		} else {
+								                      			world.Log.Normal("Nothing there to use.");
+								                      		}
+								                      	},
+								                      GameplayWindow.PromptTemplate));
+					} else if (keyData.Character == 'd') {
+						var inventory = player.Get<ContainerComponent>();
+						if (inventory.Count > 0)
 							ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
 							                                      {
 							                                      		Size = MapPanel.Size,
@@ -438,51 +407,86 @@ namespace SKR.UI.Gameplay {
 							                                      		HasFrame = true,
 							                                      		Items = inventory.Items,
 							                                      		SelectSingleItem = false,
-							                                      		ItemSelected = i => world.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight)),
+							                                      		ItemSelected = i => DropItem(player, i),
 							                                      }));
+						else
+							world.Log.Normal("You are carrying no items to drop.");
+					} else if (keyData.Character == 'g') {
+						var level = location.Level;
+						var inventory = player.Get<ContainerComponent>();
 
-						} else if (keyData.Character == 'w')
-							ParentApplication.Push(new InventoryWindow(new InventoryWindowTemplate()
-							                                           {
-							                                           		Size = MapPanel.Size,
-							                                           		IsPopup = true,
-							                                           		HasFrame = true,
-																			World = world,
-							                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
-							                                           }));
-						else if (keyData.Character == 'l') {
-							if (keyData.ControlKeys == ControlKeys.LeftControl) {
+						// get all items that have a location (eg present on the map) that are at the location where are player is
+						var items =
+								location.Level.GetEntitiesAt(location.Point).Where(e => e.Has<Item>() &&
+								                                                        e.Has<VisibleComponent>() &&
+								                                                        e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+								                                                        (!inventory.Items.Contains(e))).ToList();
 
-							} else
-								ParentApplication.Push(
-										new LookWindow(
-												location.Position,
-												delegate(Point p)
-													{
-														StringBuilder sb = new StringBuilder();
-														var entitiesAtLocation = location.Level.GetEntitiesAt(p);
-														sb.AppendLine(((Level) location.Level).GetTerrain(p).Definition);
-														foreach (var entity in entitiesAtLocation) {
-															sb.AppendFormat("Entity: {0} ", entity.Id);
-															sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
-															if (entity.Has<Blocker>())
-																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+						if (items.Count() > 0)
+							ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
+							                                      {
+							                                      		Size = MapPanel.Size,
+							                                      		IsPopup = true,
+							                                      		HasFrame = true,
+							                                      		Items = inventory.Items,
+							                                      		SelectSingleItem = false,
+							                                      		ItemSelected = i => PickUpItem(player, i, items),
+							                                      }));
+						else
+							world.Log.Normal("No items here to pick up.");
+					} else if (keyData.Character == 'i') {
+						var inventory = player.Get<ContainerComponent>();
+						ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
+						                                      {
+						                                      		Size = MapPanel.Size,
+						                                      		IsPopup = true,
+						                                      		HasFrame = true,
+						                                      		Items = inventory.Items,
+						                                      		SelectSingleItem = false,
+						                                      		ItemSelected = i => world.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight)),
+						                                      }));
 
-															sb.AppendLine();
-														}
+					} else if (keyData.Character == 'w')
+						ParentApplication.Push(new InventoryWindow(new InventoryWindowTemplate()
+						                                           {
+						                                           		Size = MapPanel.Size,
+						                                           		IsPopup = true,
+						                                           		HasFrame = true,
+						                                           		World = world,
+						                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
+						                                           }));
+					else if (keyData.Character == 'l') {
+						if (keyData.ControlKeys == ControlKeys.LeftControl) {
 
-														return sb.ToString();
-													},
-												MapPanel,
-												GameplayWindow.PromptTemplate));
-						} else if (keyData.Character == 'z') {
-							world.Log.Special("Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
+						} else
+							ParentApplication.Push(
+									new LookWindow(
+											location.Point,
+											delegate(Point p)
+												{
+													StringBuilder sb = new StringBuilder();
+													var entitiesAtLocation = location.Level.GetEntitiesAt(p);
+													sb.AppendLine(((Level) location.Level).GetTerrain(p).Definition);
+													foreach (var entity in entitiesAtLocation) {
+														sb.AppendFormat("Entity: {0} ", entity.Id);
+														sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
+														if (entity.Has<Blocker>())
+															sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+
+														sb.AppendLine();
+													}
+
+													return sb.ToString();
+												},
+											MapPanel,
+											GameplayWindow.PromptTemplate));
+					} else if (keyData.Character == 'z') {
+						world.Log.Special("Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
 //							player.Add(new LongAction(500, e => world.Log.Normal(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
 //							player.Get<ActionPoint>().ActionPoints -= 100;
-						}
-						
-						break;
 					}
+						
+					break;
 				}
 			}
 		}

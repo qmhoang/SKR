@@ -85,7 +85,7 @@ namespace SKR.UI.Menus {
 				var treeNode = new TreeNode("category" + i);
 				nodes.Add(treeNode);
 
-				for (int j = 0; j < 7; j++) {
+				for (int j = 0; j < 10; j++) {
 					treeNode.AddChild(new TreeNode("jobs" + index));
 					index++;
 				}
@@ -103,6 +103,19 @@ namespace SKR.UI.Menus {
 
 			treeTemplate.AlignTo(LayoutDirection.South, sexTemplate, 1);
 			AddControl(new TreeView(treeTemplate));
+
+			var treeTemplate1 = new TreeViewTemplate
+			                    {
+			                    		Title = "Occupation",
+			                    		TitleAlignment = HorizontalAlignment.Center,
+			                    		MinimumListBoxWidth = 15,
+			                    		FrameTitle = true,
+			                    		AutoSizeOverride = new Size(15, 10),
+			                    		Items = nodes.Where((n, i) => i % 10 == 0).ToList(),
+			                    };
+
+			treeTemplate1.AlignTo(LayoutDirection.South, treeTemplate, 1);
+			AddControl(new TreeView(treeTemplate1));
 
 			var sliderTestTemplate = new SliderTemplate()
 			                         {

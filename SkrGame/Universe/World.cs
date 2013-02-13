@@ -6,15 +6,15 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
-using SkrGame.Core;
+using DEngine.Extensions;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
 using Level = SkrGame.Universe.Locations.Level;
@@ -54,11 +54,10 @@ namespace SkrGame.Universe {
 
 			var player = EntityManager.Create(new List<Component>
 			                                  {
-			                                  		new ActionPoint(),
 			                                  		new Sprite("player", Sprite.PLAYER_LAYER),
 			                                  		new Identifier("Player"),
 			                                  		new Location(0, 0, level),
-//			                                  		new Player(),
+			                                  		new ActorComponent(new Player(), new AP()),
 			                                  		new Person(),
 			                                  		new DefendComponent(),
 			                                  		new ContainerComponent(),
@@ -91,18 +90,17 @@ namespace SkrGame.Universe {
 
 			var npc = EntityManager.Create(new List<Component>
 			                               {
-			                               		new ActionPoint(),
 			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                               		new Identifier("npc"),
 			                               		new Location(6, 2, level),
+//												new ActorComponent(new NPC(), new AP()),
 			                               		new Person(),
 			                               		new DefendComponent(),
 			                               		new VisibleComponent(10),
 			                               		new ContainerComponent(),
 			                               		new EquipmentComponent(),
 												new SightComponent()
-			                               });
-			npc.Add(new NpcIntelligence(new SimpleAI()));
+			                               });			
 
 			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
 			EntityManager.Create(EntityFactory.Get("axe")).Add(new Location(1, 1, level));
@@ -118,9 +116,6 @@ namespace SkrGame.Universe {
 
 			actionPointSystem = new ActionPointSystem(player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
-		}
-
-		public void Process() {			
 		}
 
 		public void UpdateSystems() {

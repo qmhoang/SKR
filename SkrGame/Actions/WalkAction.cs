@@ -10,6 +10,7 @@ using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions {
@@ -28,9 +29,9 @@ namespace SkrGame.Actions {
 		}
 
 		public override ActionResult OnProcess() {
-			Point newPosition = Entity.Get<Location>().Position + direction;
+			Point newLocation = Entity.Get<Location>().Point + direction;
 
-			var bumpablesAtLocation = Entity.Get<Location>().Level.GetEntitiesAt(newPosition).FilteredBy<OnBump>();
+			var bumpablesAtLocation = Entity.Get<Location>().Level.GetEntitiesAt(newLocation).FilteredBy<OnBump>();
 			bool blockedMovement = false;
 
 			//todo bumpables add action
@@ -41,13 +42,26 @@ namespace SkrGame.Actions {
 			}
 
 			if (!blockedMovement) {
-//				Holder.Actions.Enqueue(new WalkAction(Entity, direction));
+				Entity.Get<ActorComponent>().Enqueue(new WalkAction(Entity, direction));
 				return ActionResult.Success;
 			} else {
 				return ActionResult.Failed;				
 			}
 		}
 	}
+
+	public class WaitAction : ActorAction {
+		public WaitAction(Entity entity) : base(entity) { }
+
+		public override int APCost {
+			get { return Entity.Get<ActorComponent>().AP.ActionPointPerTurn; }
+		}
+
+		public override ActionResult OnProcess() {
+			return ActionResult.Success;
+		}
+	}
+
 	public class WalkAction : ActorAction {
 		private Direction direction;
 
@@ -63,38 +77,37 @@ namespace SkrGame.Actions {
 
 		public override ActionResult OnProcess() {
 			// note: check for actions on illegal entities
-			Point newPosition = Entity.Get<Location>().Position + direction;
+			var location = Entity.Get<Location>();
+
+			Point newLocation = location.Point + direction;
 			
-			if (Entity.Get<Location>().Level.IsWalkable(newPosition)) {
-				Entity.Get<Location>().Position = newPosition;
+			if (location.Level.IsWalkable(newLocation)) {
+				location.Point = newLocation;
 				
 				// check if we're near anything
-				var nearEntities = Entity.Get<Location>().Level.GetEntities().Where(e => e.Has<PassiveFeature>());
+				var nearEntities = location.Level.GetEntities().Where(e => e.Has<PassiveFeature>());
 
 				foreach (var e in nearEntities) {
 					e.Get<PassiveFeature>().Near(Entity, e);
 				}
 			} else {
-//				World.Instance.Log.Fail("There is something in the way.");
+
+				location.Level.World.Log.Fail("There is something in the way.");
 				return ActionResult.Aborted;
 			}
 			return ActionResult.Success;
 		}
 	}
 
-	public class TestAction : ActionRequiresPrompt<int> {
-		public TestAction(Entity entity, int apcost) : base(entity) {}
-
-		public override int APCost {
-			get { return 10; }
-		}
-
-		public override ActionResult OnProcess() {
-			throw new NotImplementedException();
-		}
-
-		public override IEnumerable<int> Options {
-			get { yield return 1; yield return 10; yield return 100; }
-		}
-	}
+//	public class TestAction : ActorAction {
+//		public TestAction(Entity entity) : base(entity) {}
+//
+//		public override int APCost {
+//			get { return 10; }
+//		}
+//
+//		public override ActionResult OnProcess() {
+//			if ()
+//		}
+//	}
 }
