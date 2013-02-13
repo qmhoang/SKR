@@ -58,7 +58,7 @@ namespace SkrGame.Universe {
 			                                  		new Sprite("player", Sprite.PLAYER_LAYER),
 			                                  		new Identifier("Player"),
 			                                  		new Location(0, 0, level),
-			                                  		new Player(),
+//			                                  		new Player(),
 			                                  		new Person(),
 			                                  		new DefendComponent(),
 			                                  		new ContainerComponent(),
@@ -118,6 +118,9 @@ namespace SkrGame.Universe {
 
 			actionPointSystem = new ActionPointSystem(player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
+		}
+
+		public void Process() {			
 		}
 
 		public void UpdateSystems() {

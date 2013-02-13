@@ -27,9 +27,9 @@ namespace SKR.UI.Menus {
 		private ContainerComponent inventory;
 		private EquipmentComponent equipment;
 
-		private Rect sizeList;
+		private Rectangle sizeList;
 		
-		protected override Rect ListRect {
+		protected override Rectangle ListRect {
 			get { return sizeList; }
 		}
 
@@ -42,7 +42,7 @@ namespace SKR.UI.Menus {
 			inventory = template.World.Player.Get<ContainerComponent>();
 			equipment = template.World.Player.Get<EquipmentComponent>();
 			bodyPartWidth = 25; // todo replace to code            
-			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
+			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
 		}
 
@@ -90,7 +90,7 @@ namespace SKR.UI.Menus {
 			return mouseData.Position.Y / 2;
 		}
 
-		protected override void CustomDraw(Rect rect) {
+		protected override void CustomDraw(Rectangle rect) {
 			int positionY = 0;
 			char letter = 'A';
 			foreach (var bodyPart in List) {

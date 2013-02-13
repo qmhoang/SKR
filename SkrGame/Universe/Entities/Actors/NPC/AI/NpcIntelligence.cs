@@ -1,7 +1,6 @@
 using System;
 using DEngine.Components;
 using DEngine.Entities;
-using SkrGame.Core.ComponentMessages;
 using SkrGame.Systems;
 
 namespace SkrGame.Universe.Entities.Actors.NPC.AI {

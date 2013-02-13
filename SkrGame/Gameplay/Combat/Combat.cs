@@ -122,7 +122,7 @@ namespace SkrGame.Gameplay.Combat {
 
 			var melee = weapon.Get<MeleeComponent>();			
 			//apply skill
-			if (attacker.Has<Actor>()) {
+			if (attacker.Has<ActorComponent>()) {
 				hitBonus += attacker.Get<Person>().GetSkill(melee.Skill);				
 			} else {
 				hitBonus += World.MEAN;
@@ -201,7 +201,7 @@ namespace SkrGame.Gameplay.Combat {
 			var targetLocation = defender.Get<Location>();
 
 			//apply skill
-			if (attacker.Has<Actor>()) {
+			if (attacker.Has<ActorComponent>()) {
 				hitBonus += attacker.Get<Person>().GetSkill(weapon.Skill);
 			} else {
 				hitBonus += World.MEAN;
