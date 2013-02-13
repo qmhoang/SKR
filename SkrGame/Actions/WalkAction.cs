@@ -18,9 +18,13 @@ namespace SkrGame.Actions {
 
 		private static readonly int BUMP_COST = World.SpeedToActionPoints(World.DEFAULT_SPEED) / 10;
 
-		public BumpAction(Entity entity, Direction direction) : base(entity, BUMP_COST) {
+		public BumpAction(Entity entity, Direction direction) : base(entity) {
 			Contract.Requires<ArgumentException>(entity.Has<Location>());			
 			this.direction = direction;
+		}
+
+		public override int APCost {
+			get { return BUMP_COST; }
 		}
 
 		public override ActionResult OnProcess() {
@@ -37,7 +41,7 @@ namespace SkrGame.Actions {
 			}
 
 			if (!blockedMovement) {
-				Actions.Enqueue(new WalkAction(Entity, direction));
+//				Holder.Actions.Enqueue(new WalkAction(Entity, direction));
 				return ActionResult.Success;
 			} else {
 				return ActionResult.Failed;				
@@ -49,8 +53,12 @@ namespace SkrGame.Actions {
 
 		private static readonly int WALK_COST = World.SpeedToActionPoints(World.DEFAULT_SPEED);
 
-		public WalkAction(Entity entity, Direction direction) : base(entity, WALK_COST) {
+		public WalkAction(Entity entity, Direction direction) : base(entity) {
 			this.direction = direction;
+		}
+
+		public override int APCost {
+			get { return WALK_COST; }
 		}
 
 		public override ActionResult OnProcess() {
@@ -71,6 +79,22 @@ namespace SkrGame.Actions {
 				return ActionResult.Aborted;
 			}
 			return ActionResult.Success;
+		}
+	}
+
+	public class TestAction : ActionRequiresPrompt<int> {
+		public TestAction(Entity entity, int apcost) : base(entity) {}
+
+		public override int APCost {
+			get { return 10; }
+		}
+
+		public override ActionResult OnProcess() {
+			throw new NotImplementedException();
+		}
+
+		public override IEnumerable<int> Options {
+			get { yield return 1; yield return 10; yield return 100; }
 		}
 	}
 }

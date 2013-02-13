@@ -62,7 +62,7 @@ namespace SKR.UI.Gameplay {
 			for (int x = 0; x < Size.Width; x++) {
 				for (int y = 0; y < Size.Height; y++) {
 					Point localPosition = ViewOffset.Shift(x, y);
-					if (!level.IsInBoundsOrBorder(localPosition))
+					if (!level.IsInBounds(localPosition))
 						continue;
 
 					var texture = assets[((Level)level).GetTerrain(localPosition).Asset];

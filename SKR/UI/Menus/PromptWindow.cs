@@ -294,7 +294,7 @@ namespace SKR.UI.Menus {
 			if ((!(sender is MapPanel)))
 				return;
 			var mapPanel = (MapPanel)sender;
-			var pointList = Bresenham.GeneratePointsFromLine(origin, selectedPosition);
+			var pointList = Bresenham.GeneratePointsFromLine(origin, selectedPosition).ToList();
 
 			bool path = true;
 

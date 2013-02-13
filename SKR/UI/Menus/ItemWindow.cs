@@ -18,9 +18,9 @@ namespace SKR.UI.Menus {
 	}
 	public class ItemWindow : ListWindow<Entity> {        
 		private readonly bool singleItem;        		
-		private Rect sizeList;		
+		private Rectangle sizeList;		
 
-		protected override Rect ListRect {
+		protected override Rectangle ListRect {
 			get { return sizeList; }
 		}
 
@@ -29,14 +29,14 @@ namespace SKR.UI.Menus {
 			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires(Contract.ForAll(template.Items, i => i.Has<Item>()));
 			singleItem = template.SelectSingleItem;            
-			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
+			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 		}
 
 		protected override int MouseToIndex(MouseData mouseData) {
 			return mouseData.Position.Y - ListRect.Top;
 		}
 
-		protected override void CustomDraw(Rect rect) {
+		protected override void CustomDraw(Rectangle rect) {
 			int y = 0;
 			char letter = 'A';
 			foreach (var entity in List) {								

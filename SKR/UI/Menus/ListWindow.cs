@@ -19,7 +19,7 @@ namespace SKR.UI.Menus {
 		/// <summary>
 		/// The rectangle in which the list will be drawn
 		/// </summary>
-		protected abstract Rect ListRect { get; }
+		protected abstract Rectangle ListRect { get; }
 
 //		protected Dictionary<char, T> Items;
 		protected IEnumerable<T> List;
@@ -85,7 +85,7 @@ namespace SKR.UI.Menus {
 				ExitWindow();
 		}
 
-		protected abstract void CustomDraw(Rect rect);
+		protected abstract void CustomDraw(Rectangle rect);
 
 		protected virtual void OnSelectItem(T item) {
 			if (selectItem != null)
