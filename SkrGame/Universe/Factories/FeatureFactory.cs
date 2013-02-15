@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Actions.Features;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
@@ -23,14 +24,13 @@ namespace SkrGame.Universe.Factories {
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(openAsset));
 			return new Opening(openAsset, closedAsset, "opens the window", "closes the window", false, WINDOW_USAGE_AP_COST);
 		}
-
-
+		
 		public static OnBump.BumpResult DoorOnBump(Entity user, Entity door) {
 			Contract.Requires<ArgumentNullException>(door != null, "door");
 			Contract.Requires<ArgumentNullException>(user != null, "user");
 			Contract.Requires<ArgumentException>(door.Has<Opening>());
 			if (door.Get<Opening>().Status == Opening.OpeningStatus.Closed) {
-				door.Get<Opening>().Action(user);				
+				user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, door));	
 				return OnBump.BumpResult.BlockMovement;
 			} else {
 				return OnBump.BumpResult.NormalMovement;
@@ -40,7 +40,7 @@ namespace SkrGame.Universe.Factories {
 		public static OnBump.BumpResult WindowOnBump(Entity user, Entity door) {
 			Contract.Requires<ArgumentNullException>(door != null, "door");
 			Contract.Requires<ArgumentNullException>(user != null, "user");
-			door.Get<Opening>().Action(user);
+			user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, door));
 			return OnBump.BumpResult.BlockMovement;
 		}
 
@@ -66,7 +66,7 @@ namespace SkrGame.Universe.Factories {
 			                               		new UseableFeature.UseAction("Use door", (user, featureEntity, action) =>
 			                               		                                         	{
 																								if (featureEntity.Has<Opening>())
-																									return featureEntity.Get<Opening>().Action(user);
+																									user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
 			                               		                                         		return ActionResult.Aborted;
 			                               		                                         	})
 			                               }));
@@ -97,7 +97,7 @@ namespace SkrGame.Universe.Factories {
 			                               		new UseableFeature.UseAction("Use window", (user, featureEntity, action) =>
 			                               		                                           	{
 			                               		                                           		if (featureEntity.Has<Opening>())
-			                               		                                           			return featureEntity.Get<Opening>().Action(user);
+																									user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
 			                               		                                           		return ActionResult.Aborted;
 			                               		                                           	})
 			                               }));

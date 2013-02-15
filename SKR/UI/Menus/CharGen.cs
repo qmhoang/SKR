@@ -67,7 +67,7 @@ namespace SKR.UI.Menus {
 			                  {
 			                  		Label = "Sex",
 //                                  MinimumWidth = 15,
-			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(3, 0),
+			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(2, 0),
 			                  		RightClickMenu = true,
 //                                  Tooltip = "Click to switch sex, right click to choose from a menu",
 			                  		Items = new List<string>()

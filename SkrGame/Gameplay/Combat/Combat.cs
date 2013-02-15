@@ -11,6 +11,7 @@ using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Locations;
 
 namespace SkrGame.Gameplay.Combat {
 	public class DamageType {
@@ -105,218 +106,6 @@ namespace SkrGame.Gameplay.Combat {
 			return CombatEventResult.Hit;
 		}
 
-		public static ActionResult MeleeAttack(Entity attacker, Entity weapon, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
-			Contract.Requires<ArgumentNullException>(attacker != null, "attacker");
-			Contract.Requires<ArgumentNullException>(weapon != null, "weapon");
-			Contract.Requires<ArgumentNullException>(defender != null, "defender");
-			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
-
-			Contract.Requires<ArgumentException>(weapon.Has<MeleeComponent>(), "weapon cannot melee attack");
-			Contract.Requires<ArgumentException>(attacker.Has<ActorComponent>(), "attacker doesn't have a location");
-			Contract.Requires<ArgumentException>(attacker.Has<Location>(), "attacker doesn't have a location");
-			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
-			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
-			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
-			Contract.Requires<ArgumentException>(defender.Get<Location>().Level == attacker.Get<Location>().Level, "attacker is not on the same level as defender");
-			Contract.Requires<ArgumentException>(defender.Id == bodyPartTargetted.Owner.OwnerUId);
-
-			var melee = weapon.Get<MeleeComponent>();			
-			//apply skill
-			if (attacker.Has<ActorComponent>()) {
-				hitBonus += attacker.Get<Person>().GetSkill(melee.Skill);				
-			} else {
-				hitBonus += World.MEAN;
-			}
-
-			var defenderName = Identifier.GetNameOrId(defender);
-			var attackerName = Identifier.GetNameOrId(attacker);
-
-			var result = Combat.Attack(attackerName, defenderName, hitBonus + melee.HitBonus - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
-
-			if (result == CombatEventResult.Hit) {
-				const int TEMP_STR_BONUS = World.MEAN;
-				var damage = Math.Max(melee.Damage.Roll() + GetStrengthDamage(TEMP_STR_BONUS).Roll(), 1);
-				int damageResistance, realDamage;
-
-				Combat.Damage(damage, melee.Penetration, melee.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
-
-//				if (World.Instance.Player == attacker) {
-//					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
-//				} else {
-//					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
-//				}
-
-
-
-				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Hit, damage,
-				                                         damageResistance, realDamage));
-			} else if (result == CombatEventResult.Miss) {
-//				if (World.Instance.Player == attacker) {
-//					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
-//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-//				} else {
-//					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
-//					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-//				}
-
-
-				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted));
-			} else if (result == CombatEventResult.Dodge) {
-//				if (World.Instance.Player == attacker) {
-//					World.Instance.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-//					                                     attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-//				} else {
-//					World.Instance.Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-//					                                      attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-//				}
-				
-
-				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Dodge));
-			}
-
-			attacker.Get<ActorComponent>().AP.ActionPoints -= melee.APToAttack;
-			return ActionResult.Success;
-		}
-
-		public static ActionResult RangeAttack(Entity attacker, Entity rangeWeapon, Entity defender, DefendComponent.AttackablePart bodyPartTargetted, double hitBonus = 0, bool targettingPenalty = false) {
-			Contract.Requires<ArgumentNullException>(attacker != null, "attacker");
-			Contract.Requires<ArgumentNullException>(rangeWeapon != null, "rangeWeapon");
-			Contract.Requires<ArgumentNullException>(defender != null, "defender");
-			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
-
-			Contract.Requires<ArgumentException>(rangeWeapon.Has<RangeComponent>(), "rangeWeapon cannot range attack");
-			Contract.Requires<ArgumentException>(attacker.Has<ActorComponent>(), "attacker doesn't have a location");
-			Contract.Requires<ArgumentException>(attacker.Has<Location>(), "attacker doesn't have a location");
-			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
-			Contract.Requires<ArgumentException>(defender.Has<Location>(), "defender doesn't have a location");
-			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
-			Contract.Requires<ArgumentException>(defender.Get<Location>().Level == attacker.Get<Location>().Level, "attacker is not on the same level as defender");
-			
-			var weapon = rangeWeapon.Get<RangeComponent>();
-			var attackerName = Identifier.GetNameOrId(attacker);
-			var defenderName = Identifier.GetNameOrId(defender);
-			var attackerLocation = attacker.Get<Location>();
-			var targetLocation = defender.Get<Location>();
-
-			//apply skill
-			if (attacker.Has<ActorComponent>()) {
-				hitBonus += attacker.Get<Person>().GetSkill(weapon.Skill);
-			} else {
-				hitBonus += World.MEAN;
-			}
-
-			if (weapon.ShotsRemaining <= 0) {
-//				World.Instance.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
-//				                                        attackerName));
-				attacker.Get<ActorComponent>().AP.ActionPoints -= weapon.APToAttack;
-				return ActionResult.Failed;
-			}
-
-			weapon.ShotsRemaining--;
-			attacker.Get<ActorComponent>().AP.ActionPoints -= weapon.APToAttack;
-
-//			var locationsOnPath = Bresenham.GeneratePointsFromLine(attackerLocation.Location, targetLocation.Location).ToList();
-
-			var entitiesOnPath = Combat.GetTargetsOnPath(attackerLocation.Point, targetLocation.Point).ToList();
-
-			int targetsInTheWay = 0;
-			foreach (var currentEntity in entitiesOnPath) {			
-				var defenderLocation = currentEntity.Get<Location>();
-
-				double range = defenderLocation.DistanceTo(attackerLocation) * World.TILE_LENGTH_IN_METER;
-				double rangePenalty = Math.Min(0, -World.STANDARD_DEVIATION * Combat.RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.STANDARD_DEVIATION * 2 / 3);				
-				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, defenderName);
-
-				// not being targetted gives a sigma (std dev) penalty
-				rangePenalty -= defender.Id == currentEntity.Id ? 0 : World.STANDARD_DEVIATION;
-
-				double difficultyOfShot = hitBonus + rangePenalty + (targetsInTheWay * Combat.RANGE_PENALTY_TILE_OCCUPIED) - World.MEAN - (targettingPenalty ? bodyPartTargetted.TargettingPenalty : 0);
-				Logger.InfoFormat("Shot difficulty: {0}, targetting penalty: {1}, weapon bonus: {2}, is target: {3}",
-								  difficultyOfShot, bodyPartTargetted.TargettingPenalty, hitBonus,
-								  defender.Id == currentEntity.Id);
-
-				var result = Combat.Attack(attackerName, defenderName, difficultyOfShot);
-
-				if (result == CombatEventResult.Hit) {
-					var damage = Math.Max(weapon.Damage.Roll(), 1);
-					int damageResistance, realDamage;
-
-					Combat.Damage(weapon.Damage.Roll(), weapon.Penetration, weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
-//
-//					World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-//					                                        attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
-
-					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Hit, damage,
-					                                         damageResistance, realDamage));
-					return ActionResult.Success;
-				} else if (result == CombatEventResult.Miss) {
-					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-//						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
-//																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-
-					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted));
-				} else if (result == CombatEventResult.Dodge) {
-					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-//						World.Instance.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-//																attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
-
-					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Dodge));
-				}
-				targetsInTheWay++;
-			}
-
-			// todo drop ammo casing
-
-//			World.Instance.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
-			return ActionResult.Failed;
-		}
-
-		public static ActionResult ReloadWeapon(Entity user, Entity weaponEntity, Entity ammoEntity) {
-			Contract.Requires<ArgumentException>(weaponEntity.Has<RangeComponent>());
-			Contract.Requires<ArgumentException>(ammoEntity.Has<AmmoComponent>());
-			Contract.Requires<ArgumentException>(user.Has<Location>());
-			Contract.Requires<ArgumentException>(user.Has<ActorComponent>());
-			Contract.Requires<ArgumentException>(weaponEntity.Get<RangeComponent>().AmmoType == ammoEntity.Get<AmmoComponent>().Type);
-
-			var weapon = weaponEntity.Get<RangeComponent>();
-			var ammo = ammoEntity.Get<Item>();
-
-			// todo revolvers and single load weapons
-
-			// first we unload all ammos currently in the gun to the group, semi-simulating dropping the magazine
-			if (weapon.ShotsRemaining > 0) {
-				var droppedAmmo = ammoEntity.Copy();
-
-				droppedAmmo.Get<Item>().Amount = weapon.ShotsRemaining;
-				weapon.ShotsRemaining = 0;
-				droppedAmmo.Get<VisibleComponent>().Reset();
-
-//				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
-			} else {
-//				World.Instance.Log.Normal(String.Format("{0} reloads {1} with {2}.", user.Get<Identifier>().Name, weaponEntity.Get<Identifier>().Name, ammoEntity.Get<Identifier>().Name));
-			}
-
-			if (ammo.StackType == StackType.Hard) {
-				if (ammo.Amount >= weapon.Shots) {
-					ammo.Amount -= weapon.Shots;
-					weapon.ShotsRemaining = weapon.Shots;
-				} else {
-					ammo.Amount -= weaponEntity.Get<Item>().Amount;
-
-					if (user.Has<ContainerComponent>()) {
-						user.Get<ContainerComponent>().Remove(ammoEntity);
-					}
-
-//					World.Instance.EntityManager.Remove(ammoEntity);
-				}
-			}
-
-			user.Get<ActorComponent>().AP.ActionPoints -= weapon.APToReload;
-			return ActionResult.Success;
-		}
-
 		public static Rand GetStrengthDamage(int strength) {
 			return Rand.Gaussian(strength / 3, strength / 3 - 1, Math.Min(World.STANDARD_DEVIATION / 3, strength / 3));
 		}
@@ -324,28 +113,26 @@ namespace SkrGame.Gameplay.Combat {
 		public const double RANGE_PENALTY_STD_DEV_MULT = 0.87;
 		public const double RANGE_PENALTY_TILE_OCCUPIED = -World.MEAN * 4 / 3;
 
-		public static IEnumerable<Entity> GetTargetsOnPath(Point start, Point end) {
-//			var currentLevel = World.Instance.CurrentLevel;
-
-//			if (!currentLevel.IsWalkable(start))
-//				throw new ArgumentException("starting point has to be walkable", "start");
+		public static IEnumerable<Entity> GetTargetsOnPath(Level currentLevel, Point start, Point end) {
+			
+			if (!currentLevel.IsWalkable(start))
+				throw new ArgumentException("starting point has to be walkable", "start");
 
 			var pointsOnPath = Bresenham.GeneratePointsFromLine(start, end);
 
-//			foreach (var location in pointsOnPath) {
-//				if (!currentLevel.IsWalkable(location)) {
-//					Logger.InfoFormat("We hit a location:({0}) where it is not walkable.", location);
-//					yield break;
-//				}
-//
-//				var entitiesAt = currentLevel.GetEntitiesAt(location).Where(e => e.Has<DefendComponent>()).ToList();
-//				if (entitiesAt.Count() > 0) {					
-//					foreach (var entity in entitiesAt) {
-//						yield return entity;
-//					}
-//				}
-//			}
-			yield return null;
+			foreach (var location in pointsOnPath) {
+				if (!currentLevel.IsWalkable(location)) {
+					Logger.InfoFormat("We hit a location:({0}) where it is not walkable.", location);
+					yield break;
+				}
+
+				var entitiesAt = currentLevel.GetEntitiesAt(location).Where(e => e.Has<DefendComponent>()).ToList();
+				if (entitiesAt.Count() > 0) {					
+					foreach (var entity in entitiesAt) {
+						yield return entity;
+					}
+				}
+			}			
 		}
 
 		public static void Damage(int damage, double penetration, DamageType type, Entity defender, DefendComponent.AttackablePart bodyPart, out int damageResistance, out int damageDealt) {
