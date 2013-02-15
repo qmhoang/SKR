@@ -7,12 +7,12 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
+using SkrGame.Actions;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Actors.NPC.AI;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Factories;
@@ -48,7 +48,7 @@ namespace SkrGame.Universe {
 
 			EntityFactory.Compile();
 
-			mapFactory = new MapFactory(EntityManager, EntityFactory);
+			mapFactory = new MapFactory(this);
 
 			level = mapFactory.Construct("TestMap");
 
@@ -93,13 +93,12 @@ namespace SkrGame.Universe {
 			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                               		new Identifier("npc"),
 			                               		new Location(6, 2, level),
-//												new ActorComponent(new NPC(), new AP()),
+												new ActorComponent(new NPC(), new AP()),
 			                               		new Person(),
 			                               		new DefendComponent(),
 			                               		new VisibleComponent(10),
 			                               		new ContainerComponent(),
 			                               		new EquipmentComponent(),
-												new SightComponent()
 			                               });			
 
 			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
@@ -111,7 +110,7 @@ namespace SkrGame.Universe {
 
 			var armor = EntityManager.Create(EntityFactory.Get("footballpads")).Add(new Location(1, 1, level));
 //			npc.Get<ContainerComponent>().Add(armor);
-			npc.Get<EquipmentComponent>().Equip("Torso", armor);
+			npc.Get<ActorComponent>().Enqueue(new EquipItem(npc, armor, "Torso", true));			
 			npc.Add(new MeleeComponent(punch));
 
 			actionPointSystem = new ActionPointSystem(player, EntityManager);

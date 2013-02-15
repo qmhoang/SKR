@@ -19,39 +19,38 @@ namespace SkrGame.Systems {
 			this.player = player;
 		}
 
-//		public void Update() {
-//			entities.Each(e => e.Get<ActorComponent>().AP.Gain());
-//
-//			foreach (var entity in entities) {
-//				if (entity.Get<ActorComponent>().AP.Updateable) {
-//					var ar = entity.Get<ActorComponent>().NextAction();
-//				}
-//			}
-//		}
-
 		public void Update() {
-			var playerAP = player.Get<ActorComponent>();
-			if (!playerAP.Actor.RequiresInput) {
-				foreach (var entity in entities) {
-//					if (entity != player) {
-						var entityAP = entity.Get<ActorComponent>();
-						entityAP.AP.Gain();
-						while (entityAP.AP.Updateable && !entityAP.Actor.RequiresInput) {
-							var action = entity.Get<ActorComponent>().NextAction();
+			var playerActor = player.Get<ActorComponent>();
+//			if (playerActor.Actor.RequiresInput)
+//				return;
+			while (playerActor.AP.Updateable && !playerActor.Actor.RequiresInput) {
+				var action = player.Get<ActorComponent>().NextAction();
 
-							var result = action.OnProcess();
+				var result = action.OnProcess();
 
-							if (result == ActionResult.Failed || result == ActionResult.Success) {
-								entityAP.AP.ActionPoints -= action.APCost;
-							}
-						}
-//					}
+				if (result == ActionResult.Failed || result == ActionResult.Success) {
+					playerActor.AP.ActionPoints -= action.APCost;
 				}
-
-//				playerAP.AP.Gain();
-//				player.Broadcast<IUpdateable>(c => c.Update());
 			}
-//				player.Broadcast("Update", new UpdateEvent(player, playerAP.ActionPointPerTurn));
+			if (!playerActor.AP.Updateable) {
+				playerActor.AP.Gain();
+				foreach (var entity in entities) {
+					if (entity == player)
+						continue;
+
+					var entityActor = entity.Get<ActorComponent>();
+					entityActor.AP.Gain();
+					while (entityActor.AP.Updateable && !entityActor.Actor.RequiresInput) {
+						var action = entity.Get<ActorComponent>().NextAction();
+
+						var result = action.OnProcess();
+
+						if (result == ActionResult.Failed || result == ActionResult.Success) {
+							entityActor.AP.ActionPoints -= action.APCost;
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -8,11 +8,12 @@ using DEngine.Components;
 using DEngine.Components.Actions;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Actions;
 using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class EquipmentComponent : Component, IPositionChanged {
+	public class EquipmentComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly Dictionary<string, Entity> equippedItems;
@@ -77,19 +78,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			Logger.DebugFormat("{0} is equipping {1} to {2}.", OwnerUId, item.Id, slot);
 			OnItemEquipped(new EventArgs<string, Entity>(slot, item));
 
-//			if (equippedItems.ContainsKey(slot))
-//				Unequip(slot, out removed);
-//			else
-//				removed = null;
-
-			// make the item we just added invisible
-			if (item.Has<VisibleComponent>())
-				item.Get<VisibleComponent>().VisibilityIndex = -1;
-
-			// just in case, move the item to the entity's location
-			if (item.Has<Location>())
-				item.Get<Location>().Point = Entity.Get<Location>().Point;
-
 			equippedItems.Add(slot, item);			
 		}
 
@@ -106,10 +94,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				equippedItems.Remove(slot);
 				
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
-
-				if (old.Has<VisibleComponent>()) {
-					old.Get<VisibleComponent>().Reset();
-				}
 
 				return true;
 			}
@@ -150,13 +134,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				equipment.ItemUnequipped = (ComponentEventHandler<EventArgs<string, Entity>>)ItemUnequipped.Clone();
 
 			return equipment;
-		}
-
-		public void Move(Point prev, Point curr) {
-			foreach (var item in EquippedItems) {
-				if (item.Has<Location>())
-					item.Get<Location>().Point = curr;
-			}
 		}
 	}
 }

@@ -44,7 +44,7 @@ namespace SKR.UI.Menus {
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, entity.Get<Identifier>().Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
 				                                                                     entity.Has<RangeComponent>() ? string.Format(" ({0}/{1})", entity.Get<RangeComponent>().ShotsRemaining, entity.Get<RangeComponent>().Shots) : ""));
 
-				Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", entity.Get<Item>().Amount));
+				Canvas.PrintString(rect.TopRight.X - 3, rect.TopLeft.Y + y, String.Format("x{0}", entity.Get<Item>().Amount));
 
 				for (int i = 0; i < rect.Size.Width; i++) {
 					if ((letter - 'A') == MouseOverIndex)

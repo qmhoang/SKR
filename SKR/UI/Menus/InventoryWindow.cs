@@ -11,6 +11,7 @@ using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.Universe;
+using SkrGame.Actions;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
@@ -25,6 +26,7 @@ namespace SKR.UI.Menus {
 		private int bodyPartWidth;
 		private ContainerComponent inventory;
 		private EquipmentComponent equipment;
+		private Entity player;
 
 		private Rectangle sizeList;
 		
@@ -40,6 +42,7 @@ namespace SKR.UI.Menus {
 
 			inventory = template.World.Player.Get<ContainerComponent>();
 			equipment = template.World.Player.Get<EquipmentComponent>();
+			player = template.World.Player;
 			bodyPartWidth = 25; // todo replace to code            
 			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
@@ -47,12 +50,7 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSelectItem(string slot) {
 			if (equipment.IsSlotEquipped(slot)) {
-				Entity removed = equipment[slot];
-				equipment.Unequip(slot);
-
-				if (removed != null) {
-					inventory.Add(removed);
-				}
+				player.Get<ActorComponent>().Enqueue(new UnequipItem(player, slot));
 			} else {
 				var items = inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().Slots.Contains(slot)).ToList();
 				if (items.Count > 0)
@@ -64,14 +62,10 @@ namespace SKR.UI.Menus {
 					                                      		Items = items,
 					                                      		World = World,
 					                                      		SelectSingleItem = true,
-					                                      		ItemSelected = delegate(Entity i)
-					                                      		               	{
-					                                      		               		inventory.Remove(i);
-					                                      		               		equipment.Equip(slot, i);
-					                                      		               	},
+					                                      		ItemSelected = i => player.Get<ActorComponent>().Enqueue(new EquipItem(player, i, slot)),
 					                                      }));					
 				else
-					World.Log.Normal("No items in inventory that go there.");				
+					World.Log.Normal("No items in inventory that go there.");
 			}
 
 		}

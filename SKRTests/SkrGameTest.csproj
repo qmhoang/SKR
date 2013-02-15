@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\WalkActionTests.cs" />
     <Compile Include="Components\ContainerTests.cs" />
     <Compile Include="Components\DefendComponentTests.cs" />
     <Compile Include="Components\EquipmentTests.cs" />

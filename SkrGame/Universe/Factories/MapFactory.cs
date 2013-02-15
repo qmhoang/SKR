@@ -15,11 +15,13 @@ namespace SkrGame.Universe.Factories {
 		private List<Terrain> terrainDefinitions;
 		private EntityFactory ef;
 		private EntityManager em;
+		private World world;
 
-		public MapFactory(EntityManager em, EntityFactory ef) {
+		public MapFactory(World world) {
 			terrainDefinitions = new List<Terrain>();
-			this.ef = ef;
-			this.em = em;
+			this.world = world;
+			this.ef = world.EntityFactory;
+			this.em = world.EntityManager;
 
 			terrainDefinitions.Add(new Terrain("Grass", "Grass", true, true, 1.0));
 			terrainDefinitions.Add(new Terrain("StoneFloor", "StoneFloor", true, true, 1.0));
@@ -222,7 +224,7 @@ namespace SkrGame.Universe.Factories {
 			int width = definition[0].Length;
 			int height = definition.Count();
 
-			var map = new Level(new Size(width, height), em, "Grass", terrainDefinitions);
+			var map = new Level(new Size(width, height), world, "Grass", terrainDefinitions);
 
 			for (int y = 0; y < height; y++) {
 				var s = definition[y];

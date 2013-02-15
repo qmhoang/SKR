@@ -35,14 +35,13 @@ namespace SKR.UI.Gameplay {
 
 		public MapPanel MapPanel { get; private set; }
 		public StatusPanel StatusPanel { get; private set; }
-//		public MessagePanel MessagePanel { get; private set; }
 		public LogPanel LogPanel { get; private set; }
 		public AssetsManager AssetsManager { get; private set; }
 
 		public static PromptWindowTemplate PromptTemplate;
 
 		private Entity player;
-		
+
 		private EntityManager manager;
 
 		public GameplayWindow(World world, WindowTemplate template)
@@ -56,7 +55,7 @@ namespace SKR.UI.Gameplay {
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-			
+
 			var mapTemplate =
 					new PanelTemplate
 					{
@@ -82,12 +81,12 @@ namespace SKR.UI.Gameplay {
 			AddControl(StatusPanel);
 
 			var logTemplate = new LogPanelTemplate()
-			                       {
-			                       		HasFrame = true,
-			                       		Log = world.Log,
-			                       		Size = new Size(Size.Width, Size.Height - mapTemplate.Size.Height),
-			                       		TopLeftPos = mapTemplate.CalculateRect().BottomLeft.Shift(0, 1)
-			                       };
+			                  {
+			                  		HasFrame = true,
+			                  		Log = world.Log,
+			                  		Size = new Size(Size.Width, Size.Height - mapTemplate.Size.Height),
+			                  		TopLeftPos = mapTemplate.CalculateRect().BottomLeft
+			                  };
 			LogPanel = new LogPanel(logTemplate);
 			AddControl(LogPanel);
 
@@ -113,19 +112,19 @@ namespace SKR.UI.Gameplay {
 			}
 
 			if (items.Count == 0 && entity.Has<T>())
-				items.Add(entity);			// natural weapon
+				items.Add(entity); // natural weapon
 
 			return items;
 		}
 
 		private void SelectMeleeTarget(Entity entity, Entity weapon, List<Entity> actorsAtNewLocation) {
 			if (actorsAtNewLocation.Count == 1) {
-				Combat.MeleeAttack(entity, weapon, actorsAtNewLocation.First(), actorsAtNewLocation.First().Get<DefendComponent>().GetRandomPart());
+				entity.Get<ActorComponent>().Enqueue(new MeleeAttackAction(entity, actorsAtNewLocation.First(), weapon, actorsAtNewLocation.First().Get<DefendComponent>().GetRandomPart()));
 			} else {
 				ParentApplication.Push(
 						new OptionsSelectionPrompt<Entity>("Attack what?", actorsAtNewLocation,
 						                                   e => e.ToString(),
-														   e => Combat.MeleeAttack(entity, weapon, e, e.Get<DefendComponent>().GetRandomPart()),
+						                                   e => entity.Get<ActorComponent>().Enqueue(new MeleeAttackAction(entity, e, weapon, e.Get<DefendComponent>().GetRandomPart())),
 						                                   GameplayWindow.PromptTemplate));
 			}
 
@@ -135,28 +134,36 @@ namespace SKR.UI.Gameplay {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 
 			ParentApplication.Push(new TargetPrompt("Shoot where?",
-										entity.Get<Location>().Point,
-										targetLocation =>
-										{
-											var level = entity.Get<Location>().Level;
-											var entitiesAtLocation = level.GetEntitiesAt(targetLocation).Where(e => e.Has<DefendComponent>());
+			                                        entity.Get<Location>().Point,
+			                                        targetLocation =>
+			                                        	{
+			                                        		var level = entity.Get<Location>().Level;
+			                                        		var entitiesAtLocation = level.GetEntitiesAt(targetLocation).Where(e => e.Has<DefendComponent>());
 
-											if (entitiesAtLocation.Count() > 0) {
-												if (entitiesAtLocation.Count() == 1) {
-													Combat.RangeAttack(entity, weapon, entitiesAtLocation.First(), entitiesAtLocation.First().Get<DefendComponent>().GetRandomPart());
-												} else {
-													ParentApplication.Push(
-															new OptionsSelectionPrompt<Entity>("Shoot at what?", entitiesAtLocation,
-																							   e => e.ToString(),
-																							   e => Combat.RangeAttack(entity, weapon, e, e.Get<DefendComponent>().GetRandomPart()),
-																							   GameplayWindow.PromptTemplate));
-												}
-											} else {
-												world.Log.Normal("Nothing there to shoot.");
-											}
-										},
-										MapPanel,
-										GameplayWindow.PromptTemplate));
+			                                        		if (entitiesAtLocation.Count() > 0) {
+			                                        			if (entitiesAtLocation.Count() == 1) {
+			                                        				entity.Get<ActorComponent>().Enqueue(
+			                                        						new RangeAttackAction(entity,
+			                                        						                      entitiesAtLocation.First(),
+			                                        						                      weapon,
+			                                        						                      entitiesAtLocation.First().Get<DefendComponent>().GetRandomPart()));
+			                                        			} else {
+			                                        				ParentApplication.Push(
+			                                        						new OptionsSelectionPrompt<Entity>("Shoot at what?", entitiesAtLocation,
+			                                        						                                   e => e.ToString(),
+			                                        						                                   e => entity.Get<ActorComponent>().Enqueue(
+			                                        						                                   		new RangeAttackAction(entity,
+			                                        						                                   		                      e,
+			                                        						                                   		                      weapon,
+			                                        						                                   		                      e.Get<DefendComponent>().GetRandomPart())),
+			                                        						                                   GameplayWindow.PromptTemplate));
+			                                        			}
+			                                        		} else {
+			                                        			world.Log.Normal("Nothing there to shoot.");
+			                                        		}
+			                                        	},
+			                                        MapPanel,
+			                                        GameplayWindow.PromptTemplate));
 		}
 
 		private void Reload(Entity user, Entity weapon) {
@@ -166,84 +173,42 @@ namespace SKR.UI.Gameplay {
 
 			if (ammos.Count > 1) {
 				ParentApplication.Push(new OptionsSelectionPrompt<Entity>("What ammo?", ammos,
-																		  ammo => ammo.Get<Identifier>().Name,
-																		  ammo => Combat.ReloadWeapon(user, weapon, ammo),
-																		  GameplayWindow.PromptTemplate));
-			} else if (ammos.Count == 1)
-				Combat.ReloadWeapon(user, weapon, ammos.First());
-			else
+				                                                          ammo => ammo.Get<Identifier>().Name,
+				                                                          ammo => user.Get<ActorComponent>().Enqueue(new ReloadAction(user, weapon, ammo)),
+				                                                          GameplayWindow.PromptTemplate));
+
+			} else if (ammos.Count == 1) {
+				user.Get<ActorComponent>().Enqueue(new ReloadAction(user, weapon, ammos.First()));
+			} else
 				world.Log.Normal("No possible ammo for selected weapon.");
 		}
 
 		#region Pickup/Drop items
-		private void PickUpItem(Entity inventoryEntity, Entity itemEntityFromLevel, ICollection<Entity> itemsOnDisplay) {
-			Contract.Requires<ArgumentNullException>(itemsOnDisplay != null, "items");
 
-			var inventory = inventoryEntity.Get<ContainerComponent>();
-			var item = itemEntityFromLevel.Get<Item>();
+		private void PickUpItem(Entity user, Entity itemEntity) {
+			var item = itemEntity.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to pick up?",
-						                amount => PickUpStackedItem(inventoryEntity, itemEntityFromLevel, amount, itemsOnDisplay), item.Amount, 0, item.Amount, PromptTemplate));
+						                amount => user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity, amount)), item.Amount, 0, item.Amount, PromptTemplate));
 			else {
-				inventory.Add(itemEntityFromLevel);
-				itemsOnDisplay.Remove(itemEntityFromLevel);
+				user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity, 1));
 			}
 		}
 
-		private void PickUpStackedItem(Entity entityPicking, Entity itemEntityFromLevel, int amount, ICollection<Entity> itemsOnDisplay) {
-			if (amount == 0)
-				return;
-
-			if (amount < itemEntityFromLevel.Get<Item>().Amount) {
-				var ne = Item.Split(itemEntityFromLevel, amount);
-				entityPicking.Get<ContainerComponent>().Add(ne);
-			} else {
-				entityPicking.Get<ContainerComponent>().Add(itemEntityFromLevel);
-				itemsOnDisplay.Remove(itemEntityFromLevel);
-			}
-		}
-
-		private void DropItem(Entity inventoryEntity, Entity itemEntityFromInventory) {
-			var inventory = inventoryEntity.Get<ContainerComponent>();
-			var item = itemEntityFromInventory.Get<Item>();
+		private void DropItem(Entity user, Entity itemEntity) {
+			var item = itemEntity.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
 				ParentApplication.Push(
 						new CountPrompt("How many items to drop to the ground?",
-						                amount => DropStackedItem(inventoryEntity, itemEntityFromInventory, amount), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
+						                amount => user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity, amount)), item.Amount, 0, item.Amount, GameplayWindow.PromptTemplate));
 			else {
-				inventory.Remove(itemEntityFromInventory);				
+				user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity, 1));
 			}
 		}
 
-
-		private void DropStackedItem(Entity entityDropping, Entity itemEntityFromInventory, int amount) {
-			Contract.Requires<ArgumentException>(amount >= 0);
-			if (amount == 0)
-				return;
-
-			var inventory = entityDropping.Get<ContainerComponent>();
-
-			if (amount < itemEntityFromInventory.Get<Item>().Amount) {
-				var ne = Item.Split(itemEntityFromInventory, amount);
-
-				var level = entityDropping.Get<Location>().Level;
-				var itemsInLevel = level.GetEntitiesAt(entityDropping.Get<Location>().Point).Where(e => e.Has<Item>() &&
-				                                                                                           e.Has<VisibleComponent>() &&
-				                                                                                           e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
-
-				if (itemsInLevel.Exists(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>())) {
-					itemsInLevel.First(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>()).Get<Item>().Amount += amount;
-				} else {
-					ne.Get<VisibleComponent>().Reset();
-				}
-
-			} else {
-				inventory.Remove(itemEntityFromInventory);				
-			}
-		}
 		#endregion
 
 		private void SelectUsableAction(Entity user, Entity thing, List<UseableFeature.UseAction> actions) {
@@ -261,86 +226,68 @@ namespace SKR.UI.Gameplay {
 
 		}
 
-//		private void Move(Entity user, Direction direction) {
-//			Contract.Requires<ArgumentNullException>(user != null, "user");
-//
-//			var result = Movement.BumpDirection(user, direction);
-//
-//			// if an entity prevents movement, we can't do anything
-//			if (!result) {
-//				return;
-//			}
-//
-//			Point newLocation = user.Get<Location>().Point + direction;
-//
-//			// we check for attackables
-//			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
-//
-//			if (actorsAtNewLocation.Count > 0) {
-//				var weapons = FilterEquippedItems<MeleeComponent>(user).ToList();
-//				if (weapons.Count > 1) {
-//					ParentApplication.Push(
-//							new OptionsSelectionPrompt<Entity>("With that weapon?",
-//															   weapons, e => e.Get<Identifier>().Name,
-//															   weapon => SelectMeleeTarget(user, weapon, actorsAtNewLocation),
-//															   GameplayWindow.PromptTemplate));
-//				} else if (weapons.Count == 1)
-//					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
-//				else {
-//					world.Log.Normal("No possible way of attacking.");
-//					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
-//				}
-//
-//				return;
-//			}
-//
-//			Movement.MoveEntity(user, newLocation);
-//
-//		}
+		private void Move(Entity user, Direction direction) {
+			Contract.Requires<ArgumentNullException>(user != null, "user");
+
+			Point newLocation = user.Get<Location>().Point + direction;
+
+			// we check for attackables
+			var actorsAtNewLocation = user.Get<Location>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
+
+			if (actorsAtNewLocation.Count > 0) {
+				var weapons = FilterEquippedItems<MeleeComponent>(user).ToList();
+				if (weapons.Count > 1) {
+					ParentApplication.Push(
+							new OptionsSelectionPrompt<Entity>("With that weapon?",
+							                                   weapons, e => e.Get<Identifier>().Name,
+							                                   weapon => SelectMeleeTarget(user, weapon, actorsAtNewLocation),
+							                                   GameplayWindow.PromptTemplate));
+				} else if (weapons.Count == 1)
+					SelectMeleeTarget(user, weapons.First(), actorsAtNewLocation);
+				else {
+					world.Log.Normal("No possible way of attacking.");
+					Logger.WarnFormat("Player is unable to melee attack, no unarmed component equipped or attached");
+				}
+
+				return;
+			}
+
+			user.Get<ActorComponent>().Enqueue(new BumpAction(user, direction));
+		}
 
 		protected override void OnKeyPressed(KeyboardData keyData) {
 			base.OnKeyReleased(keyData);
-//			if (!player.Get<ActionPoint>().Updateable)
-//				return;
 			switch (keyData.KeyCode) {
 				case TCODKeyCode.Up:
 				case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
-//						Move(player, Direction.North);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.N));
+					Move(player, Direction.North);
 					break;
 				case TCODKeyCode.Down:
 				case TCODKeyCode.KeypadTwo:
-//						Move(player, Direction.South);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.S));
+					Move(player, Direction.South);
 					break;
 				case TCODKeyCode.Left:
 				case TCODKeyCode.KeypadFour:
-//						Move(player, Direction.West);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.W));
+					Move(player, Direction.West);
 					break;
 				case TCODKeyCode.KeypadFive:
 					player.Get<ActorComponent>().Enqueue(new WaitAction(player));
 					break;
 				case TCODKeyCode.Right:
 				case TCODKeyCode.KeypadSix:
-//						Move(player, Direction.East);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.E));
+					Move(player, Direction.East);
 					break;
 				case TCODKeyCode.KeypadSeven:
-//						Move(player, Direction.Northwest);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.NW));
+					Move(player, Direction.Northwest);
 					break;
 				case TCODKeyCode.KeypadNine:
-//						Move(player, Direction.Northeast);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.NE));
+					Move(player, Direction.Northeast);
 					break;
 				case TCODKeyCode.KeypadOne:
-//						Move(player, Direction.Southwest);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.SW));
+					Move(player, Direction.Southwest);
 					break;
 				case TCODKeyCode.KeypadThree:
-//						Move(player, Direction.Southeast);
-					player.Get<ActorComponent>().Enqueue(new BumpAction(player, Direction.SE));
+					Move(player, Direction.Southeast);
 					break;
 				default:
 				{
@@ -382,7 +329,7 @@ namespace SKR.UI.Gameplay {
 								                      	{
 								                      		var useables = location.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
 								                      		                                                          e.Has<VisibleComponent>() &&
-								                      		                                                          e.Get<VisibleComponent>().VisibilityIndex > 0);									                      		
+								                      		                                                          e.Get<VisibleComponent>().VisibilityIndex > 0);
 								                      		if (useables.Count() > 1) {
 								                      			ParentApplication.Push(
 								                      					new OptionsSelectionPrompt<Entity>("What object do you want to use?",
@@ -390,11 +337,10 @@ namespace SKR.UI.Gameplay {
 								                      					                                   Identifier.GetNameOrId,
 								                      					                                   e => SelectUsableAction(player, e, e.Get<UseableFeature>().Uses.ToList()),
 								                      					                                   GameplayWindow.PromptTemplate));
-								                      		} else if (useables.Count() == 1) {
+								                      		} else if (useables.Count() == 1)
 								                      			SelectUsableAction(player, useables.First(), useables.First().Get<UseableFeature>().Uses.ToList());
-								                      		} else {
+								                      		else
 								                      			world.Log.Normal("Nothing there to use.");
-								                      		}
 								                      	},
 								                      GameplayWindow.PromptTemplate));
 					} else if (keyData.Character == 'd') {
@@ -405,6 +351,7 @@ namespace SKR.UI.Gameplay {
 							                                      		Size = MapPanel.Size,
 							                                      		IsPopup = true,
 							                                      		HasFrame = true,
+							                                      		World = world,
 							                                      		Items = inventory.Items,
 							                                      		SelectSingleItem = false,
 							                                      		ItemSelected = i => DropItem(player, i),
@@ -420,7 +367,7 @@ namespace SKR.UI.Gameplay {
 								location.Level.GetEntitiesAt(location.Point).Where(e => e.Has<Item>() &&
 								                                                        e.Has<VisibleComponent>() &&
 								                                                        e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-								                                                        (!inventory.Items.Contains(e))).ToList();
+								                                                        (!inventory.Items.Contains(e)));
 
 						if (items.Count() > 0)
 							ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
@@ -428,9 +375,10 @@ namespace SKR.UI.Gameplay {
 							                                      		Size = MapPanel.Size,
 							                                      		IsPopup = true,
 							                                      		HasFrame = true,
-							                                      		Items = inventory.Items,
+							                                      		World = world,
+							                                      		Items = items,
 							                                      		SelectSingleItem = false,
-							                                      		ItemSelected = i => PickUpItem(player, i, items),
+							                                      		ItemSelected = i => PickUpItem(player, i),
 							                                      }));
 						else
 							world.Log.Normal("No items here to pick up.");
@@ -441,6 +389,7 @@ namespace SKR.UI.Gameplay {
 						                                      		Size = MapPanel.Size,
 						                                      		IsPopup = true,
 						                                      		HasFrame = true,
+						                                      		World = world,
 						                                      		Items = inventory.Items,
 						                                      		SelectSingleItem = false,
 						                                      		ItemSelected = i => world.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight)),
@@ -456,9 +405,7 @@ namespace SKR.UI.Gameplay {
 						                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
 						                                           }));
 					else if (keyData.Character == 'l') {
-						if (keyData.ControlKeys == ControlKeys.LeftControl) {
-
-						} else
+						if (keyData.ControlKeys == ControlKeys.LeftControl) {} else
 							ParentApplication.Push(
 									new LookWindow(
 											location.Point,
@@ -481,11 +428,12 @@ namespace SKR.UI.Gameplay {
 											MapPanel,
 											GameplayWindow.PromptTemplate));
 					} else if (keyData.Character == 'z') {
-						world.Log.Special("Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
-//							player.Add(new LongAction(500, e => world.Log.Normal(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
-//							player.Get<ActionPoint>().ActionPoints -= 100;
+						world.Log.Special(
+								"Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");
+						//							player.Add(new LongAction(500, e => world.Log.Normal(String.Format("{0} completes long action", Identifier.GetNameOrId(e)))));
+						//							player.Get<ActionPoint>().ActionPoints -= 100;
 					}
-						
+
 					break;
 				}
 			}

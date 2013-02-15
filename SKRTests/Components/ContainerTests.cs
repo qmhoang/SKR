@@ -144,37 +144,37 @@ namespace SKRTests.Components {
 			Assert.AreSame(container.GetItem(i => i.Id == item0.Id), item0);
 		}
 
-		[Test]
-		public void Move() {
-			container.Add(item0);
-			container.Add(item1);
-
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
-
-			var p1 = new Point(4, 8);
-			entity.Get<Location>().Point = p1;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, p1));
-
-			var p2 = new Point(9, -8);
-			entity.Get<Location>().Point = p2;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, p2));
-		}
-
-		[Test]
-		public void MoveAlot() {
-			container.Add(item0);
-			container.Add(item1);
-			container.Add(item2);
-
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
-
-			entity.Get<Location>().Point = new Point(4, 8);
-			entity.Get<Location>().Point = new Point(51, -9);
-
-			var Location = new Point(0, 3812);
-			entity.Get<Location>().Point = Location;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, Location));
-		}
+//		[Test]
+//		public void Move() {
+//			container.Add(item0);
+//			container.Add(item1);
+//
+//			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
+//
+//			var p1 = new Point(4, 8);
+//			entity.Get<Location>().Point = p1;
+//			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, p1));
+//
+//			var p2 = new Point(9, -8);
+//			entity.Get<Location>().Point = p2;
+//			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, p2));
+//		}
+//
+//		[Test]
+//		public void MoveAlot() {
+//			container.Add(item0);
+//			container.Add(item1);
+//			container.Add(item2);
+//
+//			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
+//
+//			entity.Get<Location>().Point = new Point(4, 8);
+//			entity.Get<Location>().Point = new Point(51, -9);
+//
+//			var Location = new Point(0, 3812);
+//			entity.Get<Location>().Point = Location;
+//			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, Location));
+//		}
 
 		[Test]
 		public void CopyMove() {
