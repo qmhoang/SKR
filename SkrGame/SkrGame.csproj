@@ -119,7 +119,6 @@
     <Compile Include="Actions\WalkAction.cs" />
     <Compile Include="Gameplay\Combat\Combat.cs" />
     <Compile Include="Gameplay\Combat\CombatEventArgs.cs" />
-    <Compile Include="Gameplay\Movement.cs" />
     <Compile Include="Gameplay\Talent\Components\ActiveTalentComponent.cs" />
     <Compile Include="Gameplay\Talent\Components\SkillComponent.cs" />
     <Compile Include="Gameplay\Talent\Components\TalentComponent.cs" />
@@ -159,7 +158,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\" />
     <Folder Include="Universe\Entities\Actions\" />
     <Folder Include="Universe\Entities\Items\Components\" />
   </ItemGroup>
