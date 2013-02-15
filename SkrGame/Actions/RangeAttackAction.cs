@@ -13,7 +13,7 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions {
-	public class RangeAttackAction : ActorAction {
+	public class RangeAttackAction : LoggedAction {
 		private Entity defender;
 		private Entity rangeWeapon;
 		private DefendComponent.AttackablePart bodyPartTargetted;
@@ -56,8 +56,7 @@ namespace SkrGame.Actions {
 			var defenderName = Identifier.GetNameOrId(defender);
 			var attackerLocation = attacker.Get<Location>();
 			var targetLocation = defender.Get<Location>();
-			var world = attacker.Get<Location>().Level.World;
-
+			
 
 			//apply skill
 			if (attacker.Has<ActorComponent>()) {
@@ -67,7 +66,7 @@ namespace SkrGame.Actions {
 			}
 
 			if (weapon.ShotsRemaining <= 0) {
-				world.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
+				World.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
 				                               attackerName));
 				attacker.Get<ActorComponent>().AP.ActionPoints -= weapon.APToAttack;
 				return ActionResult.Failed;
@@ -101,7 +100,7 @@ namespace SkrGame.Actions {
 
 					Combat.Damage(weapon.Damage.Roll(), weapon.Penetration, weapon.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
-					world.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
 					                               attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Hit, damage,
@@ -109,13 +108,13 @@ namespace SkrGame.Actions {
 					return ActionResult.Success;
 				} else if (result == CombatEventResult.Miss) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-						world.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
+						World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
 						                               attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted));
 				} else if (result == CombatEventResult.Dodge) {
 					if (defender.Id == currentEntity.Id) // if this is where the actor targetted
-						world.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+						World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
 						                               attackerName, weapon.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 
 					Combat.ProcessCombat(new CombatEventArgs(attacker, defender, rangeWeapon, bodyPartTargetted, CombatEventResult.Dodge));
@@ -125,7 +124,7 @@ namespace SkrGame.Actions {
 
 			// todo drop ammo casing
 
-			world.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
+			World.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
 			return ActionResult.Failed;
 		}
 	}

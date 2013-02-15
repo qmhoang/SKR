@@ -8,8 +8,6 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
-using SkrGame.Gameplay.Talent;
-using SkrGame.Gameplay.Talent.Components;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Locations;

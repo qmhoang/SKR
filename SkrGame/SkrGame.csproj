@@ -119,10 +119,6 @@
     <Compile Include="Actions\WalkAction.cs" />
     <Compile Include="Gameplay\Combat\Combat.cs" />
     <Compile Include="Gameplay\Combat\CombatEventArgs.cs" />
-    <Compile Include="Gameplay\Talent\Components\ActiveTalentComponent.cs" />
-    <Compile Include="Gameplay\Talent\Components\SkillComponent.cs" />
-    <Compile Include="Gameplay\Talent\Components\TalentComponent.cs" />
-    <Compile Include="Gameplay\Talent\Talent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\ActionPointSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
