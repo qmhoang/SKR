@@ -9,7 +9,6 @@ using DEngine.Entities;
 using DEngine.Extensions;
 using SkrGame.Actions;
 using SkrGame.Gameplay.Combat;
-using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;

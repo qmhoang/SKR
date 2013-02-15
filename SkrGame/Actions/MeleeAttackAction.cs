@@ -12,7 +12,7 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions {
-	public class MeleeAttackAction : ActorAction {
+	public class MeleeAttackAction : LoggedAction {
 		private Entity defender;
 		private Entity weapon;
 		private DefendComponent.AttackablePart bodyPartTargetted;
@@ -62,7 +62,6 @@ namespace SkrGame.Actions {
 
 			var defenderName = Identifier.GetNameOrId(defender);
 			var attackerName = Identifier.GetNameOrId(attacker);
-			var world = attacker.Get<Location>().Level.World;
 
 			var result = Combat.Attack(attackerName, defenderName, hitBonus + melee.HitBonus - World.MEAN - (TargettingPenalty ? bodyPartTargetted.TargettingPenalty : 0));
 
@@ -73,11 +72,11 @@ namespace SkrGame.Actions {
 
 				Combat.Damage(damage, melee.Penetration, melee.DamageType, defender, bodyPartTargetted, out damageResistance, out realDamage);
 
-				if (world.Player == attacker) {
-					world.Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+				if (World.Player == attacker) {
+					World.Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
 					                             attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
 				} else {
-					world.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					World.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
 					                            attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name, "todo-description"));
 				}
 
@@ -86,22 +85,22 @@ namespace SkrGame.Actions {
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {
-				if (world.Player == attacker) {
-					world.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
+				if (World.Player == attacker) {
+					World.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
 					                            attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 				} else {
-					world.Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
+					World.Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
 					                             attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 				}
 
 
 				Combat.ProcessCombat(new CombatEventArgs(attacker, defender, weapon, bodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
-				if (world.Player == attacker) {
-					world.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+				if (World.Player == attacker) {
+					World.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
 					                            attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 				} else {
-					world.Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+					World.Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
 					                             attackerName, melee.ActionDescriptionPlural, defenderName, bodyPartTargetted.Name));
 				}
 

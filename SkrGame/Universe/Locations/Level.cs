@@ -157,11 +157,11 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		public override bool IsWalkable(Point v) {
-			return TerrainDefinitions[Map[v.X, v.Y]].Walkable && Cells[v.X, v.Y].Walkable;
+			return IsInBounds(v) && TerrainDefinitions[Map[v.X, v.Y]].Walkable && Cells[v.X, v.Y].Walkable;
 		}
 
 		public override bool IsTransparent(Point v) {
-			return TerrainDefinitions[Map[v.X, v.Y]].Transparent && Cells[v.X, v.Y].Transparent;
+			return IsInBounds(v) && TerrainDefinitions[Map[v.X, v.Y]].Transparent && Cells[v.X, v.Y].Transparent;
 		}
 
 		public override IEnumerable<Entity> GetEntitiesAt(Point location) {

@@ -9,7 +9,7 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions {
-	public class ReloadAction : ActorAction {
+	public class ReloadAction : LoggedAction {
 		private Entity weapon;
 		private Entity ammo;
 
@@ -31,8 +31,7 @@ namespace SkrGame.Actions {
 		public override ActionResult OnProcess() {
 			var rangeWeapon = weapon.Get<RangeComponent>();
 			var ammunition = ammo.Get<Item>();
-			var world = Entity.Get<Location>().Level.World;
-
+			
 			// todo revolvers and single load weapons
 
 			// first we unload all ammos currently in the gun to the group, semi-simulating dropping the magazine
@@ -43,9 +42,9 @@ namespace SkrGame.Actions {
 				rangeWeapon.ShotsRemaining = 0;
 				droppedAmmo.Get<VisibleComponent>().Reset();
 
-				world.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", Entity.Get<Identifier>().Name, weapon.Get<Identifier>().Name, ammo.Get<Identifier>().Name));
+				World.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", Entity.Get<Identifier>().Name, weapon.Get<Identifier>().Name, ammo.Get<Identifier>().Name));
 			} else {
-				world.Log.Normal(String.Format("{0} reloads {1} with {2}.", Entity.Get<Identifier>().Name, weapon.Get<Identifier>().Name, ammo.Get<Identifier>().Name));
+				World.Log.Normal(String.Format("{0} reloads {1} with {2}.", Entity.Get<Identifier>().Name, weapon.Get<Identifier>().Name, ammo.Get<Identifier>().Name));
 			}
 
 			if (ammunition.StackType == StackType.Hard) {
@@ -59,7 +58,7 @@ namespace SkrGame.Actions {
 						Entity.Get<ContainerComponent>().Remove(ammo);
 					}
 
-					world.EntityManager.Remove(ammo);
+					World.EntityManager.Remove(ammo);
 				}
 			}
 			return ActionResult.Success;

@@ -23,7 +23,7 @@ namespace SKR.UI.Menus {
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 
-			var nameTemplate = new TextEntryTemplate()
+			var nameTemplate = new TextEntryTemplate
 			                   {
 			                   		Label = "Name: ",
 			                   		MaximumCharacters = 20,
@@ -68,7 +68,7 @@ namespace SKR.UI.Menus {
 			                  		Label = "Sex",
 //                                  MinimumWidth = 15,
 			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(2, 0),
-			                  		RightClickMenu = true,
+			                  		RightClickMenu = true,									
 //                                  Tooltip = "Click to switch sex, right click to choose from a menu",
 			                  		Items = new List<string>()
 			                  		        {
@@ -141,19 +141,19 @@ namespace SKR.UI.Menus {
 			doneButton.ButtonPushed += StartNewGame;
 
 			AddControl(doneButton);
+
+			this.KeyPressed += CharGen_KeyPressed;
+		}
+
+		private void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
+			if ((e.KeyboardData.KeyCode == TCODKeyCode.Enter || e.KeyboardData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
+				StartNewGame(this, EventArgs.Empty);
 		}
 
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
 
 			ParentApplication.Push(new GameplayWindow(world, new WindowTemplate()));
-		}
-
-		protected override void OnKeyPressed(KeyboardData keyData) {
-			if ((keyData.KeyCode == TCODKeyCode.Enter || keyData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
-				StartNewGame(this, EventArgs.Empty);
-			base.OnKeyPressed(keyData);
-
 		}
 	}
 }

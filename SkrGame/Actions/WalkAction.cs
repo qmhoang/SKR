@@ -63,7 +63,7 @@ namespace SkrGame.Actions {
 		}
 	}
 
-	public class WalkAction : ActorAction {
+	public class WalkAction : LoggedAction {
 		private Direction direction;
 
 		private static readonly int WALK_COST = World.SpeedToActionPoints(World.DEFAULT_SPEED);
@@ -107,7 +107,7 @@ namespace SkrGame.Actions {
 				}
 			} else {
 
-				location.Level.World.Log.Fail("There is something in the way.");
+				World.Log.Fail("There is something in the way.");
 				return ActionResult.Aborted;
 			}
 			return ActionResult.Success;
