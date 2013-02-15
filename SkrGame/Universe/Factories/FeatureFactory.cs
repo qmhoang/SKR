@@ -59,14 +59,14 @@ namespace SkrGame.Universe.Factories {
 			ef.Inherits("Door", "feature",
 			            new Sprite("ClosedDoor", Sprite.FEATURES_LAYER),
 			            new Identifier("Door", "A basic door"),
-						Door("OpenedDoor", "ClosedDoor"),
-						new OnBump(DoorOnBump),
+			            Door("OpenedDoor", "ClosedDoor"),
+			            new OnBump(DoorOnBump),
 			            new UseableFeature(new List<UseableFeature.UseAction>
 			                               {
 			                               		new UseableFeature.UseAction("Use door", (user, featureEntity, action) =>
 			                               		                                         	{
-																								if (featureEntity.Has<Opening>())
-																									user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
+			                               		                                         		if (featureEntity.Has<Opening>())
+			                               		                                         			user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
 			                               		                                         		return ActionResult.Aborted;
 			                               		                                         	})
 			                               }));
@@ -77,53 +77,53 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("WALL_BRICK_DARK_DOOR_VERT", "Door",
 			            new Sprite("WALL_BRICK_DARK_DOOR_VERT", Sprite.FEATURES_LAYER),
-						Door("WALL_BRICK_DARK_DOOR_HORZ", "WALL_BRICK_DARK_DOOR_VERT"));
+			            Door("WALL_BRICK_DARK_DOOR_HORZ", "WALL_BRICK_DARK_DOOR_VERT"));
 
 			ef.Inherits("DOOR_APART_1_VERT", "Door",
 			            new Sprite("DOOR_APART_1_VERT", Sprite.FEATURES_LAYER),
-						Door("DOOR_APART_1_HORZ", "DOOR_APART_1_VERT"));
+			            Door("DOOR_APART_1_HORZ", "DOOR_APART_1_VERT"));
 
 			ef.Inherits("DOOR_APART_1_HORZ", "Door",
 			            new Sprite("DOOR_APART_1_HORZ", Sprite.FEATURES_LAYER),
-						Door("DOOR_APART_1_VERT", "DOOR_APART_1_HORZ"));
+			            Door("DOOR_APART_1_VERT", "DOOR_APART_1_HORZ"));
 
 			ef.Inherits("Window", "feature",
-						new Sprite("ClosedWindow", Sprite.FEATURES_LAYER),
-						Window("OpenedWindow", "ClosedWindow"),
-						new Identifier("Window", "A window door"),
-						new OnBump(WindowOnBump),
-						new UseableFeature(new List<UseableFeature.UseAction>
-						                   {
+			            new Sprite("ClosedWindow", Sprite.FEATURES_LAYER),
+			            Window("OpenedWindow", "ClosedWindow"),
+			            new Identifier("Window", "A window door"),
+			            new OnBump(WindowOnBump),
+			            new UseableFeature(new List<UseableFeature.UseAction>
+			                               {
 			                               		new UseableFeature.UseAction("Use window", (user, featureEntity, action) =>
 			                               		                                           	{
 			                               		                                           		if (featureEntity.Has<Opening>())
-																									user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
+			                               		                                           			user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
 			                               		                                           		return ActionResult.Aborted;
 			                               		                                           	})
 			                               }));
 
 			ef.Inherits("WINDOW_HOUSE_VERT", "Window",
 			            new Sprite("WINDOW_HOUSE_VERT", Sprite.FEATURES_LAYER),
-						Window("WINDOW_HOUSE_HORZ", "WINDOW_HOUSE_VERT"));
+			            Window("WINDOW_HOUSE_HORZ", "WINDOW_HOUSE_VERT"));
 
 			ef.Inherits("WINDOW_HOUSE_HORZ", "Window",
-						new Sprite("WINDOW_HOUSE_HORZ", Sprite.FEATURES_LAYER),
-						Window("WINDOW_HOUSE_VERT", "WINDOW_HOUSE_HORZ"));
+			            new Sprite("WINDOW_HOUSE_HORZ", Sprite.FEATURES_LAYER),
+			            Window("WINDOW_HOUSE_VERT", "WINDOW_HOUSE_HORZ"));
 
 			ef.Inherits("WINDOW_BRICK_DARK_VERT", "Window",
 			            new Sprite("WINDOW_BRICK_DARK_VERT", Sprite.FEATURES_LAYER),
-						Window("WINDOW_BRICK_DARK_HORZ", "WINDOW_BRICK_DARK_VERT"));
+			            Window("WINDOW_BRICK_DARK_HORZ", "WINDOW_BRICK_DARK_VERT"));
 
 			ef.Inherits("WINDOW_BRICK_DARK_HORZ", "Window",
-						new Sprite("WINDOW_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER),
-						Window("WINDOW_BRICK_DARK_VERT", "WINDOW_BRICK_DARK_HORZ"));
+			            new Sprite("WINDOW_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER),
+			            Window("WINDOW_BRICK_DARK_VERT", "WINDOW_BRICK_DARK_HORZ"));
 
 			#endregion
 
 			#region House Features
 
-			ef.Inherits("COUNTER_WOOD_RED", "feature", 
-				new Sprite("COUNTER_WOOD_RED", Sprite.FEATURES_LAYER));
+			ef.Inherits("COUNTER_WOOD_RED", "feature",
+			            new Sprite("COUNTER_WOOD_RED", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("SINK", "feature",
 			            new Sprite("SINK", Sprite.FEATURES_LAYER),
@@ -139,7 +139,7 @@ namespace SkrGame.Universe.Factories {
 			            new UseableFeature(new UseableFeature.UseAction("Use toilet",
 			                                                            (entity, user, action) =>
 			                                                            	{
-//																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
+			                                                            		//																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
 			                                                            		return ActionResult.Success;
 			                                                            	})),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
@@ -150,8 +150,8 @@ namespace SkrGame.Universe.Factories {
 //			                               			                                        Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
-			ef.Inherits("BATHROOMSINK", "SINK", 
-				new Sprite("BATHROOMSINK", Sprite.FEATURES_LAYER));
+			ef.Inherits("BATHROOMSINK", "SINK",
+			            new Sprite("BATHROOMSINK", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("BATH", "nonblockingfeature",
 			            new Sprite("BATH", Sprite.FEATURES_LAYER),
@@ -161,14 +161,14 @@ namespace SkrGame.Universe.Factories {
 //													World.Instance.Log.Normal(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
-			ef.Inherits("SHOWER", "nonblockingfeature", 
-				new Sprite("SHOWER", Sprite.FEATURES_LAYER));
+			ef.Inherits("SHOWER", "nonblockingfeature",
+			            new Sprite("SHOWER", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("CHAIR_WOODEN", "nonblockingfeature", 
-				new Sprite("CHAIR_WOODEN", Sprite.FEATURES_LAYER));
+			ef.Inherits("CHAIR_WOODEN", "nonblockingfeature",
+			            new Sprite("CHAIR_WOODEN", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("TREE_SMALL", "nonblockingfeature", 
-				new Sprite("TREE_SMALL", Sprite.FEATURES_LAYER));
+			ef.Inherits("TREE_SMALL", "nonblockingfeature",
+			            new Sprite("TREE_SMALL", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("BED_WOODEN", "nonblockingfeature",
 			            new Sprite("BED_WOODEN", Sprite.FEATURES_LAYER),
@@ -178,11 +178,11 @@ namespace SkrGame.Universe.Factories {
 //													World.Instance.Log.Normal(String.Format("{0} jumps on the bed.", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
-			ef.Inherits("SHELF_WOOD", "feature", 
-				new Sprite("SHELF_WOOD", Sprite.FEATURES_LAYER));
+			ef.Inherits("SHELF_WOOD", "feature",
+			            new Sprite("SHELF_WOOD", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("SHELF_METAL", "feature", 
-				new Sprite("SHELF_METAL", Sprite.FEATURES_LAYER));
+			ef.Inherits("SHELF_METAL", "feature",
+			            new Sprite("SHELF_METAL", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("TELEVISION", "feature",
 			            new Sprite("TELEVISION", Sprite.FEATURES_LAYER),
@@ -193,14 +193,14 @@ namespace SkrGame.Universe.Factories {
 //			                               			                                        Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
-			ef.Inherits("FRIDGE", "feature", 
-				new Sprite("FRIDGE", Sprite.FEATURES_LAYER));
+			ef.Inherits("FRIDGE", "feature",
+			            new Sprite("FRIDGE", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("DESK_WOODEN", "feature", 
-				new Sprite("DESK_WOODEN", Sprite.FEATURES_LAYER));
+			ef.Inherits("DESK_WOODEN", "feature",
+			            new Sprite("DESK_WOODEN", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("CASH_REGISTER", "feature", 
-				new Sprite("CASH_REGISTER", Sprite.FEATURES_LAYER));
+			ef.Inherits("CASH_REGISTER", "feature",
+			            new Sprite("CASH_REGISTER", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("SOFA", "nonblockingfeature",
 			            new Sprite("SOFA", Sprite.FEATURES_LAYER),
@@ -210,23 +210,23 @@ namespace SkrGame.Universe.Factories {
 //													World.Instance.Log.Normal(String.Format("{0} jumps on the sofa.  Whee!!", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
-			ef.Inherits("OVEN", "feature", 
-				new Sprite("OVEN", Sprite.FEATURES_LAYER));
+			ef.Inherits("OVEN", "feature",
+			            new Sprite("OVEN", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("DOOR_GARAGE", "feature", 
-				new Sprite("DOOR_GARAGE", Sprite.FEATURES_LAYER));
+			ef.Inherits("DOOR_GARAGE", "feature",
+			            new Sprite("DOOR_GARAGE", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("FENCE_WOODEN", "feature", 
-				new Sprite("FENCE_WOODEN", Sprite.FEATURES_LAYER), new Blocker(false, true));
+			ef.Inherits("FENCE_WOODEN", "feature",
+			            new Sprite("FENCE_WOODEN", Sprite.FEATURES_LAYER), new Blocker(false, true));
 
-			ef.Inherits("LAMP_STANDARD", "nonblockingfeature", 
-				new Sprite("LAMP_STANDARD", Sprite.FEATURES_LAYER));
+			ef.Inherits("LAMP_STANDARD", "nonblockingfeature",
+			            new Sprite("LAMP_STANDARD", Sprite.FEATURES_LAYER));
 
-			ef.Inherits("TABLE_WOODEN", "nonblockingfeature", 
-				new Sprite("TABLE_WOODEN", Sprite.FEATURES_LAYER));
+			ef.Inherits("TABLE_WOODEN", "nonblockingfeature",
+			            new Sprite("TABLE_WOODEN", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("SAFE_SIMPLE", "nonblockingfeature",
-				new Sprite("SAFE_SIMPLE", Sprite.FEATURES_LAYER));
+			            new Sprite("SAFE_SIMPLE", Sprite.FEATURES_LAYER));
 
 			#endregion
 
