@@ -85,10 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WorldTest.cs" />
     <Compile Include="Actions\WalkActionTests.cs" />
     <Compile Include="Components\ContainerTests.cs" />
     <Compile Include="Components\DefendComponentTests.cs" />
     <Compile Include="Components\EquipmentTests.cs" />
+    <Compile Include="LevelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
