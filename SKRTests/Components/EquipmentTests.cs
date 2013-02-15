@@ -111,54 +111,6 @@ namespace SKRTests.Components {
 			Assert.IsFalse(equipment.IsSlotEquipped("slot1"));
 		}
 
-//		[Test]
-//		public void Move() {
-//			equipment.Equip("slot1", slot1item0);
-//			equipment.Equip("slot2", slot2item0);
-//
-//			equipment.EquippedItems.Each(e => Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point));
-//			
-//			var p1 = new Point(4, 8);
-//			entity.Get<Location>().Point = p1;
-//
-//			Assert.AreEqual(p1, entity.Get<Location>().Point);
-//			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
-//				Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point);
-//			}
-//
-//			var p2 = new Point(9, -8);
-//			entity.Get<Location>().Point = p2;
-//
-//			Assert.AreEqual(p2, entity.Get<Location>().Point);
-//			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
-//				Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point);
-//			}
-//		}
-
-//
-//		[Test]
-//		public void UnequippedMove() {
-//			equipment.Equip("slot1", slot1item0);
-//			equipment.Equip("slot2", slot2item0);
-//
-//			var loc = new Point(0, 3812);
-//			entity.Get<Location>().Point = loc;
-//
-//			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
-//				Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point);
-//			}
-//
-//
-//			entity.Get<EquipmentComponent>().Unequip("slot2");
-//
-//			entity.Get<Location>().Point = new Point(51, -9);
-//			foreach (var e in entity.Get<EquipmentComponent>().EquippedItems) {
-//				Assert.AreEqual(e.Get<Location>().Point, entity.Get<Location>().Point);
-//			}
-//
-//			Assert.AreEqual(slot2item0.Get<Location>().Point, loc);
-//		}
-
 		[Test]
 		public void Copy() {
 			equipment.Equip("slot1", slot1item0);

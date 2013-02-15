@@ -24,8 +24,9 @@ namespace SkrGame.Universe.Entities {
 			get { return point; }
 			set {
 				var eventArgs = new PositionChangedEvent(point, value);
-				OnPositionChanged(eventArgs);
 				point = value;
+
+				OnPositionChanged(eventArgs);
 			}
 		}
 

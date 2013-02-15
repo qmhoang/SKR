@@ -77,15 +77,8 @@ namespace SkrGame.Universe.Locations {
 				for (int y = 0; y < Map.GetLength(1); y++) {
 					Map[x, y] = fill;
 
-
-					var t = TerrainDefinitions[fill];
-					if (t == null) {
-						Cells[x, y].Walkable = false;
-						Cells[x, y].Transparent = false;
-					} else {
-						Cells[x, y].Walkable = t.Walkable;
-						Cells[x, y].Transparent = t.Transparent;
-					}
+					Cells[x, y].Walkable = true;
+					Cells[x, y].Transparent = true;
 				}
 			}
 
@@ -164,11 +157,11 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		public override bool IsWalkable(Point v) {
-			return Cells[v.X, v.Y].Walkable;
+			return TerrainDefinitions[Map[v.X, v.Y]].Walkable && Cells[v.X, v.Y].Walkable;
 		}
 
 		public override bool IsTransparent(Point v) {
-			return Cells[v.X, v.Y].Transparent;
+			return TerrainDefinitions[Map[v.X, v.Y]].Transparent && Cells[v.X, v.Y].Transparent;
 		}
 
 		public override IEnumerable<Entity> GetEntitiesAt(Point location) {

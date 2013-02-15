@@ -11,25 +11,28 @@ using SkrGame.Actions;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Gameplay.Talent;
 using SkrGame.Systems;
-using SkrGame.Universe.Entities;
-using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Features;
-using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Factories;
 using SkrGame.Universe.Locations;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe {
-	public class World : AbstractWorld {
-		private readonly MapFactory mapFactory;
+	public class World {
+		/// <summary>
+		/// default speed of entities, an entity with 2x speed gains AP 2x as fast
+		/// </summary>
+		public const int DEFAULT_SPEED = 100; // 
 
-		private Level level;
+		public const int TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
+		public const int TURN_LENGTH_IN_AP = DEFAULT_SPEED;	// how long is a turn in seconds
+		public const int MEAN = 50;						// what is the mean score for an attribute
+		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
+		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
 
-		public Level CurrentLevel {
-			get { return level; }
-		}
+		public MapFactory MapFactory { get; private set; }
 
-		public override Entity Player {
+		public Level CurrentLevel { get; set; }
+
+		public Entity Player {
 			get { return TagManager.GetEntity("player"); }
 			set {				
 				Contract.Requires<ArgumentNullException>(value != null, "value");
@@ -37,89 +40,67 @@ namespace SkrGame.Universe {
 			}
 		}
 
+		public TagManager<string> TagManager { get; private set; }
+		public GroupManager<string> GroupManager { get; private set; }
+		public EntityFactory EntityFactory { get; private set; }
+		public EntityManager EntityManager { get; private set; }
+		public Log Log { get; private set; }
+
 		private ActionPointSystem actionPointSystem;
 		private VisionSubsystem visionSubsystem;
-		
-		public World() : base(new TagManager<string>(), new GroupManager<string>(), new EntityFactory(), new EntityManager(), new Log()) {
+
+		public World() {
 			Rng.Seed(0);
+
+			TagManager = new TagManager<string>();
+			GroupManager = new GroupManager<string>();
+			EntityFactory = new EntityFactory();
+			EntityManager = new EntityManager();
+			Log = new Log();
 
 			ItemFactory.Init(EntityFactory);
 			FeatureFactory.Init(EntityFactory);
 
 			EntityFactory.Compile();
 
-			mapFactory = new MapFactory(this);
+			MapFactory = new MapFactory(this);
+		}
 
-			level = mapFactory.Construct("TestMap");
-
-			var player = EntityManager.Create(new List<Component>
-			                                  {
-			                                  		new Sprite("player", Sprite.PLAYER_LAYER),
-			                                  		new Identifier("Player"),
-			                                  		new Location(0, 0, level),
-			                                  		new ActorComponent(new Player(), new AP()),
-			                                  		new Person(),
-			                                  		new DefendComponent(),
-			                                  		new ContainerComponent(),
-			                                  		new EquipmentComponent(),
-			                                  		new VisibleComponent(10),
-			                                  		new SightComponent()
-			                                  });
-
-			TagManager.Register(player, "player");
-			
-			var punch =
-					new MeleeComponent.Template
-					{
-							ComponentId = "punch",
-							ActionDescription = "punch",
-							ActionDescriptionPlural = "punches",
-							Skill = "skill_unarmed",
-							HitBonus = 0,
-							Damage = Rand.Constant(-5),
-							DamageType = Combat.DamageTypes["crush"],
-							Penetration = 1,
-							WeaponSpeed = 100,
-							APToReady = 1,
-							Reach = 0,
-							Strength = 1,
-							Parry = 0
-					};
-
-			player.Add(new MeleeComponent(punch));
-
-			var npc = EntityManager.Create(new List<Component>
-			                               {
-			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
-			                               		new Identifier("npc"),
-			                               		new Location(6, 2, level),
-												new ActorComponent(new NPC(), new AP()),
-			                               		new Person(),
-			                               		new DefendComponent(),
-			                               		new VisibleComponent(10),
-			                               		new ContainerComponent(),
-			                               		new EquipmentComponent(),
-			                               });			
-
-			EntityManager.Create(EntityFactory.Get("smallknife")).Add(new Location(1, 1, level));
-			EntityManager.Create(EntityFactory.Get("axe")).Add(new Location(1, 1, level));
-			EntityManager.Create(EntityFactory.Get("glock17")).Add(new Location(1, 1, level));
-			var ammo = EntityManager.Create(EntityFactory.Get("9x9mm")).Add(new Location(1, 1, level));
-			ammo.Get<Item>().Amount = 30;
-			EntityManager.Create(EntityFactory.Get("bullet")).Add(new Location(1, 1, level));
-
-			var armor = EntityManager.Create(EntityFactory.Get("footballpads")).Add(new Location(1, 1, level));
-//			npc.Get<ContainerComponent>().Add(armor);
-			npc.Get<ActorComponent>().Enqueue(new EquipItem(npc, armor, "Torso", true));			
-			npc.Add(new MeleeComponent(punch));
-
-			actionPointSystem = new ActionPointSystem(player, EntityManager);
+		public void Initialize() {
+			actionPointSystem = new ActionPointSystem(Player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
 		}
 
 		public void UpdateSystems() {
 			visionSubsystem.Update();
 			actionPointSystem.Update();
+		}
+
+		public static int SecondsToActionPoints(double seconds) {
+			return  (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
+		}
+
+		public static double ActionPointsToSeconds(int ap) {
+			return (double) (ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
+		}
+
+		public static int SpeedToActionPoints(double speed) {
+			return SecondsToActionPoints(SpeedToSeconds(speed));
+		}
+
+		public static double ActionPointsToSpeed(int ap) {
+			return SecondsToSpeed(ActionPointsToSeconds(ap));
+		}
+
+		public static double SpeedToSeconds(double speed) {
+			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / speed;
+		}
+
+		/// <summary>
+		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
+		/// </summary>
+		public static double SecondsToSpeed(double seconds) {
+			return ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
 		}
 	}
 }

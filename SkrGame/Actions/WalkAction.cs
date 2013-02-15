@@ -16,10 +16,6 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions {
-	public interface IPositionChanged : IComponentEvent {
-		void Move(Point prev, Point curr);
-	}
-
 	public class BumpAction : ActorAction {
 		private Direction direction;
 

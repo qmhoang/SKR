@@ -4,9 +4,9 @@ using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
 	public class Blocker : Component {
-		internal Blocker() : this(true, true) { }
+		public Blocker() : this(true, true) { }
 
-		internal Blocker( bool walkable, bool transparent) {
+		public Blocker(bool walkable, bool transparent) {
 			this.walkable = walkable;
 			this.transparent = transparent;			
 		}

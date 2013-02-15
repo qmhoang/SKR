@@ -15,7 +15,12 @@ using Ogui.UI;
 using SKR.UI.Gameplay;
 using SKR.UI.Menus;
 using SKR.Universe;
+using SkrGame.Actions;
+using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Items;
 using libtcod;
 using log4net.Config;
 
@@ -25,9 +30,75 @@ namespace SKR {
 
 		protected override void Setup(ApplicationInfo info) {
 			base.Setup(info);
+
 			world = new World();
+
+
+			world.CurrentLevel = world.MapFactory.Construct("TestMap");
+
+			var player = world.EntityManager.Create(new List<DEngine.Entities.Component>
+			                                  {
+			                                  		new Sprite("player", Sprite.PLAYER_LAYER),
+			                                  		new Identifier("Player"),
+			                                  		new Location(0, 0, world.CurrentLevel),
+			                                  		new ActorComponent(new Player(), new AP()),
+			                                  		new Person(),
+			                                  		new DefendComponent(),
+			                                  		new ContainerComponent(),
+			                                  		new EquipmentComponent(),
+			                                  		new VisibleComponent(10),
+			                                  		new SightComponent()
+			                                  });
+			
+			var punch =
+					new MeleeComponent.Template
+					{
+						ComponentId = "punch",
+						ActionDescription = "punch",
+						ActionDescriptionPlural = "punches",
+						Skill = "skill_unarmed",
+						HitBonus = 0,
+						Damage = Rand.Constant(-5),
+						DamageType = Combat.DamageTypes["crush"],
+						Penetration = 1,
+						WeaponSpeed = 100,
+						APToReady = 1,
+						Reach = 0,
+						Strength = 1,
+						Parry = 0
+					};
+
+			player.Add(new MeleeComponent(punch));
+
+			world.Player = player;
+
+			var npc = world.EntityManager.Create(new List<DEngine.Entities.Component>
+			                               {
+			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
+			                               		new Identifier("npc"),
+			                               		new Location(6, 2, world.CurrentLevel),
+												new ActorComponent(new NPC(), new AP()),
+			                               		new Person(),
+			                               		new DefendComponent(),
+			                               		new VisibleComponent(10),
+			                               		new ContainerComponent(),
+			                               		new EquipmentComponent(),
+			                               });
+
+			world.EntityManager.Create(world.EntityFactory.Get("smallknife")).Add(new Location(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("axe")).Add(new Location(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("glock17")).Add(new Location(1, 1, world.CurrentLevel));
+			var ammo = world.EntityManager.Create(world.EntityFactory.Get("9x9mm")).Add(new Location(1, 1, world.CurrentLevel));
+			ammo.Get<Item>().Amount = 30;
+			world.EntityManager.Create(world.EntityFactory.Get("bullet")).Add(new Location(1, 1, world.CurrentLevel));
+
+			var armor = world.EntityManager.Create(world.EntityFactory.Get("footballpads")).Add(new Location(1, 1, world.CurrentLevel));
+			//			npc.Get<ContainerComponent>().Add(armor);
+			npc.Get<ActorComponent>().Enqueue(new EquipItem(npc, armor, "Torso", true));
+			npc.Add(new MeleeComponent(punch));
+
+			world.Initialize();
 			Push(new CharGen(world, new WindowTemplate()));
-		
 		}
 
 		protected override void Update() {
