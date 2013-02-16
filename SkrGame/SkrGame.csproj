@@ -107,7 +107,7 @@
   <ItemGroup>
     <Compile Include="Actions\AbstractItemAction.cs" />
     <Compile Include="Actions\DropItemAction.cs" />
-    <Compile Include="Actions\EquipItem.cs" />
+    <Compile Include="Actions\EquipItemAction.cs" />
     <Compile Include="Actions\Features\CloseDoorAction.cs" />
     <Compile Include="Actions\Features\OpenDoorAction.cs" />
     <Compile Include="Actions\Features\ToggleDoorAction.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="Systems\ActionPointSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
-    <Compile Include="Universe\Entities\Actors\Actor.cs" />
+    <Compile Include="Universe\Entities\Actors\Skill.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />
@@ -154,7 +154,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Universe\Entities\Actions\" />
     <Folder Include="Universe\Entities\Items\Components\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

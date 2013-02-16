@@ -1,5 +1,6 @@
 using DEngine.Actions;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Entities;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
@@ -21,8 +22,8 @@ namespace SkrGame.Actions {
 				return ActionResult.Aborted;
 
 			if (amount < Item.Get<Item>().Amount) {
-				var ne = Universe.Entities.Items.Item.Split(Item, amount);
-				Get(ne);
+				var temp = Universe.Entities.Items.Item.Split(Item, amount);
+				Get(temp);
 			} else {
 				Get(Item);
 			}
@@ -40,7 +41,10 @@ namespace SkrGame.Actions {
 
 			Entity.Get<ContainerComponent>().Add(i);
 
-			World.Log.Normal(string.Format(""));
+			World.Log.Normal(string.Format("{0} picks up {1}", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item)));
+
+			if (!i.IsActive)
+				World.EntityManager.Remove(i);
 		}
 	}
 }

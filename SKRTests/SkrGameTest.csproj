@@ -85,6 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionTests.cs" />
+    <Compile Include="Actions\DropItemActionTests.cs" />
+    <Compile Include="Actions\EquipItemHelper.cs" />
+    <Compile Include="Actions\Features\OpenDoorActions.cs" />
+    <Compile Include="Actions\GetItemActionTests.cs" />
+    <Compile Include="Actions\ItemTestsHelper.cs" />
     <Compile Include="WorldTest.cs" />
     <Compile Include="Actions\WalkActionTests.cs" />
     <Compile Include="Components\ContainerTests.cs" />

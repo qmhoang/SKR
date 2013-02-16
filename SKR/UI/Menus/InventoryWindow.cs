@@ -50,11 +50,11 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSelectItem(string slot) {
 			if (equipment.IsSlotEquipped(slot)) {
-				player.Get<ActorComponent>().Enqueue(new UnequipItem(player, slot));
+				player.Get<ActorComponent>().Enqueue(new UnequipItemAction(player, slot));
 			} else {
 				var items = inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().Slots.Contains(slot)).ToList();
 				if (items.Count > 0)
-					ParentApplication.Push(new ItemWindow(new ItemWindowTemplate()
+					ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
 					                                      {
 					                                      		Size = Size,
 					                                      		IsPopup = IsPopup,
@@ -62,7 +62,7 @@ namespace SKR.UI.Menus {
 					                                      		Items = items,
 					                                      		World = World,
 					                                      		SelectSingleItem = true,
-					                                      		ItemSelected = i => player.Get<ActorComponent>().Enqueue(new EquipItem(player, i, slot)),
+					                                      		ItemSelected = i => player.Get<ActorComponent>().Enqueue(new EquipItemAction(player, i, slot)),
 					                                      }));					
 				else
 					World.Log.Normal("No items in inventory that go there.");

@@ -25,7 +25,7 @@ using libtcod;
 using log4net.Config;
 
 namespace SKR {
-	public class SKRApp : Application {
+	public class RoguelikeApp : Application {
 		private World world;
 
 		protected override void Setup(ApplicationInfo info) {
@@ -94,7 +94,7 @@ namespace SKR {
 
 			var armor = world.EntityManager.Create(world.EntityFactory.Get("footballpads")).Add(new Location(1, 1, world.CurrentLevel));
 			//			npc.Get<ContainerComponent>().Add(armor);
-			npc.Get<ActorComponent>().Enqueue(new EquipItem(npc, armor, "Torso", true));
+			npc.Get<ActorComponent>().Enqueue(new EquipItemAction(npc, armor, "Torso", true));
 			npc.Add(new MeleeComponent(punch));
 
 			world.Initialize();
@@ -128,7 +128,7 @@ namespace SKR {
 			Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", INITIAL_DELAY,
 			                  INTERVAL_DELAY);
 			Logger.InfoFormat("FPS Limit: {0}.", FPS_LIMIT);
-			using (SKRApp app = new SKRApp())
+			using (RoguelikeApp app = new RoguelikeApp())
 				app.Start(new ApplicationInfo()
 				          {
 				          		Title = "SKR",
