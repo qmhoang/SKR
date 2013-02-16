@@ -9,11 +9,11 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions {
-	public class EquipItem : AbstractItemAction {
+	public class EquipItemAction : AbstractItemAction {
 		private string slot;
 		private bool force;
 
-		public EquipItem(Entity entity, Entity item, string slot, bool force = false) : base(entity, item) {
+		public EquipItemAction(Entity entity, Entity item, string slot, bool force = false) : base(entity, item) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			Contract.Requires<ArgumentNullException>(item != null, "item");
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty");
@@ -52,17 +52,16 @@ namespace SkrGame.Actions {
 				Item.Get<Location>().Point = Entity.Get<Location>().Point;
 
 			World.Log.Normal(String.Format("{0} equips {1} to {2}", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item), slot));
-
-
+			
 			return force ? ActionResult.SuccessNoTime : ActionResult.Success;
 		}
 	}
 
-	public class UnequipItem : LoggedAction {
+	public class UnequipItemAction : LoggedAction {
 		private string slot;
 		private int apCost;
 
-		public UnequipItem(Entity entity, string slot)
+		public UnequipItemAction(Entity entity, string slot)
 			: base(entity) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty");

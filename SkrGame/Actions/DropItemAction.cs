@@ -11,7 +11,7 @@ namespace SkrGame.Actions {
 	public class DropItemAction : AbstractItemAction {
 		private int amount;
 
-		public DropItemAction(Entity entity, Entity item, int amount)
+		public DropItemAction(Entity entity, Entity item, int amount = 1)
 				: base(entity, item) {
 			this.amount = amount;
 		}
@@ -22,21 +22,19 @@ namespace SkrGame.Actions {
 
 		public override ActionResult OnProcess() {
 			if (amount == 0)
-				return ActionResult.Aborted;
-
-			var inventory = Entity.Get<ContainerComponent>();
+				return ActionResult.Aborted;			
 
 			if (amount < Item.Get<Item>().Amount) {
-				var ne = Universe.Entities.Items.Item.Split(Item, amount);
 
 				var level = Entity.Get<Location>().Level;
 				var itemsInLevel = level.GetEntitiesAt(Entity.Get<Location>().Point).Where(e => e.Has<Item>() &&
 				                                                                                e.Has<VisibleComponent>() &&
 				                                                                                e.Get<VisibleComponent>().VisibilityIndex > 0).ToList();
 
-				if (itemsInLevel.Exists(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>())) {
-					itemsInLevel.First(e => e.Get<ReferenceId>() == ne.Get<ReferenceId>()).Get<Item>().Amount += amount;
+				if (itemsInLevel.Exists(e => e.Get<ReferenceId>() == Item.Get<ReferenceId>())) {
+					itemsInLevel.First(e => e.Get<ReferenceId>() == Item.Get<ReferenceId>()).Get<Item>().Amount += amount;
 				} else {
+					var ne = Universe.Entities.Items.Item.Split(Item, amount);
 					ne.Get<VisibleComponent>().Reset();
 				}
 
