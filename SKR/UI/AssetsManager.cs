@@ -111,7 +111,6 @@ namespace SKR.Universe {
 			assets.Add("BULLET_.40S&W", new Tuple<char, Pigment>('.', new Pigment(ColorPresets.Brass, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 
 			assets.Add("FOOTBALL_SHOULDER_PADS", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.LightGray, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
-
 			#endregion
 		}
 

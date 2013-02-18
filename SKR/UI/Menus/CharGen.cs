@@ -10,15 +10,12 @@ using SkrGame.Universe;
 using libtcod;
 
 namespace SKR.UI.Menus {
-	public class CharGen : Window {
+	public class CharGen : SkrWindow {
 		private ListBox occupationListBox;
 		private MenuButton sexButton;
 		private TextEntry nameEntry;
-		private World world;
-
-		public CharGen(World world, WindowTemplate template) : base(template) {
-			this.world = world;
-		}
+		
+		public CharGen(SkrWindowTemplate template) : base(template) { }
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
@@ -153,7 +150,10 @@ namespace SKR.UI.Menus {
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
 
-			ParentApplication.Push(new GameplayWindow(world, new WindowTemplate()));
+			ParentApplication.Push(new GameplayWindow(new SkrWindowTemplate()
+			                                          {
+			                                          		World = World
+			                                          }));
 		}
 	}
 }

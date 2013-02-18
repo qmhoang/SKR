@@ -5,6 +5,15 @@ using SkrGame.Actions;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Actors {
+	public class DoNothingActor : AbstractActor {
+		public override ActorAction NextAction() {
+			return new WaitAction(Holder.Entity);
+		}
+
+		public override AbstractActor Copy() {
+			return new DoNothingActor();
+		}
+	}
 	public class NPC : AbstractActor {
 		private AStarPathFinder pf;
 		private VisionMap vision;

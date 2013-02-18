@@ -106,11 +106,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AbstractItemAction.cs" />
+    <Compile Include="Actions\AttackAction.cs" />
     <Compile Include="Actions\DropItemAction.cs" />
     <Compile Include="Actions\EquipItemAction.cs" />
     <Compile Include="Actions\Features\CloseDoorAction.cs" />
+    <Compile Include="Actions\Features\FeatureAction.cs" />
     <Compile Include="Actions\Features\OpenDoorAction.cs" />
     <Compile Include="Actions\Features\ToggleDoorAction.cs" />
+    <Compile Include="Actions\Features\UseFeatureAction.cs" />
     <Compile Include="Actions\GetItemAction.cs" />
     <Compile Include="Actions\LoggedAction.cs" />
     <Compile Include="Actions\ReloadAction.cs" />
@@ -129,6 +132,7 @@
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />
     <Compile Include="Universe\Entities\Actors\SightComponent.cs" />
     <Compile Include="Universe\Entities\Actors\VisibleComponent.cs" />
+    <Compile Include="Universe\Entities\Features\HouseItemFeature.cs" />
     <Compile Include="Universe\Entities\Features\OnBump.cs" />
     <Compile Include="Universe\Entities\Features\PassiveFeature.cs" />
     <Compile Include="Universe\Entities\Features\UseableFeature.cs" />

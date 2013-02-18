@@ -77,7 +77,7 @@ namespace SKR {
 			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                               		new Identifier("npc"),
 			                               		new Location(6, 2, world.CurrentLevel),
-												new ActorComponent(new NPC(), new AP()),
+												new ActorComponent(new DoNothingActor(), new AP()),
 			                               		new Person(),
 			                               		new DefendComponent(),
 			                               		new VisibleComponent(10),
@@ -98,7 +98,10 @@ namespace SKR {
 			npc.Add(new MeleeComponent(punch));
 
 			world.Initialize();
-			Push(new CharGen(world, new WindowTemplate()));
+			Push(new CharGen(new SkrWindowTemplate
+			                 {
+			                 		World = world
+			                 }));
 		}
 
 		protected override void Update() {
