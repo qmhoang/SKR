@@ -5,20 +5,21 @@ using System.Linq;
 using System.Collections.Generic;
 using DEngine.Core;
 using Ogui.UI;
+using SkrGame.Universe;
 
 namespace SKR.UI.Menus {
-	public class ListWindowTemplate<T> : WindowTemplate {
+	public class ListWindowTemplate<T> : SkrWindowTemplate {
 		public IEnumerable<T> Items { get; set; }
 	}
 
-	public abstract class ListWindow<T> : Window {
+	public abstract class ListWindow<T> : SkrWindow {
 		private readonly Action<T> selectItem;
 		protected int MouseOverIndex;
 
 		/// <summary>
 		/// The rectangle in which the list will be drawn
 		/// </summary>
-		protected abstract Rect ListRect { get; }
+		protected abstract Rectangle ListRect { get; }
 
 //		protected Dictionary<char, T> Items;
 		protected IEnumerable<T> List;
@@ -84,7 +85,7 @@ namespace SKR.UI.Menus {
 				ExitWindow();
 		}
 
-		protected abstract void CustomDraw(Rect rect);
+		protected abstract void CustomDraw(Rectangle rect);
 
 		protected virtual void OnSelectItem(T item) {
 			if (selectItem != null)

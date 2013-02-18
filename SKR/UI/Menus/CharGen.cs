@@ -10,19 +10,17 @@ using SkrGame.Universe;
 using libtcod;
 
 namespace SKR.UI.Menus {
-	public class CharGen : Window {
+	public class CharGen : SkrWindow {
 		private ListBox occupationListBox;
 		private MenuButton sexButton;
 		private TextEntry nameEntry;
-
-		public CharGen(WindowTemplate template) : base(template) {
-			
-		}
+		
+		public CharGen(SkrWindowTemplate template) : base(template) { }
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 
-			var nameTemplate = new TextEntryTemplate()
+			var nameTemplate = new TextEntryTemplate
 			                   {
 			                   		Label = "Name: ",
 			                   		MaximumCharacters = 20,
@@ -66,8 +64,8 @@ namespace SKR.UI.Menus {
 			                  {
 			                  		Label = "Sex",
 //                                  MinimumWidth = 15,
-			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(3, 0),
-			                  		RightClickMenu = true,
+			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(2, 0),
+			                  		RightClickMenu = true,									
 //                                  Tooltip = "Click to switch sex, right click to choose from a menu",
 			                  		Items = new List<string>()
 			                  		        {
@@ -84,7 +82,7 @@ namespace SKR.UI.Menus {
 				var treeNode = new TreeNode("category" + i);
 				nodes.Add(treeNode);
 
-				for (int j = 0; j < 7; j++) {
+				for (int j = 0; j < 10; j++) {
 					treeNode.AddChild(new TreeNode("jobs" + index));
 					index++;
 				}
@@ -102,6 +100,19 @@ namespace SKR.UI.Menus {
 
 			treeTemplate.AlignTo(LayoutDirection.South, sexTemplate, 1);
 			AddControl(new TreeView(treeTemplate));
+
+			var treeTemplate1 = new TreeViewTemplate
+			                    {
+			                    		Title = "Occupation",
+			                    		TitleAlignment = HorizontalAlignment.Center,
+			                    		MinimumListBoxWidth = 15,
+			                    		FrameTitle = true,
+			                    		AutoSizeOverride = new Size(15, 10),
+			                    		Items = nodes.Where((n, i) => i % 10 == 0).ToList(),
+			                    };
+
+			treeTemplate1.AlignTo(LayoutDirection.South, treeTemplate, 1);
+			AddControl(new TreeView(treeTemplate1));
 
 			var sliderTestTemplate = new SliderTemplate()
 			                         {
@@ -127,19 +138,22 @@ namespace SKR.UI.Menus {
 			doneButton.ButtonPushed += StartNewGame;
 
 			AddControl(doneButton);
+
+			this.KeyPressed += CharGen_KeyPressed;
+		}
+
+		private void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
+			if ((e.KeyboardData.KeyCode == TCODKeyCode.Enter || e.KeyboardData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
+				StartNewGame(this, EventArgs.Empty);
 		}
 
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
 
-			ParentApplication.Push(new GameplayWindow(World.Instance.EntityManager, new WindowTemplate()));
-		}
-
-		protected override void OnKeyPressed(KeyboardData keyData) {
-			if ((keyData.KeyCode == TCODKeyCode.Enter || keyData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
-				StartNewGame(this, EventArgs.Empty);
-			base.OnKeyPressed(keyData);
-
+			ParentApplication.Push(new GameplayWindow(new SkrWindowTemplate()
+			                                          {
+			                                          		World = World
+			                                          }));
 		}
 	}
 }

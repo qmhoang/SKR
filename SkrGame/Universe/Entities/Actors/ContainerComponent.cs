@@ -6,15 +6,15 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using DEngine.Components;
-using DEngine.Components.Actions;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Actions;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class ContainerComponent : Component, IPositionChanged {
+	public class ContainerComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly List<Entity> itemContainer;
@@ -44,6 +44,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			Contract.Invariant(itemContainer != null);			
 		}
 
+		[Pure]
 		public bool Contains(Entity item) {
 			return itemContainer.Contains(item);
 		}
@@ -106,14 +107,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				itemContainer.Add(item);
 				OnItemAdded(new EventArgs<Entity>(item));
 
-				// make the item we just added invisible
-				if (item.Has<VisibleComponent>())
-					item.Get<VisibleComponent>().VisibilityIndex = -1;
-
-				// just in case, move the item to the entity's location
-				if (item.Has<Location>())
-					item.Get<Location>().Position = Entity.Get<Location>().Position;
-
 				return true;
 			}
 		}
@@ -128,10 +121,6 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			OnItemRemoved(new EventArgs<Entity>(item));
 			itemContainer.Remove(item);
-
-			if (item.Has<VisibleComponent>()) {
-				item.Get<VisibleComponent>().Reset();
-			}
 
 			return true;
 		}
@@ -150,13 +139,6 @@ namespace SkrGame.Universe.Entities.Actors {
 
 			
 			return container;
-		}
-
-		public void Move(Point prev, Point curr) {
-			foreach (var item in Items) {
-				if (item.Has<Location>())
-					item.Get<Location>().Position = curr;
-			}
 		}
 	}
 }

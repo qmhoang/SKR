@@ -18,7 +18,7 @@ namespace SkrGame.Universe.Entities.Features {
 		private OpeningStatus status;
 		public OpeningStatus Status {
 			get { return status; }
-			private set {
+			set {
 				status = value;
 				OnUsed(new EventArgs<OpeningStatus>(status));
 			}
@@ -68,43 +68,6 @@ namespace SkrGame.Universe.Entities.Features {
 			if (Used != null)
 				opening.Used = (ComponentEventHandler<EventArgs<OpeningStatus>>) Used.Clone();
 			return opening;
-		}
-
-		public ActionResult Action(Entity user) {
-			Contract.Requires<ArgumentNullException>(user != null, "user");
-			Contract.Requires<ArgumentException>(user.Has<ActionPoint>());
-			
-			if (Status == OpeningStatus.Closed) {
-				if (Entity.Has<Blocker>())
-					Entity.Get<Blocker>().Transparent = true;
-				Entity.Get<Blocker>().Walkable = WalkableOpened;
-				if (Entity.Has<Sprite>())
-					Entity.Get<Sprite>().Asset = OpenedAsset;
-
-				Status = OpeningStatus.Opened;
-				user.Get<ActionPoint>().ActionPoints -= APCost;
-
-				World.Instance.Log.Normal(String.Format("{0} {1}.", Identifier.GetNameOrId(user), OpenedDescription));
-				return ActionResult.Success;
-			} else if (Status == OpeningStatus.Opened) {
-				if (Entity.Get<Location>().Level.IsWalkable(Entity.Get<Location>().Position) || !WalkableOpened) {
-					if (Entity.Has<Blocker>())
-						Entity.Get<Blocker>().Transparent = Entity.Get<Blocker>().Walkable = false;
-					if (Entity.Has<Sprite>())
-						Entity.Get<Sprite>().Asset = ClosedAsset;
-
-					Status = OpeningStatus.Closed;
-					user.Get<ActionPoint>().ActionPoints -= APCost;
-
-					World.Instance.Log.Normal(String.Format("{0} {1}.", Identifier.GetNameOrId(user), ClosedDescription));
-					return ActionResult.Success;
-				} else {
-					user.Get<ActionPoint>().ActionPoints -= APCost;
-					World.Instance.Log.Normal(String.Format("{0} tries to {1}, but can't.", Identifier.GetNameOrId(user), ClosedDescription));
-					return ActionResult.Failed;					
-				}				
-			}
-			return ActionResult.Aborted;
 		}
 	}
 }

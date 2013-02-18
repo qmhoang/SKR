@@ -9,15 +9,14 @@ using Ogui.Core;
 using Ogui.UI;
 using SKR.Universe;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Actors.PC;
 using SkrGame.Universe.Locations;
 using libtcod;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SKR.UI.Gameplay {
 	public class MapPanel : Panel {
-		
 		internal Point ViewOffset { get; private set; }
 		private AssetsManager assets;
 
@@ -25,16 +24,20 @@ namespace SKR.UI.Gameplay {
 		private Entity player;
 		private Point oldPos;
 
-		public MapPanel(EntityManager manager, AssetsManager assetsManager, PanelTemplate template)
+		public World World { get; private set; }
+
+		public MapPanel(World world, AssetsManager assetsManager, PanelTemplate template)
 				: base(template) {			
 			ViewOffset = new Point(0, 0);
 			assets = assetsManager;
 
-			entities = manager.Get(typeof(Location), typeof(Sprite), typeof(VisibleComponent));
+			World = world;
+			
+			entities = world.EntityManager.Get(typeof(Location), typeof(Sprite), typeof(VisibleComponent));
 
-			player = World.Instance.Player;
+			player = world.Player;
 			var location = player.Get<Location>();
-			oldPos = location.Position;			
+			oldPos = location.Point;			
 		}
 
 
@@ -53,17 +56,17 @@ namespace SKR.UI.Gameplay {
 
 			ViewOffset = new Point(Math.Min(Math.Max(player.Get<Location>().X - Size.Width / 2, 0),
 			                                level.Width - Size.Width),
-			                       Math.Min(Math.Max(player.Get<Location>().Y - Size.Height / 2, 0),
+								   Math.Min(Math.Max(player.Get<Location>().Y - Size.Height / 2, 0),
 			                                level.Height - Size.Height));
 
 			//draw map
 			for (int x = 0; x < Size.Width; x++) {
 				for (int y = 0; y < Size.Height; y++) {
 					Point localPosition = ViewOffset.Shift(x, y);
-					if (!level.IsInBoundsOrBorder(localPosition))
+					if (!level.IsInBounds(localPosition))
 						continue;
 
-					var texture = assets[((Level)level).GetTerrain(localPosition).Asset];
+					var texture = assets[level.GetTerrain(localPosition).Asset];
 					if (texture == null)
 						continue;
 					if (IsPointWithinPanel(localPosition)) {
@@ -81,13 +84,13 @@ namespace SKR.UI.Gameplay {
 
 			// draw entities
 			foreach (var entity in entities.OrderBy(entity => entity.Get<Sprite>().ZOrder)) {
-				Point localPosition = entity.Get<Location>().Position - ViewOffset;
+				Point localPosition = entity.Get<Location>().Point - ViewOffset;
 				var texture = assets[entity.Get<Sprite>().Asset];
 
 				if (IsPointWithinPanel(localPosition)) {
 
 					if (!Program.SeeAll.Enabled) {
-						if (player.Get<SightComponent>().IsVisible(entity.Get<Location>().Position)) {
+						if (player.Get<SightComponent>().IsVisible(entity.Get<Location>().Point)) {
 							if (entity.Get<VisibleComponent>().VisibilityIndex > 0)
 								Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);
 						}
