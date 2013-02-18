@@ -6,6 +6,7 @@ using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
 using NUnit.Framework;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
@@ -76,7 +77,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestAdd() {
+		public void Add() {
 			container.Add(item0);
 
 			Assert.AreEqual(container.Count, 1);
@@ -96,7 +97,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestAddStackItem() {
+		public void AddStackItem() {
 			container.Add(stack1);
 			Assert.AreEqual(container.Count, 1);
 			Assert.AreEqual(container.TotalCount, 1);
@@ -108,7 +109,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestRemove() {
+		public void Remove() {
 			container.Add(item0);
 			Assert.AreEqual(container.Count, 1);
 
@@ -119,7 +120,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestPredicate() {
+		public void Predicate() {
 			container.Add(item0);
 
 			Assert.IsTrue(container.Contains(item0));
@@ -137,81 +138,14 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestGet() {
+		public void Get() {
 			container.Add(item0);
 			Assert.IsNull(container.GetItem(i => i.Id.ToString() == ""));
 			Assert.AreSame(container.GetItem(i => i.Id == item0.Id), item0);
 		}
 
 		[Test]
-		public void TestMove() {
-			container.Add(item0);
-			container.Add(item1);
-
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position));
-
-			var p1 = new Point(4, 8);
-			entity.Get<Location>().Position = p1;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, p1));
-
-			var p2 = new Point(9, -8);
-			entity.Get<Location>().Position = p2;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, p2));
-		}
-
-		[Test]
-		public void TestMoveAlot() {
-			container.Add(item0);
-			container.Add(item1);
-			container.Add(item2);
-
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, entity.Get<Location>().Position));
-
-			entity.Get<Location>().Position = new Point(4, 8);
-			entity.Get<Location>().Position = new Point(51, -9);
-
-			var position = new Point(0, 3812);
-			entity.Get<Location>().Position = position;
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, position));
-		}
-
-		[Test]
-		public void TestCopyMove() {
-			container.Add(item0);
-			container.Add(item1);
-			container.Add(item2);
-
-			var copy = entity.Copy();
-
-			Assert.AreEqual(copy.Get<ContainerComponent>().Count, entity.Get<ContainerComponent>().Count);
-
-
-			copy.Get<Location>().Position = new Point(934, -83);
-
-			Assert.AreNotEqual(entity.Get<Location>().Position, copy.Get<Location>().Position);
-			copy.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, copy.Get<Location>().Position));
-		}
-
-		[Test]
-		public void TestRemovedNotMoved() {
-			container.Add(item0);
-			container.Add(item1);
-
-			var oldLoc = new Point(0, 3812);
-			entity.Get<Location>().Position = oldLoc;
-
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, oldLoc));
-
-			container.Remove(item1);
-			var newLoc = new Point(51, -9);
-			entity.Get<Location>().Position = newLoc;
-
-			entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Position, newLoc));
-			Assert.AreEqual(item1.Get<Location>().Position, oldLoc);
-		}
-
-		[Test]
-		public void TestCopy() {
+		public void Copy() {
 			container.Add(item0);
 			container.Add(item1);
 			container.Add(item2);
@@ -223,6 +157,7 @@ namespace SKRTests.Components {
 			CollectionAssert.Contains(container.Items, item2);
 
 			var copy = entity.Copy().Get<ContainerComponent>();
+			Assert.AreNotSame(entity, copy);
 			Assert.AreEqual(copy.TotalCount, 3);
 			CollectionAssert.AllItemsAreUnique(copy.Items);
 

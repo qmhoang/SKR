@@ -92,7 +92,6 @@
     <Compile Include="UI\Gameplay\GameplayWindow.cs" />
     <Compile Include="UI\Gameplay\MapPanel.cs" />
     <Compile Include="UI\Gameplay\LogPanel.cs" />
-    <Compile Include="UI\Gameplay\Systems\PlayerMovementSystem.cs" />
     <Compile Include="UI\Gameplay\StatusPanel.cs" />
     <Compile Include="UI\Menus\CharGen.cs" />
     <Compile Include="UI\Menus\DebugLookWindow.cs" />
@@ -100,6 +99,7 @@
     <Compile Include="UI\Menus\ItemWindow.cs" />
     <Compile Include="UI\Menus\PromptWindow.cs" />
     <Compile Include="UI\Menus\ListWindow.cs" />
+    <Compile Include="UI\Menus\SkrWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Font\consolas12x12_gs_tc.png" />
@@ -140,11 +140,10 @@
     <ProjectReference Include="..\SkrGame\SkrGame.csproj">
       <Project>{0ADBAB4C-409B-4E65-9444-B7D677B560FA}</Project>
       <Name>SkrGame</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Graphics\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>

@@ -7,6 +7,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Universe.Locations {
@@ -29,7 +30,7 @@ namespace SkrGame.Universe.Locations {
 		}
 	}
 
-	public class Level : DEngine.Core.Level {
+	public class Level : AbstractLevel, IEquatable<Level> {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected string[,] Map;
@@ -56,7 +57,7 @@ namespace SkrGame.Universe.Locations {
 			Contract.Invariant(TerrainDefinitions != null);
 		}
 
-		public Level(Size size, EntityManager em, string fill, IEnumerable<Terrain> terrainDefinitions)
+		public Level(Size size, World world, string fill, IEnumerable<Terrain> terrainDefinitions)
 			: base(size) {
 			Uid = new UniqueId();
 
@@ -67,23 +68,17 @@ namespace SkrGame.Universe.Locations {
 				TerrainDefinitions.Add(terrain.Definition, terrain);
 			}
 
-			entities = em.Get<Location>();
-			blockers = em.Get(typeof(Location), typeof(Blocker));
+			this.World = world;
+			entities = world.EntityManager.Get<Location>();
+			blockers = world.EntityManager.Get(typeof(Location), typeof(Blocker));
 			Cells = new Cell[size.Width, size.Height];
 
 			for (int x = 0; x < Map.GetLength(0); x++) {
 				for (int y = 0; y < Map.GetLength(1); y++) {
 					Map[x, y] = fill;
 
-
-					var t = TerrainDefinitions[fill];
-					if (t == null) {
-						Cells[x, y].Walkable = false;
-						Cells[x, y].Transparent = false;
-					} else {
-						Cells[x, y].Walkable = t.Walkable;
-						Cells[x, y].Transparent = t.Transparent;
-					}
+					Cells[x, y].Walkable = true;
+					Cells[x, y].Transparent = true;
 				}
 			}
 
@@ -96,7 +91,7 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		private void OnRemoveBlocker(Entity entity) {
-			var position = entity.Get<Location>().Position;
+			var position = entity.Get<Location>().Point;
 			SetBlocker(position);
 			entity.Get<Location>().PositionChanged -= OnBlockerPositionChanged;
 			entity.Get<Blocker>().WalkableChanged -= OnblockerWalkableChanged;
@@ -104,7 +99,7 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		private void InitializeBlocker(Entity entity) {
-			var position = entity.Get<Location>().Position;
+			var position = entity.Get<Location>().Point;
 			SetBlocker(position);
 			entity.Get<Location>().PositionChanged += OnBlockerPositionChanged;
 			entity.Get<Blocker>().WalkableChanged += OnblockerWalkableChanged;
@@ -112,13 +107,13 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		private void OnBlockerTransparencyChanged(Component sender, EventArgs @event) {
-			var position = sender.Entity.Get<Location>().Position;
-			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Transparent);
+			var position = sender.Entity.Get<Location>().Point;
+			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Transparent);
 		}
 
 		private void OnblockerWalkableChanged(Component sender, EventArgs @event) {
-			var position = sender.Entity.Get<Location>().Position;
-			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Walkable);			
+			var position = sender.Entity.Get<Location>().Point;
+			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Walkable);			
 		}
 
 		private void OnBlockerPositionChanged(Component sender, PositionChangedEvent e) {
@@ -128,13 +123,13 @@ namespace SkrGame.Universe.Locations {
 
 		private void SetBlocker(Point position) {
 			if (GetTerrain(position).Walkable)
-				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Walkable);
+				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Walkable);
 			if (GetTerrain(position).Transparent)
-				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Position == position).All(e => e.Get<Blocker>().Transparent);
+				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Transparent);
 		}
 
 		public void SetTerrain(int x, int y, string t) {
-			if (!IsInBoundsOrBorder(x, y))
+			if (!IsInBounds(x, y))
 				throw new ArgumentOutOfRangeException();
 			Map[x, y] = t;
 		}
@@ -149,7 +144,7 @@ namespace SkrGame.Universe.Locations {
 
 		[Pure]
 		public Terrain GetTerrain(int x, int y) {
-			Contract.Requires<ArgumentOutOfRangeException>(IsInBoundsOrBorder(x, y));
+			Contract.Requires<ArgumentOutOfRangeException>(IsInBounds(x, y));
 			return TerrainDefinitions[Map[x, y]];
 		}
 
@@ -162,19 +157,49 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		public override bool IsWalkable(Point v) {
-			return Cells[v.X, v.Y].Walkable;
+			return IsInBounds(v) && TerrainDefinitions[Map[v.X, v.Y]].Walkable && Cells[v.X, v.Y].Walkable;
 		}
 
 		public override bool IsTransparent(Point v) {
-			return Cells[v.X, v.Y].Transparent;
+			return IsInBounds(v) && TerrainDefinitions[Map[v.X, v.Y]].Transparent && Cells[v.X, v.Y].Transparent;
 		}
 
 		public override IEnumerable<Entity> GetEntitiesAt(Point location) {
-			return GetEntities().Where(e => e.Get<Location>().Position == location);
+			return GetEntities().Where(e => e.Get<Location>().Point == location);
 		}
 
 		public override IEnumerable<Entity> GetEntities() {
 			return entities;
+		}
+
+		public bool Equals(Level other) {
+			if (ReferenceEquals(null, other))
+				return false;
+			if (ReferenceEquals(this, other))
+				return true;
+			return Equals(other.Uid, Uid);
+		}
+
+		public override bool Equals(object obj) {
+			if (ReferenceEquals(null, obj))
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			if (obj.GetType() != typeof(Level))
+				return false;
+			return Equals((Level) obj);
+		}
+
+		public override int GetHashCode() {
+			return (Uid != null ? Uid.GetHashCode() : 0);
+		}
+
+		public static bool operator ==(Level left, Level right) {
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Level left, Level right) {
+			return !Equals(left, right);
 		}
 	}
 }

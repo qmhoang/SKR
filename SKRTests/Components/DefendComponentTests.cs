@@ -16,7 +16,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void TestRandomBodyPart() {
+		public void RandomBodyPart() {
 			var d = defend.BodyPartsList.ToDictionary(attackablePart => attackablePart.Name, attackablePart => 0);
 
 			for (int i = 0; i < 10000; i++) {

@@ -8,31 +8,34 @@ using Ogui.Core;
 using Ogui.UI;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Items;
-using SkrGame.Universe.Entities.Items.Components;
 using libtcod;
 
 namespace SKR.UI.Menus {
+	public class ItemWindowTemplate : ListWindowTemplate<Entity> {
+		public Action<Entity> ItemSelected { get; set; }
+		public bool SelectSingleItem { get; set; }
+	}
 	public class ItemWindow : ListWindow<Entity> {        
 		private readonly bool singleItem;        		
-		private Rect sizeList;
+		private Rectangle sizeList;		
 
-		protected override Rect ListRect {
+		protected override Rectangle ListRect {
 			get { return sizeList; }
 		}
 
-		public ItemWindow(bool selectSingleItem, ListWindowTemplate<Entity> template, Action<Entity> itemSelected)
-				: base(itemSelected, template) {
+		public ItemWindow(ItemWindowTemplate template)
+				: base(template.ItemSelected, template) {
 			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires(Contract.ForAll(template.Items, i => i.Has<Item>()));
-			singleItem = selectSingleItem;            
-			sizeList = new Rect(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
+			singleItem = template.SelectSingleItem;            
+			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 		}
 
 		protected override int MouseToIndex(MouseData mouseData) {
 			return mouseData.Position.Y - ListRect.Top;
 		}
 
-		protected override void CustomDraw(Rect rect) {
+		protected override void CustomDraw(Rectangle rect) {
 			int y = 0;
 			char letter = 'A';
 			foreach (var entity in List) {								
@@ -41,7 +44,7 @@ namespace SKR.UI.Menus {
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, entity.Get<Identifier>().Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,
 				                                                                     entity.Has<RangeComponent>() ? string.Format(" ({0}/{1})", entity.Get<RangeComponent>().ShotsRemaining, entity.Get<RangeComponent>().Shots) : ""));
 
-				Canvas.PrintString(rect.TopRight.X - 4, rect.TopLeft.Y + y, String.Format("x{0}", entity.Get<Item>().Amount));
+				Canvas.PrintString(rect.TopRight.X - 3, rect.TopLeft.Y + y, String.Format("x{0}", entity.Get<Item>().Amount));
 
 				for (int i = 0; i < rect.Size.Width; i++) {
 					if ((letter - 'A') == MouseOverIndex)
@@ -60,9 +63,9 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-
+			
 			if (List.Count() <= 0) {
-				World.Instance.Log.Normal("No items.");
+				World.Log.Normal("No items.");
 				ExitWindow();
 			}
 		}

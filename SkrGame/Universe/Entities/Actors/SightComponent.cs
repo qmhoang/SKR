@@ -9,7 +9,7 @@ using DEngine.Entities;
 namespace SkrGame.Universe.Entities.Actors {
 	public class SightComponent : Component {
 		private VisionMap vision;
-		private Level currLevel;
+		private AbstractLevel currLevel;
 
 		[Pure]
 		public bool IsVisible(Point p) {
@@ -21,7 +21,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			return vision.IsVisible(x, y);
 		}
 
-		public void CalculateSight(Level level, int x, int y, int radius) {
+		public void CalculateSight(AbstractLevel level, int x, int y, int radius) {
 			if (currLevel != level) {
 				currLevel = level;
 				vision = new VisionMap(currLevel.Size);	

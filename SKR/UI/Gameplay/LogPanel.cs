@@ -4,7 +4,6 @@ using DEngine.Core;
 using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
-using SkrGame.Core;
 
 namespace SKR.UI.Gameplay {
 	public class LogPanelTemplate : PanelTemplate {
@@ -96,8 +95,6 @@ namespace SKR.UI.Gameplay {
 					currLine++;
 				}	
 			}
-
-		
 		}
 
 		protected override void Dispose(bool isDisposing) {
