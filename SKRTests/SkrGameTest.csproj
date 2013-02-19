@@ -91,7 +91,7 @@
     <Compile Include="Actions\Features\DoorActionsTests.cs" />
     <Compile Include="Actions\GetItemActionTests.cs" />
     <Compile Include="Actions\ItemTestsHelper.cs" />
-    <Compile Include="WorldTest.cs" />
+    <Compile Include="WorldTests.cs" />
     <Compile Include="Actions\WalkActionTests.cs" />
     <Compile Include="Components\ContainerTests.cs" />
     <Compile Include="Components\DefendComponentTests.cs" />

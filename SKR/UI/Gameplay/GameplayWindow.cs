@@ -63,7 +63,7 @@ namespace SKR.UI.Gameplay {
 					};
 			statusTemplate.AlignTo(LayoutDirection.East, mapTemplate);
 
-			StatusPanel = new StatusPanel(World.Player, statusTemplate);
+			StatusPanel = new StatusPanel(World, statusTemplate);
 
 			AddControl(StatusPanel);
 
@@ -91,6 +91,8 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void GameplayWindow_KeyPressed(object sender, KeyboardEventArgs keyboardEvent) {
+			if (!player.Get<ActorComponent>().Actor.RequiresInput)
+				return;
 			switch (keyboardEvent.KeyboardData.KeyCode) {
 				case TCODKeyCode.Up:
 				case TCODKeyCode.KeypadEight: // Up and 8 should have the same functionality
@@ -264,7 +266,7 @@ namespace SKR.UI.Gameplay {
 						if (keyboardEvent.KeyboardData.ControlKeys == ControlKeys.LeftControl) {
 							SetNPCActor();
 						} else {
-							player.Get<ActorComponent>().Enqueue(new UseFeatureAction(player, null, 1000));							
+							player.Get<ActorComponent>().Enqueue(new LongAction(player, null, 1000));							
 						}
 //						World.Log.Special(
 //								"Testing very long message for string wrapping.  We'll see how it works, hopefully very well; but if not we'll go in and fix it; won't we? Hmm, maybe I still need a longer message.  I'll just keep typing for now, hopefully making it very very very long.");

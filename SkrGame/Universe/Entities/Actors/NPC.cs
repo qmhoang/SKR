@@ -6,7 +6,7 @@ using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Actors {
 	public class DoNothingActor : AbstractActor {
-		public override ActorAction NextAction() {
+		public override IAction NextAction() {
 			return new WaitAction(Holder.Entity);
 		}
 
@@ -27,7 +27,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, position.Level, position.Point.X, position.Point.Y, 10, true);
 		}
 
-		public override ActorAction NextAction() {
+		public override IAction NextAction() {
 			if (Actions.Count == 0) {
 				return CalculateNextMove();				
 			} else {

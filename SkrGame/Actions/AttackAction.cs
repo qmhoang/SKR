@@ -11,6 +11,8 @@ using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions {
 	public abstract class AttackAction : LoggedAction {
+		protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		public Entity Defender { get; private set; }
 		public Entity Weapon { get; private set; }
 		public DefendComponent.AttackablePart BodyPartTargetted { get; private set; }

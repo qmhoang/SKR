@@ -1,46 +1,53 @@
-﻿//using DEngine.Actions;
-//using DEngine.Actor;
-//using DEngine.Components;
-//
-//namespace SkrGame.Universe {
-//	public class Calendar : AbstractActor {
-//		public int Second { get; private set; }
-//		public int Minute { get; private set; }
-//		public int Hour { get; private set; }
-//		public int DayOfTheYear { get; private set; }
-//		public int Month { get { return DayOfTheYear / 28 + 1; } }
-//		public int Week { get { return DayOfTheMonth / 7 + 1; } }
-//		public int DayOfTheMonth { get { return DayOfTheYear % 28; } }
-//		public int DayOfTheWeek { get { return DayOfTheYear % 7; } }
-//
-//		public void Update() {
-//
-//			Second += World.TURN_LENGTH_IN_SECONDS;
-//			if (Second >= 60)
-//				Minute++;
-//			if (Minute >= 60)
-//				Hour++;
-//			if (Hour >= 24)
-//				DayOfTheYear++;
-//
-//			Second %= 60;
-//			Minute %= 60;
-//			Hour %= 24;
-//			DayOfTheYear %= 364;
-//
-//			ActionPoints -= World.SpeedToActionPoints(World.DEFAULT_SPEED);
-//		}
-//
-//		public bool Dead {
-//			get { return false; }
-//		}
-//
-//		public void OnDeath() {
-//
-//		}
-//
-//		public override ActorAction NextAction() {
-//			
-//		}
-//	}
-//}
+﻿using System;
+using System.Globalization;
+using DEngine.Actions;
+using DEngine.Actor;
+using DEngine.Components;
+using DEngine.Entities;
+
+namespace SkrGame.Universe {
+	public class Calendar : AbstractActor {
+		public DateTime Time { get; private set; }
+		
+		public Calendar() {
+			Time = new DateTime(2013, 5, 26);					
+		}
+
+		public Calendar(DateTime timeSpan) {
+			this.Time = timeSpan;
+		}
+
+		public override IAction NextAction() {
+			return new CalendarAction(this);
+		}
+
+		public override AbstractActor Copy() {
+			return new Calendar(Time);
+		}
+
+		public void IncreaseTime(int seconds = World.TURN_LENGTH_IN_SECONDS) {
+			Time = Time.AddSeconds(seconds);
+		}
+
+		public class CalendarAction : IAction {
+			private Calendar calendar;
+
+			public CalendarAction(Calendar calendar) {
+				this.calendar = calendar;
+			}
+
+			public int APCost {
+				get { return World.SpeedToActionPoints(World.DEFAULT_SPEED); }
+			}
+
+			public bool RequiresPrompt {
+				get { return false; }
+			}
+
+			public ActionResult OnProcess() {
+				calendar.IncreaseTime();
+				return ActionResult.Success;
+			}
+		}
+	}
+}
