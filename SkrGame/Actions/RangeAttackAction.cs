@@ -62,7 +62,7 @@ namespace SkrGame.Actions {
 
 			//apply skill
 			if (Attacker.Has<ActorComponent>()) {
-				hitBonus += Attacker.Get<Person>().GetSkill(weapon.Skill);
+				hitBonus += Attacker.Get<Person>().GetSkill(weapon.Skill).Rank;
 			} else {
 				hitBonus += World.MEAN;
 			}

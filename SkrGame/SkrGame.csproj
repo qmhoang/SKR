@@ -113,7 +113,7 @@
     <Compile Include="Actions\Features\FeatureAction.cs" />
     <Compile Include="Actions\Features\OpenDoorAction.cs" />
     <Compile Include="Actions\Features\ToggleDoorAction.cs" />
-    <Compile Include="Actions\Features\UseFeatureAction.cs" />
+    <Compile Include="Actions\Features\LongAction.cs" />
     <Compile Include="Actions\GetItemAction.cs" />
     <Compile Include="Actions\LoggedAction.cs" />
     <Compile Include="Actions\ReloadAction.cs" />
@@ -126,7 +126,7 @@
     <Compile Include="Systems\ActionPointSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
-    <Compile Include="Universe\Entities\Actors\Skill.cs" />
+    <Compile Include="Universe\Entities\Actors\Person.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />

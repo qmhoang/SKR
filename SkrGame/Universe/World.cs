@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
-using DEngine.Extensions;
-using SkrGame.Actions;
-using SkrGame.Gameplay.Combat;
 using SkrGame.Systems;
 using SkrGame.Universe.Factories;
-using SkrGame.Universe.Locations;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe {
@@ -45,6 +40,9 @@ namespace SkrGame.Universe {
 		public EntityManager EntityManager { get; private set; }
 		public Log Log { get; private set; }
 
+		public Calendar Calendar { get; private set; }
+		public Entity CalendarEntity { get; private set; }
+
 		private ActionPointSystem actionPointSystem;
 		private VisionSubsystem visionSubsystem;
 
@@ -63,6 +61,12 @@ namespace SkrGame.Universe {
 			EntityFactory.Compile();
 
 			MapFactory = new MapFactory(this);
+
+			Calendar = new Calendar();
+			CalendarEntity = EntityManager.Create(new List<Component>
+			                                      {
+			                                      		new ActorComponent(Calendar, new AP())
+			                                      });
 		}
 
 		public void Initialize() {
