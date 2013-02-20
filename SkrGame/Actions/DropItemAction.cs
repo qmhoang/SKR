@@ -37,12 +37,13 @@ namespace SkrGame.Actions {
 					var ne = Universe.Entities.Items.Item.Split(Item, amount);
 					ne.Get<VisibleComponent>().Reset();
 				}
-
+				World.Log.Normal(string.Format("{0} drops {2} {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item), amount));
 			} else {
 				if (Item.Has<VisibleComponent>()) {
 					Item.Get<VisibleComponent>().Reset();
 				}
 				Entity.Get<ContainerComponent>().Remove(Item);
+				World.Log.Normal(string.Format("{0} drops {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item)));
 			}
 			return ActionResult.Success;
 		}

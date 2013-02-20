@@ -66,7 +66,7 @@ namespace SkrGame.Universe {
 
 			MapFactory = new MapFactory(this);
 
-			Calendar = new Calendar();
+			Calendar = new Calendar(new DateTime(2013, 4, 2, 6, 23, 52));
 			CalendarEntity = EntityManager.Create(new List<Component>
 			                                      {
 			                                      		new ActorComponent(Calendar, new AP())
@@ -78,6 +78,7 @@ namespace SkrGame.Universe {
 			visionSubsystem = new VisionSubsystem(EntityManager);
 		}
 
+		// todo events when a turn is processed
 		public void UpdateSystems() {
 			visionSubsystem.Update();
 			actionPointSystem.Update();

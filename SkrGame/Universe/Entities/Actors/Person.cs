@@ -90,7 +90,6 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		private readonly Dictionary<string, Skill> skills;
 		
-
 		public int Lift {
 			get { return Strength * Strength * 18 * (int) Math.Pow(World.STANDARD_DEVIATION, -2.0); }
 		}

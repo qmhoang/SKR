@@ -33,7 +33,7 @@ namespace SKR.UI.Gameplay {
 			Canvas.Blit(textCanvas, Point.One);
 		}
 
-		private void OnNewEntry(object sender, EventArgs e) {
+		private void OnNewEntry(Log sender, EventArgs e) {
 			WriteEntry(log.Entries.Last());
 		}
 

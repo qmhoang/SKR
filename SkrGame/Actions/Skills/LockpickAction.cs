@@ -20,7 +20,6 @@ namespace SkrGame.Actions.Skills {
 
 		protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
 		public LockpickAction(Entity entity, Entity item, Entity feature) : base(entity, item) {
 			Contract.Requires<ArgumentNullException>(feature != null, "feature");
 			Contract.Requires<ArgumentException>(item.Has<Lockpick>());
@@ -41,8 +40,7 @@ namespace SkrGame.Actions.Skills {
 				World.Log.Fail(String.Format("{0} isn't locked.", Identifier.GetNameOrId(feature)));
 				return ActionResult.Failed;
 			}
-
-
+			
 			double difficulty = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").Rank - feature.Get<LockedFeature>().Quality;
 
 			double roll = World.SkillRoll();

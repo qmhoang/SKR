@@ -69,7 +69,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			set { maxHealth = value; OnHealthChange(); }
 		}
 
-		public event EventHandler<EventArgs> HealthChanged;
+		public event EventHandler<DefendComponent, EventArgs> HealthChanged;
 
 		protected void OnHealthChange() {
 			var handler = HealthChanged;

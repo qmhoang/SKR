@@ -24,8 +24,10 @@ namespace SkrGame.Actions {
 			if (amount < Item.Get<Item>().Amount) {
 				var temp = Universe.Entities.Items.Item.Split(Item, amount);
 				Get(temp);
+				World.Log.Normal(string.Format("{0} picks up {2} {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item), amount));
 			} else {
 				Get(Item);
+				World.Log.Normal(string.Format("{0} picks up {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item)));
 			}
 			return ActionResult.Success;
 		}
@@ -41,7 +43,6 @@ namespace SkrGame.Actions {
 
 			Entity.Get<ContainerComponent>().Add(i);
 
-			World.Log.Normal(string.Format("{0} picks up {1}", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item)));
 
 			if (!i.IsActive)
 				World.EntityManager.Remove(i);

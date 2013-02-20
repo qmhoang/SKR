@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using DEngine.Core;
+using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Universe;
+using System.Linq;
+
 
 namespace SKRTests {
 	[TestFixture]
@@ -32,16 +37,7 @@ namespace SKRTests {
 
 		[Test]
 		public void TestMethod() {
-			var d1 = GaussianDistribution.CumulativeTo(50.0, World.MEAN, World.STANDARD_DEVIATION);
-			var d2 = GaussianDistribution.CumulativeTo(65.0, World.MEAN, World.STANDARD_DEVIATION);
 
-			var diff = d2 - d1;
-			var idiff = GaussianDistribution.InverseCumulativeTo(diff, World.MEAN, World.STANDARD_DEVIATION);
-
-			var diff2 = d1 - d2;
-			var idiff2 = GaussianDistribution.InverseCumulativeTo(diff2, World.MEAN, World.STANDARD_DEVIATION);
-
-			var idiff1 = GaussianDistribution.InverseCumulativeTo(1, World.MEAN, World.STANDARD_DEVIATION);
 		}
 	}
 }
