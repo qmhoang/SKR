@@ -88,6 +88,7 @@ namespace SKR {
 			world.EntityManager.Create(world.EntityFactory.Get("smallknife")).Add(new Location(1, 1, world.CurrentLevel));
 			world.EntityManager.Create(world.EntityFactory.Get("axe")).Add(new Location(1, 1, world.CurrentLevel));
 			world.EntityManager.Create(world.EntityFactory.Get("glock17")).Add(new Location(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("lockpick")).Add(new Location(1, 1, world.CurrentLevel));
 			var ammo = world.EntityManager.Create(world.EntityFactory.Get("9x9mm")).Add(new Location(1, 1, world.CurrentLevel));
 			ammo.Get<Item>().Amount = 30;
 			world.EntityManager.Create(world.EntityFactory.Get("bullet")).Add(new Location(1, 1, world.CurrentLevel));

@@ -52,7 +52,7 @@ namespace SkrGame.Universe.Factories {
 									{'.', new Tuple<string, string>("StoneFloor", null)},
 									{'/', new Tuple<string, string>("StoneFloor", "Door")},
 									{'+', new Tuple<string, string>("StoneFloor", "Window")},
-									{'^', new Tuple<string, string>("StoneFloor", null)},
+									{'^', new Tuple<string, string>("StoneFloor", "LockedDoor")},
 							},
 							".###########################################################",
 							"#..........................................................#",

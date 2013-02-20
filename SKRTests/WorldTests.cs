@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using DEngine.Core;
 using NUnit.Framework;
 using SkrGame.Universe;
 
@@ -27,6 +28,20 @@ namespace SKRTests {
 		public void StaticConversion(int value) {
 			Assert.AreEqual(World.SecondsToSpeed(World.SpeedToSeconds(value)), value);
 			Assert.AreEqual(World.SecondsToActionPoints(World.SpeedToSeconds(World.ActionPointsToSpeed(value))), value);
+		}
+
+		[Test]
+		public void TestMethod() {
+			var d1 = GaussianDistribution.CumulativeTo(50.0, World.MEAN, World.STANDARD_DEVIATION);
+			var d2 = GaussianDistribution.CumulativeTo(65.0, World.MEAN, World.STANDARD_DEVIATION);
+
+			var diff = d2 - d1;
+			var idiff = GaussianDistribution.InverseCumulativeTo(diff, World.MEAN, World.STANDARD_DEVIATION);
+
+			var diff2 = d1 - d2;
+			var idiff2 = GaussianDistribution.InverseCumulativeTo(diff2, World.MEAN, World.STANDARD_DEVIATION);
+
+			var idiff1 = GaussianDistribution.InverseCumulativeTo(1, World.MEAN, World.STANDARD_DEVIATION);
 		}
 	}
 }

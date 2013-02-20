@@ -68,7 +68,8 @@ namespace SkrGame.Actions {
 
 		private static readonly int WALK_COST = World.SpeedToActionPoints(World.DEFAULT_SPEED);
 
-		public WalkAction(Entity entity, Direction direction) : base(entity) {
+		public WalkAction(Entity entity, Direction direction)
+				: base(entity) {
 			this.direction = direction;
 		}
 
@@ -81,10 +82,10 @@ namespace SkrGame.Actions {
 			var location = Entity.Get<Location>();
 
 			Point newLocation = location.Point + direction;
-			
+
 			if (location.Level.IsWalkable(newLocation)) {
 				location.Point = newLocation;
-				
+
 				// check if we're near anything
 				var nearEntities = location.Level.GetEntities().Where(e => e.Has<PassiveFeature>());
 
@@ -96,7 +97,7 @@ namespace SkrGame.Actions {
 					foreach (var item in Entity.Get<ContainerComponent>().Items) {
 						if (item.Has<Location>())
 							item.Get<Location>().Point = newLocation;
-					}					
+					}
 				}
 				// move all equipped items with entity
 				if (Entity.Has<EquipmentComponent>()) {
@@ -113,16 +114,4 @@ namespace SkrGame.Actions {
 			return ActionResult.Success;
 		}
 	}
-
-//	public class TestAction : ActorAction {
-//		public TestAction(Entity entity) : base(entity) {}
-//
-//		public override int APCost {
-//			get { return 10; }
-//		}
-//
-//		public override ActionResult OnProcess() {
-//			if ()
-//		}
-//	}
 }

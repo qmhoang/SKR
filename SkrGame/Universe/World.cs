@@ -22,6 +22,10 @@ namespace SkrGame.Universe {
 		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
 		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
 
+		public static double SkillRoll() {
+			return Rng.GaussianDouble(MEAN, 5 * STANDARD_DEVIATION, STANDARD_DEVIATION);
+		}
+
 		public MapFactory MapFactory { get; private set; }
 
 		public Level CurrentLevel { get; set; }
@@ -104,6 +108,19 @@ namespace SkrGame.Universe {
 		/// </summary>
 		public static double SecondsToSpeed(double seconds) {
 			return ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
+		}
+
+		public static int ScaleSkill(int rank) {
+			return rank * World.STANDARD_DEVIATION / 3;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="difficulty"></param>
+		/// <returns>Higher means easier</returns>
+		public static double ChanceOfSuccess(double difficulty) {
+			return GaussianDistribution.CumulativeTo(difficulty, World.MEAN, World.STANDARD_DEVIATION);
 		}
 	}
 }

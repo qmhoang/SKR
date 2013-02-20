@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -9,45 +8,8 @@ using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Items {
-//	public enum ItemType {
-//		// weapons
-//		OneHandedWeapon,
-//		TwoHandedWeapon,
-//		Armor,
-//		Shield,
-//		Ammo,
-//		BodyPart,
-//		Misc,
-//	}
-
-	public class Equipable : Component {
-		public class Template {
-			public List<string> Slot { get; set; }
-			public bool TwoHanded { get; set; }
-	
-		}
-		public List<string> Slots { get; private set; }
-		public bool TwoHanded { get; private set; }
-
-		private Equipable() {}
-
-		public Equipable(Template template) {
-			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);
-			TwoHanded = template.TwoHanded;
-		}
-
-		public override Component Copy() {
-			return new Equipable()
-			       {
-					   Slots = new List<string>(Slots),
-					   TwoHanded = TwoHanded
-			       };
-		}
-	}
-
 	public class Item : Component {
 		public class Template {
-//			public ItemType Type { get; set; }
 			public int Weight { get; set; }
 			public int Size { get; set; }
 			public int Value { get; set; }
@@ -77,7 +39,6 @@ namespace SkrGame.Universe.Entities.Items {
 		}
 
 		public StackType StackType { get; private set; }
-//		public ItemType Type { get; private set; }
 
 		private Item() {
 			amount = 1;			
@@ -94,10 +55,9 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public override Component Copy() {
 
-			var copy = new Item()
+			var copy = new Item
 			           {
 			           		StackType = StackType,
-//			           		Type = Type,
 			           		Weight = Weight,
 			           		Size = Size,
 			           		Value = Value,
