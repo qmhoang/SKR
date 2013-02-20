@@ -9,11 +9,13 @@ using DEngine.Entities;
 namespace SkrGame.Actions.Features {
 	public class LongAction : LoggedAction {
 		public int TimeLeftInAP { get; private set; }
-		public Func<Entity, ActionResult> OnFinish { get; private set; } 
+		public Func<Entity, ActionResult> OnFinish { get; private set; }
+		public Func<Entity, ActionResult> Process { get; private set; }
 
-		public LongAction(Entity entity, Func<Entity, ActionResult> onFinish, int timeInAP) : base(entity) {
+		public LongAction(Entity entity,  int timeInAP, Func<Entity, ActionResult> process, Func<Entity, ActionResult> onFinish) : base(entity) {
 			this.TimeLeftInAP = timeInAP;
 			this.OnFinish = onFinish;
+			this.Process = process;
 		}
 
 		public override int APCost {
@@ -27,8 +29,16 @@ namespace SkrGame.Actions.Features {
 			var actionPointPerTurn = Entity.Get<ActorComponent>().AP.ActionPointPerTurn;
 
 			if (TimeLeftInAP > actionPointPerTurn) {
-				Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity, OnFinish, TimeLeftInAP - actionPointPerTurn));
-				return ActionResult.Success;
+				var result = Process(Entity);
+				if (result == ActionResult.Aborted || result == ActionResult.Failed) {
+					return result;
+				} else if (result == ActionResult.SuccessNoTime) { // prevents infinite queuing
+					Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity, TimeLeftInAP - actionPointPerTurn, Process, OnFinish));
+					return ActionResult.Success;
+				} else {
+					Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity, TimeLeftInAP - actionPointPerTurn, Process, OnFinish));
+					return result;
+				}
 			}
 
 			return OnFinish(Entity);			

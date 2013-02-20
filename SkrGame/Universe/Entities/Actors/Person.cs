@@ -88,7 +88,9 @@ namespace SkrGame.Universe.Entities.Actors {
 		public int Grace { get; set; }
 		public int Willpower { get; set; }
 
-		public int Energy { get; set; }
+		public int Stamina { get; set; }
+
+		public int Energy { get; set; } // use with stamina
 		public int Food { get; set; }
 		public int Water { get; set; }
 		public int Bladder { get; set; }
@@ -117,15 +119,11 @@ namespace SkrGame.Universe.Entities.Actors {
 							{"skill_axe", new Skill("Axe", this, 100, 0, (user, t) => t.Owner.Agility + t.RawRank)},
 							{"skill_lockpicking", new Skill("Lockpicking", this, 100, 0, (user, t) => t.Owner.Intellect + t.RawRank)},
 			         };
-
 		}
-
-
+		
 		public override Component Copy() {
 			//todo
 			return new Person();
 		}
-
-
 	}
 }

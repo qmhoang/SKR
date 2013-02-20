@@ -7,6 +7,7 @@ using System.Text;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Menus;
 using SKR.Universe;
@@ -334,7 +335,7 @@ namespace SKR.UI.Gameplay {
 								        	},
 								        "Set AI of Entity");
 							} else {
-								player.Get<ActorComponent>().Enqueue(new LongAction(player, null, 1000));
+
 							}
 							break;
 					}

@@ -46,18 +46,23 @@ namespace SkrGame.Actions.Skills {
 			double roll = World.SkillRoll();
 
 			// intellect roll, reduces times
-			double chanceOfSuccess = World.ChanceOfSuccess(difficulty);
-			double skillRoll = Rng.Double();
 			var bonus = difficulty - roll;
 
-			if (skillRoll <= difficulty) {
+			if (roll <= difficulty) {
 				apRequired += World.SecondsToActionPoints(bonus);				
 			}
 
-			Logger.InfoFormat("{0} attempts in Lockpicking/Intellect on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature), difficulty, roll, chanceOfSuccess);
+			Logger.InfoFormat("{0} attempts in Lockpicking/Intellect on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
+			                  Identifier.GetNameOrId(Entity),
+			                  Identifier.GetNameOrId(feature),
+			                  difficulty,
+			                  roll,
+			                  World.ChanceOfSuccess(difficulty));
 
 			Entity.Get<ActorComponent>().Enqueue(
 					new LongAction(Entity,
+					               apRequired,
+					               e => ActionResult.Success,
 					               e =>
 					               	{
 					               		double agiRoll = World.SkillRoll();
@@ -74,8 +79,7 @@ namespace SkrGame.Actions.Skills {
 					               		}
 					               		World.Log.Fail(String.Format("{0} fails in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
 					               		return ActionResult.Failed;
-					               	},
-					               apRequired));
+					               	}));
 
 			return ActionResult.Success;
 		}

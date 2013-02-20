@@ -142,7 +142,7 @@ namespace SkrGame.Universe.Factories {
 			            new UseableFeature(new UseableFeature.UseAction("Use toilet",
 			                                                            (entity, user, action) =>
 			                                                            	{
-			                                                            		//																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
+//																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
 			                                                            		return ActionResult.Success;
 			                                                            	})),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
