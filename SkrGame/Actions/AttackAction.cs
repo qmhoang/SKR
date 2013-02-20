@@ -43,31 +43,24 @@ namespace SkrGame.Actions {
 
 		public bool TargettingPenalty { get; private set; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="difficulty"></param>
-		/// <returns>Higher means easier</returns>
-		public double ChanceOfSuccess(double difficulty) {
-			return GaussianDistribution.CumulativeTo(difficulty + World.MEAN, World.MEAN, World.STANDARD_DEVIATION);
-		}
+		public CombatEventResult Attack(string attackerName, string defenderName, double attackDifficulty, double dodgeDifficulty = World.MEAN, bool dodge = true, bool block = true, bool parry = true) {
+			double atkRoll = World.SkillRoll();
 
-		public CombatEventResult Attack(string attackerName, string defenderName, double attackDifficulty, double dodgeDifficulty = 0.5, bool dodge = true, bool block = true, bool parry = true) {
-			double atkRoll = Rng.Double();
-			double chanceToHit = ChanceOfSuccess(attackDifficulty);
-
-			if (atkRoll > chanceToHit) {
-				Logger.InfoFormat("{0} misses {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attackerName, defenderName, chanceToHit, atkRoll, attackDifficulty);
+			if (atkRoll > attackDifficulty) {
+				Logger.InfoFormat("{0} misses {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, attackDifficulty, atkRoll,
+				                  World.ChanceOfSuccess(attackDifficulty));
 				return CombatEventResult.Miss;
 			}
 
-			Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attackerName, defenderName, chanceToHit, atkRoll, attackDifficulty);
+			Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, attackDifficulty, atkRoll,
+			                  World.ChanceOfSuccess(attackDifficulty));
 
 			if (dodge) {
-				double defRoll = Rng.Double();
-				double chanceToDodge = ChanceOfSuccess(dodgeDifficulty);
-				Logger.InfoFormat("{1} attempts to dodge {0}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.0})", attackerName, defenderName, chanceToDodge, defRoll, dodgeDifficulty);
-				if (defRoll < chanceToDodge)
+				double defRoll = World.SkillRoll();
+
+				Logger.InfoFormat("{1} attempts to dodge {0}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, dodgeDifficulty, defRoll,
+				                  World.ChanceOfSuccess(dodgeDifficulty));
+				if (defRoll < dodgeDifficulty)
 					return CombatEventResult.Dodge;
 			}
 

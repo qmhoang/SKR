@@ -1,5 +1,4 @@
 using System;
-using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
 //	public class HouseItemFeature : Component {
@@ -9,18 +8,5 @@ namespace SkrGame.Universe.Entities.Features {
 //			throw new NotImplementedException();
 //		}
 //	}
-	public enum LockStatus {
-		Locked,
-		Opened,
-		Destroyed,
 
-	}
-	public class LockFeature : Component {
-		public int Quality { get; set; }
-		public LockStatus Status { get; set; }
-
-		public override Component Copy() {
-			throw new NotImplementedException();
-		}
-	}
 }

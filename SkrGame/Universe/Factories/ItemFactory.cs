@@ -30,6 +30,13 @@ namespace SkrGame.Universe.Factories {
 			InitPistols(ef);
 			InitAmmos(ef);
 			InitArmors(ef);
+
+			ef.Inherits("paperclip", "item",
+			            new Identifier("Paperclip", "A single paperclip."),
+			            new Lockpick(-World.STANDARD_DEVIATION * 3/2));
+			ef.Inherits("lockpick", "item",
+			            new Identifier("Lockpick", "A basic lockpick."),
+			            new Lockpick(0));
 		}		
 
 		private static void InitPistols(EntityFactory ef) {

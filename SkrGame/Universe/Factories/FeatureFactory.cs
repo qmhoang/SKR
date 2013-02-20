@@ -71,6 +71,9 @@ namespace SkrGame.Universe.Factories {
 			                               		                                         	})
 			                               }));
 
+			ef.Inherits("LockedDoor", "Door",
+						new LockedFeature(0));
+
 			ef.Inherits("WALL_BRICK_DARK_DOOR_HORZ", "Door",
 			            new Sprite("WALL_BRICK_DARK_DOOR_HORZ", Sprite.FEATURES_LAYER),
 			            Door("WALL_BRICK_DARK_DOOR_VERT", "WALL_BRICK_DARK_DOOR_HORZ"));

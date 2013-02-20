@@ -39,7 +39,7 @@ namespace SkrGame.Actions {
 			var defenderName = Identifier.GetNameOrId(Defender);
 			var attackerName = Identifier.GetNameOrId(Attacker);
 
-			var result = Attack(attackerName, defenderName, hitBonus + melee.HitBonus - World.MEAN - (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
+			var result = Attack(attackerName, defenderName, hitBonus + melee.HitBonus - (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
 
 			if (result == CombatEventResult.Hit) {
 				const int TEMP_STR_BONUS = World.MEAN;
@@ -55,8 +55,7 @@ namespace SkrGame.Actions {
 					World.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
 					                            attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name, "todo-description"));
 				}
-
-
+				
 				Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
 			} else if (result == CombatEventResult.Miss) {

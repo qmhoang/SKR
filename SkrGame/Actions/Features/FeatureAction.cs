@@ -7,8 +7,7 @@ namespace SkrGame.Actions.Features {
 		public Entity Feature { get; private set; }
 		protected FeatureAction(Entity entity, Entity feature)
 			: base(entity) {
-			Contract.Requires<ArgumentNullException>(entity != null, "entity");
-//			Contract.Requires<ArgumentNullException>(feature != null, "feature");
+			Contract.Requires<ArgumentNullException>(feature != null, "feature");
 			Feature = feature;
 		}
 	}

@@ -30,7 +30,6 @@ namespace SkrGame.Actions {
 		public const double RANGE_PENALTY_TILE_OCCUPIED = -World.MEAN * 4 / 3;
 
 		private IEnumerable<Entity> GetTargetsOnPath(Level currentLevel, Point start, Point end) {
-
 			if (!currentLevel.IsWalkable(start))
 				throw new ArgumentException("starting point has to be walkable", "start");
 
@@ -89,7 +88,7 @@ namespace SkrGame.Actions {
 				// not being targetted gives a sigma (std dev) penalty
 				rangePenalty -= Defender.Id == currentEntity.Id ? 0 : World.STANDARD_DEVIATION;
 
-				double difficultyOfShot = hitBonus + rangePenalty + (targetsInTheWay * RANGE_PENALTY_TILE_OCCUPIED) - World.MEAN - (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0);
+				int difficultyOfShot = (int) Math.Round(hitBonus + rangePenalty + (targetsInTheWay * RANGE_PENALTY_TILE_OCCUPIED) - (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
 				Logger.InfoFormat("Shot difficulty: {0}, targetting penalty: {1}, weapon bonus: {2}, is target: {3}",
 				                  difficultyOfShot, BodyPartTargetted.TargettingPenalty, hitBonus,
 				                  Defender.Id == currentEntity.Id);
