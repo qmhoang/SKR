@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -74,8 +75,14 @@ namespace SkrGame.Actions {
 			}
 
 			weapon.ShotsRemaining--;
-			
-			var entitiesOnPath = GetTargetsOnPath(Attacker.Get<Location>().Level, attackerLocation.Point, defenderLocation.Point).ToList();
+
+			IEnumerable<Entity> entitiesOnPath;
+			if (attackerLocation.Point == defenderLocation.Point) {
+				// suicide?
+				entitiesOnPath = attackerLocation.Level.GetEntitiesAt(defenderLocation.Point).Where(e => e.Has<DefendComponent>()).ToList();
+
+			} else
+				entitiesOnPath = GetTargetsOnPath(attackerLocation.Level, attackerLocation.Point, defenderLocation.Point).ToList();
 
 			int targetsInTheWay = 0;
 			foreach (var currentEntity in entitiesOnPath) {
@@ -113,12 +120,15 @@ namespace SkrGame.Actions {
 						                               attackerName, weapon.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
 
 					Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted));
+					return ActionResult.Failed;
+
 				} else if (result == CombatEventResult.Dodge) {
 					if (Defender.Id == currentEntity.Id) // if this is where the actor targetted
 						World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
 						                               attackerName, weapon.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
 
 					Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Dodge));
+					return ActionResult.Failed;
 				}
 				targetsInTheWay++;
 			}

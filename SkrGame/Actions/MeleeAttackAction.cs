@@ -58,6 +58,8 @@ namespace SkrGame.Actions {
 				
 				Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Hit, damage,
 				                                         damageResistance, realDamage));
+				return ActionResult.Success;
+
 			} else if (result == CombatEventResult.Miss) {
 				if (World.Player == Attacker) {
 					World.Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
@@ -81,7 +83,7 @@ namespace SkrGame.Actions {
 
 				Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Dodge));
 			}
-			return ActionResult.Success;
+			return ActionResult.Failed;
 		}
 	}
 }
