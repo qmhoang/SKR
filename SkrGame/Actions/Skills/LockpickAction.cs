@@ -53,33 +53,33 @@ namespace SkrGame.Actions.Skills {
 			var bonus = difficulty - roll;
 
 			if (skillRoll <= difficulty) {
-				apRequired -= World.SecondsToActionPoints(bonus);				
+				apRequired += World.SecondsToActionPoints(bonus);				
 			}
 
 			Logger.InfoFormat("{0} attempts in Lockpicking/Intellect on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature), difficulty, roll, chanceOfSuccess);
 
-			Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity,
-			                                                    e =>
-			                                                    	{
-			                                                    		double agiRoll = World.SkillRoll();
-			                                                    		double agiDiff = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").RawRank + Entity.Get<Person>().Agility -
-			                                                    		                 feature.Get<LockedFeature>().Quality + bonus;
+			Entity.Get<ActorComponent>().Enqueue(
+					new LongAction(Entity,
+					               e =>
+					               	{
+					               		double agiRoll = World.SkillRoll();
+					               		double agiDiff = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").RawRank + Entity.Get<Person>().Agility -
+					               		                 feature.Get<LockedFeature>().Quality + bonus;
 
-			                                                    		Logger.InfoFormat("{0} attempts in Lockpicking/Agility on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
-																						  Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature), agiDiff, agiRoll, World.ChanceOfSuccess(agiDiff));
+					               		Logger.InfoFormat("{0} attempts in Lockpicking/Agility on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
+					               		                  Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature), agiDiff, agiRoll, World.ChanceOfSuccess(agiDiff));
 
-			                                                    		if (agiRoll <= agiDiff) {
-																			feature.Get<LockedFeature>().Status = LockStatus.Opened;
-																			World.Log.Good(String.Format("{0} succeeds in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
-			                                                    			return ActionResult.Success;
-			                                                    		}
-																		World.Log.Fail(String.Format("{0} fails in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
-			                                                    		return ActionResult.Failed;
-			                                                    	},
-			                                                    apRequired));
+					               		if (agiRoll <= agiDiff) {
+					               			feature.Get<LockedFeature>().Status = LockStatus.Opened;
+					               			World.Log.Good(String.Format("{0} succeeds in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
+					               			return ActionResult.Success;
+					               		}
+					               		World.Log.Fail(String.Format("{0} fails in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
+					               		return ActionResult.Failed;
+					               	},
+					               apRequired));
 
 			return ActionResult.Success;
-//			GaussianDistribution.CumulativeTo()
 		}
 	}
 }

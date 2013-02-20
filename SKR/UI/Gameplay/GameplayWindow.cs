@@ -161,7 +161,7 @@ namespace SKR.UI.Gameplay {
 							                                                                                                                            defender,
 							                                                                                                                            weapon,
 							                                                                                                                            bp,
-																																						true)),
+							                                                                                                                            true)),
 							                                                           "What part?",
 							                                                           String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender))),
 							                                       "Shoot at what?",
@@ -365,13 +365,18 @@ namespace SKR.UI.Gameplay {
 			var item = itemEntity.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
-				ParentApplication.Push(
-						new CountPrompt("How many items to pick up?",
-						                amount => user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity, amount)),
-						                item.Amount,
-						                0,
-						                item.Amount,
-						                PromptTemplate));
+				if (item.Amount == 1) {
+					user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity));
+				} else {
+					ParentApplication.Push(
+							new CountPrompt("How many items to pick up?",
+							                amount => user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity, amount)),
+							                item.Amount,
+							                0,
+							                item.Amount,
+							                PromptTemplate));
+				}
+
 			else {
 				user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity, 1));
 			}
@@ -381,13 +386,18 @@ namespace SKR.UI.Gameplay {
 			var item = itemEntity.Get<Item>();
 
 			if (item.StackType == StackType.Hard)
-				ParentApplication.Push(
-						new CountPrompt("How many items to drop to the ground?",
-						                amount => user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity, amount)), 
-										item.Amount, 
-										0, 
-										item.Amount, 
-										PromptTemplate));
+				if (item.Amount == 1) {
+					user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity));
+				} else {
+					ParentApplication.Push(
+							new CountPrompt("How many items to drop to the ground?",
+							                amount => user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity, amount)),
+							                item.Amount,
+							                0,
+							                item.Amount,
+							                PromptTemplate));
+				}
+
 			else {
 				user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity, 1));
 			}
@@ -418,10 +428,11 @@ namespace SKR.UI.Gameplay {
 			player.Get<ActorComponent>().Enqueue(new BumpAction(player, direction));
 		}
 
+		#region Prompts
 		private void Options<T>(IEnumerable<T> entities, Func<T, string> descriptionFunc, Action<T> action, string prompt, string fail) {
 			if (entities.Count() > 1) {
 				ParentApplication.Push(
-						new OptionsSelectionPrompt<T>(prompt,
+						new OptionsPrompt<T>(prompt,
 						                                   entities, 
 														   descriptionFunc,
 						                                   action,
@@ -448,6 +459,7 @@ namespace SKR.UI.Gameplay {
 					                 action,
 					                 MapPanel,
 					                 PromptTemplate));
-		}		
+		}
+		#endregion
 	}
 }

@@ -60,6 +60,7 @@ namespace SKR.UI.Gameplay {
 			                                level.Height - Size.Height));
 
 			//draw map
+			var sight = player.Get<SightComponent>();
 			for (int x = 0; x < Size.Width; x++) {
 				for (int y = 0; y < Size.Height; y++) {
 					Point localPosition = ViewOffset.Shift(x, y);
@@ -71,7 +72,7 @@ namespace SKR.UI.Gameplay {
 						continue;
 					if (IsPointWithinPanel(localPosition)) {
 						if (!Program.SeeAll.Enabled) {
-							if (player.Get<SightComponent>().IsVisible(localPosition)) {								
+							if (sight.IsVisible(localPosition)) {								
 								Canvas.PrintChar(x, y, texture.Item1, texture.Item2);
 							}
 						} else {
@@ -90,7 +91,7 @@ namespace SKR.UI.Gameplay {
 				if (IsPointWithinPanel(localPosition)) {
 
 					if (!Program.SeeAll.Enabled) {
-						if (player.Get<SightComponent>().IsVisible(entity.Get<Location>().Point)) {
+						if (sight.IsVisible(entity.Get<Location>().Point)) {
 							if (entity.Get<VisibleComponent>().VisibilityIndex > 0)
 								Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);
 						}
