@@ -33,7 +33,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void EmptyFilledLevel() {
+		public void TestEmptyFilledLevel() {
 			for (int x = 0; x < level.Size.Width; x++) {
 				for (int y = 0; y < level.Size.Height; y++) {
 					Assert.AreEqual(level.GetTerrain(x, y).Definition, "Floor");
@@ -44,7 +44,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void Terrain() {
+		public void TestTerrain() {
 			// .....
 			// .....
 			// ...#.
@@ -59,7 +59,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void TerrainBlocking() {
+		public void TestTerrainBlocking() {
 			// .....
 			// .#...
 			// .....
@@ -76,14 +76,14 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void Size() {
+		public void TestSize() {
 			Assert.AreEqual(level.Size, new Size(5, 5));
 			Assert.AreEqual(level.Width, 5);
 			Assert.AreEqual(level.Height, 5);
 		}
 
 		[Test]
-		public void EntitiesBlock() {
+		public void TestEntitiesBlock() {
 			Assert.IsTrue(level.IsWalkable(1, 1));
 			Assert.IsTrue(level.IsTransparent(1, 1));
 
@@ -96,7 +96,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void BlockerEntityPropertyChange() {
+		public void TestBlockerEntityPropertyChange() {
 			var blocker = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 
 			Assert.IsFalse(level.IsWalkable(1, 1));
@@ -109,7 +109,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void BlockerEntityMoved() {
+		public void TestBlockerEntityMoved() {
 			var blocker = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 
 			Assert.IsFalse(level.IsWalkable(1, 1));
@@ -126,7 +126,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void MultipleBlockersPropertyChange() {
+		public void TestMultipleBlockersPropertyChange() {
 			var b1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 			var b2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 
@@ -140,7 +140,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void MultipleBlockersMove() {
+		public void TestMultipleBlockersMove() {
 			var b1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 			var b2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 
@@ -158,7 +158,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void GetEntities() {
+		public void TestGetEntities() {
 			var e1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 			var e2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 			var e3 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 2, level));
@@ -169,7 +169,7 @@ namespace SKRTests {
 		}
 
 		[Test]
-		public void GetEntitiesAt() {
+		public void TestGetEntitiesAt() {
 			var e1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 			var e2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
 			var e3 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 2, level));

@@ -52,7 +52,7 @@ namespace SKRTests.Actions.Features {
 	public class DoorActionsTests : OpeningActions {
 
 		[Test]
-		public void OpenDoor() {
+		public void TestOpenDoor() {
 			Assert.AreEqual(Opening.OpeningStatus.Closed, Door.Get<Opening>().Status);
 			Assert.AreEqual("closed", Door.Get<Sprite>().Asset);
 			Assert.IsFalse(Level.IsWalkable(Door.Get<Location>().Point));
@@ -67,7 +67,7 @@ namespace SKRTests.Actions.Features {
 		}
 
 		[Test]
-		public void CloseDoor() {
+		public void TestCloseDoor() {
 			Open(Door);
 
 			Assert.AreEqual(Opening.OpeningStatus.Opened, Door.Get<Opening>().Status);
@@ -84,7 +84,7 @@ namespace SKRTests.Actions.Features {
 		}
 
 		[Test]
-		public void ToggleDoor() {
+		public void TestToggleDoor() {
 			Assert.AreEqual(Opening.OpeningStatus.Closed, Door.Get<Opening>().Status);
 			Assert.AreEqual("closed", Door.Get<Sprite>().Asset);
 			Assert.IsFalse(Level.IsWalkable(Door.Get<Location>().Point));

@@ -14,7 +14,7 @@ namespace SKRTests {
 	public class WorldTests {
 		
 		[Test]
-		public static void APFunctions() {
+		public static void TestAPFunctions() {
 			// an action that takes 2 second should equal 200  AP
 			Assert.AreEqual(World.SecondsToActionPoints(2), 200);
 
@@ -30,13 +30,13 @@ namespace SKRTests {
 		[TestCase(50)]
 		[TestCase(200)]
 		[TestCase(150)]
-		public void StaticConversion(int value) {
+		public static void TestStaticConversion(int value) {
 			Assert.AreEqual(World.SecondsToSpeed(World.SpeedToSeconds(value)), value);
 			Assert.AreEqual(World.SecondsToActionPoints(World.SpeedToSeconds(World.ActionPointsToSpeed(value))), value);
 		}
 
 		[Test]
-		public void TestMethod() {
+		public static void TestMethod() {
 
 		}
 	}

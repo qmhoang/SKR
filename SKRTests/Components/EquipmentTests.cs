@@ -74,7 +74,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Equip() {
+		public void TestEquip() {
 			Assert.IsTrue(equipment.ContainSlot("slot1"));
 			Assert.IsFalse(equipment.IsSlotEquipped("slot1"));
 
@@ -91,7 +91,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Getter() {
+		public void TestGetter() {
 			equipment.Equip("slot1", slot1item0);
 
 			Assert.AreSame(equipment["slot1"], slot1item0);
@@ -100,7 +100,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Unequip() {
+		public void TestUnequip() {
 			Assert.IsTrue(equipment.ContainSlot("slot1"));
 			Assert.IsFalse(equipment.IsSlotEquipped("slot1"));
 
@@ -112,7 +112,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Copy() {
+		public void TestCopy() {
 			equipment.Equip("slot1", slot1item0);
 			equipment.Equip("slot2", slot2item0);
 

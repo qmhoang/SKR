@@ -35,10 +35,11 @@ namespace SkrGame.Universe.Entities.Actors {
 				Contract.Invariant(RelativeSize > 0);
 			}
 
-			public AttackablePart(string name, int maxHealth, int relsize, int targettingPenalty, DefendComponent owner) {
+			public AttackablePart(string name, int maxHealth, int relsize, int targettingPenalty, DefendComponent owner = null) {
 				Contract.Requires<ArgumentException>(maxHealth > 0);
 				Contract.Requires<ArgumentException>(relsize > 0);
 				Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(name));
+				Contract.Requires<ArgumentException>(targettingPenalty <= 0);
 
 				Name = name;
 				Health = maxHealth;
@@ -52,9 +53,6 @@ namespace SkrGame.Universe.Entities.Actors {
 				return new AttackablePart(Name, MaxHealth, RelativeSize, TargettingPenalty, newOwner);
 			}
 		}
-
-		private int totalSize;
-
 		#region Health
 
 		private int health;
@@ -93,38 +91,48 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public AttackablePart GetRandomPart() {
-			var r = Rng.Int(totalSize);
-			int total = 0;
-			foreach (var attackablePart in BodyPartsList) {
-				total += attackablePart.RelativeSize;
-
-				if (r <= total)
-					return attackablePart;
-			}
-
-			throw new Exception("how did we get here?");
+			return Rng.ItemWeighted(bodyParts, p => p.RelativeSize);
 		}
 
 		public int Dodge {
 			get { return 50; }
 		}
 
+		private DefendComponent(int health, int maxHealth, List<AttackablePart> bodyParts) {
+			this.health = health;
+			this.maxHealth = maxHealth;
+			this.bodyParts = bodyParts;
+		}
 
-		public DefendComponent() {			
-			maxHealth = health = 50;
-			bodyParts = new List<AttackablePart>()
-			            {
-			            		new AttackablePart("Torso", health, 125, 0, this),
-			            		new AttackablePart("Head", health, 15, -World.STANDARD_DEVIATION * 5 / 3, this),
-			            		new AttackablePart("Right Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3, this),
-			            		new AttackablePart("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3, this),
-			            		new AttackablePart("Main Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3, this),
-			            		new AttackablePart("Off Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3, this),
-			            		new AttackablePart("Leg", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3, this),
-			            		new AttackablePart("Feet", health / 3, 10, -World.STANDARD_DEVIATION * 2 / 3, this),
-			            };
+		public DefendComponent(int health, List<AttackablePart> bodyParts) {
+			Contract.Requires<ArgumentException>(bodyParts.Count > 0);
+			this.health = this.maxHealth = health;
+			this.bodyParts = bodyParts;
 
-			totalSize = bodyParts.Sum(bp => bp.RelativeSize);
+			foreach (var part in bodyParts) {
+				part.Owner = this;
+			}
+		}
+
+		public static DefendComponent CreateHuman(int health) {
+			return new DefendComponent(health, new List<AttackablePart>()
+			                               {
+			                               		new AttackablePart("Torso", health, 125, 0),
+			                               		new AttackablePart("Head", health, 15, -World.STANDARD_DEVIATION * 5 / 3),
+			                               		new AttackablePart("Right Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new AttackablePart("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new AttackablePart("Main Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new AttackablePart("Off Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new AttackablePart("Leg", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3),
+			                               		new AttackablePart("Feet", health / 3, 10, -World.STANDARD_DEVIATION * 2 / 3),
+			                               });
+		}
+
+		public static DefendComponent SinglePart(int health, string name) {
+			return new DefendComponent(health, new List<AttackablePart>()
+			                                   {
+			                                   		new AttackablePart(name, health, 1, 0)
+			                                   });
 		}
 
 		[ContractInvariantMethod]
@@ -135,12 +143,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public override Component Copy() {
-			var defend = new DefendComponent()
-			             {
-								MaxHealth = MaxHealth,
-			             		Health = Health,
-								bodyParts = bodyParts.Select(part => part.Copy()).ToList()
-			             };
+			var defend = new DefendComponent(health, maxHealth, bodyParts.Select(part => part.Copy()).ToList());
 
 			foreach (var part in defend.bodyParts) {
 				part.Owner = defend;
