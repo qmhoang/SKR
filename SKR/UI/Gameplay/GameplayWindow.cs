@@ -88,7 +88,7 @@ namespace SKR.UI.Gameplay {
 							Size = new Size(Size.Width - 2, Size.Height - mapTemplate.Size.Height - 2)
 					};
 
-			this.KeyPressed += GameplayWindow_KeyPressed;
+			this.KeyPressed += GameplayWindow_KeyPressed;			
 		}
 
 		private void GameplayWindow_KeyPressed(object sender, KeyboardEventArgs keyboardEvent) {
@@ -271,9 +271,7 @@ namespace SKR.UI.Gameplay {
 							break;
 						case 'p':
 						{
-							var lockpicks = player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>());
-
-							Options(lockpicks,
+							Options(player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()),
 							        Identifier.GetNameOrId,
 							        lockpick => Directions(p => Options(player.Get<Location>().Level.GetEntitiesAt(p).Where(e => e.Has<LockedFeature>()),
 							                                            Identifier.GetNameOrId,
@@ -287,7 +285,9 @@ namespace SKR.UI.Gameplay {
 						}
 							break;
 						case 'l':
-							if (keyboardEvent.KeyboardData.ControlKeys == ControlKeys.LeftControl) {} else
+							if (keyboardEvent.KeyboardData.ControlKeys == ControlKeys.LeftControl) {
+								//
+							} else
 								ParentApplication.Push(
 										new LookWindow(
 												playerLocation.Point,
@@ -358,7 +358,30 @@ namespace SKR.UI.Gameplay {
 
 			return items;
 		}
+		
+		private void Move(Direction direction) {
+			Point newLocation = player.Get<Location>().Point + direction;
 
+			// we check for attackables
+			var actorsAtNewLocation = player.Get<Location>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
+
+			if (actorsAtNewLocation.Count > 0) {
+				Options(FilterEquippedItems<MeleeComponent>(player).ToList(),
+					Identifier.GetNameOrId,
+					weapon => Options(actorsAtNewLocation,
+					                  Identifier.GetNameOrId,
+					                  target => player.Get<ActorComponent>().Enqueue(new MeleeAttackAction(player, target, weapon, target.Get<DefendComponent>().GetRandomPart())),
+					                  "Attack what?",
+					                  "Nothing at location to attack."),
+						"With that weapon?",
+						"No possible way of attacking.");
+
+				return;
+			}
+
+			player.Get<ActorComponent>().Enqueue(new BumpAction(player, direction));
+		}
+		
 		#region Pickup/Drop items
 
 		private void PickUpItem(Entity user, Entity itemEntity) {
@@ -404,30 +427,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		#endregion
-
-		private void Move(Direction direction) {
-			Point newLocation = player.Get<Location>().Point + direction;
-
-			// we check for attackables
-			var actorsAtNewLocation = player.Get<Location>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
-
-			if (actorsAtNewLocation.Count > 0) {
-				Options(FilterEquippedItems<MeleeComponent>(player).ToList(),
-					Identifier.GetNameOrId,
-					weapon => Options(actorsAtNewLocation,
-					                  Identifier.GetNameOrId,
-					                  target => player.Get<ActorComponent>().Enqueue(new MeleeAttackAction(player, target, weapon, target.Get<DefendComponent>().GetRandomPart())),
-					                  "Attack what?",
-					                  "Nothing at location to attack."),
-						"With that weapon?",
-						"No possible way of attacking.");
-
-				return;
-			}
-
-			player.Get<ActorComponent>().Enqueue(new BumpAction(player, direction));
-		}
-
+		
 		#region Prompts
 		private void Options<T>(IEnumerable<T> entities, Func<T, string> descriptionFunc, Action<T> action, string prompt, string fail) {
 			if (entities.Count() > 1) {
