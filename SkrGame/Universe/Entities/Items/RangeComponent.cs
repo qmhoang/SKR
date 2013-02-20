@@ -9,7 +9,6 @@ namespace SkrGame.Universe.Entities.Items {
 	public class AmmoComponent : Component {
 		public class Template {
 			public string Type { get; set; }
-			public string ComponentId { get; set; }
 
 			public string ActionDescription { get; set; }
 			public string ActionDescriptionPlural { get; set; }

@@ -21,8 +21,6 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Parry { get; set; }
 			public int Targetting { get; set; }
 
-			public string ComponentId { get; set; }
-
 			public string ActionDescription { get; set; }
 			public string ActionDescriptionPlural { get; set; }
 

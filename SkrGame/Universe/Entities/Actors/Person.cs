@@ -88,6 +88,15 @@ namespace SkrGame.Universe.Entities.Actors {
 		public int Grace { get; set; }
 		public int Willpower { get; set; }
 
+		public int Energy { get; set; }
+		public int Food { get; set; }
+		public int Water { get; set; }
+		public int Bladder { get; set; }
+		// social?  - composure will replace for player
+		// environment - probably not necessary
+		// fun - composure replaces
+		// cleanliness
+
 		private readonly Dictionary<string, Skill> skills;
 		
 		public int Lift {

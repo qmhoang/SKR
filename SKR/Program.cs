@@ -25,6 +25,15 @@ using libtcod;
 using log4net.Config;
 
 namespace SKR {
+	/* 
+	 * todo:
+	 *		*  Zones of Control - entities that encompass an area in which another entities "owns" it.  These zones could then be used for crimes (breaking and entering, trespassing, etc).
+	 *		*  Needs-based AI
+	 *		*  Facing
+	 *		*  Entities that occupy more than 1 block
+	 *		*  NPC speak that uses inheritance ala entities
+	 */
+
 	public class RoguelikeApp : Application {
 		private World world;
 
@@ -32,7 +41,6 @@ namespace SKR {
 			base.Setup(info);
 
 			world = new World();
-
 
 			world.CurrentLevel = world.MapFactory.Construct("TestMap");
 
@@ -43,47 +51,43 @@ namespace SKR {
 			                                  		new Location(0, 0, world.CurrentLevel),
 			                                  		new ActorComponent(new Player(), new AP()),
 			                                  		new Person(),
-			                                  		new DefendComponent(),
+			                                  		DefendComponent.CreateHuman(50),
 			                                  		new ContainerComponent(),
 			                                  		new EquipmentComponent(),
 			                                  		new VisibleComponent(10),
 			                                  		new SightComponent()
 			                                  });
-			
-			var punch =
-					new MeleeComponent.Template
-					{
-						ComponentId = "punch",
-						ActionDescription = "punch",
-						ActionDescriptionPlural = "punches",
-						Skill = "skill_unarmed",
-						HitBonus = 0,
-						Damage = Rand.Constant(-5),
-						DamageType = Combat.DamageTypes["crush"],
-						Penetration = 1,
-						WeaponSpeed = 100,
-						APToReady = 1,
-						Reach = 0,
-						Strength = 1,
-						Parry = 0
-					};
 
-			player.Add(new MeleeComponent(punch));
+			player.Add(new MeleeComponent(new MeleeComponent.Template
+			                              {
+			                              		ActionDescription = "punch",
+			                              		ActionDescriptionPlural = "punches",
+			                              		Skill = "skill_unarmed",
+			                              		HitBonus = 0,
+			                              		Damage = Rand.Constant(-5),
+			                              		DamageType = Combat.DamageTypes["crush"],
+			                              		Penetration = 1,
+			                              		WeaponSpeed = 100,
+			                              		APToReady = 1,
+			                              		Reach = 0,
+			                              		Strength = 1,
+			                              		Parry = 0
+			                              }));
 
 			world.Player = player;
 
 			var npc = world.EntityManager.Create(new List<DEngine.Entities.Component>
-			                               {
-			                               		new Sprite("npc", Sprite.ACTOR_LAYER),
-			                               		new Identifier("npc"),
-			                               		new Location(6, 2, world.CurrentLevel),
-												new ActorComponent(new DoNothingActor(), new AP()),
-			                               		new Person(),
-			                               		new DefendComponent(),
-			                               		new VisibleComponent(10),
-			                               		new ContainerComponent(),
-			                               		new EquipmentComponent(),
-			                               });
+			                                     {
+			                                     		new Sprite("npc", Sprite.ACTOR_LAYER),
+			                                     		new Identifier("npc"),
+			                                     		new Location(6, 2, world.CurrentLevel),
+			                                     		new ActorComponent(new DoNothingActor(), new AP()),
+			                                     		new Person(),
+			                                     		DefendComponent.CreateHuman(50),
+			                                     		new VisibleComponent(10),
+			                                     		new ContainerComponent(),
+			                                     		new EquipmentComponent(),
+			                                     });
 
 			world.EntityManager.Create(world.EntityFactory.Get("smallknife")).Add(new Location(1, 1, world.CurrentLevel));
 			world.EntityManager.Create(world.EntityFactory.Get("axe")).Add(new Location(1, 1, world.CurrentLevel));
@@ -94,10 +98,22 @@ namespace SKR {
 			world.EntityManager.Create(world.EntityFactory.Get("bullet")).Add(new Location(1, 1, world.CurrentLevel));
 
 			var armor = world.EntityManager.Create(world.EntityFactory.Get("footballpads")).Add(new Location(1, 1, world.CurrentLevel));
-			//			npc.Get<ContainerComponent>().Add(armor);
-			var equipItemAction = new EquipItemAction(npc, armor, "Torso", true);
-			equipItemAction.OnProcess();			
-			npc.Add(new MeleeComponent(punch));
+			new EquipItemAction(npc, armor, "Torso", true).OnProcess();
+			npc.Add(new MeleeComponent(new MeleeComponent.Template
+			                           {
+			                           		ActionDescription = "punch",
+			                           		ActionDescriptionPlural = "punches",
+			                           		Skill = "skill_unarmed",
+			                           		HitBonus = 0,
+			                           		Damage = Rand.Constant(-5),
+			                           		DamageType = Combat.DamageTypes["crush"],
+			                           		Penetration = 1,
+			                           		WeaponSpeed = 100,
+			                           		APToReady = 1,
+			                           		Reach = 0,
+			                           		Strength = 1,
+			                           		Parry = 0
+			                           }));
 
 			world.Initialize();
 			Push(new CharGen(new SkrWindowTemplate

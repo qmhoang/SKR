@@ -9,8 +9,6 @@ namespace SkrGame.Universe.Entities.Items {
 			public List<Part> Defenses { get; set; }
 
 			public int DonTime { get; set; }
-
-//			public string ComponentId { get; set; }
 		}
 
 		public class Part {

@@ -12,20 +12,16 @@ namespace SKRTests.Components {
 
 		[SetUp]
 		public void SetUp() {
-			defend = new DefendComponent();
+			defend = new DefendComponent(100, new List<DefendComponent.AttackablePart>
+			                                  {
+			                                  		new DefendComponent.AttackablePart("Part", 10, 1, -3)
+			                                  });
 		}
 
 		[Test]
-		public void RandomBodyPart() {
-			var d = defend.BodyPartsList.ToDictionary(attackablePart => attackablePart.Name, attackablePart => 0);
-
-			for (int i = 0; i < 10000; i++) {
-				d[defend.GetRandomPart().Name]++;
-			}
-
-			foreach (var i in d) {
-				Console.WriteLine(i.Key + ": " + i.Value);
-			}
+		public void TestPartMaxDamage() {
+			
 		}
+		
 	}
 }

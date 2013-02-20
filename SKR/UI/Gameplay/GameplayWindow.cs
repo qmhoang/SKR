@@ -215,7 +215,7 @@ namespace SKR.UI.Gameplay {
 								                                      		ItemSelected = i => DropItem(player, i),
 								                                      }));
 							else
-								World.Log.Normal("You are carrying no items to drop.");
+								World.Log.Fail("You are carrying no items to drop.");
 						}
 							break;
 						case 'g':
@@ -240,7 +240,7 @@ namespace SKR.UI.Gameplay {
 								                                      		ItemSelected = i => PickUpItem(player, i),
 								                                      }));
 							else
-								World.Log.Normal("No items here to pick up.");
+								World.Log.Fail("No items here to pick up.");
 						}
 							break;
 						case 'i':
@@ -401,7 +401,7 @@ namespace SKR.UI.Gameplay {
 				}
 
 			else {
-				user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity, 1));
+				user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity));
 			}
 		}
 
@@ -422,7 +422,7 @@ namespace SKR.UI.Gameplay {
 				}
 
 			else {
-				user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity, 1));
+				user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity));
 			}
 		}
 
@@ -440,7 +440,7 @@ namespace SKR.UI.Gameplay {
 			} else if (entities.Count() == 1) {
 				action(entities.First());
 			} else {
-				World.Log.Normal(fail);
+				World.Log.Fail(fail);
 			}
 		}
 

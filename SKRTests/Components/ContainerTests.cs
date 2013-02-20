@@ -77,7 +77,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Add() {
+		public void TestAdd() {
 			container.Add(item0);
 
 			Assert.AreEqual(container.Count, 1);
@@ -97,7 +97,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void AddStackItem() {
+		public void TestAddStackItem() {
 			container.Add(stack1);
 			Assert.AreEqual(container.Count, 1);
 			Assert.AreEqual(container.TotalCount, 1);
@@ -109,7 +109,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Remove() {
+		public void TestRemove() {
 			container.Add(item0);
 			Assert.AreEqual(container.Count, 1);
 
@@ -120,7 +120,7 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Predicate() {
+		public void TestPredicate() {
 			container.Add(item0);
 
 			Assert.IsTrue(container.Contains(item0));
@@ -138,14 +138,14 @@ namespace SKRTests.Components {
 		}
 
 		[Test]
-		public void Get() {
+		public void TestGet() {
 			container.Add(item0);
 			Assert.IsNull(container.GetItem(i => i.Id.ToString() == ""));
 			Assert.AreSame(container.GetItem(i => i.Id == item0.Id), item0);
 		}
 
 		[Test]
-		public void Copy() {
+		public void TestCopy() {
 			container.Add(item0);
 			container.Add(item1);
 			container.Add(item2);
