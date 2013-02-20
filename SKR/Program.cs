@@ -95,7 +95,8 @@ namespace SKR {
 
 			var armor = world.EntityManager.Create(world.EntityFactory.Get("footballpads")).Add(new Location(1, 1, world.CurrentLevel));
 			//			npc.Get<ContainerComponent>().Add(armor);
-			npc.Get<ActorComponent>().Enqueue(new EquipItemAction(npc, armor, "Torso", true));
+			var equipItemAction = new EquipItemAction(npc, armor, "Torso", true);
+			equipItemAction.OnProcess();			
 			npc.Add(new MeleeComponent(punch));
 
 			world.Initialize();
