@@ -16,8 +16,6 @@ namespace SkrGame.Actions {
 
 		public int APCost { get; private set; }
 
-		public PromptRequired RequiresPrompt { get { return PromptRequired.None; } }
-
 		public ActionResult OnProcess() {
 			return process();
 		}
