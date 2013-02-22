@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Ogui.Core;
 using Ogui.UI;
@@ -9,17 +10,17 @@ namespace SKR.UI.Menus {
 	public class OptionsPrompt<T> : PromptWindow {
 		private readonly Action<T> actionCount;
 		private List<T> options;
-		private Func<T, string> descriptorFunction;
+		private Func<T, string> toStringFunction;
 		private string message;
 		private string fail;
 
-		public OptionsPrompt(string message, string fail, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, PromptWindowTemplate template)
+		public OptionsPrompt(string message, string fail, IEnumerable<T> options, Func<T, string> toStringFunc, Action<T> actionCount, PromptWindowTemplate template)
 				: base(template) {
 			this.actionCount = actionCount;
 			this.options = new List<T>(options);
-			this.descriptorFunction = descriptor;
+			this.toStringFunction = toStringFunc;
 			this.message = message;
-			this.fail = fail;
+			this.fail = fail;			
 		}
 
 		protected override void OnSettingUp() {
@@ -40,7 +41,7 @@ namespace SKR.UI.Menus {
 				foreach (var option in options) {
 					sb.AppendFormat("{1}[{0}]", c, ColorPresets.Green.ForegroundCodeString);
 					sb.Append(Color.StopColorCode);
-					sb.Append(descriptorFunction(option));
+					sb.Append(toStringFunction(option));
 					sb.Append(" ");
 					c++;
 				}
