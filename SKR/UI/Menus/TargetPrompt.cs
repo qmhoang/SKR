@@ -14,10 +14,12 @@ namespace SKR.UI.Menus {
 		private MapPanel panel;
 		private string message;
 
-		public TargetPrompt(string message, Point origin, Action<Point> actionPosition, MapPanel panel, PromptWindowTemplate template)
+		public TargetPrompt(string message, Point origin, Action<Point> actionPosition, MapPanel panel, PromptWindowTemplate template) : this(message, origin, origin, actionPosition, panel, template) { }
+
+		public TargetPrompt(string message, Point origin, Point initialPoint, Action<Point> actionPosition, MapPanel panel, PromptWindowTemplate template)
 				: base(template) {
 			this.actionPosition = actionPosition;
-			selectedPosition = origin;
+			selectedPosition = initialPoint;
 			this.origin = origin;
 			this.panel = panel;
 			this.message = message;

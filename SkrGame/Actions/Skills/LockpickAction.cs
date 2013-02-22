@@ -47,10 +47,10 @@ namespace SkrGame.Actions.Skills {
 			double roll = World.SkillRoll();
 
 			// intellect roll, reduces times
-			var bonus = difficulty - roll;
+			var bonus = -(roll - difficulty);
 
 			if (roll <= difficulty) {
-				apRequired += World.SecondsToActionPoints(bonus);				
+				apRequired -= World.SecondsToActionPoints(bonus);				
 			}
 
 			Logger.InfoFormat("{0} attempts in Lockpicking/Intellect on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",

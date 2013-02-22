@@ -23,7 +23,6 @@ using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using libtcod;
 using log4net;
-using Level = SkrGame.Universe.Locations.Level;
 
 namespace SKR.UI.Gameplay {
 	public class GameplayWindow : SkrWindow {
@@ -133,163 +132,190 @@ namespace SKR.UI.Gameplay {
 				default:
 				{
 					switch (keyboardEvent.KeyboardData.Character) {
+						case 'A':
+						{
+							Options("With that weapon?",
+							        "No possible way of attacking.",
+							        FilterEquippedItems<MeleeComponent>(player).ToList(),
+							        Identifier.GetNameOrId,
+							        weapon => Directions("Attack where?",
+							                             p => Options("Attack where?",
+							                                          "Nothing at location to attack.",
+							                                          player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>() && e.Has<Person>()).ToList(),
+							                                          Identifier.GetNameOrId,
+							                                          defender => Options("Attack at what?",
+							                                                              String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
+							                                                              defender.Get<DefendComponent>().BodyPartsList,
+							                                                              bp => bp.Name,
+							                                                              bp => Enqueue(new MeleeAttackAction(player,
+							                                                                                                  defender,
+							                                                                                                  weapon,
+							                                                                                                  bp,
+							                                                                                                  true))))));
+
+
+						}
+							break;
 						case 'f':
 						{
 							Options("With what weapon?",
 							        "No possible way of shooting target.",
 							        FilterEquippedItems<RangeComponent>(player).ToList(),
 							        Identifier.GetNameOrId,
-							        weapon => Targets("Shoot where?",
-							                          p => Options("Shoot at what?",
-							                                       "Nothing there to shoot.",
-							                                       player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
-							                                       Identifier.GetNameOrId,
-							                                       defender => Enqueue(new RangeAttackAction(player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart())))));
+							        weapon => TargetsAt("Shoot where?",
+							                            World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
+							                            p => Options("Shoot at what?",
+							                                         "Nothing there to shoot.",
+							                                         player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+							                                         Identifier.GetNameOrId,
+							                                         delegate(Entity defender)
+							                                         	{
+							                                         		World.TagManager.Register(defender, "target");
+							                                         		Enqueue(new RangeAttackAction(player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart()));
+							                                         	})));
 
 						}
 							break;
-						case 'F':
-						{
-							Options("With what weapon?",
-							        "No possible way of shooting target.",
-							        FilterEquippedItems<RangeComponent>(player).ToList(),
-							        Identifier.GetNameOrId,
-							        weapon => Targets("Shoot where?",
-							                          p => Options("Shoot at what?",
-							                                       "Nothing there to shoot.",
-							                                       player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
-							                                       Identifier.GetNameOrId,
-							                                       defender => Options("What part?",
-							                                                           String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
-							                                                           defender.Get<DefendComponent>().BodyPartsList,
-							                                                           bp => bp.Name,
-							                                                           bp => Enqueue(new RangeAttackAction(player, defender, weapon, bp, true))))));
+						case 'F': {
+								Options("With what weapon?",
+										"No possible way of shooting target.",
+										FilterEquippedItems<RangeComponent>(player).ToList(),
+										Identifier.GetNameOrId,
+										weapon => TargetsAt("Shoot where?",
+															World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
+															p => Options("Shoot at what?",
+																		 "Nothing there to shoot.",
+																		 player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+																		 Identifier.GetNameOrId,
+																		 defender => Options("What part?",
+																							 String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
+																							 defender.Get<DefendComponent>().BodyPartsList,
+																							 bp => bp.Name,
+																							 bp =>
+																							 {
+																								 World.TagManager.Register(defender, "target");
+																								 Enqueue(new RangeAttackAction(player, defender, weapon, bp, true));
+																							 }))));
 
-						}
+							}
 							break;
-						case 'r':
-						{
-							Options("Reload what weapon?",
-							        "No weapons to reload.",
-							        FilterEquippedItems<RangeComponent>(player).ToList(),
-							        Identifier.GetNameOrId, weapon => Options("What ammo?",
-							                                                  "No possible ammo for selected weapon.",
-							                                                  player.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() &&
-							                                                                                                    e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList(),
-							                                                  Identifier.GetNameOrId,
-							                                                  ammo => Enqueue(new ReloadAction(player, weapon, ammo))));
-						}
+						case 'r': {
+								Options("Reload what weapon?",
+										"No weapons to reload.",
+										FilterEquippedItems<RangeComponent>(player).ToList(),
+										Identifier.GetNameOrId, weapon => Options("What ammo?",
+																				  "No possible ammo for selected weapon.",
+																				  player.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() &&
+																																	e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList(),
+																				  Identifier.GetNameOrId,
+																				  ammo => Enqueue(new ReloadAction(player, weapon, ammo))));
+							}
 							break;
 						case 'u':
 							Directions("What direction?", p => Options("What object do you want to use?",
-							                                           "Nothing there to use.",
-							                                           playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
-							                                                                                            e.Has<VisibleComponent>() &&
-							                                                                                            e.Get<VisibleComponent>().VisibilityIndex > 0), Identifier.GetNameOrId,
-							                                           useable => Options(String.Format("Do what with {0}?", Identifier.GetNameOrId(useable)),
-							                                                              String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
-							                                                              useable.Get<UseableFeature>().Uses.ToList(),
-							                                                              use => use.Description,
-							                                                              use => use.Use(player, useable, use))));
+																	   "Nothing there to use.",
+																	   playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
+																														e.Has<VisibleComponent>() &&
+																														e.Get<VisibleComponent>().VisibilityIndex > 0), Identifier.GetNameOrId,
+																	   useable => Options(String.Format("Do what with {0}?", Identifier.GetNameOrId(useable)),
+																						  String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
+																						  useable.Get<UseableFeature>().Uses.ToList(),
+																						  use => use.Description,
+																						  use => use.Use(player, useable, use))));
 							break;
-						case 'd':
-						{
-							var inventory = player.Get<ContainerComponent>();
-							if (inventory.Count > 0)
+						case 'd': {
+								var inventory = player.Get<ContainerComponent>();
+								if (inventory.Count > 0)
+									ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
+																		  {
+																			  Size = MapPanel.Size,
+																			  IsPopup = true,
+																			  HasFrame = true,
+																			  World = World,
+																			  Items = inventory.Items,
+																			  SelectSingleItem = false,
+																			  ItemSelected = i => DropItem(player, i),
+																		  }));
+								else
+									World.Log.Fail("You are carrying no items to drop.");
+							}
+							break;
+						case 'g': {
+								var inventory = player.Get<ContainerComponent>();
+
+								// get all items that have a location (eg present on the map) that are at the location where are player is
+								var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
+																												   e.Has<VisibleComponent>() &&
+																												   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+																												   !inventory.Items.Contains(e));
+
+								if (items.Count() > 0)
+									ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
+																		  {
+																			  Size = MapPanel.Size,
+																			  IsPopup = true,
+																			  HasFrame = true,
+																			  World = World,
+																			  Items = items,
+																			  SelectSingleItem = false,
+																			  ItemSelected = i => PickUpItem(player, i),
+																		  }));
+								else
+									World.Log.Fail("No items here to pick up.");
+							}
+							break;
+						case 'G': {
+								var inventory = player.Get<ContainerComponent>();
+
+								// get all items that have a location (eg present on the map) that are at the location where are player is
+								var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
+																												   e.Has<VisibleComponent>() &&
+																												   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+																												   !inventory.Items.Contains(e));
+
+								if (items.Count() > 0)
+									Enqueue(new GetAllItemsAction(player, items));
+								else
+									World.Log.Fail("No items here to pick up.");
+							}
+							break;
+						case 'i': {
+								var inventory = player.Get<ContainerComponent>();
 								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
-								                                      {
-								                                      		Size = MapPanel.Size,
-								                                      		IsPopup = true,
-								                                      		HasFrame = true,
-								                                      		World = World,
-								                                      		Items = inventory.Items,
-								                                      		SelectSingleItem = false,
-								                                      		ItemSelected = i => DropItem(player, i),
-								                                      }));
-							else
-								World.Log.Fail("You are carrying no items to drop.");
-						}
-							break;
-						case 'g':
-						{
-							var inventory = player.Get<ContainerComponent>();
+																	  {
+																		  Size = MapPanel.Size,
+																		  IsPopup = true,
+																		  HasFrame = true,
+																		  World = World,
+																		  Items = inventory.Items,
+																		  SelectSingleItem = false,
+																		  ItemSelected = i => World.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight)),
+																	  }));
 
-							// get all items that have a location (eg present on the map) that are at the location where are player is
-							var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
-							                                                                                   e.Has<VisibleComponent>() &&
-							                                                                                   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-							                                                                                   !inventory.Items.Contains(e));
-
-							if (items.Count() > 0)
-								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
-								                                      {
-								                                      		Size = MapPanel.Size,
-								                                      		IsPopup = true,
-								                                      		HasFrame = true,
-								                                      		World = World,
-								                                      		Items = items,
-								                                      		SelectSingleItem = false,
-								                                      		ItemSelected = i => PickUpItem(player, i),
-								                                      }));
-							else
-								World.Log.Fail("No items here to pick up.");
-						}
-							break;
-						case 'G':
-						{
-							var inventory = player.Get<ContainerComponent>();
-
-							// get all items that have a location (eg present on the map) that are at the location where are player is
-							var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
-							                                                                                   e.Has<VisibleComponent>() &&
-							                                                                                   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-							                                                                                   !inventory.Items.Contains(e));
-
-							if (items.Count() > 0)
-								Enqueue(new GetAllItemsAction(player, items));
-							else
-								World.Log.Fail("No items here to pick up.");
-						}
-							break;
-						case 'i':
-						{
-							var inventory = player.Get<ContainerComponent>();
-							ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
-							                                      {
-							                                      		Size = MapPanel.Size,
-							                                      		IsPopup = true,
-							                                      		HasFrame = true,
-							                                      		World = World,
-							                                      		Items = inventory.Items,
-							                                      		SelectSingleItem = false,
-							                                      		ItemSelected = i => World.Log.Normal(String.Format("This is a {0}, it weights {1}.", i.Get<Identifier>().Name, i.Get<Item>().Weight)),
-							                                      }));
-
-						}
+							}
 							break;
 						case 'w':
 							ParentApplication.Push(new InventoryWindow(new InventoryWindowTemplate
-							                                           {
-							                                           		Size = MapPanel.Size,
-							                                           		IsPopup = true,
-							                                           		HasFrame = true,
-							                                           		World = World,
-							                                           		Items = player.Get<EquipmentComponent>().Slots.ToList(),
-							                                           }));
+																	   {
+																		   Size = MapPanel.Size,
+																		   IsPopup = true,
+																		   HasFrame = true,
+																		   World = World,
+																		   Items = player.Get<EquipmentComponent>().Slots.ToList(),
+																	   }));
 							break;
-						case 'p':
-						{
-							Options("With what?",
-							        "No lockpicks available.", 
-									player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()), 
-									Identifier.GetNameOrId,
-							        lockpick => Directions("What direction?", p => Options("Select what to lockpick.",
-							                                                               "Nothing there to lockpick.", 
-																						   player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<LockedFeature>()),
-							                                                               Identifier.GetNameOrId, 
-																						   feature => Enqueue(new LockpickAction(player, lockpick, feature)))));
+						case 'p': {
+								Options("With what?",
+										"No lockpicks available.",
+										player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()),
+										Identifier.GetNameOrId,
+										lockpick => Directions("What direction?", p => Options("Select what to lockpick.",
+																							   "Nothing there to lockpick.",
+																							   player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<LockedFeature>()),
+																							   Identifier.GetNameOrId,
+																							   feature => Enqueue(new LockpickAction(player, lockpick, feature)))));
 
-						}
+							}
 							break;
 						case 'l':
 							if (keyboardEvent.KeyboardData.ControlKeys == ControlKeys.LeftControl) {
@@ -299,47 +325,47 @@ namespace SKR.UI.Gameplay {
 										new LookWindow(
 												playerLocation.Location,
 												delegate(Point p)
-													{
-														StringBuilder sb = new StringBuilder();
-														var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p);
-														sb.AppendLine(playerLocation.Level.GetTerrain(p).Definition);
-														foreach (var entity in entitiesAtLocation) {
-															sb.AppendFormat("Entity: {0} ", entity.Id);
-															sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
-															if (entity.Has<Blocker>())
-																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+												{
+													StringBuilder sb = new StringBuilder();
+													var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p);
+													sb.AppendLine(playerLocation.Level.GetTerrain(p).Definition);
+													foreach (var entity in entitiesAtLocation) {
+														sb.AppendFormat("Entity: {0} ", entity.Id);
+														sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
+														if (entity.Has<Blocker>())
+															sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
 
-															sb.AppendLine();
-														}
+														sb.AppendLine();
+													}
 
-														return sb.ToString();
-													},
+													return sb.ToString();
+												},
 												MapPanel,
 												PromptTemplate));
 							break;
 						case 'z':
 							if (keyboardEvent.KeyboardData.ControlKeys == ControlKeys.LeftControl) {
 								Targets("Set AI of Entity", p =>
-								                            	{
-								                            		var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<ActorComponent>()).ToList();
-								                            		var npc = entitiesAtLocation.First();
-								                            		var options = new List<AbstractActor>
+																{
+																	var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<ActorComponent>()).ToList();
+																	var npc = entitiesAtLocation.First();
+																	var options = new List<AbstractActor>
 								                            		              {
 								                            		              		new DoNothingActor(),
 								                            		              		new NPC()
 								                            		              };
-								                            		Options("What AI?",
-								                            		        "No AI options.",
-								                            		        options,
-								                            		        o => o.GetType().Name,
-								                            		        actor =>
-								                            		        	{
-								                            		        		var ap = npc.Get<ActorComponent>().AP;
-								                            		        		npc.Remove<ActorComponent>();
-								                            		        		npc.Add(new ActorComponent(actor, ap));
-								                            		        	});
-								                            	});
-							} else {}
+																	Options("What AI?",
+																			"No AI options.",
+																			options,
+																			o => o.GetType().Name,
+																			actor =>
+																			{
+																				var ap = npc.Get<ActorComponent>().AP;
+																				npc.Remove<ActorComponent>();
+																				npc.Add(new ActorComponent(actor, ap));
+																			});
+																});
+							} else { }
 							break;
 					}
 
@@ -367,7 +393,7 @@ namespace SKR.UI.Gameplay {
 			Point newLocation = player.Get<GameObject>().Location + direction;
 
 			// we check for attackables
-			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
+			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>() && e.Has<Person>()).ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
 				Options("With that weapon?",
@@ -466,6 +492,16 @@ namespace SKR.UI.Gameplay {
 					                 action,
 					                 MapPanel,
 					                 PromptTemplate));
+		}
+
+		private void TargetsAt(string message, Point point, Action<Point> action) {
+			ParentApplication.Push(
+					new TargetPrompt(message,
+									 player.Get<GameObject>().Location,
+									 point,
+									 action,
+									 MapPanel,
+									 PromptTemplate));
 		}
 
 		private void Number(string message, int min, int max, int initial, Action<int> action) {
