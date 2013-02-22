@@ -95,60 +95,7 @@ namespace SKR.UI.Gameplay {
 			this.KeyPressed += GameplayWindow_KeyPressed;			
 		}
 
-		protected override void Update() {
-			base.Update();
-			if (!World.RequireNewPrompt)
-				return;
-			
-			switch (World.CurrentAction.RequiresPrompt) {
-				case PromptRequired.None:
-					throw new ArgumentOutOfRangeException();
-				case PromptRequired.Boolean:
-				{
-					var action = (IBooleanAction) World.CurrentAction;
-					Boolean(b => action.SetBoolean(b), true, action.Message);
-					World.RequireNewPrompt = false;
-				}
-					break;
-				case PromptRequired.Number:
-				{
-					var action = (INumberAction) World.CurrentAction;
-					Number(i => action.SetNumber(i), 0, 10, 1, "");
-					World.RequireNewPrompt = false;
-				}
-					break;
-				case PromptRequired.Location:
-				{
-					var action = (ILocationAction) World.CurrentAction;
-					Targets(p => action.SetLocation(p), "");
-					World.RequireNewPrompt = false;
-				}
-					break;
-				case PromptRequired.Direction:
-				{
-					var action = (IDirectionAction) World.CurrentAction;
-					Directions(p => action.SetDirection(p - player.Get<GameObject>().Location), "");
-					World.RequireNewPrompt = false;
-				}
-
-					break;
-				case PromptRequired.Options:
-				{
-					var action = (IOptionsAction) World.CurrentAction;
-					Options(action.Options, s => s, s => action.SetOption(s), "", "");
-					World.RequireNewPrompt = false;
-				}
-					break;
-				case PromptRequired.PlayerInput:
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
-
 		private void GameplayWindow_KeyPressed(object sender, KeyboardEventArgs keyboardEvent) {
-			if (World.CurrentAction.RequiresPrompt != PromptRequired.PlayerInput)
-				return;
 			var playerLocation = player.Get<GameObject>();
 			
 			switch (keyboardEvent.KeyboardData.KeyCode) {
@@ -456,7 +403,6 @@ namespace SKR.UI.Gameplay {
 
 		public void Enqueue(IAction action) {
 			player.Get<ActorComponent>().Enqueue(action);
-			((IPlayerInputAction)World.CurrentAction).SetFinished();
 		}
 		
 		#region Pickup/Drop items

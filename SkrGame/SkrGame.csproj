@@ -129,10 +129,12 @@
     <Compile Include="Systems\ActionSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
+    <Compile Include="Universe\Entities\Actors\DoNothingActor.cs" />
     <Compile Include="Universe\Entities\Actors\Person.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />
+    <Compile Include="Universe\Entities\Actors\Player.cs" />
     <Compile Include="Universe\Entities\Actors\SightComponent.cs" />
     <Compile Include="Universe\Entities\Actors\VisibleComponent.cs" />
     <Compile Include="Universe\Entities\Features\HouseItemFeature.cs" />

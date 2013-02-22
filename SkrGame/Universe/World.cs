@@ -78,8 +78,6 @@ namespace SkrGame.Universe {
 		public void Initialize() {
 			actionSystem = new ActionSystem(Player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
-			actions = actionSystem.Process().GetEnumerator();
-			NextAction();
 		}
 
 		// todo events when a turn is processed
@@ -90,16 +88,6 @@ namespace SkrGame.Universe {
 
 		}
 
-		public void NextAction() {
-			actions.MoveNext();
-			CurrentAction = actions.Current;
-			RequireNewPrompt = true;
-			visionSubsystem.Update();
-		}
-
-		public IAction CurrentAction { get; private set; }
-		public bool RequireNewPrompt { get; set; }
-		private IEnumerator<IAction> actions;
 
 		public static int SecondsToActionPoints(double seconds) {
 			return  (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
