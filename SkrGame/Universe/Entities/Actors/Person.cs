@@ -21,27 +21,31 @@ namespace SkrGame.Universe.Entities.Actors {
 
 	public abstract class Stat {
 		public string Name { get; set; }
-		public Person Owner { get; set; }
-		public abstract int Rank { get; set; }
-		public abstract int MaxRank { get; set; }
+		
+		public abstract int Value { get; set; }
+		public abstract int MaximumValue { get; set; }
 
-		protected Stat(string name, Person owner) {
-			Name = name;
-			Owner = owner;
+		public static implicit operator int(Stat s) {
+			return s.Value;
+		}
+
+		protected Stat(string name) {
+			Name = name;			
 		}
 	}
 
 	public sealed class Attribute : Stat {
-		public override int Rank { get; set; }
-		public override int MaxRank { get; set; }
+		public override int Value { get; set; }
+		public override int MaximumValue { get; set; }		
 
-		public Attribute(string name, Person owner, int maxRank, int rank = 0) : base(name, owner) {
-			Rank = rank;
-			MaxRank = maxRank;
+		public Attribute(string name, int maxRank, int rank = 0) : base(name) {
+			Value = rank;
+			MaximumValue = maxRank;
 		}
 	}
 
 	public sealed class Skill : Stat {
+		public Person Owner { get; set; }
 		/// <summary>
 		/// raw rank represents this talent's skill, unmodified by anything
 		/// </summary>
@@ -50,19 +54,19 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// RealRank will call the function supplied in the template to calculate this talent's modified rank, it can be anything
 		/// from a simple adding another attribute to it or something much more complicated
 		/// </summary>
-		public override int Rank {
+		public override int Value {
 			get { return calculateRealRank(Owner, this); }
 			set { RawRank = value; }
 		}
 
-		public override int MaxRank { get; set; }
+		public override int MaximumValue { get; set; }
 
 		private readonly Func<Person, Skill, int> calculateRealRank;
 
-		public Skill(string name, Person owner, int maxRank, int initialRank = 0, Func<Person, Skill, int> calcRealRank = null) : base(name, owner) {
+		public Skill(string name, Person owner, int maxRank, int initialRank = 0, Func<Person, Skill, int> calcRealRank = null) : base(name) {
 			Owner = owner;
 			RawRank = initialRank;
-			MaxRank = maxRank;
+			MaximumValue = maxRank;
 
 			if (calcRealRank == null)
 				calculateRealRank = (self, t) => t.RawRank;
@@ -76,24 +80,24 @@ namespace SkrGame.Universe.Entities.Actors {
 	public class Person : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public int Strength { get; set; }
-		public int Agility { get; set; }
-		public int Constitution { get; set; }
+		public Attribute Strength { get; private set; }
+		public Attribute Agility { get; private set; }
+		public Attribute Constitution { get; private set; }
 
-		public int Intellect { get; set; }
-		public int Cunning { get; set; }
-		public int Resolve { get; set; }
+		public Attribute Intellect { get; private set; }
+		public Attribute Cunning { get; private set; }
+		public Attribute Resolve { get; private set; }
 
-		public int Presence { get; set; }
-		public int Grace { get; set; }
-		public int Willpower { get; set; }
+		public Attribute Presence { get; private set; }
+		public Attribute Grace { get; private set; }
+		public Attribute Willpower { get; private set; }
 
-		public int Stamina { get; set; }
+		public Attribute Stamina { get; private set; }
 
-		public int Energy { get; set; } // use with stamina
-		public int Food { get; set; }
-		public int Water { get; set; }
-		public int Bladder { get; set; }
+		public Attribute Energy { get; private set; } // use with stamina
+		public Attribute Food { get; private set; }
+		public Attribute Water { get; private set; }
+		public Attribute Bladder { get; private set; }
 		// social?  - composure will replace for player
 		// environment - probably not necessary
 		// fun - composure replaces
@@ -110,7 +114,24 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public Person() {
-			Strength = Agility = Constitution = Intellect = Cunning = Resolve = Presence = Grace = Willpower = World.MEAN;		
+			Strength = new Attribute("Strength", World.MEAN, World.MEAN);
+			Agility = new Attribute("Agility", World.MEAN, World.MEAN);
+			Constitution = new Attribute("Constitution", World.MEAN, World.MEAN);
+			Intellect = new Attribute("Intellect", World.MEAN, World.MEAN);
+			Cunning = new Attribute("Cunning", World.MEAN, World.MEAN);
+			Resolve = new Attribute("Resolve", World.MEAN, World.MEAN);
+			Presence = new Attribute("Presence", World.MEAN, World.MEAN);
+			Grace = new Attribute("Grace", World.MEAN, World.MEAN);
+			Willpower = new Attribute("Willpower", World.MEAN, World.MEAN);
+
+			Stamina = new Attribute("Stamina", World.MEAN, World.MEAN);
+
+			Energy = new Attribute("Energy", World.MEAN, World.MEAN);
+			Food = new Attribute("Food", World.MEAN, World.MEAN);
+			Water = new Attribute("Water", World.MEAN, World.MEAN);
+			Bladder = new Attribute("Bladder", World.MEAN, World.MEAN);
+
+
 			skills = new Dictionary<string, Skill>
 			         {
 			         		{"skill_unarmed", new Skill("Unarmed", this, 100, 0, (user, t) => t.Owner.Agility + t.RawRank)},

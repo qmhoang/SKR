@@ -13,12 +13,12 @@ namespace SKRTests.Actions {
 		public void PickUpItem() {
 			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 0);
 			Assert.AreEqual(Item.Get<VisibleComponent>().VisibilityIndex, 10);
-			Assert.AreEqual(Item.Get<Location>().Point, new Point(-1, -1));
+			Assert.AreEqual(Item.Get<GameObject>().Location, new Point(-1, -1));
 
 			PickUp(Item);
 
 			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 1);
-			Assert.AreEqual(Item.Get<Location>().Point, Entity.Get<Location>().Point);
+			Assert.AreEqual(Item.Get<GameObject>().Location, Entity.Get<GameObject>().Location);
 			Assert.AreEqual(Item.Get<VisibleComponent>().VisibilityIndex, -1);
 			CollectionAssert.Contains(Entity.Get<ContainerComponent>().Items, Item);
 		}

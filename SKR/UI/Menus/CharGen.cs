@@ -121,13 +121,12 @@ namespace SKR.UI.Menus {
 			                         		HasFrameBorder = false,
 			                         		MinimumWidth = 22,
 			                         		MaximumValue = 100,
-			                         		StartingValue = 50,											
+			                         		StartingValue = 50,
 			                         };
 
 			sliderTestTemplate.AlignTo(LayoutDirection.South, occupationTemplate);
 			var sliderTest = new Slider(sliderTestTemplate);
-			AddControl(sliderTest);
-
+			AddControl(sliderTest);			
 
 			var doneTemplate = new ButtonTemplate()
 			                   {
@@ -139,13 +138,14 @@ namespace SKR.UI.Menus {
 
 			AddControl(doneButton);
 
-			this.KeyPressed += CharGen_KeyPressed;
+			KeyPressed += CharGen_KeyPressed;
 		}
 
-		private void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
+		void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
 			if ((e.KeyboardData.KeyCode == TCODKeyCode.Enter || e.KeyboardData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
 				StartNewGame(this, EventArgs.Empty);
 		}
+
 
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();

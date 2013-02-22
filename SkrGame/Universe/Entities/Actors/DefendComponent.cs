@@ -55,25 +55,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 		#region Health
 
-		private int health;
-		public int Health {
-			get { return health; }
-			set { health = value; OnHealthChange(); }
-		}
-
-		private int maxHealth;
-		public int MaxHealth {
-			get { return maxHealth; }
-			set { maxHealth = value; OnHealthChange(); }
-		}
-
-		public event EventHandler<DefendComponent, EventArgs> HealthChanged;
-
-		protected void OnHealthChange() {
-			var handler = HealthChanged;
-			if (handler != null)
-				handler(this, EventArgs.Empty);
-		}
+		public Attribute Health { get; private set; }
 
 		public bool Dead {
 			get { return Health < 0; }
@@ -99,14 +81,14 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		private DefendComponent(int health, int maxHealth, List<AttackablePart> bodyParts) {
-			this.health = health;
-			this.maxHealth = maxHealth;
+			Health = new Attribute("Health", maxHealth, health);
+
 			this.bodyParts = bodyParts;
 		}
 
 		public DefendComponent(int health, List<AttackablePart> bodyParts) {
 			Contract.Requires<ArgumentException>(bodyParts.Count > 0);
-			this.health = this.maxHealth = health;
+			Health = new Attribute("Health", health, health);
 			this.bodyParts = bodyParts;
 
 			foreach (var part in bodyParts) {
@@ -138,12 +120,11 @@ namespace SkrGame.Universe.Entities.Actors {
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
-			Contract.Invariant(health <= maxHealth);
-			Contract.Invariant(maxHealth > 0);			
+			Contract.Invariant(Health != null);
 		}
 
 		public override Component Copy() {
-			var defend = new DefendComponent(health, maxHealth, bodyParts.Select(part => part.Copy()).ToList());
+			var defend = new DefendComponent(Health.Value, Health.MaximumValue, bodyParts.Select(part => part.Copy()).ToList());
 
 			foreach (var part in defend.bodyParts) {
 				part.Owner = defend;

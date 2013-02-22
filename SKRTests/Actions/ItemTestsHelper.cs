@@ -3,6 +3,7 @@ using DEngine.Components;
 using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Actions;
+using SkrGame.Actions.Items;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
@@ -17,7 +18,7 @@ namespace SKRTests.Actions {
 		public void SetUp() {
 			Item = EntityManager.Create(new List<Component>
 			                            {
-			                            		new Location(-1, -1, Level),
+			                            		new GameObject(-1, -1, Level),
 			                            		new VisibleComponent(10),
 			                            		new Item(new Item.Template
 			                            		         {})
@@ -26,7 +27,7 @@ namespace SKRTests.Actions {
 
 			StackedItem0 = EntityManager.Create(new List<Component>
 			                                    {
-			                                    		new Location(-1, -1, Level),
+			                                    		new GameObject(-1, -1, Level),
 			                                    		new ReferenceId("item"),
 			                                    		new VisibleComponent(10),
 			                                    		new Item(new Item.Template
@@ -37,7 +38,7 @@ namespace SKRTests.Actions {
 			                                    });
 			StackedItem1 = EntityManager.Create(new List<Component>
 			                                    {
-			                                    		new Location(-1, -1, Level),
+			                                    		new GameObject(-1, -1, Level),
 			                                    		new ReferenceId("item"),
 			                                    		new VisibleComponent(10),
 			                                    		new Item(new Item.Template

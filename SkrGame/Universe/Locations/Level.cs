@@ -69,8 +69,8 @@ namespace SkrGame.Universe.Locations {
 			}
 
 			this.World = world;
-			entities = world.EntityManager.Get<Location>();
-			blockers = world.EntityManager.Get(typeof(Location), typeof(Blocker));
+			entities = world.EntityManager.Get<GameObject>();
+			blockers = world.EntityManager.Get(typeof(GameObject), typeof(Blocker));
 			Cells = new Cell[size.Width, size.Height];
 
 			for (int x = 0; x < Map.GetLength(0); x++) {
@@ -91,29 +91,29 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		private void OnRemoveBlocker(Entity entity) {
-			var position = entity.Get<Location>().Point;
+			var position = entity.Get<GameObject>().Location;
 			SetBlocker(position);
-			entity.Get<Location>().PositionChanged -= OnBlockerPositionChanged;
+			entity.Get<GameObject>().PositionChanged -= OnBlockerPositionChanged;
 			entity.Get<Blocker>().WalkableChanged -= OnblockerWalkableChanged;
 			entity.Get<Blocker>().TransparencyChanged -= OnBlockerTransparencyChanged;
 		}
 
 		private void InitializeBlocker(Entity entity) {
-			var position = entity.Get<Location>().Point;
+			var position = entity.Get<GameObject>().Location;
 			SetBlocker(position);
-			entity.Get<Location>().PositionChanged += OnBlockerPositionChanged;
+			entity.Get<GameObject>().PositionChanged += OnBlockerPositionChanged;
 			entity.Get<Blocker>().WalkableChanged += OnblockerWalkableChanged;
 			entity.Get<Blocker>().TransparencyChanged += OnBlockerTransparencyChanged;
 		}
 
 		private void OnBlockerTransparencyChanged(Component sender, EventArgs @event) {
-			var position = sender.Entity.Get<Location>().Point;
-			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Transparent);
+			var position = sender.Entity.Get<GameObject>().Location;
+			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Transparent);
 		}
 
 		private void OnblockerWalkableChanged(Component sender, EventArgs @event) {
-			var position = sender.Entity.Get<Location>().Point;
-			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Walkable);			
+			var position = sender.Entity.Get<GameObject>().Location;
+			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Walkable);			
 		}
 
 		private void OnBlockerPositionChanged(Component sender, PositionChangedEvent e) {
@@ -123,9 +123,9 @@ namespace SkrGame.Universe.Locations {
 
 		private void SetBlocker(Point position) {
 			if (GetTerrain(position).Walkable)
-				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Walkable);
+				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Walkable);
 			if (GetTerrain(position).Transparent)
-				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<Location>().Point == position).All(e => e.Get<Blocker>().Transparent);
+				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Transparent);
 		}
 
 		public void SetTerrain(int x, int y, string t) {
@@ -165,7 +165,7 @@ namespace SkrGame.Universe.Locations {
 		}
 
 		public override IEnumerable<Entity> GetEntitiesAt(Point location) {
-			return GetEntities().Where(e => e.Get<Location>().Point == location);
+			return GetEntities().Where(e => e.Get<GameObject>().Location == location);
 		}
 
 		public override IEnumerable<Entity> GetEntities() {

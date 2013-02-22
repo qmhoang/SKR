@@ -9,6 +9,7 @@ using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Actions;
 using SkrGame.Actions.Features;
+using SkrGame.Actions.Items;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
@@ -41,7 +42,7 @@ namespace SkrGame.Actions.Skills {
 				return ActionResult.Failed;
 			}
 			
-			double difficulty = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").Rank - feature.Get<LockedFeature>().Quality;
+			double difficulty = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").Value - feature.Get<LockedFeature>().Quality;
 
 			double roll = World.SkillRoll();
 

@@ -32,27 +32,27 @@ namespace SKRTests.Components {
 
 			entity = entityManager.Create(new List<Component>()
 			                              {
-			                             		new Location(0, 0, null),
+			                             		new GameObject(0, 0, null),
 			                              		new ContainerComponent()
 			                              });
 			container = entity.Get<ContainerComponent>();
 
 			item0 = entityManager.Create(new List<Component>
 			                             {
-			                             		new Location(-1, -1, null),
+			                             		new GameObject(-1, -1, null),
 			                             		new Item(new Item.Template
 			                             		         {})
 
 			                             });
 			item1 = entityManager.Create(new List<Component>
 			                             {
-			                             		new Location(-1, -1, null),
+			                             		new GameObject(-1, -1, null),
 			                             		new Item(new Item.Template
 			                             		         {})
 			                             });
 			item2 = entityManager.Create(new List<Component>
 			                             {
-			                             		new Location(-1, -1, null),
+			                             		new GameObject(-1, -1, null),
 			                             		new Item(new Item.Template
 			                             		         {})
 			                             });

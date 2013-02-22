@@ -11,9 +11,9 @@ using SkrGame.Universe.Entities;
 namespace SkrGame.Actions {
 	public abstract class LoggedAction : ActorAction {
 		protected LoggedAction(Entity entity) : base(entity) {
-			Contract.Requires<ArgumentException>(entity.Has<Location>());
+			Contract.Requires<ArgumentException>(entity.Has<GameObject>());
 		}
 
-		public World World { get { return Entity.Get<Location>().Level.World; } }
+		public World World { get { return Entity.Get<GameObject>().Level.World; } }
 	}
 }

@@ -14,7 +14,7 @@ namespace SKRTests.Actions {
 		public void SetUp() {
 			Slot1Item0 = EntityManager.Create(new List<Component>
 			                                  {
-			                                  		new Location(-1, -1, null),
+			                                  		new GameObject(-1, -1, null),
 			                                  		new Equipable(new Equipable.Template
 			                                  		              {
 			                                  		              		Slot = new List<string>
@@ -26,7 +26,7 @@ namespace SKRTests.Actions {
 
 			Slot1Item1 = EntityManager.Create(new List<Component>
 			                                  {
-			                                  		new Location(-1, -1, null),
+			                                  		new GameObject(-1, -1, null),
 			                                  		new Equipable(new Equipable.Template
 			                                  		              {
 			                                  		              		Slot = new List<string>
@@ -38,7 +38,7 @@ namespace SKRTests.Actions {
 
 			Slot2Item0 = EntityManager.Create(new List<Component>
 			                                  {
-			                                  		new Location(-1, -1, null),
+			                                  		new GameObject(-1, -1, null),
 			                                  		new Equipable(new Equipable.Template
 			                                  		              {
 			                                  		              		Slot = new List<string>

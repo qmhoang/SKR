@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
+using DEngine.Actions;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
@@ -16,6 +17,7 @@ using SKR.UI.Gameplay;
 using SKR.UI.Menus;
 using SKR.Universe;
 using SkrGame.Actions;
+using SkrGame.Actions.Items;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
@@ -27,11 +29,13 @@ using log4net.Config;
 namespace SKR {
 	/* 
 	 * todo:
-	 *		*  Zones of Control - entities that encompass an area in which another entities "owns" it.  These zones could then be used for crimes (breaking and entering, trespassing, etc).
-	 *		*  Needs-based AI
-	 *		*  Facing
-	 *		*  Entities that occupy more than 1 block
-	 *		*  NPC speak that uses inheritance ala entities
+	 *		* Zones of Control - entities that encompass an area in which another entities "owns" it.  These zones could then be used for crimes (breaking and entering, trespassing, etc), npc hostility, etc.
+	 *		* Needs-based AI (think "the sims)
+	 *		* Facing
+	 *		* Entities that occupy more than 1 block
+	 *		* NPC speak that uses inheritance ala entities
+	 *		* damage multiplier for damagetypes
+	 *		* city generation
 	 */
 
 	public class RoguelikeApp : Application {
@@ -48,7 +52,7 @@ namespace SKR {
 			                                  {
 			                                  		new Sprite("player", Sprite.PLAYER_LAYER),
 			                                  		new Identifier("Player"),
-			                                  		new Location(0, 0, world.CurrentLevel),
+			                                  		new GameObject(0, 0, world.CurrentLevel),
 			                                  		new ActorComponent(new Player(), new AP()),
 			                                  		new Person(),
 			                                  		DefendComponent.CreateHuman(50),
@@ -80,7 +84,7 @@ namespace SKR {
 			                                     {
 			                                     		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                                     		new Identifier("npc"),
-			                                     		new Location(6, 2, world.CurrentLevel),
+			                                     		new GameObject(6, 2, world.CurrentLevel),
 			                                     		new ActorComponent(new DoNothingActor(), new AP()),
 			                                     		new Person(),
 			                                     		DefendComponent.CreateHuman(50),
@@ -89,15 +93,15 @@ namespace SKR {
 			                                     		new EquipmentComponent(),
 			                                     });
 
-			world.EntityManager.Create(world.EntityFactory.Get("smallknife")).Add(new Location(1, 1, world.CurrentLevel));
-			world.EntityManager.Create(world.EntityFactory.Get("axe")).Add(new Location(1, 1, world.CurrentLevel));
-			world.EntityManager.Create(world.EntityFactory.Get("glock17")).Add(new Location(1, 1, world.CurrentLevel));
-			world.EntityManager.Create(world.EntityFactory.Get("lockpick")).Add(new Location(1, 1, world.CurrentLevel));
-			var ammo = world.EntityManager.Create(world.EntityFactory.Get("9x9mm")).Add(new Location(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("smallknife")).Add(new GameObject(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("axe")).Add(new GameObject(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("glock17")).Add(new GameObject(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("lockpick")).Add(new GameObject(1, 1, world.CurrentLevel));
+			var ammo = world.EntityManager.Create(world.EntityFactory.Get("9x9mm")).Add(new GameObject(1, 1, world.CurrentLevel));
 			ammo.Get<Item>().Amount = 30;
-			world.EntityManager.Create(world.EntityFactory.Get("bullet")).Add(new Location(1, 1, world.CurrentLevel));
+			world.EntityManager.Create(world.EntityFactory.Get("bullet")).Add(new GameObject(1, 1, world.CurrentLevel));
 
-			var armor = world.EntityManager.Create(world.EntityFactory.Get("footballpads")).Add(new Location(1, 1, world.CurrentLevel));
+			var armor = world.EntityManager.Create(world.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, world.CurrentLevel));
 			new EquipItemAction(npc, armor, "Torso", true).OnProcess();
 			npc.Add(new MeleeComponent(new MeleeComponent.Template
 			                           {
@@ -124,7 +128,9 @@ namespace SKR {
 
 		protected override void Update() {
 			base.Update();
-			world.UpdateSystems();
+//			world.UpdateSystems();
+			if (world.CurrentAction.RequiresPrompt == PromptRequired.None)
+				world.NextAction();	
 		}
 	}
 
