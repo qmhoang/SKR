@@ -129,8 +129,9 @@ namespace SKR {
 		protected override void Update() {
 			base.Update();
 //			world.UpdateSystems();
-			if (world.CurrentAction.RequiresPrompt == PromptRequired.None)
-				world.NextAction();	
+			if (world.CurrentAction.RequiresPrompt == PromptType.None) {
+				world.ProcessActions();
+			}
 		}
 	}
 

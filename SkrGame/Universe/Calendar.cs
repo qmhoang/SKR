@@ -40,7 +40,7 @@ namespace SkrGame.Universe {
 				get { return World.SpeedToActionPoints(World.DEFAULT_SPEED); }
 			}
 
-			public PromptRequired RequiresPrompt { get { return PromptRequired.None; } }
+			public PromptType RequiresPrompt { get { return PromptType.None; } }
 
 			public ActionResult OnProcess() {
 				calendar.IncreaseTime();

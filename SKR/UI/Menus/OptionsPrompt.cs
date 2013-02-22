@@ -7,15 +7,15 @@ using libtcod;
 
 namespace SKR.UI.Menus {
 	public class OptionsPrompt<T> : PromptWindow {
-		private readonly Action<T> actionCount;
+		private readonly Action<T> action;
 		private List<T> options;
 		private Func<T, string> descriptorFunction;
 		private string message;
-		private string fail;
+		private Action fail;
 
-		public OptionsPrompt(string message, string fail, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, PromptWindowTemplate template)
+		public OptionsPrompt(string message, IEnumerable<T> options, Func<T, string> descriptor, Action<T> action, Action fail, PromptWindowTemplate template)
 				: base(template) {
-			this.actionCount = actionCount;
+			this.action = action;
 			this.options = new List<T>(options);
 			this.descriptorFunction = descriptor;
 			this.message = message;
@@ -25,10 +25,10 @@ namespace SKR.UI.Menus {
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 			if (options.Count <= 0) {
-				GameLog.Fail(fail);
+				fail();
 				ExitWindow();
 			} else if (options.Count == 1) {
-				actionCount(options[0]);
+				action(options[0]);
 				ExitWindow();
 			}
 		}
@@ -55,7 +55,7 @@ namespace SKR.UI.Menus {
 			if (Char.IsLetter(keyData.Character)) {
 				int index = Char.ToLower(keyData.Character) - 'a';
 				if (index < options.Count && index >= 0) {
-					actionCount(options[index]);
+					action(options[index]);
 					ExitWindow();
 				}
 			} else if (keyData.KeyCode == TCODKeyCode.Escape)

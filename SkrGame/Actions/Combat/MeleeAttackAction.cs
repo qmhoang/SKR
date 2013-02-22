@@ -1,15 +1,136 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using DEngine.Actions;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions.Combat {
+	public class PlayerPreAttack: IOptionsAction {
+		public PlayerPreAttack(Entity attacker, Direction direction, bool targetPart) {
+			Contract.Requires<ArgumentException>(attacker.Has<EquipmentComponent>());
+			this.attacker = attacker;
+			this.targetPart = targetPart;
+			this.direction = direction;
+
+			targetSelected = false;
+			weaponsSelected = false;
+			bpSelected = false;
+
+			targets = attacker.Get<GameObject>().Level.GetEntitiesAt(attacker.Get<GameObject>().Location + direction).Where(e => e.Has<DefendComponent>()).ToList();
+
+			weapons = new List<Entity>();
+			var equipment = attacker.Get<EquipmentComponent>();
+
+			weapons.AddRange(equipment.Slots.Where(slot => equipment.IsSlotEquipped(slot) && equipment[slot].Has<MeleeComponent>()).Select(slot => equipment[slot]));
+			
+			if (weapons.Count == 0 && attacker.Has<MeleeComponent>())
+				weapons.Add(attacker); // natural weapon
+		}
+
+		public int APCost {
+			get { return 1; }
+		}
+
+		public PromptType RequiresPrompt {
+			get {
+				if (fail)
+					return PromptType.None;
+				if (weaponsSelected && (!targetPart || bpSelected))
+					return PromptType.None;
+				return PromptType.Options;
+			}
+		}
+
+		public ActionResult OnProcess() {
+			if (!fail)
+				attacker.Get<ActorComponent>().Enqueue(new MeleeAttackAction(attacker, defender, weapon, targetPart ? part : defender.Get<DefendComponent>().GetRandomPart(), targetPart));
+			return ActionResult.SuccessNoTime;
+		}
+
+		public string Message {
+			get {
+				if (!weaponsSelected) {
+					return "What weapon?";
+				} else if (!targetSelected) {
+					return "Attack what?";
+				} else {
+					return "Target what?";
+				}				
+			}
+		}
+
+		private bool fail;
+
+		public void Fail() {
+			if (!weaponsSelected) {
+				World.Log.Fail("No weapon available.");
+			} else if (!targetSelected) {
+				World.Log.Fail("Nothing there to attack.");
+			} else {
+				World.Log.Fail("Target what?");
+			}
+			fail = true;
+		}
+
+		private World World {
+			get { return attacker.Get<GameObject>().Level.World; }
+		}
+
+		public void SetOption(string o) {
+			if (!weaponsSelected) {
+				weaponsSelected = true;
+				World.RequireNewPrompt = true;
+				weapon = weapons.Find(e => Identifier.GetNameOrId(e) == o);
+			} else if (!targetSelected) {
+				targetSelected = true;
+
+				defender = targets.Find(e => Identifier.GetNameOrId(e) == o);
+				World.RequireNewPrompt = true;
+			} else if (!bpSelected) {
+				bpSelected = true;
+
+				part = defender.Get<DefendComponent>().BodyPartsList.First(bp => bp.Name == o);
+				World.RequireNewPrompt = true;
+			}
+		}
+
+		
+		public IEnumerable<string> Options {
+			get {
+				if (!weaponsSelected) {
+					return weapons.Select(Identifier.GetNameOrId);
+				} else if (!targetSelected) {
+					return targets.Select(Identifier.GetNameOrId);
+				} else //if (!bpSelected) 
+					return defender.Get<DefendComponent>().BodyPartsList.Select(bp => bp.Name);				
+			}
+		}
+
+		private Direction direction;
+		private bool targetPart;
+
+		private bool targetSelected;
+		private bool weaponsSelected;
+		private bool bpSelected;
+
+		private List<Entity> targets;
+		private List<Entity> weapons;
+
+		private Entity attacker;
+		private Entity defender;
+		private Entity weapon;
+		private DefendComponent.AttackablePart part;
+	}
+
 	public class MeleeAttackAction : AttackAction {
 		public MeleeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.AttackablePart bodyPartTargetted, bool targettingPenalty = false)
 				: base(attacker, defender, weapon, bodyPartTargetted, targettingPenalty) {
@@ -83,6 +204,6 @@ namespace SkrGame.Actions.Combat {
 				Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Dodge));
 			}
 			return ActionResult.Failed;
-		}
+		}		
 	}
 }

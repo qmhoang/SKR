@@ -26,49 +26,12 @@ namespace SkrGame.Universe.Factories {
 			return new Opening(openAsset, closedAsset, "opens the window", "closes the window", false, WINDOW_USAGE_AP_COST);
 		}
 
-		public class DoorBump : IBooleanAction {
-			private Entity entity, feature;
-			private bool b;
-			private bool set;
-
-			public DoorBump(Entity entity, Entity feature) {
-				this.entity = entity;
-				this.feature = feature;
-				b = false;
-				set = false;
-			}
-			
-			public int APCost {
-				get { return 1; }
-			}
-
-			public PromptRequired RequiresPrompt {
-				get { return set ? PromptRequired.None : PromptRequired.Boolean; }
-			}
-
-			public ActionResult OnProcess() {
-				if (b)
-					entity.Get<ActorComponent>().Enqueue(new OpenDoorAction(entity, feature));
-				return ActionResult.SuccessNoTime;
-			}
-
-			public string Message {
-				get { return "Open door?"; }
-			}
-
-			public bool SetBoolean(bool b) {
-				this.b = b;
-				set = true;
-				return set;
-			}
-		}
-		
 		public static OnBump.BumpResult DoorOnBump(Entity user, Entity door) {
 			Contract.Requires<ArgumentNullException>(door != null, "door");
 			Contract.Requires<ArgumentNullException>(user != null, "user");
 			Contract.Requires<ArgumentException>(door.Has<Opening>());
 			if (door.Get<Opening>().Status == Opening.OpeningStatus.Closed) {
-				user.Get<ActorComponent>().Enqueue(new DoorBump(user, door));	
+				user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, door));	
 				return OnBump.BumpResult.BlockMovement;
 			} else {
 				return OnBump.BumpResult.NormalMovement;
