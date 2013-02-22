@@ -106,6 +106,7 @@
     <Compile Include="UI\Menus\ListWindow.cs" />
     <Compile Include="UI\Menus\SkrWindow.cs" />
     <Compile Include="UI\Menus\TargetPrompt.cs" />
+    <Compile Include="UI\Prompts\BoolPrompt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Font\consolas12x12_gs_tc.png">

@@ -21,9 +21,7 @@ namespace SkrGame.Actions.Combat {
 			this.targetPart = targetPart;
 			this.direction = direction;
 
-			targetSelected = false;
-			weaponsSelected = false;
-			bpSelected = false;
+			selection = Selection.Weapon;
 
 			targets = attacker.Get<GameObject>().Level.GetEntitiesAt(attacker.Get<GameObject>().Location + direction).Where(e => e.Has<DefendComponent>()).ToList();
 
@@ -42,43 +40,43 @@ namespace SkrGame.Actions.Combat {
 
 		public PromptType RequiresPrompt {
 			get {
-				if (fail)
+				if (selection == Selection.Fail)
 					return PromptType.None;
-				if (weaponsSelected && (!targetPart || bpSelected))
+				if (selection == Selection.Finished || (!targetPart && selection == Selection.BodyPart))
 					return PromptType.None;
 				return PromptType.Options;
 			}
 		}
 
-		public ActionResult OnProcess() {
-			if (!fail)
+		public ActionResult OnProcess() {			
+			if (selection != Selection.Fail)
 				attacker.Get<ActorComponent>().Enqueue(new MeleeAttackAction(attacker, defender, weapon, targetPart ? part : defender.Get<DefendComponent>().GetRandomPart(), targetPart));
 			return ActionResult.SuccessNoTime;
 		}
 
 		public string Message {
 			get {
-				if (!weaponsSelected) {
+				if (selection == Selection.Weapon) {
 					return "What weapon?";
-				} else if (!targetSelected) {
+				} else if (selection == Selection.Target) {
 					return "Attack what?";
-				} else {
+				} else if (selection == Selection.BodyPart) {
 					return "Target what?";
-				}				
+				} else {
+					throw new Exception();
+				}			
 			}
 		}
 
-		private bool fail;
-
 		public void Fail() {
-			if (!weaponsSelected) {
+			if (selection == Selection.Weapon) {
 				World.Log.Fail("No weapon available.");
-			} else if (!targetSelected) {
+			} else if (selection == Selection.Target) {
 				World.Log.Fail("Nothing there to attack.");
-			} else {
-				World.Log.Fail("Target what?");
+			} else if (selection == Selection.BodyPart) {
+				World.Log.Fail("No parts to attack.");
 			}
-			fail = true;
+			selection = Selection.Fail;
 		}
 
 		private World World {
@@ -86,41 +84,55 @@ namespace SkrGame.Actions.Combat {
 		}
 
 		public void SetOption(string o) {
-			if (!weaponsSelected) {
-				weaponsSelected = true;
-				World.RequireNewPrompt = true;
-				weapon = weapons.Find(e => Identifier.GetNameOrId(e) == o);
-			} else if (!targetSelected) {
-				targetSelected = true;
-
-				defender = targets.Find(e => Identifier.GetNameOrId(e) == o);
-				World.RequireNewPrompt = true;
-			} else if (!bpSelected) {
-				bpSelected = true;
-
-				part = defender.Get<DefendComponent>().BodyPartsList.First(bp => bp.Name == o);
-				World.RequireNewPrompt = true;
+			switch (selection) {
+				case Selection.Weapon:
+					selection = Selection.Target;
+					World.RequireNewPrompt = true;
+					weapon = weapons.Find(e => Identifier.GetNameOrId(e) == o);
+					break;
+				case Selection.Target:
+					selection = targetPart ? Selection.BodyPart : Selection.Finished;
+					World.RequireNewPrompt = true;
+					defender = targets.Find(e => Identifier.GetNameOrId(e) == o);
+					break;
+				case Selection.BodyPart:
+					selection = Selection.Finished;
+					World.RequireNewPrompt = true;
+					part = defender.Get<DefendComponent>().BodyPartsList.First(bp => bp.Name == o);
+					break;
 			}
 		}
 
-		
+
 		public IEnumerable<string> Options {
 			get {
-				if (!weaponsSelected) {
-					return weapons.Select(Identifier.GetNameOrId);
-				} else if (!targetSelected) {
-					return targets.Select(Identifier.GetNameOrId);
-				} else //if (!bpSelected) 
-					return defender.Get<DefendComponent>().BodyPartsList.Select(bp => bp.Name);				
+				switch (selection) {
+					case Selection.Weapon:
+						return weapons.Select(Identifier.GetNameOrId);
+					case Selection.Target:
+						return targets.Select(Identifier.GetNameOrId);
+					case Selection.BodyPart:
+						return defender.Get<DefendComponent>().BodyPartsList.Select(bp => bp.Name);
+					case Selection.Finished:
+					case Selection.Fail:
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
 			}
 		}
 
 		private Direction direction;
 		private bool targetPart;
 
-		private bool targetSelected;
-		private bool weaponsSelected;
-		private bool bpSelected;
+		private enum Selection {
+			Target,
+			Weapon,
+			BodyPart,
+			Finished,
+			Fail
+		}
+
+		private Selection selection;
 
 		private List<Entity> targets;
 		private List<Entity> weapons;
