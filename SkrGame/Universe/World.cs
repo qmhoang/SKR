@@ -12,6 +12,10 @@ using SkrGame.Universe.Factories;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe {
+	public interface IGame {
+		
+	}
+
 	public class World {
 		/// <summary>
 		/// default speed, anything with 2x speed cost 1/2 AP 
