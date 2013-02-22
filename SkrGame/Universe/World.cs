@@ -61,6 +61,8 @@ namespace SkrGame.Universe {
 			EntityManager = new EntityManager();
 			Log = new Log();
 
+			EntityManager.EntityRemoved += EntityManager_EntityRemoved;
+
 			ItemFactory.Init(EntityFactory);
 			FeatureFactory.Init(EntityFactory);
 
@@ -75,6 +77,14 @@ namespace SkrGame.Universe {
 			                                      });
 		}
 
+		void EntityManager_EntityRemoved(Entity entity) {
+			if (TagManager.HasTags(entity)) 
+				TagManager.Remove(entity);
+			
+			if (GroupManager.IsGrouped(entity))
+				GroupManager.Remove(entity);
+		}
+		
 		public void Initialize() {
 			actionSystem = new ActionSystem(Player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
