@@ -49,7 +49,7 @@ namespace SkrGame.Systems {
 				while (playerActor.AP.Updateable) {
 					var action = player.Get<ActorComponent>().NextAction();
 
-					if (action.RequiresPrompt != PromptRequired.None) {
+					if (action.RequiresPrompt != PromptType.None) {
 						yield return action;
 					}
 
@@ -70,7 +70,7 @@ namespace SkrGame.Systems {
 						while (entityActor.AP.Updateable) {
 							var action = entity.Get<ActorComponent>().NextAction();
 
-							if (action.RequiresPrompt != PromptRequired.None) {
+							if (action.RequiresPrompt != PromptType.None) {
 								yield return action;
 							}
 

@@ -133,6 +133,7 @@
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />
+    <Compile Include="Universe\Entities\Actors\Player.cs" />
     <Compile Include="Universe\Entities\Actors\SightComponent.cs" />
     <Compile Include="Universe\Entities\Actors\VisibleComponent.cs" />
     <Compile Include="Universe\Entities\Features\HouseItemFeature.cs" />

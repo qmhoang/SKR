@@ -11,9 +11,16 @@ using SkrGame.Universe;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions.Features {
-	public class OpenDoorAction : FeatureAction {
+	public class OpenDoorAction : FeatureAction, IBooleanAction {
+		private bool answer;
+		private bool set;
+
 		public OpenDoorAction(Entity entity, Entity feature) : base(entity, feature) {
 			Contract.Requires<ArgumentException>(feature.Has<Opening>());			
+		}
+
+		public override PromptType RequiresPrompt {
+			get { return set ? PromptType.None : PromptType.Boolean; }
 		}
 		
 		public override int APCost {
@@ -21,6 +28,9 @@ namespace SkrGame.Actions.Features {
 		}
 
 		public override ActionResult OnProcess() {
+			if (!answer)
+				return ActionResult.Aborted;
+
 			var opening = Feature.Get<Opening>();
 
 			if (opening.Status == Opening.OpeningStatus.Closed) {
@@ -46,6 +56,19 @@ namespace SkrGame.Actions.Features {
 
 			World.Log.Fail(String.Format("{0} tries to {1}, but can't since it is already open.", Identifier.GetNameOrId(Entity), opening.OpenedDescription));
 			return ActionResult.Aborted;
+		}
+
+		public string Message {
+			get { return "Open door?"; }
+		}
+
+		public bool Default {
+			get { return true; }
+		}
+
+		public void SetBoolean(bool b) {
+			this.answer = b;
+			set = true;
 		}
 	}
 }
