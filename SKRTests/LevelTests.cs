@@ -87,7 +87,7 @@ namespace SKRTests {
 			Assert.IsTrue(level.IsWalkable(1, 1));
 			Assert.IsTrue(level.IsTransparent(1, 1));
 
-			entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
+			entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
 
 			Assert.AreEqual(1, level.GetEntities().Count());
 
@@ -97,7 +97,7 @@ namespace SKRTests {
 
 		[Test]
 		public void TestBlockerEntityPropertyChange() {
-			var blocker = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
+			var blocker = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
 
 			Assert.IsFalse(level.IsWalkable(1, 1));
 			Assert.IsFalse(level.IsTransparent(1, 1));
@@ -110,12 +110,12 @@ namespace SKRTests {
 
 		[Test]
 		public void TestBlockerEntityMoved() {
-			var blocker = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
+			var blocker = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
 
 			Assert.IsFalse(level.IsWalkable(1, 1));
 			Assert.IsFalse(level.IsTransparent(1, 1));
 
-			blocker.Get<Location>().Point = new Point(0, 0);
+			blocker.Get<GameObject>().Location = new Point(0, 0);
 
 			// old location is now walkable/transparent
 			Assert.IsTrue(level.IsWalkable(1, 1));
@@ -127,8 +127,8 @@ namespace SKRTests {
 
 		[Test]
 		public void TestMultipleBlockersPropertyChange() {
-			var b1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
-			var b2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
+			var b1 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
+			var b2 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
 
 			Assert.IsFalse(level.IsWalkable(1, 1));
 			Assert.IsFalse(level.IsTransparent(1, 1));
@@ -141,13 +141,13 @@ namespace SKRTests {
 
 		[Test]
 		public void TestMultipleBlockersMove() {
-			var b1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
-			var b2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
+			var b1 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
+			var b2 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
 
 			Assert.IsFalse(level.IsWalkable(1, 1));
 			Assert.IsFalse(level.IsTransparent(1, 1));
 
-			b1.Get<Location>().Point = new Point(0, 0);
+			b1.Get<GameObject>().Location = new Point(0, 0);
 
 			// old location is still not walkable/transparent because of b2
 			Assert.IsFalse(level.IsWalkable(1, 1));
@@ -159,9 +159,9 @@ namespace SKRTests {
 
 		[Test]
 		public void TestGetEntities() {
-			var e1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
-			var e2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
-			var e3 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 2, level));
+			var e1 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
+			var e2 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
+			var e3 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 2, level));
 
 			CollectionAssert.Contains(level.GetEntities(), e1);
 			CollectionAssert.Contains(level.GetEntities(), e2);
@@ -170,9 +170,9 @@ namespace SKRTests {
 
 		[Test]
 		public void TestGetEntitiesAt() {
-			var e1 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
-			var e2 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 1, level));
-			var e3 = entityManager.Create().Add(new Blocker(false, false)).Add(new Location(1, 2, level));
+			var e1 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
+			var e2 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 1, level));
+			var e3 = entityManager.Create().Add(new Blocker(false, false)).Add(new GameObject(1, 2, level));
 
 			CollectionAssert.Contains(level.GetEntitiesAt(new Point(1, 1)), e1);
 			CollectionAssert.Contains(level.GetEntitiesAt(new Point(1, 1)), e2);

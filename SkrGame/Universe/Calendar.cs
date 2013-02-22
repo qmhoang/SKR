@@ -29,7 +29,7 @@ namespace SkrGame.Universe {
 			Time = Time.AddSeconds(seconds);
 		}
 
-		public class CalendarAction : IAction {
+		public sealed class CalendarAction : IAction {
 			private Calendar calendar;
 
 			public CalendarAction(Calendar calendar) {
@@ -40,9 +40,7 @@ namespace SkrGame.Universe {
 				get { return World.SpeedToActionPoints(World.DEFAULT_SPEED); }
 			}
 
-			public bool RequiresPrompt {
-				get { return false; }
-			}
+			public PromptRequired RequiresPrompt { get { return PromptRequired.None; } }
 
 			public ActionResult OnProcess() {
 				calendar.IncreaseTime();

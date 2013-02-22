@@ -33,11 +33,11 @@ namespace SKR.UI.Gameplay {
 
 			World = world;
 			
-			entities = world.EntityManager.Get(typeof(Location), typeof(Sprite), typeof(VisibleComponent));
+			entities = world.EntityManager.Get(typeof(GameObject), typeof(Sprite), typeof(VisibleComponent));
 
 			player = world.Player;
-			var location = player.Get<Location>();
-			oldPos = location.Point;			
+			var location = player.Get<GameObject>();
+			oldPos = location.Location;			
 		}
 
 
@@ -52,11 +52,11 @@ namespace SKR.UI.Gameplay {
 
 		protected override void Redraw() {
 			base.Redraw();
-			var level = player.Get<Location>().Level;
+			var level = player.Get<GameObject>().Level;
 
-			ViewOffset = new Point(Math.Min(Math.Max(player.Get<Location>().X - Size.Width / 2, 0),
+			ViewOffset = new Point(Math.Min(Math.Max(player.Get<GameObject>().X - Size.Width / 2, 0),
 			                                level.Width - Size.Width),
-								   Math.Min(Math.Max(player.Get<Location>().Y - Size.Height / 2, 0),
+								   Math.Min(Math.Max(player.Get<GameObject>().Y - Size.Height / 2, 0),
 			                                level.Height - Size.Height));
 
 			//draw map
@@ -85,13 +85,13 @@ namespace SKR.UI.Gameplay {
 
 			// draw entities
 			foreach (var entity in entities.OrderBy(entity => entity.Get<Sprite>().ZOrder)) {
-				Point localPosition = entity.Get<Location>().Point - ViewOffset;
+				Point localPosition = entity.Get<GameObject>().Location - ViewOffset;
 				var texture = assets[entity.Get<Sprite>().Asset];
 
 				if (IsPointWithinPanel(localPosition)) {
 
 					if (!Program.SeeAll.Enabled) {
-						if (sight.IsVisible(entity.Get<Location>().Point)) {
+						if (sight.IsVisible(entity.Get<GameObject>().Location)) {
 							if (entity.Get<VisibleComponent>().VisibilityIndex > 0)
 								Canvas.PrintChar(localPosition, texture.Item1, texture.Item2);
 						}

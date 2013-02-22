@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using DEngine.Actions;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using SkrGame.Systems;
 using SkrGame.Universe.Factories;
 using Level = SkrGame.Universe.Locations.Level;
@@ -12,12 +14,12 @@ using Level = SkrGame.Universe.Locations.Level;
 namespace SkrGame.Universe {
 	public class World {
 		/// <summary>
-		/// default speed of entities, an entity with 2x speed gains AP 2x as fast
+		/// default speed, anything with 2x speed cost 1/2 AP 
 		/// </summary>
 		public const int DEFAULT_SPEED = 100; // 
 
 		public const int TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
-		public const int TURN_LENGTH_IN_AP = DEFAULT_SPEED;	// how long is a turn in seconds
+		public const int TURN_LENGTH_IN_AP = 100;	// how long is a turn in seconds
 		public const int MEAN = 50;						// what is the mean score for an attribute
 		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
 		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
@@ -47,7 +49,7 @@ namespace SkrGame.Universe {
 		public Calendar Calendar { get; private set; }
 		public Entity CalendarEntity { get; private set; }
 
-		private ActionPointSystem actionPointSystem;
+		private ActionSystem actionSystem;
 		private VisionSubsystem visionSubsystem;
 
 		public World() {
@@ -74,15 +76,30 @@ namespace SkrGame.Universe {
 		}
 
 		public void Initialize() {
-			actionPointSystem = new ActionPointSystem(Player, EntityManager);
+			actionSystem = new ActionSystem(Player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
+			actions = actionSystem.Process().GetEnumerator();
+			NextAction();
 		}
 
 		// todo events when a turn is processed
 		public void UpdateSystems() {
 			visionSubsystem.Update();
-			actionPointSystem.Update();
+
+			actionSystem.Update();
+
 		}
+
+		public void NextAction() {
+			actions.MoveNext();
+			CurrentAction = actions.Current;
+			RequireNewPrompt = true;
+			visionSubsystem.Update();
+		}
+
+		public IAction CurrentAction { get; private set; }
+		public bool RequireNewPrompt { get; set; }
+		private IEnumerator<IAction> actions;
 
 		public static int SecondsToActionPoints(double seconds) {
 			return  (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
@@ -116,7 +133,7 @@ namespace SkrGame.Universe {
 		}
 
 		/// <summary>
-		/// 
+		/// Given a difficulty, return the chance of success for it.
 		/// </summary>
 		/// <param name="difficulty"></param>
 		/// <returns>Higher means easier</returns>

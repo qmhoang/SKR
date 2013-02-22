@@ -21,7 +21,7 @@ namespace SkrGame.Actions {
 		private static readonly int BUMP_COST = World.SpeedToActionPoints(World.DEFAULT_SPEED) / 10;
 
 		public BumpAction(Entity entity, Direction direction) : base(entity) {
-			Contract.Requires<ArgumentException>(entity.Has<Location>());			
+			Contract.Requires<ArgumentException>(entity.Has<GameObject>());			
 			this.direction = direction;
 		}
 
@@ -30,9 +30,9 @@ namespace SkrGame.Actions {
 		}
 
 		public override ActionResult OnProcess() {
-			Point newLocation = Entity.Get<Location>().Point + direction;
+			Point newLocation = Entity.Get<GameObject>().Location + direction;
 
-			var bumpablesAtLocation = Entity.Get<Location>().Level.GetEntitiesAt(newLocation).FilteredBy<OnBump>();
+			var bumpablesAtLocation = Entity.Get<GameObject>().Level.GetEntitiesAt(newLocation).FilteredBy<OnBump>();
 			bool blockedMovement = false;
 
 			//todo bumpables add action
@@ -79,12 +79,12 @@ namespace SkrGame.Actions {
 
 		public override ActionResult OnProcess() {
 			// note: check for actions on illegal entities
-			var location = Entity.Get<Location>();
+			var location = Entity.Get<GameObject>();
 
-			Point newLocation = location.Point + direction;
+			Point newLocation = location.Location + direction;
 
 			if (location.Level.IsWalkable(newLocation)) {
-				location.Point = newLocation;
+				location.Location = newLocation;
 
 				// check if we're near anything
 				var nearEntities = location.Level.GetEntities().Where(e => e.Has<PassiveFeature>());
@@ -95,15 +95,15 @@ namespace SkrGame.Actions {
 				// move all items in inventory with entity
 				if (Entity.Has<ContainerComponent>()) {
 					foreach (var item in Entity.Get<ContainerComponent>().Items) {
-						if (item.Has<Location>())
-							item.Get<Location>().Point = newLocation;
+						if (item.Has<GameObject>())
+							item.Get<GameObject>().Location = newLocation;
 					}
 				}
 				// move all equipped items with entity
 				if (Entity.Has<EquipmentComponent>()) {
 					foreach (var item in Entity.Get<EquipmentComponent>().EquippedItems) {
-						if (item.Has<Location>())
-							item.Get<Location>().Point = newLocation;
+						if (item.Has<GameObject>())
+							item.Get<GameObject>().Location = newLocation;
 					}
 				}
 			} else {

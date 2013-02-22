@@ -237,7 +237,7 @@ namespace SkrGame.Universe.Factories {
 					if (!String.IsNullOrEmpty(charIdentifiers[s[x]].Item2)) {
 						var feature = ef.Get(charIdentifiers[s[x]].Item2);
 
-						em.Create(feature).Add(new Location(x, y, map));
+						em.Create(feature).Add(new GameObject(x, y, map));
 											
 					}
 				}

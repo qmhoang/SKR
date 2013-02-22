@@ -11,19 +11,24 @@ namespace SKR.UI.Menus {
 		private List<T> options;
 		private Func<T, string> descriptorFunction;
 		private string message;
+		private string fail;
 
-		public OptionsPrompt(string message, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, PromptWindowTemplate template)
+		public OptionsPrompt(string message, string fail, IEnumerable<T> options, Func<T, string> descriptor, Action<T> actionCount, PromptWindowTemplate template)
 				: base(template) {
 			this.actionCount = actionCount;
 			this.options = new List<T>(options);
 			this.descriptorFunction = descriptor;
 			this.message = message;
+			this.fail = fail;
 		}
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 			if (options.Count <= 0) {
-				GameLog.Normal("No options to select from.");
+				GameLog.Fail(fail);
+				ExitWindow();
+			} else if (options.Count == 1) {
+				actionCount(options[0]);
 				ExitWindow();
 			}
 		}

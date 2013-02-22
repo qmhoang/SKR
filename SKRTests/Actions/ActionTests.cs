@@ -33,7 +33,7 @@ namespace SKRTests.Actions {
 
 			World.Player = Entity = EntityManager.Create(new List<Component>
 			                                             {
-			                                             		new Location(2, 2, Level),
+			                                             		new GameObject(2, 2, Level),
 			                                             		new ContainerComponent(),
 			                                             		new ActorComponent(new Player(), new AP()),
 			                                             		new Person(),

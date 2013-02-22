@@ -20,7 +20,7 @@ namespace SkrGame.Actions.Features {
 			var opening = Feature.Get<Opening>();
 
 			if (opening.Status == Opening.OpeningStatus.Opened) {
-				if (Feature.Get<Location>().Level.IsWalkable(Entity.Get<Location>().Point) || !opening.WalkableOpened) {
+				if (Feature.Get<GameObject>().Level.IsWalkable(Entity.Get<GameObject>().Location) || !opening.WalkableOpened) {
 					if (Feature.Has<Blocker>())
 						Feature.Get<Blocker>().Transparent = Feature.Get<Blocker>().Walkable = false;
 					if (Feature.Has<Sprite>())

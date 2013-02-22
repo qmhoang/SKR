@@ -7,7 +7,7 @@ using DEngine.Components;
 using DEngine.Entities;
 
 namespace SkrGame.Actions.Features {
-	public class LongAction : LoggedAction {
+	public sealed class LongAction : LoggedAction {
 		public int TimeLeftInAP { get; private set; }
 		public Func<Entity, ActionResult> OnFinish { get; private set; }
 		public Func<Entity, ActionResult> Process { get; private set; }

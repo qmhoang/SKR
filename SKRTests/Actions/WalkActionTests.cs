@@ -24,14 +24,14 @@ namespace SKRTests.Actions {
 		public void SetUp() {
 			Item0 = EntityManager.Create(new List<Component>
 			                             {
-			                             		new Location(-1, -1, Level),
+			                             		new GameObject(-1, -1, Level),
 			                             		new Item(new Item.Template
 			                             		         {})
 
 			                             });
 			Item1 = EntityManager.Create(new List<Component>
 			                             {
-			                             		new Location(-1, -1, Level),
+			                             		new GameObject(-1, -1, Level),
 			                             		new Item(new Item.Template
 			                             		         {})
 
@@ -39,7 +39,7 @@ namespace SKRTests.Actions {
 
 			Slot1Item0 = EntityManager.Create(new List<Component>
 			                                  {
-			                                  		new Location(-1, -1, Level),
+			                                  		new GameObject(-1, -1, Level),
 			                                  		new Equipable(new Equipable.Template
 			                                  		              {
 			                                  		              		Slot = new List<string>
@@ -50,7 +50,7 @@ namespace SKRTests.Actions {
 			                                  });
 			Slot2Item0 = EntityManager.Create(new List<Component>
 			                                  {
-			                                  		new Location(-1, -1, Level),
+			                                  		new GameObject(-1, -1, Level),
 			                                  		new Equipable(new Equipable.Template
 			                                  		              {
 			                                  		              		Slot = new List<string>
@@ -72,30 +72,30 @@ namespace SKRTests.Actions {
 
 		[Test]
 		public void PositionChanged() {
-			Assert.AreEqual(new Point(2, 2), Entity.Get<Location>().Point);
+			Assert.AreEqual(new Point(2, 2), Entity.Get<GameObject>().Location);
 
 			Move(Direction.N);
 
-			Assert.AreEqual(new Point(2, 1), Entity.Get<Location>().Point);
+			Assert.AreEqual(new Point(2, 1), Entity.Get<GameObject>().Location);
 		}
 
 		[Test]
 		public void WalkIntoWall() {
-			Assert.AreEqual(new Point(2, 2), Entity.Get<Location>().Point);
+			Assert.AreEqual(new Point(2, 2), Entity.Get<GameObject>().Location);
 
 			Move(Direction.E);
 
-			Assert.AreEqual(new Point(2, 2), Entity.Get<Location>().Point);
+			Assert.AreEqual(new Point(2, 2), Entity.Get<GameObject>().Location);
 		}
 
 		[Test]
 		public void WalkOutOfBounds() {
-			Entity.Get<Location>().Point = new Point(0, 0);
-			Assert.AreEqual(new Point(0, 0), Entity.Get<Location>().Point);
+			Entity.Get<GameObject>().Location = new Point(0, 0);
+			Assert.AreEqual(new Point(0, 0), Entity.Get<GameObject>().Location);
 
 			Move(Direction.N);
 
-			Assert.AreEqual(new Point(0, 0), Entity.Get<Location>().Point);
+			Assert.AreEqual(new Point(0, 0), Entity.Get<GameObject>().Location);
 		}
 
 		[Test]
@@ -103,11 +103,11 @@ namespace SKRTests.Actions {
 			Entity.Get<ContainerComponent>().Add(Item0);
 			Entity.Get<ContainerComponent>().Add(Item1);
 
-			var startingPoint = Entity.Get<Location>().Point;
+			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<Location>().Point));
+			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<GameObject>().Location));
 		}
 
 		[Test]
@@ -115,12 +115,12 @@ namespace SKRTests.Actions {
 			Entity.Get<ContainerComponent>().Add(Item0);
 			Entity.Get<ContainerComponent>().Add(Item1);
 
-			var startingPoint = Entity.Get<Location>().Point;
+			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S + Direction.S, e.Get<Location>().Point));
+			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S + Direction.S, e.Get<GameObject>().Location));
 		}
 
 		[Test]
@@ -128,18 +128,18 @@ namespace SKRTests.Actions {
 			Entity.Get<ContainerComponent>().Add(Item0);
 			Entity.Get<ContainerComponent>().Add(Item1);
 
-			var startingPoint = Entity.Get<Location>().Point;
+			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<Location>().Point));
+			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<GameObject>().Location));
 
 			Entity.Get<ContainerComponent>().Remove(Item0);
 
 			Move(Direction.S);
 
-			Assert.AreEqual(startingPoint + Direction.S, Item0.Get<Location>().Point);
-			Assert.AreEqual(startingPoint + Direction.S + Direction.S, Item1.Get<Location>().Point);
+			Assert.AreEqual(startingPoint + Direction.S, Item0.Get<GameObject>().Location);
+			Assert.AreEqual(startingPoint + Direction.S + Direction.S, Item1.Get<GameObject>().Location);
 		}
 
 		[Test]
@@ -147,14 +147,14 @@ namespace SKRTests.Actions {
 			Entity.Get<EquipmentComponent>().Equip("slot1", Slot1Item0);
 			Entity.Get<EquipmentComponent>().Equip("slot2", Slot2Item0);
 
-			var startingPoint = Entity.Get<Location>().Point;
+			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 
-			Assert.AreEqual(startingPoint + Direction.S, Entity.Get<Location>().Point);
+			Assert.AreEqual(startingPoint + Direction.S, Entity.Get<GameObject>().Location);
 
 			foreach (var e in Entity.Get<EquipmentComponent>().EquippedItems) {
-				Assert.AreEqual(e.Get<Location>().Point, Entity.Get<Location>().Point);
+				Assert.AreEqual(e.Get<GameObject>().Location, Entity.Get<GameObject>().Location);
 			}
 		}
 
@@ -163,18 +163,18 @@ namespace SKRTests.Actions {
 			Entity.Get<EquipmentComponent>().Equip("slot1", Slot1Item0);
 			Entity.Get<EquipmentComponent>().Equip("slot2", Slot2Item0);
 
-			var startingPoint = Entity.Get<Location>().Point;
+			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<Location>().Point, startingPoint + Direction.S));
+			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<GameObject>().Location, startingPoint + Direction.S));
 
 			Entity.Get<EquipmentComponent>().Unequip("slot1");
 
 			Move(Direction.S);
 
-			Assert.AreEqual(Slot1Item0.Get<Location>().Point, startingPoint + Direction.S);
-			Assert.AreEqual(Slot2Item0.Get<Location>().Point, startingPoint + Direction.S + Direction.S);
+			Assert.AreEqual(Slot1Item0.Get<GameObject>().Location, startingPoint + Direction.S);
+			Assert.AreEqual(Slot2Item0.Get<GameObject>().Location, startingPoint + Direction.S + Direction.S);
 		}
 		
 		private void Move(Direction d) {

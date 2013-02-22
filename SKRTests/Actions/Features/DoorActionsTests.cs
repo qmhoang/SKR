@@ -22,7 +22,7 @@ namespace SKRTests.Actions.Features {
 			// .....
 			Door = EntityManager.Create(new List<Component>
 			                            {
-			                            		new Location(3, 2, Level),
+			                            		new GameObject(3, 2, Level),
 			                            		new Sprite("closed", Sprite.FEATURES_LAYER),
 			                            		new Opening("opened", "closed", "open", "close"),
 												new Blocker(false, false)
@@ -55,15 +55,15 @@ namespace SKRTests.Actions.Features {
 		public void TestOpenDoor() {
 			Assert.AreEqual(Opening.OpeningStatus.Closed, Door.Get<Opening>().Status);
 			Assert.AreEqual("closed", Door.Get<Sprite>().Asset);
-			Assert.IsFalse(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsFalse(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsFalse(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsFalse(Level.IsTransparent(Door.Get<GameObject>().Location));
 			
 			Open(Door);
 
 			Assert.AreEqual(Opening.OpeningStatus.Opened, Door.Get<Opening>().Status);
 			Assert.AreEqual("opened", Door.Get<Sprite>().Asset);
-			Assert.IsTrue(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsTrue(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsTrue(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsTrue(Level.IsTransparent(Door.Get<GameObject>().Location));
 		}
 
 		[Test]
@@ -72,37 +72,37 @@ namespace SKRTests.Actions.Features {
 
 			Assert.AreEqual(Opening.OpeningStatus.Opened, Door.Get<Opening>().Status);
 			Assert.AreEqual("opened", Door.Get<Sprite>().Asset);
-			Assert.IsTrue(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsTrue(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsTrue(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsTrue(Level.IsTransparent(Door.Get<GameObject>().Location));
 
 			Close(Door);
 
 			Assert.AreEqual(Opening.OpeningStatus.Closed, Door.Get<Opening>().Status);
 			Assert.AreEqual("closed", Door.Get<Sprite>().Asset);
-			Assert.IsFalse(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsFalse(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsFalse(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsFalse(Level.IsTransparent(Door.Get<GameObject>().Location));
 		}
 
 		[Test]
 		public void TestToggleDoor() {
 			Assert.AreEqual(Opening.OpeningStatus.Closed, Door.Get<Opening>().Status);
 			Assert.AreEqual("closed", Door.Get<Sprite>().Asset);
-			Assert.IsFalse(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsFalse(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsFalse(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsFalse(Level.IsTransparent(Door.Get<GameObject>().Location));
 
 			Toggle(Door);
 
 			Assert.AreEqual(Opening.OpeningStatus.Opened, Door.Get<Opening>().Status);
 			Assert.AreEqual("opened", Door.Get<Sprite>().Asset);
-			Assert.IsTrue(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsTrue(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsTrue(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsTrue(Level.IsTransparent(Door.Get<GameObject>().Location));
 
 			Toggle(Door);
 
 			Assert.AreEqual(Opening.OpeningStatus.Closed, Door.Get<Opening>().Status);
 			Assert.AreEqual("closed", Door.Get<Sprite>().Asset);
-			Assert.IsFalse(Level.IsWalkable(Door.Get<Location>().Point));
-			Assert.IsFalse(Level.IsTransparent(Door.Get<Location>().Point));
+			Assert.IsFalse(Level.IsWalkable(Door.Get<GameObject>().Location));
+			Assert.IsFalse(Level.IsTransparent(Door.Get<GameObject>().Location));
 		}
 	}
 }

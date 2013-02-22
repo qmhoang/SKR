@@ -12,13 +12,13 @@ namespace SkrGame.Systems {
 		private FilteredCollection entities;		
 
 		public VisionSubsystem(EntityManager em) {
-			entities = em.Get(typeof(Location), typeof(SightComponent));			
+			entities = em.Get(typeof(GameObject), typeof(SightComponent));			
 		}
 
 		public void Update() {
 			foreach (var entity in entities) {
-				var p = entity.Get<Location>();
-				entity.Get<SightComponent>().CalculateSight(p.Level, p.Point.X, p.Point.Y, 16);
+				var p = entity.Get<GameObject>();
+				entity.Get<SightComponent>().CalculateSight(p.Level, p.Location.X, p.Location.Y, 16);
 			}
 		}
 	}

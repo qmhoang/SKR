@@ -72,8 +72,8 @@ namespace SkrGame.Gameplay.Combat {
 		                                                                    };
 
 		public static void Heal(DefendComponent.AttackablePart bodyPart, int amount) {
-			amount = Math.Min(amount, bodyPart.Owner.MaxHealth - bodyPart.Owner.Health);
-			bodyPart.Owner.Health += amount;
+			amount = Math.Min(amount, bodyPart.Owner.Health.MaximumValue - bodyPart.Owner.Health);
+			bodyPart.Owner.Health.Value += amount;
 			Logger.DebugFormat("{0} was healed {1} health", bodyPart.Owner.OwnerUId, amount);
 		}
 	}
