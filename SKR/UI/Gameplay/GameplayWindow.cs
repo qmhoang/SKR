@@ -135,73 +135,62 @@ namespace SKR.UI.Gameplay {
 					switch (keyboardEvent.KeyboardData.Character) {
 						case 'f':
 						{
-							Options(FilterEquippedItems<RangeComponent>(player).ToList(),
+							Options("With what weapon?",
+							        "No possible way of shooting target.",
+							        FilterEquippedItems<RangeComponent>(player).ToList(),
 							        Identifier.GetNameOrId,
-							        weapon => Targets(p => Options(player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+							        weapon => Targets("Shoot where?",
+							                          p => Options("Shoot at what?",
+							                                       "Nothing there to shoot.",
+							                                       player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
 							                                       Identifier.GetNameOrId,
-							                                       defender => Enqueue(
-							                                       		new RangeAttackAction(player,
-							                                       		                      defender,
-							                                       		                      weapon,
-							                                       		                      defender.Get<DefendComponent>().GetRandomPart())),
-							                                       "Shoot at what?",
-							                                       "Nothing there to shoot."),
-							                          "Shoot where?"),
-							        "With what weapon?",
-							        "No possible way of shooting target.");
+							                                       defender => Enqueue(new RangeAttackAction(player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart())))));
 
 						}
 							break;
 						case 'F':
 						{
-							Options(FilterEquippedItems<RangeComponent>(player).ToList(),
+							Options("With what weapon?",
+							        "No possible way of shooting target.",
+							        FilterEquippedItems<RangeComponent>(player).ToList(),
 							        Identifier.GetNameOrId,
-							        weapon => Targets(p => Options(player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+							        weapon => Targets("Shoot where?",
+							                          p => Options("Shoot at what?",
+							                                       "Nothing there to shoot.",
+							                                       player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
 							                                       Identifier.GetNameOrId,
-							                                       defender => Options(defender.Get<DefendComponent>().BodyPartsList,
+							                                       defender => Options("What part?",
+							                                                           String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
+							                                                           defender.Get<DefendComponent>().BodyPartsList,
 							                                                           bp => bp.Name,
-							                                                           bp => Enqueue(new RangeAttackAction(player,
-							                                                                                                                            defender,
-							                                                                                                                            weapon,
-							                                                                                                                            bp,
-							                                                                                                                            true)),
-							                                                           "What part?",
-							                                                           String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender))),
-							                                       "Shoot at what?",
-							                                       "Nothing there to shoot."),
-							                          "Shoot where?"),
-							        "With what weapon?",
-							        "No possible way of shooting target.");
+							                                                           bp => Enqueue(new RangeAttackAction(player, defender, weapon, bp, true))))));
 
 						}
 							break;
 						case 'r':
 						{
-							Options(FilterEquippedItems<RangeComponent>(player).ToList(),
-							        Identifier.GetNameOrId,
-							        weapon => Options(player.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() &&
-							                                                                            e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList(),
-							                          Identifier.GetNameOrId,
-							                          ammo => Enqueue(new ReloadAction(player, weapon, ammo)),
-							                          "What ammo?",
-							                          "No possible ammo for selected weapon."),
-							        "Reload what weapon?",
-							        "No weapons to reload.");
+							Options("Reload what weapon?",
+							        "No weapons to reload.",
+							        FilterEquippedItems<RangeComponent>(player).ToList(),
+							        Identifier.GetNameOrId, weapon => Options("What ammo?",
+							                                                  "No possible ammo for selected weapon.",
+							                                                  player.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() &&
+							                                                                                                    e.Get<AmmoComponent>().Type == weapon.Get<RangeComponent>().AmmoType).ToList(),
+							                                                  Identifier.GetNameOrId,
+							                                                  ammo => Enqueue(new ReloadAction(player, weapon, ammo))));
 						}
 							break;
 						case 'u':
-							Directions(p => Options(playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
-							                                                                         e.Has<VisibleComponent>() &&
-							                                                                         e.Get<VisibleComponent>().VisibilityIndex > 0),
-							                        Identifier.GetNameOrId,
-							                        useable => Options(useable.Get<UseableFeature>().Uses.ToList(),
-							                                           use => use.Description,
-							                                           use => use.Use(player, useable, use),
-							                                           String.Format("Do what with {0}?", Identifier.GetNameOrId(useable)),
-							                                           String.Format("No possible action on {0}", Identifier.GetNameOrId(useable))),
-							                        "What object do you want to use?",
-							                        "Nothing there to use."),
-							           "What direction?");
+							Directions("What direction?", p => Options("What object do you want to use?",
+							                                           "Nothing there to use.",
+							                                           playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
+							                                                                                            e.Has<VisibleComponent>() &&
+							                                                                                            e.Get<VisibleComponent>().VisibilityIndex > 0), Identifier.GetNameOrId,
+							                                           useable => Options(String.Format("Do what with {0}?", Identifier.GetNameOrId(useable)),
+							                                                              String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
+							                                                              useable.Get<UseableFeature>().Uses.ToList(),
+							                                                              use => use.Description,
+							                                                              use => use.Use(player, useable, use))));
 							break;
 						case 'd':
 						{
@@ -227,9 +216,9 @@ namespace SKR.UI.Gameplay {
 
 							// get all items that have a location (eg present on the map) that are at the location where are player is
 							var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
-							                                                                                e.Has<VisibleComponent>() &&
-							                                                                                e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-							                                                                                !inventory.Items.Contains(e));
+							                                                                                   e.Has<VisibleComponent>() &&
+							                                                                                   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+							                                                                                   !inventory.Items.Contains(e));
 
 							if (items.Count() > 0)
 								ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
@@ -252,9 +241,9 @@ namespace SKR.UI.Gameplay {
 
 							// get all items that have a location (eg present on the map) that are at the location where are player is
 							var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
-							                                                                                e.Has<VisibleComponent>() &&
-							                                                                                e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-							                                                                                !inventory.Items.Contains(e));
+							                                                                                   e.Has<VisibleComponent>() &&
+							                                                                                   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+							                                                                                   !inventory.Items.Contains(e));
 
 							if (items.Count() > 0)
 								Enqueue(new GetAllItemsAction(player, items));
@@ -290,16 +279,15 @@ namespace SKR.UI.Gameplay {
 							break;
 						case 'p':
 						{
-							Options(player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()),
-							        Identifier.GetNameOrId,
-							        lockpick => Directions(p => Options(player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<LockedFeature>()),
-							                                            Identifier.GetNameOrId,
-							                                            feature => Enqueue(new LockpickAction(player, lockpick, feature)),
-							                                            "Select what to lockpick.",
-							                                            "Nothing there to lockpick."),
-							                               "What direction?"),
-							        "With what?",
-							        "No lockpicks available.");
+							Options("With what?",
+							        "No lockpicks available.", 
+									player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()), 
+									Identifier.GetNameOrId,
+							        lockpick => Directions("What direction?", p => Options("Select what to lockpick.",
+							                                                               "Nothing there to lockpick.", 
+																						   player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<LockedFeature>()),
+							                                                               Identifier.GetNameOrId, 
+																						   feature => Enqueue(new LockpickAction(player, lockpick, feature)))));
 
 						}
 							break;
@@ -331,30 +319,27 @@ namespace SKR.UI.Gameplay {
 							break;
 						case 'z':
 							if (keyboardEvent.KeyboardData.ControlKeys == ControlKeys.LeftControl) {
-								Targets(p =>
-								        	{
-								        		var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<ActorComponent>()).ToList();
-								        		var npc = entitiesAtLocation.First();
-								        		var options = new List<AbstractActor>
-								        		              {
-								        		              		new DoNothingActor(),
-								        		              		new NPC()
-								        		              };
-								        		Options(options,
-								        		        o => o.GetType().Name,
-								        		        actor =>
-								        		        	{
-								        		        		var ap = npc.Get<ActorComponent>().AP;
-								        		        		npc.Remove<ActorComponent>();
-								        		        		npc.Add(new ActorComponent(actor, ap));
-								        		        	},
-								        		        "What AI?",
-								        		        "No AI options.");
-								        	},
-								        "Set AI of Entity");
-							} else {
-
-							}
+								Targets("Set AI of Entity", p =>
+								                            	{
+								                            		var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<ActorComponent>()).ToList();
+								                            		var npc = entitiesAtLocation.First();
+								                            		var options = new List<AbstractActor>
+								                            		              {
+								                            		              		new DoNothingActor(),
+								                            		              		new NPC()
+								                            		              };
+								                            		Options("What AI?",
+								                            		        "No AI options.",
+								                            		        options,
+								                            		        o => o.GetType().Name,
+								                            		        actor =>
+								                            		        	{
+								                            		        		var ap = npc.Get<ActorComponent>().AP;
+								                            		        		npc.Remove<ActorComponent>();
+								                            		        		npc.Add(new ActorComponent(actor, ap));
+								                            		        	});
+								                            	});
+							} else {}
 							break;
 					}
 
@@ -385,15 +370,18 @@ namespace SKR.UI.Gameplay {
 			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>()).ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
-				Options(FilterEquippedItems<MeleeComponent>(player).ToList(),
-					Identifier.GetNameOrId,
-					weapon => Options(actorsAtNewLocation,
-					                  Identifier.GetNameOrId,
-					                  target => Enqueue(new MeleeAttackAction(player, target, weapon, target.Get<DefendComponent>().GetRandomPart())),
-					                  "Attack what?",
-					                  "Nothing at location to attack."),
-						"With that weapon?",
-						"No possible way of attacking.");
+				Options("With that weapon?",
+				        "No possible way of attacking.",
+				        FilterEquippedItems<MeleeComponent>(player).ToList(),
+				        Identifier.GetNameOrId,
+				        weapon => Options("Attack what?",
+				                          "Nothing at location to attack.", actorsAtNewLocation,
+				                          Identifier.GetNameOrId,
+				                          target =>
+				                          Enqueue(new MeleeAttackAction(player,
+				                                                        target,
+				                                                        weapon,
+				                                                        target.Get<DefendComponent>().GetRandomPart()))));
 
 				return;
 			}
@@ -452,9 +440,9 @@ namespace SKR.UI.Gameplay {
 		#endregion
 		
 		#region Prompts
-		private void Options<T>(IEnumerable<T> entities, Func<T, string> descriptionFunc, Action<T> action, string prompt, string fail) {
+		private void Options<T>(string message, string fail, IEnumerable<T> entities, Func<T, string> descriptionFunc, Action<T> action) {
 			ParentApplication.Push(
-					new OptionsPrompt<T>(prompt,
+					new OptionsPrompt<T>(message,
 					                     fail,
 					                     entities,
 					                     descriptionFunc,
@@ -463,29 +451,29 @@ namespace SKR.UI.Gameplay {
 
 		}
 
-		private void Directions(Action<Point> action, string prompt) {
+		private void Directions(string message, Action<Point> action) {
 			ParentApplication.Push(
-					new DirectionalPrompt(prompt,
+					new DirectionalPrompt(message,
 					                      player.Get<GameObject>().Location,										  
 					                      action,
 					                      PromptTemplate));
 		}
 
-		private void Targets(Action<Point> action, string prompt) {
+		private void Targets(string message, Action<Point> action) {
 			ParentApplication.Push(
-					new TargetPrompt(prompt,
+					new TargetPrompt(message,
 					                 player.Get<GameObject>().Location,
 					                 action,
 					                 MapPanel,
 					                 PromptTemplate));
 		}
 
-		private void Number(Action<int> action, int min, int max, int initial, string prompt) {
-			ParentApplication.Push(new CountPrompt(prompt, action, max, min, initial, PromptTemplate));
+		private void Number(string message, int min, int max, int initial, Action<int> action) {
+			ParentApplication.Push(new CountPrompt(message, action, max, min, initial, PromptTemplate));
 		}
 
-		private void Boolean(Action<bool> action, bool defaultBool, string prompt) {
-			ParentApplication.Push(new BooleanPrompt(prompt, defaultBool, action, PromptTemplate));
+		private void Boolean(string message, bool defaultBool, Action<bool> action) {
+			ParentApplication.Push(new BooleanPrompt(message, defaultBool, action, PromptTemplate));
 		}
 		#endregion
 	}
