@@ -47,7 +47,7 @@ namespace SKR {
 
 			world = new World();
 
-			world.CurrentLevel = world.MapFactory.Construct("TestMap");
+			world.CurrentLevel = world.MapFactory.Construct("TestHouse");
 
 			var player = world.EntityManager.Create(new List<DEngine.Entities.Component>
 			                                  {

@@ -4,6 +4,7 @@ using DEngine.Core;
 using DEngine.Level;
 using SkrGame.Actions;
 using SkrGame.Actions.Combat;
+using SkrGame.Actions.Movement;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Locations;
 

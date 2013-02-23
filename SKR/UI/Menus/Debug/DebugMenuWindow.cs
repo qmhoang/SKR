@@ -53,7 +53,7 @@ namespace SKR.UI.Menus.Debug {
 			base.OnKeyPressed(keyData);
 
 
-			if (keyData.KeyCode == TCODKeyCode.Escape) {
+			if (keyData.KeyCode == TCODKeyCode.Escape || keyData.Character == '`') {
 				ExitWindow();
 			}
 		}

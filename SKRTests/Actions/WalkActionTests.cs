@@ -7,6 +7,7 @@ using DEngine.Entities;
 using DEngine.Extensions;
 using NUnit.Framework;
 using SkrGame.Actions;
+using SkrGame.Actions.Movement;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;

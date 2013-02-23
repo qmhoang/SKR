@@ -19,6 +19,13 @@ namespace SkrGame.Universe.Entities.Actors {
 	public enum Condition {
 		Encrumbrance, // 0 - none, 1 - light, 2 - medium, etc
 	}
+
+	public enum Posture {
+		Run,
+		Stand,
+		Crouch,
+		Prone		// facing up / facing down?
+	}
 	
 	public class Person : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -26,7 +33,8 @@ namespace SkrGame.Universe.Entities.Actors {
 		public StaticDictionary<string, Skill> Skills { get; private set; }
 		public StaticDictionary<string, Attribute> Attributes { get; private set; }
 		public StaticDictionary<string, Attribute> Stats { get; private set; }
-		
+
+		public Posture Posture { get; set; }
 		
 		public int Lift {
 			get { return Attributes["attribute_strength"] * Attributes["attribute_strength"] * 18 * (int) Math.Pow(World.STANDARD_DEVIATION, -2.0); }
@@ -39,8 +47,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public Attribute GetAttribute(string attrb) {
 			return Attributes[attrb];
 		}
-
-
+		
 		public Person() {
 			Attributes = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
@@ -62,16 +69,17 @@ namespace SkrGame.Universe.Entities.Actors {
 					new Dictionary<string, Attribute>
 					{
 							{"stat_stamina", new Attribute("Stamina", World.MEAN, World.MEAN)},
+							{"stat_composure", new Attribute("Composure", World.MEAN, World.MEAN)},
 
 							{"stat_energy", new Attribute("Energy", World.MEAN, World.MEAN)},
 							{"stat_food", new Attribute("Food", World.MEAN, World.MEAN)},
 							{"stat_water", new Attribute("Water", World.MEAN, World.MEAN)},
 							{"stat_bladder", new Attribute("Bladder", World.MEAN, World.MEAN)},
+							{"stat_cleanliness", new Attribute("Cleanliness", World.MEAN, World.MEAN)},
 
 							// social?  - composure will replace for player
 							// environment - probably not necessary
 							// fun - composure replaces
-							// cleanliness
 					});
 
 			Skills = new StaticDictionary<string, Skill>(
@@ -81,6 +89,7 @@ namespace SkrGame.Universe.Entities.Actors {
 							{"skill_pistol", new Skill("Pistol", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_knife", new Skill("Knife", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_axe", new Skill("Axe", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+
 							{"skill_lockpicking", new Skill("Lockpicking", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},
 					});			
 		}

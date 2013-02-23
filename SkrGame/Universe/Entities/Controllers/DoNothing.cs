@@ -1,6 +1,7 @@
 using DEngine.Actions;
 using DEngine.Actor;
 using SkrGame.Actions;
+using SkrGame.Actions.Movement;
 
 namespace SkrGame.Universe.Entities.Controllers {
 	public class DoNothing : Controller {
