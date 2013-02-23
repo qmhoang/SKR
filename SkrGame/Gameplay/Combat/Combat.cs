@@ -58,19 +58,20 @@ namespace SkrGame.Gameplay.Combat {
 	public static class Combat {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static readonly Dictionary<string, DamageType> DamageTypes = new Dictionary<string, DamageType>
-		                                                                    {
-		                                                                    		{"true", new DamageType("True")},
-		                                                                    		{"cut", new DamageType("Cutting")},
-		                                                                    		{"impale", new DamageType("Impaling")},
-		                                                                    		{"crush", new DamageType("Crushing")},
-		                                                                    		{"pierce_small", new DamageType("Small Piercing")},
-		                                                                    		{"pierce", new DamageType("Piercing")},
-		                                                                    		{"pierce_large", new DamageType("Large Piercing")},
-		                                                                    		{"pierce_huge", new DamageType("Huge Piercing")},
-		                                                                    		{"burn", new DamageType("Burning")},
-		                                                                    };
-
+		public static readonly StaticDictionary<string, DamageType> DamageTypes =
+				new StaticDictionary<string, DamageType>(new Dictionary<string, DamageType>
+				                                         {
+				                                         		{"true", new DamageType("True")},
+				                                         		{"cut", new DamageType("Cutting")},
+				                                         		{"impale", new DamageType("Impaling")},
+				                                         		{"crush", new DamageType("Crushing")},
+				                                         		{"pierce_small", new DamageType("Small Piercing")},
+				                                         		{"pierce", new DamageType("Piercing")},
+				                                         		{"pierce_large", new DamageType("Large Piercing")},
+				                                         		{"pierce_huge", new DamageType("Huge Piercing")},
+				                                         		{"burn", new DamageType("Burning")},
+				                                         });
+		
 		public static void Heal(DefendComponent.AttackablePart bodyPart, int amount) {
 			amount = Math.Min(amount, bodyPart.Owner.Health.MaximumValue - bodyPart.Owner.Health);
 			bodyPart.Owner.Health.Value += amount;

@@ -6,7 +6,7 @@ using DEngine.Components;
 using DEngine.Entities;
 
 namespace SkrGame.Universe {
-	public class Calendar : AbstractActor {
+	public class Calendar : Controller {
 		public DateTime Time { get; private set; }
 		
 		public Calendar() {
@@ -21,7 +21,7 @@ namespace SkrGame.Universe {
 			return new CalendarAction(this);
 		}
 
-		public override AbstractActor Copy() {
+		public override Controller Copy() {
 			return new Calendar(Time);
 		}
 

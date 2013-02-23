@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using DEngine.Actions;
+using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
@@ -19,6 +20,7 @@ using SkrGame.Actions.Items;
 using SkrGame.Actions.Skills;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Controllers;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Entities.Items;
 using libtcod;
@@ -349,9 +351,9 @@ namespace SKR.UI.Gameplay {
 																{
 																	var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<ActorComponent>()).ToList();
 																	var npc = entitiesAtLocation.First();
-																	var options = new List<AbstractActor>
+																	var options = new List<Controller>
 								                            		              {
-								                            		              		new DoNothingActor(),
+								                            		              		new DoNothing(),
 								                            		              		new NPC()
 								                            		              };
 																	Options("What AI?",
@@ -365,7 +367,7 @@ namespace SKR.UI.Gameplay {
 																				npc.Add(new ActorComponent(actor, ap));
 																			});
 																});
-							} else { }
+							}
 							break;
 					}
 

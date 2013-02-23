@@ -135,6 +135,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("SINK", "feature",
 			            new Sprite("SINK", Sprite.FEATURES_LAYER),
+						new Identifier("Sink", "A sink."),
 			            new UseableFeature(new UseableFeature.UseAction("Wash hands",
 			                                                            (entity, user, action) =>
 			                                                            	{

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Level;
 
 namespace SkrGame.Universe.Entities.Actors {
 	public class SightComponent : Component {

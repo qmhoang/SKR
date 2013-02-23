@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Controllers;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Locations;
 
