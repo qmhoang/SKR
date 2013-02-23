@@ -9,4 +9,8 @@ namespace SkrGame.Universe.Entities.Features {
 //		}
 //	}
 
+
+	public class FeatureUse {
+		
+	}
 }

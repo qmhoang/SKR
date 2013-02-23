@@ -22,6 +22,7 @@ using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Controllers;
 using SkrGame.Universe.Entities.Items;
 using libtcod;
 using log4net.Config;
@@ -46,7 +47,7 @@ namespace SKR {
 
 			world = new World();
 
-			world.CurrentLevel = world.MapFactory.Construct("TestMap");
+			world.CurrentLevel = world.MapFactory.Construct("TestHouse");
 
 			var player = world.EntityManager.Create(new List<DEngine.Entities.Component>
 			                                  {
@@ -85,7 +86,7 @@ namespace SKR {
 			                                     		new Sprite("npc", Sprite.ACTOR_LAYER),
 			                                     		new Identifier("npc"),
 			                                     		new GameObject(6, 2, world.CurrentLevel),
-			                                     		new ActorComponent(new DoNothingActor(), new AP()),
+			                                     		new ActorComponent(new DoNothing(), new AP()),
 			                                     		new Person(),
 			                                     		DefendComponent.CreateHuman(50),
 			                                     		new VisibleComponent(10),

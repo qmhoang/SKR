@@ -6,6 +6,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Level;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;

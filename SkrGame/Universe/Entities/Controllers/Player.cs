@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using DEngine.Actions;
-using DEngine.Components;
+using DEngine.Actor;
 
-namespace SkrGame.Universe.Entities.Actors {
-	public class Player : AbstractActor {
+namespace SkrGame.Universe.Entities.Controllers {
+	public class Player : Controller {
 		public Player() { }
 
 		protected Player(Queue<IAction> actions) : base(actions) { }
@@ -18,7 +18,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			Actions.Dequeue();
 		}
 
-		public override AbstractActor Copy() {
+		public override Controller Copy() {
 			return new Player(new Queue<IAction>(Actions));
 		}
 

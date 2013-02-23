@@ -10,6 +10,7 @@ using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using log4net;
 using log4net.Repository.Hierarchy;
+using Attribute = SkrGame.Universe.Entities.Stats.Attribute;
 
 namespace SkrGame.Universe.Entities.Actors {
 	/// <summary>

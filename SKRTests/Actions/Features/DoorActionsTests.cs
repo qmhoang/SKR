@@ -42,8 +42,8 @@ namespace SKRTests.Actions.Features {
 		protected void Toggle(Entity door) {
 			Entity.Get<ActorComponent>().Enqueue(new ToggleDoorAction(Entity, door));
 
-			while (Entity.Get<ActorComponent>().Actor.Actions.Count > 0) {
-				Entity.Get<ActorComponent>().Actor.Actions.Dequeue().OnProcess();
+			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+				Entity.Get<ActorComponent>().Controller.Actions.Dequeue().OnProcess();
 			}
 		}
 	}

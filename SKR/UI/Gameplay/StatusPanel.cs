@@ -5,7 +5,7 @@ using DEngine.Entities;
 using Ogui.UI;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
-using Attribute = SkrGame.Universe.Entities.Actors.Attribute;
+using Attribute = SkrGame.Universe.Entities.Stats.Attribute;
 
 namespace SKR.UI.Gameplay {
 	public class StatusPanel : Panel {
@@ -23,15 +23,18 @@ namespace SKR.UI.Gameplay {
 
 		protected override void Redraw() {
 			base.Redraw();
-			
+
+			var person = player.Get<Person>();
+
 			Canvas.PrintString(1, 1, player.Get<Identifier>().Name);
 			PrintAttribute(1, 3, player.Get<DefendComponent>().Health);
-			PrintAttribute(1, 4, player.Get<Person>().Stamina);
+			
+			PrintAttribute(1, 4, person.Stats["stat_stamina"]);
 
-			PrintAttribute(1, 6, player.Get<Person>().Energy);
-			PrintAttribute(1, 7, player.Get<Person>().Food);
-			PrintAttribute(1, 8, player.Get<Person>().Water);
-			PrintAttribute(1, 9, player.Get<Person>().Bladder);
+			PrintAttribute(1, 6, person.Stats["stat_energy"]);
+			PrintAttribute(1, 7, person.Stats["stat_food"]);
+			PrintAttribute(1, 8, person.Stats["stat_water"]);
+			PrintAttribute(1, 9, person.Stats["stat_bladder"]);
 
 			Canvas.PrintString(1, 12, calendar.Time.ToShortDateString());
 			Canvas.PrintString(1, 13, calendar.Time.ToLongTimeString());

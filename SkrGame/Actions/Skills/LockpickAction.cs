@@ -41,8 +41,9 @@ namespace SkrGame.Actions.Skills {
 				World.Log.Fail(String.Format("{0} isn't locked.", Identifier.GetNameOrId(feature)));
 				return ActionResult.Failed;
 			}
-			
-			double difficulty = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").Value - feature.Get<LockedFeature>().Quality;
+
+			var person = Entity.Get<Person>();
+			double difficulty = Item.Get<Lockpick>().Quality + person.Skills["skill_lockpicking"].Value - feature.Get<LockedFeature>().Quality;
 
 			double roll = World.SkillRoll();
 
@@ -67,8 +68,11 @@ namespace SkrGame.Actions.Skills {
 					               e =>
 					               	{
 					               		double agiRoll = World.SkillRoll();
-					               		double agiDiff = Item.Get<Lockpick>().Quality + Entity.Get<Person>().GetSkill("skill_lockpicking").RawRank + Entity.Get<Person>().Agility -
-					               		                 feature.Get<LockedFeature>().Quality + bonus;
+					               		double agiDiff = Item.Get<Lockpick>().Quality +
+					               		                 person.Skills["skill_lockpicking"].Rank +
+					               		                 person.Attributes["attribute_agility"] -
+					               		                 feature.Get<LockedFeature>().Quality +
+					               		                 bonus;
 
 					               		Logger.InfoFormat("{0} attempts in Lockpicking/Agility on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
 					               		                  Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature), agiDiff, agiRoll, World.ChanceOfSuccess(agiDiff));

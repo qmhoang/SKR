@@ -1,12 +1,14 @@
 using DEngine.Actions;
-using DEngine.Components;
+using DEngine.Actor;
 using DEngine.Core;
+using DEngine.Level;
 using SkrGame.Actions;
 using SkrGame.Actions.Combat;
+using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Locations;
 
-namespace SkrGame.Universe.Entities.Actors {
-	public class NPC : AbstractActor {
+namespace SkrGame.Universe.Entities.Controllers {
+	public class NPC : Controller {
 		private AStarPathFinder pf;
 		private VisionMap vision;
 		private Point oldPos;
@@ -74,7 +76,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			Actions.Dequeue();
 		}
 
-		public override AbstractActor Copy() {
+		public override Controller Copy() {
 			return new NPC();
 		}
 

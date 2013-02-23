@@ -195,7 +195,7 @@ namespace SkrGame.Universe.Factories {
 					                  		{'?', new Tuple<string, string>("CARPET_GREY", "CASH_REGISTER")},
 					                  		{']', new Tuple<string, string>("CARPET_GREY", "SAFE_SIMPLE")},
 					                  },
-					                  // 012345678901234567890123456789012345
+					                // 012345678901234567890123456789012345
 					                  "ppppppppppppppppppppppppppppppppppp",
 					                  "p88888888888OO888OO888OO888OO88~~~p",
 					                  "p8Bb;#HW#+#;;;E#E;;;#;;;E#E;;;8~~~p",
