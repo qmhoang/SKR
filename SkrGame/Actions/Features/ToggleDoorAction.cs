@@ -12,7 +12,7 @@ namespace SkrGame.Actions.Features {
 		}
 
 		public override int APCost {
-			get { return 0; }
+			get { return 1; }
 		}
 
 		public override ActionResult OnProcess() {
