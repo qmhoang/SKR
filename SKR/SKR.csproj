@@ -93,19 +93,20 @@
     <Compile Include="UI\Gameplay\MapPanel.cs" />
     <Compile Include="UI\Gameplay\LogPanel.cs" />
     <Compile Include="UI\Gameplay\StatusPanel.cs" />
-    <Compile Include="UI\Menus\BooleanPrompt.cs" />
+    <Compile Include="UI\Menus\Debug\DebugLookWindow.cs" />
+    <Compile Include="UI\Menus\Debug\DebugMenuWindow.cs" />
+    <Compile Include="UI\Prompts\BooleanPrompt.cs" />
     <Compile Include="UI\Menus\CharGen.cs" />
-    <Compile Include="UI\Menus\CountPrompt.cs" />
-    <Compile Include="UI\Menus\DebugLookWindow.cs" />
-    <Compile Include="UI\Menus\DirectionalPrompt.cs" />
+    <Compile Include="UI\Prompts\CountPrompt.cs" />
+    <Compile Include="UI\Prompts\DirectionalPrompt.cs" />
     <Compile Include="UI\Menus\InventoryWindow.cs" />
     <Compile Include="UI\Menus\ItemWindow.cs" />
     <Compile Include="UI\Menus\LookWindow.cs" />
-    <Compile Include="UI\Menus\OptionsPrompt.cs" />
-    <Compile Include="UI\Menus\PromptWindow.cs" />
+    <Compile Include="UI\Prompts\OptionsPrompt.cs" />
+    <Compile Include="UI\Prompts\PromptWindow.cs" />
     <Compile Include="UI\Menus\ListWindow.cs" />
     <Compile Include="UI\Menus\SkrWindow.cs" />
-    <Compile Include="UI\Menus\TargetPrompt.cs" />
+    <Compile Include="UI\Prompts\TargetPrompt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Font\consolas12x12_gs_tc.png">

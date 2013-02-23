@@ -92,10 +92,11 @@ namespace SkrGame.Universe {
 
 		// todo events when a turn is processed
 		public void UpdateSystems() {
-			visionSubsystem.Update();
-
 			actionSystem.Update();
+		}
 
+		public void UpdateVision() {
+			visionSubsystem.Update();			
 		}
 
 

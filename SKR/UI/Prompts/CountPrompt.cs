@@ -1,8 +1,9 @@
 using System;
 using Ogui.UI;
+using SKR.UI.Menus;
 using libtcod;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Prompts {
 	public class CountPrompt : PromptWindow {
 		private readonly Action<int> actionCount;
 		private readonly int maxValue;

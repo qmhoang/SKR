@@ -31,7 +31,7 @@ namespace SKR {
 	/* 
 	 * todo:
 	 *		* Zones of Control - entities that encompass an area in which another entities "owns" it.  These zones could then be used for crimes (breaking and entering, trespassing, etc), npc hostility, etc.
-	 *		* Needs-based AI (think "the sims)
+	 *		* Needs-based AI (think "the sims")
 	 *		* Facing
 	 *		* Entities that occupy more than 1 block
 	 *		* NPC speak that uses inheritance ala entities
@@ -47,7 +47,7 @@ namespace SKR {
 
 			world = new World();
 
-			world.CurrentLevel = world.MapFactory.Construct("TestHouse");
+			world.CurrentLevel = world.MapFactory.Construct("TestMap");
 
 			var player = world.EntityManager.Create(new List<DEngine.Entities.Component>
 			                                  {

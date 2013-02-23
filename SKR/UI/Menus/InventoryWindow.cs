@@ -44,7 +44,8 @@ namespace SKR.UI.Menus {
 			inventory = template.World.Player.Get<ContainerComponent>();
 			equipment = template.World.Player.Get<EquipmentComponent>();
 			player = template.World.Player;
-			bodyPartWidth = 25; // todo replace to code            
+
+			bodyPartWidth = equipment.Slots.Max(s => s.Length) + 5;  // todo replace to code            
 			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
 		}

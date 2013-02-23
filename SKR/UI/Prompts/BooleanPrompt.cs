@@ -1,8 +1,9 @@
 using System;
 using Ogui.UI;
+using SKR.UI.Menus;
 using libtcod;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Prompts {
 	public class BooleanPrompt : PromptWindow {
 		private readonly Action<bool> actionBoolean;
 		private readonly bool defaultBooleanAction;

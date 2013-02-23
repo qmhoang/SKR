@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Ogui.Core;
 using Ogui.UI;
+using SKR.UI.Menus;
 using libtcod;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Prompts {
 	public class OptionsPrompt<T> : PromptWindow {
 		private readonly Action<T> actionCount;
 		private List<T> options;

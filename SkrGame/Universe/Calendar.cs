@@ -10,7 +10,7 @@ namespace SkrGame.Universe {
 		public DateTime Time { get; private set; }
 		
 		public Calendar() {
-			Time = new DateTime(2013, 5, 26);					
+			Time = new DateTime(2013, 5, 26);
 		}
 
 		public Calendar(DateTime timeSpan) {

@@ -7,7 +7,7 @@ using Ogui.UI;
 using SKR.UI.Gameplay;
 using libtcod;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Prompts {
 	public class TargetPrompt : PromptWindow {
 		private readonly Action<Point> actionPosition;
 		private Point selectedPosition;
