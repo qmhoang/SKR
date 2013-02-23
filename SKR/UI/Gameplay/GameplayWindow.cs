@@ -12,6 +12,8 @@ using DEngine.Entities;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Menus;
+using SKR.UI.Menus.Debug;
+using SKR.UI.Prompts;
 using SKR.Universe;
 using SkrGame.Actions;
 using SkrGame.Actions.Combat;
@@ -134,49 +136,47 @@ namespace SKR.UI.Gameplay {
 				default:
 				{
 					switch (keyboardEvent.KeyboardData.Character) {
-						case 'A':
-						{
-							Options("With that weapon?",
-							        "No possible way of attacking.",
-							        FilterEquippedItems<MeleeComponent>(player).ToList(),
-							        Identifier.GetNameOrId,
-							        weapon => Directions("Attack where?",
-							                             p => Options("Attack where?",
-							                                          "Nothing at location to attack.",
-							                                          player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>() && e.Has<Person>()).ToList(),
-							                                          Identifier.GetNameOrId,
-							                                          defender => Options("Attack at what?",
-							                                                              String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
-							                                                              defender.Get<DefendComponent>().BodyPartsList,
-							                                                              bp => bp.Name,
-							                                                              bp => Enqueue(new MeleeAttackAction(player,
-							                                                                                                  defender,
-							                                                                                                  weapon,
-							                                                                                                  bp,
-							                                                                                                  true))))));
+						case 'A': {
+								Options("With that weapon?",
+										"No possible way of attacking.",
+										FilterEquippedItems<MeleeComponent>(player).ToList(),
+										Identifier.GetNameOrId,
+										weapon => Directions("Attack where?",
+															 p => Options("Attack where?",
+																		  "Nothing at location to attack.",
+																		  player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>() && e.Has<Person>()).ToList(),
+																		  Identifier.GetNameOrId,
+																		  defender => Options("Attack at what?",
+																							  String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
+																							  defender.Get<DefendComponent>().BodyPartsList,
+																							  bp => bp.Name,
+																							  bp => Enqueue(new MeleeAttackAction(player,
+																																  defender,
+																																  weapon,
+																																  bp,
+																																  true))))));
 
 
-						}
+							}
 							break;
-						case 'f':
-						{
-							Options("With what weapon?",
-							        "No possible way of shooting target.",
-							        FilterEquippedItems<RangeComponent>(player).ToList(),
-							        Identifier.GetNameOrId,
-							        weapon => TargetsAt("Shoot where?",
-							                            World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
-							                            p => Options("Shoot at what?",
-							                                         "Nothing there to shoot.",
-							                                         player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
-							                                         Identifier.GetNameOrId,
-							                                         delegate(Entity defender)
-							                                         	{
-							                                         		World.TagManager.Register(defender, "target");
-							                                         		Enqueue(new RangeAttackAction(player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart()));
-							                                         	})));
+						case 'f': {
+								Options("With what weapon?",
+										"No possible way of shooting target.",
+										FilterEquippedItems<RangeComponent>(player).ToList(),
+										Identifier.GetNameOrId,
+										weapon => TargetsAt("Shoot where?",
+															World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
+															p => Options("Shoot at what?",
+																		 "Nothing there to shoot.",
+																		 player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+																		 Identifier.GetNameOrId,
+																		 delegate(Entity defender)
+																		 {
+																			 World.TagManager.Register(defender, "target");
+																			 Enqueue(new RangeAttackAction(player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart()));
+																		 })));
 
-						}
+							}
 							break;
 						case 'F': {
 								Options("With what weapon?",
@@ -368,6 +368,11 @@ namespace SKR.UI.Gameplay {
 																			});
 																});
 							}
+							break;
+						case '`':
+						{
+							ParentApplication.Push(new DebugMenuWindow(new SkrWindowTemplate()));
+						}
 							break;
 					}
 

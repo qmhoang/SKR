@@ -1,9 +1,10 @@
 using System;
 using DEngine.Core;
 using Ogui.UI;
+using SKR.UI.Menus;
 using libtcod;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Prompts {
 	public class DirectionalPrompt : PromptWindow {
 		private readonly Action<Point> actionPosition;
 		private Point origin;

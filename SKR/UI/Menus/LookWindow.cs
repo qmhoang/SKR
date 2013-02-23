@@ -3,6 +3,7 @@ using DEngine.Core;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Gameplay;
+using SKR.UI.Prompts;
 using libtcod;
 
 namespace SKR.UI.Menus {

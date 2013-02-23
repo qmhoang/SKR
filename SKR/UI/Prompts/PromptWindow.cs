@@ -1,14 +1,11 @@
 ﻿using System.Reflection;
 using DEngine.Core;
-using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
-using SKR.Universe;
-using SkrGame.Universe;
 using libtcod;
 using log4net;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Prompts {
 	public class PromptWindowTemplate : WindowTemplate {
 		public Log Log { get; set; }
 	}

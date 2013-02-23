@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using DEngine.Components;
 using DEngine.Core;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Gameplay;
+using SKR.UI.Prompts;
 using SkrGame.Universe;
 using libtcod;
 
-namespace SKR.UI.Menus {
+namespace SKR.UI.Menus.Debug {
 	public class DebugLookWindow : LookWindow {
 		private TreeView v;
 		private World world;
@@ -55,10 +54,7 @@ namespace SKR.UI.Menus {
 				});
 				
 				AddControl(v);
-			}
-
-
-
+			}			
 		}
 
 		protected override void Redraw() {
