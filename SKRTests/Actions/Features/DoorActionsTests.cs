@@ -10,7 +10,7 @@ using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Features;
 
 namespace SKRTests.Actions.Features {
-	public class OpeningActions : ActionTests {
+	public class OpeningActions : SkrTests {
 		protected Entity Door;
 
 		[SetUp]

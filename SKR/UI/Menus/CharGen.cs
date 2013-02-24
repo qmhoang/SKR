@@ -157,8 +157,7 @@ namespace SKR.UI.Menus {
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
 			World.CurrentLevel = World.MapFactory.Construct("TestHouse");
-
-
+			
 			World.Player = World.EntityManager.Create(World.EntityFactory.Get("player")).Add(new GameObject(0, 0, World.CurrentLevel));
 
 			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("boots")).Add(new GameObject(1, 1, World.CurrentLevel)), "Feet", true).OnProcess();
@@ -168,6 +167,7 @@ namespace SKR.UI.Menus {
 			var npc = World.EntityManager.Create(World.EntityFactory.Get("npc")).Add(new GameObject(4, 2, World.CurrentLevel));
 
 			World.EntityManager.Create(World.EntityFactory.Get("smallknife")).Add(new GameObject(1, 1, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
 			World.EntityManager.Create(World.EntityFactory.Get("axe")).Add(new GameObject(1, 1, World.CurrentLevel));
 			World.EntityManager.Create(World.EntityFactory.Get("glock17")).Add(new GameObject(1, 1, World.CurrentLevel));
 			World.EntityManager.Create(World.EntityFactory.Get("lockpick")).Add(new GameObject(1, 1, World.CurrentLevel));

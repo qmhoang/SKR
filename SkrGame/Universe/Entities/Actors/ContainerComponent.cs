@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public ContainerComponent() {
-			itemContainer = new List<Entity>();			
+			itemContainer = new List<Entity>();	
 		}
 
 		[ContractInvariantMethod]
@@ -100,7 +101,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 				var existing = GetItem(e => e.Get<ReferenceId>() == item.Get<ReferenceId>());
 				existing.Get<Item>().Amount += item.Get<Item>().Amount;
-				item.IsActive = false;				
+				item.IsActive = false;
 
 				return true;
 			} else {

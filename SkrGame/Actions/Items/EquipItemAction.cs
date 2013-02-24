@@ -20,7 +20,7 @@ namespace SkrGame.Actions.Items {
 			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
 			Contract.Requires<ArgumentException>(item.Has<Item>());
 			Contract.Requires<ArgumentException>(item.Has<Equipable>());
-			Contract.Requires<ArgumentException>(item.Get<Equipable>().Slots.Contains(slot));
+			Contract.Requires<ArgumentException>(item.Get<Equipable>().SlotsOccupied.ContainsKey(slot));
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().ContainSlot(slot), "Entity doesn't have slot.");
 			Contract.Requires<ArgumentException>(force || entity.Get<ContainerComponent>().Contains(item), "Entity doesn't have item in inventory.");
 

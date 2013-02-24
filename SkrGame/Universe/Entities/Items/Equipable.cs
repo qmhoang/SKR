@@ -1,28 +1,35 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using DEngine.Core;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Items {
 	public class Equipable : Component {
-		public class Template {
-			public List<string> Slot { get; set; }
-			public bool TwoHanded { get; set; }
-	
-		}
-		public List<string> Slots { get; private set; }
-		public bool TwoHanded { get; private set; }
-
+		public StaticDictionary<string, IEnumerable<string>> SlotsOccupied { get; private set; }
+		
 		private Equipable() {}
 
-		public Equipable(Template template) {
-			Slots = template.Slot == null ? new List<string>() : new List<string>(template.Slot);
-			TwoHanded = template.TwoHanded;
+		public static Equipable SingleSlot(params string[] slots) {
+			return new Equipable
+			       {
+			       		SlotsOccupied =
+			       				new StaticDictionary<string, IEnumerable<string>>(slots.Select(s => new KeyValuePair<string, IEnumerable<string>>(s, new List<string> {s})))
+			       };
+		}
+
+		public static Equipable MultipleSlots(params string[] slots) {
+			return new Equipable
+			{
+				SlotsOccupied =
+						new StaticDictionary<string, IEnumerable<string>>(slots.Select(s => new KeyValuePair<string, IEnumerable<string>>(s, new List<string>(slots))))
+			};
 		}
 
 		public override Component Copy() {
-			return new Equipable()
-			       {
-			       		Slots = new List<string>(Slots),
-			       		TwoHanded = TwoHanded
+			return new Equipable
+			       {			       		
+						SlotsOccupied = new StaticDictionary<string, IEnumerable<string>>(SlotsOccupied)
 			       };
 		}
 	}

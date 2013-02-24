@@ -53,7 +53,7 @@ namespace SKR.UI.Menus {
 			if (equipment.IsSlotEquipped(slot)) {
 				player.Get<ActorComponent>().Enqueue(new UnequipItemAction(player, slot));
 			} else {
-				var items = inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().Slots.Contains(slot)).ToList();
+				var items = inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().SlotsOccupied.ContainsKey(slot)).ToList();
 				if (items.Count > 0)
 					ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
 					                                      {
@@ -63,12 +63,29 @@ namespace SKR.UI.Menus {
 					                                      		Items = items,
 					                                      		World = World,
 					                                      		SelectSingleItem = true,
-					                                      		ItemSelected = i => player.Get<ActorComponent>().Enqueue(new EquipItemAction(player, i, slot)),
+					                                      		ItemSelected = item => Equip(item, slot),
 					                                      }));					
 				else
-					World.Log.Normal("No items in inventory that go there.");
+					World.Log.Fail("No items in inventory that go there.");
 			}
 
+		}
+
+		private void Equip(Entity item, string slot) {
+			var canEquip = true;
+			foreach (string slotNeeded in item.Get<Equipable>().SlotsOccupied[slot]) {
+				if (equipment.IsSlotEquipped(slotNeeded)) {
+					canEquip = false;
+					World.Log.Fail(String.Format("{0} cannot go there, is takes multiple slots and {1} is already occupied.",
+					                             Identifier.GetNameOrId(item),
+					                             slotNeeded));
+
+					break;
+				}
+			}
+
+			if (canEquip)
+				player.Get<ActorComponent>().Enqueue(new EquipItemAction(player, item, slot));
 		}
 
 		protected override void OnKeyPressed(KeyboardData keyData) {

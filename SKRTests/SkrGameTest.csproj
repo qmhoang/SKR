@@ -85,13 +85,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\ActionTests.cs" />
     <Compile Include="Actions\Features\DoorActionsTests.cs" />
     <Compile Include="Actions\Items\DropItemActionTests.cs" />
     <Compile Include="Actions\Items\EquipItemHelper.cs" />
     <Compile Include="Actions\Items\GetItemActionTests.cs" />
-    <Compile Include="Actions\Items\ItemTestsHelper.cs" />
     <Compile Include="Actions\Skills\LockpickAction.cs" />
+    <Compile Include="ItemTestsHelper.cs" />
+    <Compile Include="SkrTests.cs" />
     <Compile Include="WorldTests.cs" />
     <Compile Include="Actions\WalkActionTests.cs" />
     <Compile Include="Components\ContainerTests.cs" />

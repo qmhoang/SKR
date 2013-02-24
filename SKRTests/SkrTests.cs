@@ -12,8 +12,8 @@ using SkrGame.Universe.Entities.Controllers;
 using SkrGame.Universe.Entities.Items;
 using SkrGame.Universe.Locations;
 
-namespace SKRTests.Actions {
-	public class ActionTests {
+namespace SKRTests {
+	public class SkrTests {
 		protected EntityManager EntityManager;
 		protected Level Level;
 		protected Entity Entity;

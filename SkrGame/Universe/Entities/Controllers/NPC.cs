@@ -23,12 +23,7 @@ namespace SkrGame.Universe.Entities.Controllers {
 		}
 
 		public override IAction NextAction() {
-			if (Actions.Count == 0) {
-				return CalculateNextMove();				
-			} else {
-				return Actions.Dequeue();
-			}
-
+			return Actions.Count == 0 ? CalculateNextMove() : Actions.Dequeue();
 		}
 
 		private ActorAction CalculateNextMove() {

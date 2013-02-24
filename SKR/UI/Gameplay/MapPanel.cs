@@ -14,7 +14,6 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Locations;
 using libtcod;
 using log4net;
-using Level = SkrGame.Universe.Locations.Level;
 
 namespace SKR.UI.Gameplay {
 	public class MapPanel : Panel {
@@ -25,7 +24,6 @@ namespace SKR.UI.Gameplay {
 
 		private FilteredCollection entities;
 		private Entity player;
-		private Point oldPos;
 
 		public World World { get; private set; }
 
@@ -40,7 +38,6 @@ namespace SKR.UI.Gameplay {
 
 			player = world.Player;
 			var location = player.Get<GameObject>();
-			oldPos = location.Location;			
 		}
 
 		protected override void Redraw() {
