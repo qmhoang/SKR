@@ -122,6 +122,7 @@
     <Compile Include="Actions\Combat\MeleeAttackAction.cs" />
     <Compile Include="Actions\Combat\RangeAttackAction.cs" />
     <Compile Include="Actions\Movement\BumpAction.cs" />
+    <Compile Include="Actions\Movement\ChangePostureAction.cs" />
     <Compile Include="Actions\Movement\WaitAction.cs" />
     <Compile Include="Actions\Skills\LockpickAction.cs" />
     <Compile Include="Actions\Movement\WalkAction.cs" />
@@ -158,9 +159,10 @@
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Factories\MapFactory.cs" />
     <Compile Include="Universe\Factories\FeatureFactory.cs" />
-    <Compile Include="Universe\Entities\Features\Blocker.cs" />
+    <Compile Include="Universe\Entities\Features\Scenery.cs" />
     <Compile Include="Universe\Entities\Features\Opening.cs" />
     <Compile Include="Universe\Locations\Level.cs" />
+    <Compile Include="Universe\Locations\Terrain.cs" />
     <Compile Include="Universe\World.cs" />
   </ItemGroup>
   <ItemGroup>

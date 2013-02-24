@@ -21,8 +21,8 @@ namespace SkrGame.Actions.Features {
 
 			if (opening.Status == Opening.OpeningStatus.Opened) {
 				if (Feature.Get<GameObject>().Level.IsWalkable(Entity.Get<GameObject>().Location) || !opening.WalkableOpened) {
-					if (Feature.Has<Blocker>())
-						Feature.Get<Blocker>().Transparent = Feature.Get<Blocker>().Walkable = false;
+					if (Feature.Has<Scenery>())
+						Feature.Get<Scenery>().Transparent = Feature.Get<Scenery>().Walkable = false;
 					if (Feature.Has<Sprite>())
 						Feature.Get<Sprite>().Asset = opening.ClosedAsset;
 

@@ -12,6 +12,10 @@ using SkrGame.Universe.Factories;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe {
+	public enum WorldStatus {
+		Created,
+		Initialized,
+	}
 	public class World {
 		/// <summary>
 		/// default speed, anything with 2x speed cost 1/2 AP 
@@ -52,8 +56,12 @@ namespace SkrGame.Universe {
 		private ActionSystem actionSystem;
 		private VisionSubsystem visionSubsystem;
 
+		public WorldStatus Status { get; private set; }
+
 		public World() {
 			Rng.Seed(0);
+
+			Status = WorldStatus.Created;
 
 			TagManager = new TagManager<string>();
 			GroupManager = new GroupManager<string>();
@@ -88,6 +96,7 @@ namespace SkrGame.Universe {
 		public void Initialize() {
 			actionSystem = new ActionSystem(Player, EntityManager);
 			visionSubsystem = new VisionSubsystem(EntityManager);
+			Status = WorldStatus.Initialized;
 		}
 
 		// todo events when a turn is processed

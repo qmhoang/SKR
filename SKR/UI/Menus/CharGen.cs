@@ -2,11 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Core;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Gameplay;
+using SkrGame.Actions.Items;
+using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
+using SkrGame.Universe.Entities;
+using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Controllers;
+using SkrGame.Universe.Entities.Items;
 using libtcod;
 
 namespace SKR.UI.Menus {
@@ -14,8 +22,8 @@ namespace SKR.UI.Menus {
 		private ListBox occupationListBox;
 		private MenuButton sexButton;
 		private TextEntry nameEntry;
-		
-		public CharGen(SkrWindowTemplate template) : base(template) { }
+
+		public CharGen(SkrWindowTemplate template) : base(template) {}
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
@@ -24,7 +32,7 @@ namespace SKR.UI.Menus {
 			                   {
 			                   		Label = "Name: ",
 			                   		MaximumCharacters = 20,
-//                                  HasFrameBorder = false,
+			                   		//                                  HasFrameBorder = false,
 			                   		TopLeftPos = new Point(2, 2),
 			                   		Tooltip = "Enter your character's name",
 			                   		StartingField = "player",
@@ -63,9 +71,9 @@ namespace SKR.UI.Menus {
 			var sexTemplate = new MenuButtonTemplate()
 			                  {
 			                  		Label = "Sex",
-//                                  MinimumWidth = 15,
+			                  		//                                  MinimumWidth = 15,
 			                  		TopLeftPos = nameTemplate.CalculateRect().TopRight.Shift(2, 0),
-//                                  Tooltip = "Click to switch sex, right click to choose from a menu",
+			                  		//                                  Tooltip = "Click to switch sex, right click to choose from a menu",
 			                  		Items = new List<string>()
 			                  		        {
 			                  		        		"Male",
@@ -125,7 +133,7 @@ namespace SKR.UI.Menus {
 
 			sliderTestTemplate.AlignTo(LayoutDirection.South, occupationTemplate);
 			var sliderTest = new Slider(sliderTestTemplate);
-			AddControl(sliderTest);			
+			AddControl(sliderTest);
 
 			var doneTemplate = new ButtonTemplate()
 			                   {
@@ -140,7 +148,7 @@ namespace SKR.UI.Menus {
 			KeyPressed += CharGen_KeyPressed;
 		}
 
-		void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
+		private void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
 			if ((e.KeyboardData.KeyCode == TCODKeyCode.Enter || e.KeyboardData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
 				StartNewGame(this, EventArgs.Empty);
 		}
@@ -148,6 +156,79 @@ namespace SKR.UI.Menus {
 
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
+			World.CurrentLevel = World.MapFactory.Construct("TestHouse");
+
+			var player = World.EntityManager.Create(new List<DEngine.Entities.Component>
+			                                        {
+			                                        		new Sprite("player", Sprite.PLAYER_LAYER),
+			                                        		new Identifier("Player"),
+			                                        		new GameObject(0, 0, World.CurrentLevel),
+			                                        		new ActorComponent(new Player(), new AP()),
+			                                        		new Person(),
+			                                        		DefendComponent.CreateHuman(50),
+			                                        		new ContainerComponent(),
+			                                        		new EquipmentComponent(),
+			                                        		new VisibleComponent(10),
+			                                        		new SightComponent()
+			                                        });
+
+			player.Add(new MeleeComponent(new MeleeComponent.Template
+			                              {
+			                              		ActionDescription = "punch",
+			                              		ActionDescriptionPlural = "punches",
+			                              		Skill = "skill_unarmed",
+			                              		HitBonus = 0,
+			                              		Damage = Rand.Constant(-5),
+			                              		DamageType = Combat.DamageTypes["crush"],
+			                              		Penetration = 1,
+			                              		WeaponSpeed = 100,
+			                              		APToReady = 1,
+			                              		Reach = 0,
+			                              		Strength = 1,
+			                              		Parry = 0
+			                              }));
+
+			World.Player = player;
+
+			var npc = World.EntityManager.Create(new List<DEngine.Entities.Component>
+			                                     {
+			                                     		new Sprite("npc", Sprite.ACTOR_LAYER),
+			                                     		new Identifier("npc"),
+			                                     		new GameObject(6, 2, World.CurrentLevel),
+			                                     		new ActorComponent(new DoNothing(), new AP()),
+			                                     		new Person(),
+			                                     		DefendComponent.CreateHuman(50),
+			                                     		new VisibleComponent(10),
+			                                     		new ContainerComponent(),
+			                                     		new EquipmentComponent(),
+			                                     });
+
+			World.EntityManager.Create(World.EntityFactory.Get("smallknife")).Add(new GameObject(1, 1, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("axe")).Add(new GameObject(1, 1, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("glock17")).Add(new GameObject(1, 1, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("lockpick")).Add(new GameObject(1, 1, World.CurrentLevel));
+			var ammo = World.EntityManager.Create(World.EntityFactory.Get("9x9mm")).Add(new GameObject(1, 1, World.CurrentLevel));
+			ammo.Get<Item>().Amount = 30;
+			World.EntityManager.Create(World.EntityFactory.Get("bullet")).Add(new GameObject(1, 1, World.CurrentLevel));
+
+			var armor = World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
+			new EquipItemAction(npc, armor, "Torso", true).OnProcess();
+			npc.Add(new MeleeComponent(new MeleeComponent.Template
+			                           {
+			                           		ActionDescription = "punch",
+			                           		ActionDescriptionPlural = "punches",
+			                           		Skill = "skill_unarmed",
+			                           		HitBonus = 0,
+			                           		Damage = Rand.Constant(-5),
+			                           		DamageType = Combat.DamageTypes["crush"],
+			                           		Penetration = 1,
+			                           		WeaponSpeed = 100,
+			                           		APToReady = 1,
+			                           		Reach = 0,
+			                           		Strength = 1,
+			                           		Parry = 0
+			                           }));
+			World.Initialize();
 
 			ParentApplication.Push(new GameplayWindow(new SkrWindowTemplate()
 			                                          {

@@ -8,7 +8,6 @@ using DEngine.Entities;
 using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
-using SKR.Universe;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;

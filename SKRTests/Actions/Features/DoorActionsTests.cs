@@ -25,7 +25,7 @@ namespace SKRTests.Actions.Features {
 			                            		new GameObject(3, 2, Level),
 			                            		new Sprite("closed", Sprite.FEATURES_LAYER),
 			                            		new Opening("opened", "closed", "open", "close"),
-												new Blocker(false, false)
+												new Scenery(false, false)
 			                            });
 		}
 

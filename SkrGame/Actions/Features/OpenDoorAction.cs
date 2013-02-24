@@ -30,9 +30,9 @@ namespace SkrGame.Actions.Features {
 						return ActionResult.Failed;
 					}
 				}
-				if (Feature.Has<Blocker>()) {
-					Feature.Get<Blocker>().Transparent = true;
-					Feature.Get<Blocker>().Walkable = opening.WalkableOpened;
+				if (Feature.Has<Scenery>()) {
+					Feature.Get<Scenery>().Transparent = true;
+					Feature.Get<Scenery>().Walkable = opening.WalkableOpened;
 				}					
 				if (Feature.Has<Sprite>())
 					Feature.Get<Sprite>().Asset = opening.OpenedAsset;

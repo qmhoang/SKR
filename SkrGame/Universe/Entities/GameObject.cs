@@ -41,7 +41,7 @@ namespace SkrGame.Universe.Entities {
 		public event ComponentEventHandler<EventArgs<Level>> MapChanged;
 
 		public void OnMapChanged(EventArgs<Level> e) {
-			ComponentEventHandler<EventArgs<Level>> handler = MapChanged;
+			var handler = MapChanged;
 			if (handler != null)
 				handler(this, e);
 		}
@@ -60,14 +60,14 @@ namespace SkrGame.Universe.Entities {
 		public event ComponentEventHandler<PositionChangedEvent> PositionChanged;
 
 		public void OnPositionChanged(PositionChangedEvent e) {
-			ComponentEventHandler<PositionChangedEvent> handler = PositionChanged;
+			var handler = PositionChanged;
 			if (handler != null)
 				handler(this, e);
 		}
 
-		public double DistanceTo(GameObject loc) {
-			Contract.Requires<ArgumentNullException>(loc != null, "loc");
-			return Location.DistanceTo(loc.Location);
+		public double DistanceTo(GameObject obj) {
+			Contract.Requires<ArgumentNullException>(obj != null, "loc");
+			return Location.DistanceTo(obj.Location);
 		}
 
 		public double DistanceTo(Point p) {

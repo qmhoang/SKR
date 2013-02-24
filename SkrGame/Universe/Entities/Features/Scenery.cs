@@ -3,16 +3,14 @@ using DEngine.Components;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class Blocker : Component {
-		public Blocker() : this(true, true) { }
+	public class Scenery : Component {
+		public Scenery() : this(true, true) { }
 
-		public Blocker(bool walkable, bool transparent) {
+		public Scenery(bool walkable, bool transparent) {
 			this.walkable = walkable;
 			this.transparent = transparent;			
 		}
 		
-		public string Description { get; set; }
-
 		private bool transparent;
 		private bool walkable;
 
@@ -32,26 +30,26 @@ namespace SkrGame.Universe.Entities.Features {
 			}
 		}
 
-		public double WalkPenalty { get; set; }
+		public int JumpHeight { get; set; }
 
 		public event ComponentEventHandler<EventArgs> TransparencyChanged;
 		public event ComponentEventHandler<EventArgs> WalkableChanged;
 
 		public void OnTransparencyChanged() {
-			ComponentEventHandler<EventArgs> handler = TransparencyChanged;
+			var handler = TransparencyChanged;
 			if (handler != null)
 				handler(this, EventArgs.Empty);
 		}
 
 
 		public void OnWalkableChanged() {
-			ComponentEventHandler<EventArgs> handler = WalkableChanged;
+			var handler = WalkableChanged;
 			if (handler != null)
 				handler(this, EventArgs.Empty);
 		}
 		
 		public override Component Copy() {
-			var b = new Blocker(walkable, transparent);
+			var b = new Scenery(walkable, transparent);
 			if (TransparencyChanged != null)
 				b.TransparencyChanged = (ComponentEventHandler<EventArgs>)TransparencyChanged.Clone();
 			if (WalkableChanged != null)

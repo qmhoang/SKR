@@ -10,18 +10,18 @@ namespace SKR.UI.Menus {
 	public class LookWindow : PromptWindow {
 		protected Point SelectedPosition;
 		private MapPanel panel;
-		private Func<Point, string> descriptor;
+		private Func<Point, string> toStringFunction;
 
-		public LookWindow(Point origin, Func<Point, string> descriptor, MapPanel panel, PromptWindowTemplate template)
+		public LookWindow(Point origin, Func<Point, string> toStringFunction, MapPanel panel, PromptWindowTemplate template)
 				: base(template) {
 			this.panel = panel;
-			this.descriptor = descriptor;
+			this.toStringFunction = toStringFunction;
 			SelectedPosition = origin;
 		}
 
 		protected override string Text {
 			get {
-				return String.Format("Use [789456123] to look around.\n{0}", descriptor(SelectedPosition));				
+				return String.Format("Use [789456123] to look around.\n{0}", toStringFunction(SelectedPosition));				
 			}
 		}
 
@@ -37,9 +37,10 @@ namespace SKR.UI.Menus {
 		}
 
 		private void PanelDraw(object sender, EventArgs e) {
-			if ((!(sender is MapPanel)))
+			if (!(sender is MapPanel))
 				return;
-			var mapPanel = (MapPanel)sender;
+
+			var mapPanel = (MapPanel) sender;
 
 			var adjusted = SelectedPosition - mapPanel.ViewOffset;
 

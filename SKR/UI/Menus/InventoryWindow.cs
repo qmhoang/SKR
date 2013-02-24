@@ -10,7 +10,6 @@ using DEngine.Entities;
 using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
-using SKR.Universe;
 using SkrGame.Actions;
 using SkrGame.Actions.Items;
 using SkrGame.Universe;
