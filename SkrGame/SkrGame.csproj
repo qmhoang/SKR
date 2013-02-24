@@ -123,6 +123,7 @@
     <Compile Include="Actions\Combat\RangeAttackAction.cs" />
     <Compile Include="Actions\Movement\BumpAction.cs" />
     <Compile Include="Actions\Movement\ChangePostureAction.cs" />
+    <Compile Include="Actions\Movement\JumpOverAction.cs" />
     <Compile Include="Actions\Movement\WaitAction.cs" />
     <Compile Include="Actions\Skills\LockpickAction.cs" />
     <Compile Include="Actions\Movement\WalkAction.cs" />

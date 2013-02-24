@@ -47,7 +47,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		public Attribute GetAttribute(string attrb) {
 			return Attributes[attrb];
 		}
-		
+
 		public Person() {
 			Attributes = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
@@ -85,13 +85,15 @@ namespace SkrGame.Universe.Entities.Actors {
 			Skills = new StaticDictionary<string, Skill>(
 					new Dictionary<string, Skill>
 					{
+							{"skill_jumping", new Skill("Jumping", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_strength"] + t.Rank)},
+
 							{"skill_unarmed", new Skill("Unarmed", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_pistol", new Skill("Pistol", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_knife", new Skill("Knife", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_axe", new Skill("Axe", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
 							{"skill_lockpicking", new Skill("Lockpicking", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},
-					});			
+					});
 		}
 
 		public override Component Copy() {

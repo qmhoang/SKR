@@ -15,7 +15,7 @@ namespace SkrGame.Actions.Items {
 		public EquipItemAction(Entity entity, Entity item, string slot, bool force = false) : base(entity, item) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			Contract.Requires<ArgumentNullException>(item != null, "item");
-			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty");
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty.");
 			Contract.Requires<ArgumentException>(entity.Has<EquipmentComponent>());
 			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
 			Contract.Requires<ArgumentException>(item.Has<Item>());
@@ -50,7 +50,7 @@ namespace SkrGame.Actions.Items {
 			if (Item.Has<GameObject>())
 				Item.Get<GameObject>().Location = Entity.Get<GameObject>().Location;
 
-			World.Log.Normal(String.Format("{0} equips {1} to {2}", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item), slot));
+			World.Log.Normal(String.Format("{0} equips {1} to {2}", EntityName, ItemName, slot));
 			
 			return force ? ActionResult.SuccessNoTime : ActionResult.Success;
 		}
@@ -63,10 +63,11 @@ namespace SkrGame.Actions.Items {
 		public UnequipItemAction(Entity entity, string slot)
 			: base(entity) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
-			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty");
+			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty.");
 			Contract.Requires<ArgumentException>(entity.Has<EquipmentComponent>());
 			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().ContainSlot(slot), "Entity doesn't have slot.");
+			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().IsSlotEquipped(slot), "No item equipped in slot.");
 
 			this.slot = slot;
 			this.apCost = 1;
@@ -89,10 +90,9 @@ namespace SkrGame.Actions.Items {
 				if (removed.Has<VisibleComponent>()) {
 					removed.Get<VisibleComponent>().Reset();
 				}
+				World.Log.Normal(String.Format("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), slot));
 			}
-
-			World.Log.Normal(String.Format("{0} unequips {1} from {2}", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(removed), slot));
-
+			
 			return ActionResult.Success;
 		}
 	}

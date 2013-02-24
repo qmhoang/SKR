@@ -4,7 +4,7 @@ using NUnit.Framework;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Items;
 
-namespace SKRTests.Actions {
+namespace SKRTests.Actions.Items {
 	public class EquipItemHelper : ActionTests {
 		protected Entity Slot1Item0;
 		protected Entity Slot1Item1;

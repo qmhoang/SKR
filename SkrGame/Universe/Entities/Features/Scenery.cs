@@ -6,11 +6,14 @@ namespace SkrGame.Universe.Entities.Features {
 	public class Scenery : Component {
 		public Scenery() : this(true, true) { }
 
-		public Scenery(bool walkable, bool transparent) {
+		public Scenery(bool transparent, bool walkable) : this(transparent, walkable, int.MaxValue) { }
+
+		public Scenery(bool transparent, bool walkable, int jumpHeight) {
+			this.transparent = transparent;
 			this.walkable = walkable;
-			this.transparent = transparent;			
+			JumpHeight = jumpHeight;
 		}
-		
+
 		private bool transparent;
 		private bool walkable;
 
@@ -30,6 +33,9 @@ namespace SkrGame.Universe.Entities.Features {
 			}
 		}
 
+		/// <summary>
+		/// How high a scenery is.  0 represents waist level.
+		/// </summary>
 		public int JumpHeight { get; set; }
 
 		public event ComponentEventHandler<EventArgs> TransparencyChanged;
@@ -49,7 +55,7 @@ namespace SkrGame.Universe.Entities.Features {
 		}
 		
 		public override Component Copy() {
-			var b = new Scenery(walkable, transparent);
+			var b = new Scenery(transparent, walkable, JumpHeight);
 			if (TransparencyChanged != null)
 				b.TransparencyChanged = (ComponentEventHandler<EventArgs>)TransparencyChanged.Clone();
 			if (WalkableChanged != null)
@@ -59,7 +65,7 @@ namespace SkrGame.Universe.Entities.Features {
 		}
 
 		public override string ToString() {
-			return String.Format("Transparent: {0}, Walkable: {1}", Transparent, Walkable);
+			return String.Format("Transparent: {0}, Walkable: {1}, Height: {2}", Transparent, Walkable, JumpHeight);
 		}
 	}
 	

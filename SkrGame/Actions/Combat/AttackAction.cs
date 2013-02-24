@@ -43,24 +43,24 @@ namespace SkrGame.Actions.Combat {
 
 		public bool TargettingPenalty { get; private set; }
 
-		public CombatEventResult Attack(string attackerName, string defenderName, double attackDifficulty, double dodgeDifficulty = World.MEAN, bool dodge = true, bool block = true, bool parry = true) {
+		public CombatEventResult Attack(string attackerName, string defenderName, double easeOfAttack, double easeOfDodging = World.MEAN, bool dodge = true, bool block = true, bool parry = true) {
 			double atkRoll = World.SkillRoll();
 
-			if (atkRoll > attackDifficulty) {
-				Logger.InfoFormat("{0} misses {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, attackDifficulty, atkRoll,
-				                  World.ChanceOfSuccess(attackDifficulty));
+			if (atkRoll > easeOfAttack) {
+				Logger.InfoFormat("{0} misses {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, easeOfAttack, atkRoll,
+				                  World.ChanceOfSuccess(easeOfAttack));
 				return CombatEventResult.Miss;
 			}
 
-			Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, attackDifficulty, atkRoll,
-			                  World.ChanceOfSuccess(attackDifficulty));
+			Logger.InfoFormat("{0} attacks {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, easeOfAttack, atkRoll,
+			                  World.ChanceOfSuccess(easeOfAttack));
 
 			if (dodge) {
 				double defRoll = World.SkillRoll();
 
-				Logger.InfoFormat("{1} attempts to dodge {0}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, dodgeDifficulty, defRoll,
-				                  World.ChanceOfSuccess(dodgeDifficulty));
-				if (defRoll < dodgeDifficulty)
+				Logger.InfoFormat("{1} attempts to dodge {0}'s attack (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)", attackerName, defenderName, easeOfDodging, defRoll,
+				                  World.ChanceOfSuccess(easeOfDodging));
+				if (defRoll < easeOfDodging)
 					return CombatEventResult.Dodge;
 			}
 

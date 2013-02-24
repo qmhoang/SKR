@@ -6,6 +6,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
 using SkrGame.Actions.Features;
+using SkrGame.Actions.Movement;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
@@ -254,9 +255,10 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("FENCE_WOODEN", "feature",
 			            new Sprite("FENCE_WOODEN", Sprite.FEATURES_LAYER), 
-						new Scenery(false, true),
+						new Scenery(true, false, 1),
 						new OnBump(delegate (Entity user, Entity entity)
 						           	{
+										user.Get<ActorComponent>().Enqueue(new JumpOverAction(user, entity));
 						           		return OnBump.BumpResult.BlockMovement;
 						           	}));
 

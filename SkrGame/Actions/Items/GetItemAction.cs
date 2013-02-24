@@ -31,8 +31,8 @@ namespace SkrGame.Actions.Items {
 			}
 
 			World.Log.Normal(item.StackType == StackType.Hard
-			                 		? string.Format("{0} picks up {1} {2}.", Identifier.GetNameOrId(Entity), amount, Identifier.GetNameOrId(Item))
-			                 		: string.Format("{0} picks up {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item)));
+			                 		? string.Format("{0} picks up {1} {2}.", EntityName, amount, ItemName)
+			                 		: string.Format("{0} picks up {1}.", EntityName, ItemName));
 
 			return ActionResult.Success;
 		}

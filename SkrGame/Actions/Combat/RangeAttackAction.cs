@@ -94,12 +94,12 @@ namespace SkrGame.Actions.Combat {
 				// not being targetted gives a sigma (std dev) penalty
 				rangePenalty -= Defender.Id == currentEntity.Id ? 0 : World.STANDARD_DEVIATION;
 
-				int difficultyOfShot = (int) Math.Round(hitBonus + rangePenalty + (targetsInTheWay * RANGE_PENALTY_TILE_OCCUPIED) + (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
-				Logger.InfoFormat("Shot difficulty: {0}, targetting penalty: {1}, weapon bonus: {2}, is original target: {3}",
-				                  difficultyOfShot, BodyPartTargetted.TargettingPenalty, hitBonus,
+				int easeOfShot = (int) Math.Round(hitBonus + rangePenalty + (targetsInTheWay * RANGE_PENALTY_TILE_OCCUPIED) + (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
+				Logger.InfoFormat("Ease of Shot: {0}, targetting penalty: {1}, weapon bonus: {2}, is original target: {3}",
+				                  easeOfShot, BodyPartTargetted.TargettingPenalty, hitBonus,
 				                  Defender.Id == currentEntity.Id);
 
-				var result = Attack(attackerName, defenderName, difficultyOfShot);
+				var result = Attack(attackerName, defenderName, easeOfShot);
 
 				if (result == CombatEventResult.Hit) {
 					var damage = Math.Max(weapon.Damage.Roll(), 1);

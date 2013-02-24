@@ -72,7 +72,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void PositionChanged() {
+		public void TestPositionChanged() {
 			Assert.AreEqual(new Point(2, 2), Entity.Get<GameObject>().Location);
 
 			Move(Direction.N);
@@ -81,7 +81,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void WalkIntoWall() {
+		public void TestWalkIntoWall() {
 			Assert.AreEqual(new Point(2, 2), Entity.Get<GameObject>().Location);
 
 			Move(Direction.E);
@@ -90,7 +90,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void WalkOutOfBounds() {
+		public void TestWalkOutOfBounds() {
 			Entity.Get<GameObject>().Location = new Point(0, 0);
 			Assert.AreEqual(new Point(0, 0), Entity.Get<GameObject>().Location);
 
@@ -100,7 +100,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void MoveContainer() {
+		public void TestMoveContainer() {
 			Entity.Get<ContainerComponent>().Add(Item0);
 			Entity.Get<ContainerComponent>().Add(Item1);
 
@@ -112,7 +112,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void MoveContainerAlot() {
+		public void TestMoveContainerAlot() {
 			Entity.Get<ContainerComponent>().Add(Item0);
 			Entity.Get<ContainerComponent>().Add(Item1);
 
@@ -125,7 +125,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void RemovedItemDoesntMove() {
+		public void TestRemovedItemDoesntMove() {
 			Entity.Get<ContainerComponent>().Add(Item0);
 			Entity.Get<ContainerComponent>().Add(Item1);
 
@@ -144,7 +144,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void MoveEquipment() {
+		public void TestMoveEquipment() {
 			Entity.Get<EquipmentComponent>().Equip("slot1", Slot1Item0);
 			Entity.Get<EquipmentComponent>().Equip("slot2", Slot2Item0);
 
@@ -160,7 +160,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void UnequippedItemDoesntMove() {
+		public void TestUnequippedItemDoesntMove() {
 			Entity.Get<EquipmentComponent>().Equip("slot1", Slot1Item0);
 			Entity.Get<EquipmentComponent>().Equip("slot2", Slot2Item0);
 

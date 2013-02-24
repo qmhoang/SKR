@@ -12,20 +12,6 @@ using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions.Movement {
-	public class JumpOverAction : FeatureAction {
-		public JumpOverAction(Entity entity, Entity feature) : base(entity, feature) {
-			
-		}
-		
-		public override int APCost {
-			get { return World.TURN_LENGTH_IN_AP * 3; }
-		}
-
-		public override ActionResult OnProcess() {
-			throw new NotImplementedException();
-		}
-	}
-
 	public class BumpAction : ActorAction {
 		private Direction direction;
 

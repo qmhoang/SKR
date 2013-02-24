@@ -1,14 +1,15 @@
+using System;
 using System.Linq;
 using NUnit.Framework;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
-namespace SKRTests.Actions {
+namespace SKRTests.Actions.Items {
 	[TestFixture]
 	public class DropItemActionTests : ItemTestsHelper {
 		[Test]
-		public void DropItem() {
+		public void TestDropItem() {
 			PickUp(Item);
 
 			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 1);
@@ -24,7 +25,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void DropStackedItem() {
+		public void TestDropStackedItem() {
 			StackedItem0.Get<Item>().Amount = 5;
 
 			PickUp(StackedItem0, 5);
@@ -42,6 +43,12 @@ namespace SKRTests.Actions {
 			Assert.AreNotSame(dropped, StackedItem0);
 		}
 
+		[Test]
+		[ExpectedException(typeof(ArgumentException))]
+		public void TestItemNotInInventory() {
+			Assert.IsFalse(Entity.Get<ContainerComponent>().Contains(Item));
 
+			Drop(Item);
+		}
 	}
 }

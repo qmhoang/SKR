@@ -391,7 +391,7 @@ namespace SKR.UI.Gameplay {
 															sb.AppendFormat("Entity: {0} ", entity.Has<ReferenceId>() ? entity.Get<ReferenceId>().RefId : entity.Id.ToString());
 															sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
 															if (entity.Has<Scenery>())
-																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Scenery>().Transparent, entity.Get<Scenery>().Walkable);
+																sb.AppendFormat(entity.Get<Scenery>().ToString());
 
 															sb.AppendLine();
 														}
@@ -403,7 +403,10 @@ namespace SKR.UI.Gameplay {
 								break;
 							case '`':
 							{
-								ParentApplication.Push(new DebugMenuWindow(new SkrWindowTemplate()));
+								ParentApplication.Push(new DebugMenuWindow(new SkrWindowTemplate()
+								                                           {
+								                                           		World = World
+								                                           }));
 							}
 								break;
 						}
