@@ -14,7 +14,7 @@ namespace SkrGame.Actions.Movement {
 	public class WalkAction : LoggedAction {
 		private Direction direction;
 
-		private const int WALK_COST = World.TURN_LENGTH_IN_AP;
+		private const int WALK_COST = World.ONE_SECOND_IN_AP;
 
 		public WalkAction(Entity entity, Direction direction)
 				: base(entity) {

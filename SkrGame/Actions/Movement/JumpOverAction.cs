@@ -27,7 +27,7 @@ namespace SkrGame.Actions.Movement {
 		}
 
 		public override int APCost {
-			get { return World.TURN_LENGTH_IN_AP * Math.Max(Feature.Get<Scenery>().JumpHeight + 3, 1); }
+			get { return World.ONE_SECOND_IN_AP * Math.Max(Feature.Get<Scenery>().JumpHeight + 3, 1); }
 		}
 
 		public override ActionResult OnProcess() {

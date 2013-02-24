@@ -1,6 +1,6 @@
 Priority Goals:
 * City generation
-* Damage multiplier for different damage types
+* Damage multiplier for different damage types and different body parts
 * Simple "Sims" style AI for NPCs
 * More actions
 * More items

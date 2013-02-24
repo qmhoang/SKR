@@ -59,10 +59,9 @@ namespace SkrGame.Actions.Combat {
 			var attackerLocation = Attacker.Get<GameObject>();
 			var defenderLocation = Defender.Get<GameObject>();
 			
-
 			//apply skill
 			if (Attacker.Has<ActorComponent>()) {
-				hitBonus += Attacker.Get<Person>().GetSkill(weapon.Skill).Value;
+				hitBonus += Attacker.Get<Person>().Skills[weapon.Skill];
 			} else {
 				hitBonus += World.MEAN;
 			}
@@ -70,7 +69,6 @@ namespace SkrGame.Actions.Combat {
 			if (weapon.ShotsRemaining <= 0) {
 				World.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
 				                               attackerName));
-				Attacker.Get<ActorComponent>().AP.ActionPoints -= weapon.APToAttack;
 				return ActionResult.Failed;
 			}
 

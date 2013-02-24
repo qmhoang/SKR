@@ -15,7 +15,7 @@ namespace SkrGame.Actions.Movement {
 	public class BumpAction : ActorAction {
 		private Direction direction;
 
-		private const int BUMP_COST = World.TURN_LENGTH_IN_AP / 10;
+		private const int BUMP_COST = World.ONE_SECOND_IN_AP / 10;
 
 		public BumpAction(Entity entity, Direction direction) : base(entity) {
 			Contract.Requires<ArgumentException>(entity.Has<GameObject>());			

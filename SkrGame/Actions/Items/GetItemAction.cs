@@ -13,7 +13,7 @@ namespace SkrGame.Actions.Items {
 		}
 
 		public override int APCost {
-			get { return Item.Get<Item>().Size * 3; }
+			get { return Item.Get<Item>().Size * 30; }
 		}
 
 		public override ActionResult OnProcess() {

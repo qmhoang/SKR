@@ -16,6 +16,9 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public string Type { get; private set; }
 
+		public string ActionDescription { get; private set; }
+		public string ActionDescriptionPlural { get; private set; }
+
 		private AmmoComponent() { }
 
 		internal AmmoComponent(Template template) {
@@ -25,8 +28,7 @@ namespace SkrGame.Universe.Entities.Items {
 
 			Type = template.Type;
 		}
-		public string ActionDescription { get; private set; }
-		public string ActionDescriptionPlural { get; private set; }
+
 		public override Component Copy() {
 			return new AmmoComponent
 			       {
@@ -48,7 +50,9 @@ namespace SkrGame.Universe.Entities.Items {
 			public double Penetration { get; set; }
 			public Action<Entity, Entity> OnHit { get; set; }
 			public int Range { get; set; }
-			public double WeaponSpeed {
+
+			public int APToAttack { get; set; }
+			public double AttackSpeed {
 				get { return World.ActionPointsToSpeed(APToAttack); }
 				set { APToAttack = World.SpeedToActionPoints(value); }
 			}
@@ -56,12 +60,11 @@ namespace SkrGame.Universe.Entities.Items {
 				get { return (int)Math.Round(1 / World.ActionPointsToSeconds(APToAttack)); }
 				set { APToAttack = World.SecondsToActionPoints(1.0 / value); }
 			}
-			public int APToAttack { get; set; }
+			public int APToReload { get; set; }
 			public double ReloadSpeed {
 				get { return World.ActionPointsToSpeed(APToReload); }
 				set { APToReload = World.SpeedToActionPoints(value); }
 			}
-			public int APToReload { get; set; }
 			public int Recoil { get; set; }
 			public int Reliability { get; set; }
 			public string AmmoType { get; set; }
@@ -74,15 +77,19 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Strength { get; set; }
 
 			public int APToReady { get; set; }
+			public double ReadySpeed {
+				get { return World.ActionPointsToSpeed(APToReady); }
+				set { APToReady = World.SpeedToActionPoints(value); }
+			}
 			public bool UnreadyAfterAttack { get; set; }
 
 			public DamageType DamageType { get; set; }
 
 			// not used yet
-			public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
-			public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
-			public int BurstPenalty { get; set; }		// penalty for each shot of the burst
-			public int BurstAP { get; set; }			// AP cost for a burst
+//			public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
+//			public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
+//			public int BurstPenalty { get; set; }		// penalty for each shot of the burst
+//			public int BurstAP { get; set; }			// AP cost for a burst
 		}
 
 		public string ActionDescription { get; private set; }

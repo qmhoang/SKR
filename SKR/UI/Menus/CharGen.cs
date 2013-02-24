@@ -164,7 +164,7 @@ namespace SKR.UI.Menus {
 			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("jeans")).Add(new GameObject(1, 1, World.CurrentLevel)), "Legs", true).OnProcess();
 			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("shirt")).Add(new GameObject(1, 1, World.CurrentLevel)), "Torso", true).OnProcess();
 
-			var npc = World.EntityManager.Create(World.EntityFactory.Get("npc")).Add(new GameObject(4, 2, World.CurrentLevel));
+			var npc = World.EntityManager.Create(World.EntityFactory.Get("person")).Add(new GameObject(4, 2, World.CurrentLevel));
 
 			World.EntityManager.Create(World.EntityFactory.Get("smallknife")).Add(new GameObject(1, 1, World.CurrentLevel));
 			World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
