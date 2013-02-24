@@ -49,6 +49,8 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public Person() {
+//			Posture = Posture.Stand;
+			
 			Attributes = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
 					{

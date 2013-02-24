@@ -9,6 +9,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Menus;
@@ -161,7 +162,7 @@ namespace SKR.UI.Gameplay {
 							{
 								Targets("Set AI of Entity", p =>
 								                            	{
-								                            		var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<ActorComponent>()).ToList();
+								                            		var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).FilteredBy<ActorComponent>().ToList();
 								                            		var npc = entitiesAtLocation.First();
 								                            		var options = new List<Controller>
 								                            		              {
@@ -194,7 +195,7 @@ namespace SKR.UI.Gameplay {
 								        weapon => Directions("Attack where?",
 								                             p => Options("Attack where?",
 								                                          "Nothing at location to attack.",
-								                                          player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>() && e.Has<Person>()).ToList(),
+																		  player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<DefendComponent, Person>().ToList(),
 								                                          Identifier.GetNameOrId,
 								                                          defender => Options("Attack at what?",
 								                                                              String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
@@ -219,7 +220,7 @@ namespace SKR.UI.Gameplay {
 								                            World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
 								                            p => Options("Shoot at what?",
 								                                         "Nothing there to shoot.",
-								                                         player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+								                                         player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<DefendComponent>(),
 								                                         Identifier.GetNameOrId,
 								                                         delegate(Entity defender)
 								                                         	{
@@ -239,7 +240,7 @@ namespace SKR.UI.Gameplay {
 								                            World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
 								                            p => Options("Shoot at what?",
 								                                         "Nothing there to shoot.",
-								                                         player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<DefendComponent>()),
+																		 player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<DefendComponent>(),
 								                                         Identifier.GetNameOrId,
 								                                         defender => Options("What part?",
 								                                                             String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
@@ -293,7 +294,7 @@ namespace SKR.UI.Gameplay {
 									                                      		ItemSelected = i => DropItem(player, i),
 									                                      }));
 								else
-									World.Log.Fail("You are carrying no items to drop.");
+									World.Log.Aborted("You are carrying no items to drop.");
 							}
 								break;
 							case 'g':
@@ -318,7 +319,7 @@ namespace SKR.UI.Gameplay {
 									                                      		ItemSelected = i => PickUpItem(player, i),
 									                                      }));
 								else
-									World.Log.Fail("No items here to pick up.");
+									World.Log.Aborted("No items here to pick up.");
 							}
 								break;
 							case 'G':
@@ -334,7 +335,7 @@ namespace SKR.UI.Gameplay {
 								if (items.Count() > 0)
 									Enqueue(new GetAllItemsAction(player, items));
 								else
-									World.Log.Fail("No items here to pick up.");
+									World.Log.Aborted("No items here to pick up.");
 							}
 								break;
 							case 'i':
@@ -371,7 +372,7 @@ namespace SKR.UI.Gameplay {
 								        Identifier.GetNameOrId,
 								        lockpick => Directions("What direction?", p => Options("Select what to lockpick.",
 								                                                               "Nothing there to lockpick.",
-								                                                               player.Get<GameObject>().Level.GetEntitiesAt(p).Where(e => e.Has<LockedFeature>()),
+								                                                               player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<LockedFeature>(),
 								                                                               Identifier.GetNameOrId,
 								                                                               feature => Enqueue(new LockpickAction(player, lockpick, feature)))));
 
@@ -435,7 +436,7 @@ namespace SKR.UI.Gameplay {
 			Point newLocation = player.Get<GameObject>().Location + direction;
 
 			// we check for attackables
-			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt(newLocation).Where(e => e.Has<DefendComponent>() && e.Has<Person>()).ToList();
+			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt(newLocation).FilteredBy<DefendComponent, Person>().ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
 				Options("With that weapon?",

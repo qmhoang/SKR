@@ -35,7 +35,7 @@ namespace SkrGame.Actions.Items {
 
 		public override ActionResult OnProcess() {
 			if (!Entity.Get<ContainerComponent>().Contains(Item) && !force) {
-				World.Log.Fail("You cannot equip an item you don't have in your inventory");
+				World.Log.Aborted("You cannot equip an item you don't have in your inventory");
 				return ActionResult.Aborted;
 			}
 

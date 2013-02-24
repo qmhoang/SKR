@@ -12,21 +12,21 @@ namespace SKR.UI.Prompts {
 		private List<T> options;
 		private Func<T, string> toStringFunction;
 		private string message;
-		private string fail;
+		private string noOptions;
 
-		public OptionsPrompt(string message, string fail, IEnumerable<T> options, Func<T, string> toStringFunc, Action<T> actionCount, PromptWindowTemplate template)
+		public OptionsPrompt(string message, string noOptions, IEnumerable<T> options, Func<T, string> toStringFunc, Action<T> actionCount, PromptWindowTemplate template)
 				: base(template) {
 			this.actionCount = actionCount;
 			this.options = new List<T>(options);
 			this.toStringFunction = toStringFunc;
 			this.message = message;
-			this.fail = fail;			
+			this.noOptions = noOptions;			
 		}
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 			if (options.Count <= 0) {
-				GameLog.Fail(fail);
+				GameLog.Aborted(noOptions);
 				ExitWindow();
 			} else if (options.Count == 1) {
 				actionCount(options[0]);

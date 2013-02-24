@@ -41,8 +41,11 @@ namespace SKR.UI.Gameplay {
 			Color fgColor;
 
 			switch (entry.Type) {
-				case MessageType.Fail:
+				case MessageType.Aborted:
 					fgColor = ColorPresets.Gray; 
+					break;
+				case MessageType.Fail:
+					fgColor = ColorPresets.Yellow; 
 					break;
 				case MessageType.Bad:
 					fgColor = ColorPresets.Red; 
