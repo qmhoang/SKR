@@ -10,7 +10,7 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Factories {
-	public class ItemFactory {
+	public static class ItemFactory {
 		public static void Init(EntityFactory ef) {
 			ef.Add("item",
 			       new VisibleComponent(10),
@@ -170,7 +170,7 @@ namespace SkrGame.Universe.Factories {
 			            		new Equipable.Template
 			            		{
 			            				TwoHanded = false,
-			            				Slot = new List<string>()
+			            				Slot = new List<string>
 			            				       {
 			            				       		"Main Hand",
 			            				       		"Off Hand"
@@ -191,6 +191,18 @@ namespace SkrGame.Universe.Factories {
 			            				Reach = 1,
 			            				Strength = 1,
 			            				Parry = -3
+			            		}));
+
+			ef.Inherits("2hmelee", "meleeweapon",
+			            new Equipable(
+			            		new Equipable.Template
+			            		{
+			            				TwoHanded = true,
+			            				Slot = new List<string>
+			            				       {
+			            				       		"Main Hand",
+			            				       		"Off Hand"
+			            				       }
 			            		}));
 
 			ef.Inherits("largeknife", "meleeweapon",
@@ -215,7 +227,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(-5),
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
-			            				WeaponSpeed = 100,
+			            				WeaponSpeed = 110,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 6,
@@ -286,6 +298,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				Value = 1000,
 			            				Weight = 20,
+										Size = 1,
 			            				StackType = StackType.None,
 			            		}),
 			            new MeleeComponent(
@@ -326,11 +339,63 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(0),
 			            				DamageType = Combat.DamageTypes["impale"],
 			            				Penetration = 1,
-			            				WeaponSpeed = 110,
+			            				WeaponSpeed = 120,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 6,
 			            				Parry = -1
+			            		}));
+
+			ef.Inherits("club", "meleeweapon",
+			            new Identifier("Club", "A good size club."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 3000,
+			                     		Weight = 30,
+			                     		Size = 3,
+			                     		StackType = StackType.None,
+			                     }),
+			            new MeleeComponent(
+			            		new MeleeComponent.Template
+			            		{
+			            				ActionDescription = "club",
+			            				ActionDescriptionPlural = "clubs",
+			            				Skill = "skill_axe",
+			            				HitBonus = 0,
+			            				Damage = Rand.Constant(7),
+			            				DamageType = Combat.DamageTypes["crush"],
+			            				Penetration = 1,
+			            				WeaponSpeed = 92,
+			            				APToReady = World.SecondsToActionPoints(1f),
+			            				Reach = 1,
+			            				Strength = 10,
+			            				Parry = 0
+			            		}));
+
+			ef.Inherits("baseball_bat", "2hmelee",
+			            new Identifier("Baseball bat", "A baseball bat."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 4000,
+			                     		Weight = 40,
+			                     		Size = 4,
+			                     		StackType = StackType.None,
+			                     }),
+			            new MeleeComponent(
+			            		new MeleeComponent.Template
+			            		{
+			            				ActionDescription = "club",
+			            				ActionDescriptionPlural = "clubs",
+			            				Skill = "skill_2haxe",
+			            				HitBonus = 0,
+			            				Damage = Rand.Constant(12),
+										DamageType = Combat.DamageTypes["crush"],
+			            				Penetration = 1,
+			            				WeaponSpeed = 88,
+			            				APToReady = World.SecondsToActionPoints(1f),
+			            				Reach = 1,
+			            				Strength = 10,
+			            				Parry = 0
 			            		}));
 		}
 
@@ -394,45 +459,223 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private static void InitArmors(EntityFactory ef) {
-			ef.Inherits("armor", "item",
-			            new Sprite("ARMOR", Sprite.ITEMS_LAYER),
-			            new Identifier("Generic Armor"),
+			ef.Inherits("shoes", "item",
+			            new Sprite("SHOES", Sprite.ITEMS_LAYER),
+						new Identifier("Shoes", "A pair of shoes."),
 			            new Item(new Item.Template
 			                     {
-			                     		Value = 100,
-			                     		Weight = 10,
+			                     		Value = 3500,
+			                     		Weight = 20,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new Equipable(
+			            		new Equipable.Template
+			            		{
+			            				Slot = new List<string>
+			            				       {
+			            				       		"Feet",
+			            				       }
+			            		}),								
+			            new ArmorComponent(
+			            		new ArmorComponent.Template
+			            		{
+			            				DonTime = 1,
+			            				Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Feet",
+			            				           		                        50,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 2},
+			            				           		                        		{Combat.DamageTypes["crush"], 2},
+			            				           		                        		{Combat.DamageTypes["impale"], 2},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 2},
+			            				           		                        		{Combat.DamageTypes["pierce"], 2},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 2},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 2},
+			            				           		                        		{Combat.DamageTypes["burn"], 2},
+			            				           		                        })
+			            				           }
+			            		}));
+
+			ef.Inherits("sneakers", "shoes",
+			            new Identifier("Sneakers", "A pair of sneakers."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 4000,
+			                     		Weight = 17,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new EquippedBonus(new EquippedBonus.Template
+			                               {
+			                               		Bonuses = new Dictionary<string, int>
+			                               		          {
+			                               		          		{"skill_stealth", 1}
+			                               		          }
+			                               }));
+
+			ef.Inherits("boots", "shoes",
+			            new Identifier("Boots", "A pair of good boots."),
+						new Item(new Item.Template
+			                     {
+			                     		Value = 2700,
+			                     		Weight = 25,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new ArmorComponent(
+			            		new ArmorComponent.Template
+			            		{
+			            				DonTime = 1,
+			            				Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Feet",
+			            				           		                        65,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 7},
+			            				           		                        		{Combat.DamageTypes["crush"], 7},
+			            				           		                        		{Combat.DamageTypes["impale"], 7},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 5},
+			            				           		                        		{Combat.DamageTypes["pierce"], 5},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 6},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 6},
+			            				           		                        		{Combat.DamageTypes["burn"], 7},
+			            				           		                        })
+			            				           }
+			            		}));
+
+			ef.Inherits("ruggedboots", "item",
+						new Identifier("Rugged boots", "A pair of rugged work boots with a steel toe."),
+						new Item(new Item.Template
+						{
+							Value = 8000,
+							Weight = 30,
+							Size = 2,
+							StackType = StackType.None,
+						}),
+						new ArmorComponent(
+								new ArmorComponent.Template
+								{
+									DonTime = 1,
+									Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Feet",
+			            				           		                        70,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 9},
+			            				           		                        		{Combat.DamageTypes["crush"], 9},
+			            				           		                        		{Combat.DamageTypes["impale"], 9},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 9},
+			            				           		                        		{Combat.DamageTypes["pierce"], 9},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 9},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 9},
+			            				           		                        		{Combat.DamageTypes["burn"], 9},
+			            				           		                        })
+			            				           }
+								}));
+
+			ef.Inherits("pants", "item",
+			            new Sprite("PANTS", Sprite.ITEMS_LAYER),
+			            new Identifier("Pants", "A pair of khaki pants."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 4000,
+			                     		Weight = 15,
+			                     		Size = 3,
+			                     		StackType = StackType.None,
+			                     }),
+			            new Equipable(
+			            		new Equipable.Template
+			            		{
+			            				Slot = new List<string>
+			            				       {
+			            				       		"Legs",
+			            				       }
+			            		}),
+			            new ArmorComponent(
+			            		new ArmorComponent.Template
+			            		{
+			            				DonTime = 1,
+			            				Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Feet",
+			            				           		                        50,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 1},
+			            				           		                        		{Combat.DamageTypes["crush"], 1},
+			            				           		                        		{Combat.DamageTypes["impale"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 1},
+			            				           		                        		{Combat.DamageTypes["burn"], 1},
+			            				           		                        })
+			            				           }
+			            		}));
+
+			ef.Inherits("jeans", "pants",
+						new Sprite("PANTS", Sprite.ITEMS_LAYER),
+			            new Identifier("Jeans", "A pair of blue jeans."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 5000,
+			                     		Weight = 15,
+			                     		Size = 3,
+			                     		StackType = StackType.None,
+			                     }));
+
+			ef.Inherits("shirt", "item",
+			            new Sprite("SHIRT", Sprite.ITEMS_LAYER),
+			            new Identifier("Shirt", "A hawaiian shirt."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 2000,
+			                     		Weight = 100,
 			                     		Size = 11,
 			                     		StackType = StackType.None,
 
 			                     }),
-			            new Equipable(new Equipable.Template
-			                          {
-			                          		Slot = new List<string>
-			                          		       {
-			                          		       		"Torso",
-			                          		       }
-			                          }),
-			            new ArmorComponent(new ArmorComponent.Template
-			                               {
-			                               		DonTime = 1,
-			                               		Defenses = new List<ArmorComponent.Part>
-			                               		           {
-			                               		           		new ArmorComponent.Part("Torso", 10, new Dictionary<DamageType, int>
-			                               		           		                                     {
-			                               		           		                                     		{Combat.DamageTypes["true"], 0},
-			                               		           		                                     		{Combat.DamageTypes["cut"], 1},
-			                               		           		                                     		{Combat.DamageTypes["crush"], 1},
-			                               		           		                                     		{Combat.DamageTypes["impale"], 1},
-			                               		           		                                     		{Combat.DamageTypes["pierce_small"], 1},
-			                               		           		                                     		{Combat.DamageTypes["pierce"], 1},
-			                               		           		                                     		{Combat.DamageTypes["pierce_large"], 1},
-			                               		           		                                     		{Combat.DamageTypes["pierce_huge"], 1},
-			                               		           		                                     		{Combat.DamageTypes["burn"], 1},
-			                               		           		                                     })
-			                               		           }
-			                               }));
+			            new Equipable(
+			            		new Equipable.Template
+			            		{
+			            				Slot = new List<string>
+			            				       {
+			            				       		"Torso",
+			            				       }
+			            		}),
+			            new ArmorComponent(
+			            		new ArmorComponent.Template
+			            		{
+			            				DonTime = 1,
+			            				Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Torso",
+			            				           		                        20,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 1},
+			            				           		                        		{Combat.DamageTypes["crush"], 1},
+			            				           		                        		{Combat.DamageTypes["impale"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 1},
+			            				           		                        		{Combat.DamageTypes["burn"], 1},
+			            				           		                        })
+			            				           }
+			            		}));
 
-			ef.Inherits("footballpads", "armor",
+			ef.Inherits("footballpads", "shirt",
 			            new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
 			            new Identifier("Football Shoulder Pads"),
 			            new Item(new Item.Template
@@ -442,25 +685,28 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 11,
 			                     		StackType = StackType.None,
 			                     }),
-			            new ArmorComponent(new ArmorComponent.Template
-			                               {
-			                               		DonTime = 10,
-			                               		Defenses = new List<ArmorComponent.Part>
-			                               		           {
-			                               		           		new ArmorComponent.Part("Torso", 30, new Dictionary<DamageType, int>
-			                               		           		                                     {
-			                               		           		                                     		{Combat.DamageTypes["true"], 0},
-			                               		           		                                     		{Combat.DamageTypes["cut"], 8},
-			                               		           		                                     		{Combat.DamageTypes["crush"], 15},
-			                               		           		                                     		{Combat.DamageTypes["impale"], 6},
-			                               		           		                                     		{Combat.DamageTypes["pierce_small"], 4},
-			                               		           		                                     		{Combat.DamageTypes["pierce"], 4},
-			                               		           		                                     		{Combat.DamageTypes["pierce_large"], 4},
-			                               		           		                                     		{Combat.DamageTypes["pierce_huge"], 4},
-			                               		           		                                     		{Combat.DamageTypes["burn"], 5},
-			                               		           		                                     })
-			                               		           }
-			                               }));
+			            new ArmorComponent(
+			            		new ArmorComponent.Template
+			            		{
+			            				DonTime = 10,
+			            				Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Torso",
+			            				           		                        30,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 8},
+			            				           		                        		{Combat.DamageTypes["crush"], 15},
+			            				           		                        		{Combat.DamageTypes["impale"], 6},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 4},
+			            				           		                        		{Combat.DamageTypes["burn"], 5},
+			            				           		                        })
+			            				           }
+			            		}));
 		}
 	}
 }

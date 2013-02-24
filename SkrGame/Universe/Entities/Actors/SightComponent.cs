@@ -32,8 +32,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public override Component Copy() {
 			var sight = new SightComponent();
-			sight.currLevel = currLevel;
-			sight.vision = vision.Copy();
+			// todo
 			return sight;
 		}
 	}

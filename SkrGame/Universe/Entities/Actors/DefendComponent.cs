@@ -106,7 +106,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			                               		new AttackablePart("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
 			                               		new AttackablePart("Main Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
 			                               		new AttackablePart("Off Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new AttackablePart("Leg", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3),
+			                               		new AttackablePart("Legs", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3),
 			                               		new AttackablePart("Feet", health / 3, 10, -World.STANDARD_DEVIATION * 2 / 3),
 			                               });
 		}

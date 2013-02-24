@@ -46,14 +46,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return slots; }
 		}
 
-		public EquipmentComponent()
-			: this(new List<string>
-			        {
-			        		"Main Hand",
-			        		"Off Hand",
-							"Torso"
-			        }) { }
-
 		public EquipmentComponent(IEnumerable<string> slots) {
 			equippedItems = new Dictionary<string, Entity>();
 			this.slots = new List<string>(slots);
@@ -118,10 +110,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public override Component Copy() {
-			var equipment = new EquipmentComponent()
-			{
-				slots = new List<string>(slots)
-			};
+			var equipment = new EquipmentComponent(new List<string>(slots));
 
 			foreach (var equippedItem in equippedItems) {
 				equipment.equippedItems.Add(equippedItem.Key, equippedItem.Value.Copy());

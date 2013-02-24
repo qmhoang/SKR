@@ -42,6 +42,14 @@ namespace SkrGame.Actions.Items {
 			Entity.Get<ContainerComponent>().Remove(Item);
 			Entity.Get<EquipmentComponent>().Equip(slot, Item);
 
+			// skill bonuses
+			if (Entity.Has<Person>() && Item.Has<EquippedBonus>()) {
+				var p = Entity.Get<Person>();
+				foreach (var bonus in Item.Get<EquippedBonus>().Bonuses) {
+					p.Skills[bonus.Key].Temporary += bonus.Value;
+				}
+			}
+
 			// make the item we just added invisible
 			if (Item.Has<VisibleComponent>())
 				Item.Get<VisibleComponent>().VisibilityIndex = -1;
@@ -91,7 +99,16 @@ namespace SkrGame.Actions.Items {
 					removed.Get<VisibleComponent>().Reset();
 				}
 				World.Log.Normal(String.Format("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), slot));
+
+				if (Entity.Has<Person>() && removed.Has<EquippedBonus>()) {
+					var p = Entity.Get<Person>();
+					foreach (var bonus in removed.Get<EquippedBonus>().Bonuses) {
+						p.Skills[bonus.Key].Temporary -= bonus.Value;
+					}
+				}
 			}
+
+			
 			
 			return ActionResult.Success;
 		}

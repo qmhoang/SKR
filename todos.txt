@@ -1,0 +1,19 @@
+Priority Goals:
+* City generation
+* Damage multiplier for different damage types
+* Simple "Sims" style AI for NPCs
+* More actions
+* More items
+* PC generation
+
+Immediate Goals:
+* Zones of ownership
+* Facing and entities that occupy more than 1 block at a time
+* More "zones" (houses, buildings, etc)
+* Missions
+* Traits and more skills
+* items give skill bonuses
+
+Long term goals:
+* NPC speak (probably using inheritance styled speak tables)
+* Armor has multiple coverage for a single part (eg 30% coverage with 10 DR + 30% coverage with 5 DR).  Each part has a chance of blocking.

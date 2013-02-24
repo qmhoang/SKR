@@ -73,6 +73,7 @@ namespace SkrGame.Universe {
 
 			ItemFactory.Init(EntityFactory);
 			FeatureFactory.Init(EntityFactory);
+			PersonFactory.Init(EntityFactory);
 
 			EntityFactory.Compile();
 

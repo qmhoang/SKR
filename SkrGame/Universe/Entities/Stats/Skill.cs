@@ -8,12 +8,15 @@ namespace SkrGame.Universe.Entities.Stats {
 		/// raw rank represents this talent's skill, unmodified by anything
 		/// </summary>
 		public int Rank { get; private set; }
+
+		public int Temporary { get; set; }
+
 		/// <summary>
 		/// RealRank will call the function supplied in the template to calculate this talent's modified rank, it can be anything
 		/// from a simple adding another attribute to it or something much more complicated
 		/// </summary>
 		public override int Value {
-			get { return calculateRealRank(Owner, this); }
+			get { return calculateRealRank(Owner, this) + Temporary; }
 			set { Rank = value; }
 		}
 
@@ -25,6 +28,7 @@ namespace SkrGame.Universe.Entities.Stats {
 			Owner = owner;
 			Rank = initialRank;
 			MaximumValue = max;
+			Temporary = 0;
 
 			if (calcRealRank == null)
 				calculateRealRank = (self, t) => t.Rank;

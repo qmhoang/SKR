@@ -27,17 +27,6 @@ using libtcod;
 using log4net.Config;
 
 namespace SKR {
-	/* 
-	 * todo:
-	 *		* Zones of Control - entities that encompass an area in which another entities "owns" it.  These zones could then be used for crimes (breaking and entering, trespassing, etc), npc hostility, etc.
-	 *		* Needs-based AI (think "the sims")
-	 *		* Facing
-	 *		* Entities that occupy more than 1 block
-	 *		* NPC speak that uses inheritance ala entities
-	 *		* damage multiplier for damagetypes
-	 *		* city generation
-	 */
-
 	public class RoguelikeApp : Application {
 		private World world;
 
