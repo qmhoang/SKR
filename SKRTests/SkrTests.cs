@@ -48,7 +48,7 @@ namespace SKRTests {
 			                                             		                   		Damage = Rand.Constant(-5),
 			                                             		                   		DamageType = Combat.DamageTypes["crush"],
 			                                             		                   		Penetration = 1,
-			                                             		                   		WeaponSpeed = 100,
+			                                             		                   		AttackSpeed =  World.DEFAULT_SPEED,
 			                                             		                   		APToReady = 1,
 			                                             		                   		Reach = 0,
 			                                             		                   		Strength = 1,
@@ -56,7 +56,7 @@ namespace SKRTests {
 			                                             		                   }),
 			                                             		new GameObject(2, 2, Level),
 			                                             		new ContainerComponent(),
-			                                             		new ActorComponent(new Player(), new AP()),
+			                                             		new ActorComponent(new Player(), new AP(World.DEFAULT_SPEED)),
 			                                             		new Person(),
 			                                             		new Identifier("Player"),
 			                                             		new EquipmentComponent(new List<string>

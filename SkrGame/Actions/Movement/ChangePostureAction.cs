@@ -18,7 +18,7 @@ namespace SkrGame.Actions.Movement {
 			
 			this.current = entity.Get<Person>().Posture;
 			this.posture = posture;
-			apcost = World.TURN_LENGTH_IN_AP / 2;
+			apcost = World.ONE_SECOND_IN_AP / 2;
 		}
 
 		private int apcost;
@@ -30,7 +30,7 @@ namespace SkrGame.Actions.Movement {
 		public override ActionResult OnProcess() {
 			// stand -> run and run -> stand
 			if ((current == Posture.Stand && posture == Posture.Run) || (current == Posture.Run && posture == Posture.Stand)) {
-				apcost = World.TURN_LENGTH_IN_AP / 10;
+				apcost = World.ONE_SECOND_IN_AP / 10;
 				SetPosture(posture);
 				return ActionResult.Success;
 			}

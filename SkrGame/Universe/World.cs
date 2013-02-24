@@ -20,10 +20,10 @@ namespace SkrGame.Universe {
 		/// <summary>
 		/// default speed, anything with 2x speed cost 1/2 AP 
 		/// </summary>
-		public const int DEFAULT_SPEED = 100; // 
+		public const int DEFAULT_SPEED = 1000; // 
 
 		public const int TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
-		public const int TURN_LENGTH_IN_AP = 100;	// how long is a turn in seconds
+		public const int ONE_SECOND_IN_AP = 1000;	// how long is a turn in seconds
 		public const int MEAN = 50;						// what is the mean score for an attribute
 		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
 		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
@@ -58,6 +58,14 @@ namespace SkrGame.Universe {
 
 		public WorldStatus Status { get; private set; }
 
+		public event EventHandler<World, EventArgs> Turn;
+
+		public void OnTurn() {
+			var handler = Turn;
+			if (handler != null)
+				handler(this, EventArgs.Empty);
+		}
+
 		public World() {
 			Rng.Seed(0);
 
@@ -82,7 +90,7 @@ namespace SkrGame.Universe {
 			Calendar = new Calendar(new DateTime(2013, 4, 2, 6, 23, 52));
 			CalendarEntity = EntityManager.Create(new List<Component>
 			                                      {
-			                                      		new ActorComponent(Calendar, new AP())
+			                                      		new ActorComponent(Calendar, new AP(World.DEFAULT_SPEED))
 			                                      });
 		}
 
@@ -95,8 +103,8 @@ namespace SkrGame.Universe {
 		}
 		
 		public void Initialize() {
-			actionSystem = new ActionSystem(Player, EntityManager);
-			visionSubsystem = new VisionSubsystem(EntityManager);
+			actionSystem = new ActionSystem(this);
+			visionSubsystem = new VisionSubsystem(this);
 			Status = WorldStatus.Initialized;
 		}
 

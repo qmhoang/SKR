@@ -12,7 +12,7 @@ namespace SkrGame.Universe.Entities.Items {
 			public Rand Damage { get; set; }
 			public Action<Entity> OnHit { get; set; }
 			public double Penetration { get; set; }
-			public double WeaponSpeed {
+			public double AttackSpeed {
 				get { return World.ActionPointsToSpeed(APToAttack); }
 				set { APToAttack = World.SpeedToActionPoints(value); }
 			}
@@ -28,6 +28,10 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Strength { get; set; }
 
 			public int APToReady { get; set; }
+			public double ReadySpeed {
+				get { return World.ActionPointsToSpeed(APToReady); }
+				set { APToReady = World.SpeedToActionPoints(value); }
+			}
 			public bool UnreadyAfterAttack { get; set; }
 
 			public DamageType DamageType { get; set; }

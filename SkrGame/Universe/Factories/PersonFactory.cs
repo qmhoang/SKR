@@ -18,7 +18,7 @@ namespace SkrGame.Universe.Factories {
 			ef.Add("person",
 			       new Sprite("npc", Sprite.ACTOR_LAYER),
 			       new Identifier("npc"),
-			       new ActorComponent(new DoNothing(), new AP()),
+			       new ActorComponent(new DoNothing(), new AP(World.DEFAULT_SPEED)),
 			       new Person(),
 			       DefendComponent.CreateHuman(50),
 			       new VisibleComponent(10),
@@ -44,7 +44,7 @@ namespace SkrGame.Universe.Factories {
 			                          		Damage = Rand.Constant(-5),
 			                          		DamageType = Combat.DamageTypes["crush"],
 			                          		Penetration = 1,
-			                          		WeaponSpeed = 100,
+			                          		AttackSpeed = World.DEFAULT_SPEED,
 			                          		APToReady = 1,
 			                          		Reach = 0,
 			                          		Strength = 1,
@@ -52,12 +52,12 @@ namespace SkrGame.Universe.Factories {
 			                          }));
 
 			ef.Inherits("npc", "person",
-			            new ActorComponent(new NPC(), new AP()));
+						new ActorComponent(new NPC(), new AP(World.DEFAULT_SPEED)));
 
 			ef.Inherits("player", "person",
 			            new Sprite("player", Sprite.PLAYER_LAYER),
 			            new Identifier("Player"),
-			            new ActorComponent(new Player(), new AP()));
+						new ActorComponent(new Player(), new AP(World.DEFAULT_SPEED)));
 		}
 	}
 }

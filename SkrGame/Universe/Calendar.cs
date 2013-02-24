@@ -25,7 +25,7 @@ namespace SkrGame.Universe {
 			return new Calendar(Time);
 		}
 
-		public void IncreaseTime(int seconds = World.TURN_LENGTH_IN_SECONDS) {
+		public void IncreaseTime(int seconds = 1) {
 			Time = Time.AddSeconds(seconds);
 		}
 
@@ -37,7 +37,7 @@ namespace SkrGame.Universe {
 			}
 
 			public int APCost {
-				get { return World.SpeedToActionPoints(World.DEFAULT_SPEED); }
+				get { return World.ONE_SECOND_IN_AP; }
 			}
 
 			public ActionResult OnProcess() {

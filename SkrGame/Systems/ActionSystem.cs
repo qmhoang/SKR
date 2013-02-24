@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DEngine.Actions;
@@ -14,10 +15,12 @@ namespace SkrGame.Systems {
 	public class ActionSystem {
 		private FilteredCollection entities;
 		private Entity player;
+		private World world;
 
-		public ActionSystem(Entity player, EntityManager entityManager) {
-			entities = entityManager.Get(typeof(ActorComponent));
-			this.player = player;
+		public ActionSystem(World world) {
+			entities = world.EntityManager.Get(typeof(ActorComponent));
+			this.player = world.Player;
+			this.world = world;
 		}
 
 		public void Update() {
@@ -34,6 +37,7 @@ namespace SkrGame.Systems {
 			}
 			if (!playerActor.AP.Updateable) {
 				playerActor.AP.Gain();
+				world.OnTurn();
 				foreach (var entity in entities) {
 					if (entity == player)
 						continue;

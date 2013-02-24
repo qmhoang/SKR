@@ -13,7 +13,7 @@ using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Factories {
 	public static class FeatureFactory {
-		private const int WINDOW_USAGE_AP_COST = World.DEFAULT_SPEED;
+		private const int WINDOW_USAGE_AP_COST = World.TURN_LENGTH_IN_SECONDS;
 
 		private static Opening Door(string openAsset, string closedAsset) {
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));

@@ -25,19 +25,25 @@ namespace SKR.UI.Gameplay {
 			base.Redraw();
 
 			var person = player.Get<Person>();
-
-			Canvas.PrintString(1, 1, player.Get<Identifier>().Name);
-			PrintAttribute(1, 3, player.Get<DefendComponent>().Health);
-			
-			PrintAttribute(1, 4, person.Stats["stat_stamina"]);
-
-			PrintAttribute(1, 6, person.Stats["stat_energy"]);
-			PrintAttribute(1, 7, person.Stats["stat_food"]);
-			PrintAttribute(1, 8, person.Stats["stat_water"]);
-			PrintAttribute(1, 9, person.Stats["stat_bladder"]);
-
-			Canvas.PrintString(1, 12, calendar.Time.ToShortDateString());
-			Canvas.PrintString(1, 13, calendar.Time.ToLongTimeString());
+			int i = 1;
+			Canvas.PrintString(1, i++, player.Get<Identifier>().Name);
+			i++;
+			PrintAttribute(1, i++, player.Get<DefendComponent>().Health);
+			PrintAttribute(1, i++, person.Stats["stat_stamina"]);
+			PrintAttribute(1, i++, person.Stats["stat_composure"]);
+			i++;
+			PrintAttribute(1, i++, person.Stats["stat_energy"]);
+			PrintAttribute(1, i++, person.Stats["stat_food"]);
+			PrintAttribute(1, i++, person.Stats["stat_water"]);
+			PrintAttribute(1, i++, person.Stats["stat_bladder"]);
+			PrintAttribute(1, i++, person.Stats["stat_cleanliness"]);
+			i++;
+			i++;
+			Canvas.PrintString(1, i++, person.Posture.ToString());			
+			i++;
+			i++;
+			Canvas.PrintString(1, i++, calendar.Time.ToShortDateString());
+			Canvas.PrintString(1, i++, calendar.Time.ToLongTimeString());
 		}
 	}
 }
