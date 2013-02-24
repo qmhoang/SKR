@@ -10,18 +10,18 @@ namespace SKRTests.Actions.Items {
 	public class DropItemActionTests : ItemTestsHelper {
 		[Test]
 		public void TestDropItem() {
-			PickUp(Item);
+			PickUp(Item0);
 
 			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 1);
-			Assert.AreEqual(Item.Get<GameObject>().Location, Entity.Get<GameObject>().Location);
-			Assert.AreEqual(Item.Get<VisibleComponent>().VisibilityIndex, -1);
-			CollectionAssert.Contains(Entity.Get<ContainerComponent>().Items, Item);
+			Assert.AreEqual(Item0.Get<GameObject>().Location, Entity.Get<GameObject>().Location);
+			Assert.AreEqual(Item0.Get<VisibleComponent>().VisibilityIndex, -1);
+			CollectionAssert.Contains(Entity.Get<ContainerComponent>().Items, Item0);
 
-			Drop(Item);
+			Drop(Item0);
 
 			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 0);
-			Assert.AreEqual(Item.Get<VisibleComponent>().VisibilityIndex, 10);
-			CollectionAssert.DoesNotContain(Entity.Get<ContainerComponent>().Items, Item);
+			Assert.AreEqual(Item0.Get<VisibleComponent>().VisibilityIndex, 10);
+			CollectionAssert.DoesNotContain(Entity.Get<ContainerComponent>().Items, Item0);
 		}
 
 		[Test]
@@ -46,9 +46,9 @@ namespace SKRTests.Actions.Items {
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void TestItemNotInInventory() {
-			Assert.IsFalse(Entity.Get<ContainerComponent>().Contains(Item));
+			Assert.IsFalse(Entity.Get<ContainerComponent>().Contains(Item0));
 
-			Drop(Item);
+			Drop(Item0);
 		}
 	}
 }

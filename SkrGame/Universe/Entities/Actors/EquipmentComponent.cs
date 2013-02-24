@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using SkrGame.Actions;
 using SkrGame.Universe.Entities.Items;
 using log4net;
@@ -63,13 +66,19 @@ namespace SkrGame.Universe.Entities.Actors {
 			Contract.Requires<ArgumentException>(item.Has<Equipable>() && item.Get<Equipable>() != null);
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
 			Contract.Requires<ArgumentException>(!IsSlotEquipped(slot), "slot already equipped");
-			Contract.Requires<ArgumentException>(item.Get<Equipable>().Slots.Contains(slot));
+			Contract.Requires<ArgumentException>(item.Get<Equipable>().SlotsOccupied.ContainsKey(slot));
 			Contract.Ensures(equippedItems.ContainsKey(slot), "item is not equipped");
 
-			Logger.DebugFormat("{0} is equipping {1} to {2}.", OwnerUId, item.Id, slot);
+			var slotsOccupied = item.Get<Equipable>().SlotsOccupied[slot];
+
+			Logger.DebugFormat("{0} is equipping {1} to {2}.  Slots \"used\": {3}", OwnerUId, item.Id, slot, slotsOccupied.GetEnumeratedString());
+			
 			OnItemEquipped(new EventArgs<string, Entity>(slot, item));
 
-			equippedItems.Add(slot, item);			
+			foreach (var s in slotsOccupied) {
+				equippedItems.Add(s, item);				
+			}
+
 		}
 
 		public bool Unequip(string slot) {
@@ -79,10 +88,15 @@ namespace SkrGame.Universe.Entities.Actors {
 			if (!equippedItems.ContainsKey(slot)) {
 				return false;
 			} else {
-				Logger.DebugFormat("{0} is unequipping his item at {1}.", OwnerUId, slot);
-
 				Entity old = equippedItems[slot];
-				equippedItems.Remove(slot);
+
+				var slotsOccuped = old.Get<Equipable>().SlotsOccupied[slot];
+
+				Logger.DebugFormat("{0} is unequipping his item at {1}. Slots freed: {2}", OwnerUId, slot, slotsOccuped.GetEnumeratedString());
+
+				foreach (var s in slotsOccuped) {
+					equippedItems.Remove(s);					
+				}
 				
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
 

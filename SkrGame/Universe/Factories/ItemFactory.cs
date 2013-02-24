@@ -166,16 +166,7 @@ namespace SkrGame.Universe.Factories {
 		private static void InitMelees(EntityFactory ef) {
 			ef.Inherits("meleeweapon", "item",
 			            new Sprite("WEAPON", Sprite.ITEMS_LAYER),
-			            new Equipable(
-			            		new Equipable.Template
-			            		{
-			            				TwoHanded = false,
-			            				Slot = new List<string>
-			            				       {
-			            				       		"Main Hand",
-			            				       		"Off Hand"
-			            				       }
-			            		}),
+						Equipable.SingleSlot("Main Hand", "Off Hand"),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
 			            		{
@@ -194,16 +185,7 @@ namespace SkrGame.Universe.Factories {
 			            		}));
 
 			ef.Inherits("2hmelee", "meleeweapon",
-			            new Equipable(
-			            		new Equipable.Template
-			            		{
-			            				TwoHanded = true,
-			            				Slot = new List<string>
-			            				       {
-			            				       		"Main Hand",
-			            				       		"Off Hand"
-			            				       }
-			            		}));
+			            Equipable.MultipleSlots("Main Hand", "Off Hand"));
 
 			ef.Inherits("largeknife", "meleeweapon",
 			            //new Sprite("LARGE_KNIFE", Sprite.ITEMS_LAYER),
@@ -459,6 +441,7 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private static void InitArmors(EntityFactory ef) {
+			#region Shoes
 			ef.Inherits("shoes", "item",
 			            new Sprite("SHOES", Sprite.ITEMS_LAYER),
 						new Identifier("Shoes", "A pair of shoes."),
@@ -469,14 +452,7 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 2,
 			                     		StackType = StackType.None,
 			                     }),
-			            new Equipable(
-			            		new Equipable.Template
-			            		{
-			            				Slot = new List<string>
-			            				       {
-			            				       		"Feet",
-			            				       }
-			            		}),								
+						Equipable.SingleSlot("Feet"),
 			            new ArmorComponent(
 			            		new ArmorComponent.Template
 			            		{
@@ -581,6 +557,10 @@ namespace SkrGame.Universe.Factories {
 			            				           }
 								}));
 
+			#endregion
+
+			#region Pants
+
 			ef.Inherits("pants", "item",
 			            new Sprite("PANTS", Sprite.ITEMS_LAYER),
 			            new Identifier("Pants", "A pair of khaki pants."),
@@ -591,14 +571,7 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 3,
 			                     		StackType = StackType.None,
 			                     }),
-			            new Equipable(
-			            		new Equipable.Template
-			            		{
-			            				Slot = new List<string>
-			            				       {
-			            				       		"Legs",
-			            				       }
-			            		}),
+						Equipable.SingleSlot("Legs"),
 			            new ArmorComponent(
 			            		new ArmorComponent.Template
 			            		{
@@ -622,6 +595,16 @@ namespace SkrGame.Universe.Factories {
 			            				           }
 			            		}));
 
+			ef.Inherits("skirt", "pants",
+			            new Identifier("Skirt", "A short cotton skirt."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 5000,
+			                     		Weight = 12,
+			                     		Size = 3,
+			                     		StackType = StackType.None,
+			                     }));
+
 			ef.Inherits("jeans", "pants",
 						new Sprite("PANTS", Sprite.ITEMS_LAYER),
 			            new Identifier("Jeans", "A pair of blue jeans."),
@@ -632,6 +615,7 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 3,
 			                     		StackType = StackType.None,
 			                     }));
+			#endregion
 
 			ef.Inherits("shirt", "item",
 			            new Sprite("SHIRT", Sprite.ITEMS_LAYER),
@@ -644,14 +628,7 @@ namespace SkrGame.Universe.Factories {
 			                     		StackType = StackType.None,
 
 			                     }),
-			            new Equipable(
-			            		new Equipable.Template
-			            		{
-			            				Slot = new List<string>
-			            				       {
-			            				       		"Torso",
-			            				       }
-			            		}),
+						Equipable.SingleSlot("Torso"),
 			            new ArmorComponent(
 			            		new ArmorComponent.Template
 			            		{
@@ -685,6 +662,7 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 11,
 			                     		StackType = StackType.None,
 			                     }),
+						Equipable.MultipleSlots("Torso", "Arms"),
 			            new ArmorComponent(
 			            		new ArmorComponent.Template
 			            		{

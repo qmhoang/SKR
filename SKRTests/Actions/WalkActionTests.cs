@@ -14,7 +14,7 @@ using SkrGame.Universe.Entities.Items;
 
 namespace SKRTests.Actions {
 	[TestFixture]
-	public class WalkActionTests : ActionTests {
+	public class WalkActionTests : SkrTests {
 		protected Entity Item0;
 		protected Entity Item1;
 
@@ -41,24 +41,12 @@ namespace SKRTests.Actions {
 			Slot1Item0 = EntityManager.Create(new List<Component>
 			                                  {
 			                                  		new GameObject(-1, -1, Level),
-			                                  		new Equipable(new Equipable.Template
-			                                  		              {
-			                                  		              		Slot = new List<string>
-			                                  		              		       {
-			                                  		              		       		"slot1"
-			                                  		              		       }
-			                                  		              })
+			                                  		Equipable.SingleSlot("slot1")
 			                                  });
 			Slot2Item0 = EntityManager.Create(new List<Component>
 			                                  {
 			                                  		new GameObject(-1, -1, Level),
-			                                  		new Equipable(new Equipable.Template
-			                                  		              {
-			                                  		              		Slot = new List<string>
-			                                  		              		       {
-			                                  		              		       		"slot2"
-			                                  		              		       }
-			                                  		              })
+			                                  		Equipable.SingleSlot("slot2")
 			                                  });
 
 

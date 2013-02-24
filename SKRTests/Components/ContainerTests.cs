@@ -12,162 +12,102 @@ using SkrGame.Universe.Entities.Items;
 
 namespace SKRTests.Components {
 	[TestFixture]
-	internal class ContainerTests {
-		private EntityManager entityManager;
+	internal class ContainerTests : ItemTestsHelper {
 
-		private Entity entity;
-		private ContainerComponent container;
-
-		private Entity item0;
-		private Entity item1;
-		private Entity item2;
-
-		private Entity stack1;
-		private Entity stack2;
-
-
-		[SetUp]
-		public void Init() {
-			entityManager = new EntityManager();
-
-			entity = entityManager.Create(new List<Component>()
-			                              {
-			                             		new GameObject(0, 0, null),
-			                              		new ContainerComponent()
-			                              });
-			container = entity.Get<ContainerComponent>();
-
-			item0 = entityManager.Create(new List<Component>
-			                             {
-			                             		new GameObject(-1, -1, null),
-			                             		new Item(new Item.Template
-			                             		         {})
-
-			                             });
-			item1 = entityManager.Create(new List<Component>
-			                             {
-			                             		new GameObject(-1, -1, null),
-			                             		new Item(new Item.Template
-			                             		         {})
-			                             });
-			item2 = entityManager.Create(new List<Component>
-			                             {
-			                             		new GameObject(-1, -1, null),
-			                             		new Item(new Item.Template
-			                             		         {})
-			                             });
-
-			stack1 = entityManager.Create(new List<Component>
-			                              {
-			                              		new Item(new Item.Template
-			                              		         {
-			                              		         		StackType = StackType.Hard
-			                              		         }),
-			                              		new ReferenceId("stack")
-			                              });
-
-			stack2 = entityManager.Create(new List<Component>
-			                              {
-			                              		new Item(new Item.Template
-			                              		         {
-			                              		         		StackType = StackType.Hard
-			                              		         }),
-			                              		new ReferenceId("stack")
-			                              });
-		}
+		protected ContainerComponent Container { get { return Entity.Get<ContainerComponent>(); } }
 
 		[Test]
 		public void TestAdd() {
-			container.Add(item0);
+			Container.Add(Item0);
 
-			Assert.AreEqual(container.Count, 1);
+			Assert.AreEqual(Container.Count, 1);
 
-			container.Add(entityManager.Create(new List<Component>
+			Container.Add(EntityManager.Create(new List<Component>
 			                                   {
 			                                   		new Item(new Item.Template()
 			                                   		         {})
 			                                   }));
-			Assert.AreEqual(container.Count, 2);
+			Assert.AreEqual(Container.Count, 2);
 
-			Assert.Throws<ArgumentNullException>(() => container.Add(null));
+			Assert.Throws<ArgumentNullException>(() => Container.Add(null));
 
 			// adding an item that exist already returns false
-			Assert.IsFalse(container.Add(item0));
-			Assert.AreEqual(container.Count, 2);
+			Assert.IsFalse(Container.Add(Item0));
+			Assert.AreEqual(Container.Count, 2);
 		}
 
 		[Test]
 		public void TestAddStackItem() {
-			container.Add(stack1);
-			Assert.AreEqual(container.Count, 1);
-			Assert.AreEqual(container.TotalCount, 1);
+			Container.Add(StackedItem0);
+			Assert.AreEqual(Container.Count, 1);
+			Assert.AreEqual(Container.TotalCount, 1);
 
-			container.Add(stack2);
-			Assert.AreEqual(container.Count, 1);
-			Assert.AreEqual(container.TotalCount, 2);
-			Assert.AreEqual(container.GetItem(e => e.Get<ReferenceId>().RefId == "stack").Get<Item>().Amount, 2);
+			Container.Add(StackedItem1);
+			Assert.AreEqual(Container.Count, 1);
+			Assert.AreEqual(Container.TotalCount, 2);
+			Assert.AreEqual(Container.GetItem(e => e.Get<ReferenceId>().RefId == "item").Get<Item>().Amount, 2);
 		}
 
 		[Test]
 		public void TestRemove() {
-			container.Add(item0);
-			Assert.AreEqual(container.Count, 1);
+			Container.Add(Item0);
+			Assert.AreEqual(Container.Count, 1);
 
-			Assert.IsTrue(container.Remove(item0));
-			Assert.AreEqual(container.Count, 0);
+			Assert.IsTrue(Container.Remove(Item0));
+			Assert.AreEqual(Container.Count, 0);
 
-			Assert.IsFalse(container.Remove(item0));
+			Assert.IsFalse(Container.Remove(Item0));
 		}
 
 		[Test]
 		public void TestPredicate() {
-			container.Add(item0);
+			Container.Add(Item0);
 
-			Assert.IsTrue(container.Contains(item0));
+			Assert.IsTrue(Container.Contains(Item0));
 
-			Assert.IsTrue(container.Exist(i => i == item0));
+			Assert.IsTrue(Container.Exist(i => i == Item0));
 
 			// testing negative
-			var item1 = entityManager.Create(new List<Component>
+			var item1 = EntityManager.Create(new List<Component>
 			                                 {
 			                                 		new Item(new Item.Template()
 			                                 		         {})
 			                                 });
-			Assert.IsFalse(container.Contains(item1));
-			Assert.IsFalse(container.Exist(i => i == item1));
+			Assert.IsFalse(Container.Contains(item1));
+			Assert.IsFalse(Container.Exist(i => i == item1));
 		}
 
 		[Test]
 		public void TestGet() {
-			container.Add(item0);
-			Assert.IsNull(container.GetItem(i => i.Id.ToString() == ""));
-			Assert.AreSame(container.GetItem(i => i.Id == item0.Id), item0);
+			Container.Add(Item0);
+			Assert.IsNull(Container.GetItem(i => i.Id.ToString() == ""));
+			Assert.AreSame(Container.GetItem(i => i.Id == Item0.Id), Item0);
 		}
 
 		[Test]
 		public void TestCopy() {
-			container.Add(item0);
-			container.Add(item1);
-			container.Add(item2);
+			Container.Add(Item0);
+			Container.Add(Item1);
+			Container.Add(Item2);
 
-			Assert.AreEqual(container.TotalCount, 3);
-			CollectionAssert.AllItemsAreUnique(container.Items);
-			CollectionAssert.Contains(container.Items, item0);
-			CollectionAssert.Contains(container.Items, item1);
-			CollectionAssert.Contains(container.Items, item2);
+			Assert.AreEqual(Container.TotalCount, 3);
+			CollectionAssert.AllItemsAreUnique(Container.Items);
+			CollectionAssert.Contains(Container.Items, Item0);
+			CollectionAssert.Contains(Container.Items, Item1);
+			CollectionAssert.Contains(Container.Items, Item2);
 
-			var copy = entity.Copy().Get<ContainerComponent>();
-			Assert.AreNotSame(entity, copy);
+			var copy = Entity.Copy().Get<ContainerComponent>();
+			Assert.AreNotSame(Entity, copy);
 			Assert.AreEqual(copy.TotalCount, 3);
 			CollectionAssert.AllItemsAreUnique(copy.Items);
 
 			// items in conainer aren't in new container
-			foreach (var e in container.Items) {
+			foreach (var e in Container.Items) {
 				CollectionAssert.DoesNotContain(copy.Items, e);
 			}
 			// vice versa
 			foreach (var e in copy.Items) {
-				CollectionAssert.DoesNotContain(container.Items, e);
+				CollectionAssert.DoesNotContain(Container.Items, e);
 			}
 		}
 	}
