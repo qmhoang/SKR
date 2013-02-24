@@ -45,18 +45,7 @@ namespace SkrGame.Universe.Factories {
 			return OnBump.BumpResult.BlockMovement;
 		}
 
-		public static void Init(EntityFactory ef) {
-			Contract.Requires<ArgumentNullException>(ef != null, "ef");
-			ef.Add("feature",
-			       new VisibleComponent(10),
-			       new Sprite("FEATURE", Sprite.FEATURES_LAYER),
-			       new Identifier("Feature"),
-			       new Blocker(false, false));
-
-			ef.Inherits("nonblockingfeature", "feature", new Blocker());
-
-			#region Doors and Windows
-
+		private static void DoorsAndWindows(EntityFactory ef) {
 			ef.Inherits("Door", "feature",
 			            new Sprite("ClosedDoor", Sprite.FEATURES_LAYER),
 			            new Identifier("Door", "A basic door"),
@@ -125,8 +114,46 @@ namespace SkrGame.Universe.Factories {
 			ef.Inherits("WINDOW_BRICK_DARK_HORZ", "Window",
 			            new Sprite("WINDOW_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER),
 			            Window("WINDOW_BRICK_DARK_VERT", "WINDOW_BRICK_DARK_HORZ"));
+		}
 
-			#endregion
+		public static void Walls(EntityFactory ef) {
+			ef.Inherits("WALL_BRICK_DARK", "feature",
+			            new Sprite("WALL_BRICK_DARK", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_VERT", "feature",
+			            new Sprite("WALL_BRICK_DARK_VERT", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_HORZ", "feature",
+			            new Sprite("WALL_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_T_NORTH", "feature",
+			            new Sprite("WALL_BRICK_DARK_T_NORTH", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_T_SOUTH", "feature",
+			            new Sprite("WALL_BRICK_DARK_T_SOUTH", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_T_EAST", "feature",
+			            new Sprite("WALL_BRICK_DARK_T_EAST", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_T_WEST", "feature",
+			            new Sprite("WALL_BRICK_DARK_T_WEST", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_NORTHEAST", "feature",
+			            new Sprite("WALL_BRICK_DARK_NORTHEAST", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_NORTHWEST", "feature",
+			            new Sprite("WALL_BRICK_DARK_NORTHWEST", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_SOUTHWEST", "feature",
+			            new Sprite("WALL_BRICK_DARK_SOUTHWEST", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_BRICK_DARK_SOUTHEAST", "feature",
+			            new Sprite("WALL_BRICK_DARK_SOUTHEAST", Sprite.FEATURES_LAYER));
+			ef.Inherits("WALL_DRY", "feature",
+			            new Sprite("WALL_DRY", Sprite.FEATURES_LAYER));
+		}
+
+		public static void Init(EntityFactory ef) {
+			Contract.Requires<ArgumentNullException>(ef != null, "ef");
+			ef.Add("feature",
+			       new VisibleComponent(10),
+			       new Sprite("FEATURE", Sprite.FEATURES_LAYER),
+			       new Identifier("Feature"),
+			       new Scenery(false, false));
+
+			ef.Inherits("nonblockingfeature", "feature", new Scenery());
+			
+			DoorsAndWindows(ef);
 
 			#region House Features
 
@@ -226,7 +253,12 @@ namespace SkrGame.Universe.Factories {
 			            new Sprite("DOOR_GARAGE", Sprite.FEATURES_LAYER));
 
 			ef.Inherits("FENCE_WOODEN", "feature",
-			            new Sprite("FENCE_WOODEN", Sprite.FEATURES_LAYER), new Blocker(false, true));
+			            new Sprite("FENCE_WOODEN", Sprite.FEATURES_LAYER), 
+						new Scenery(false, true),
+						new OnBump(delegate (Entity user, Entity entity)
+						           	{
+						           		return OnBump.BumpResult.BlockMovement;
+						           	}));
 
 			ef.Inherits("LAMP_STANDARD", "nonblockingfeature",
 			            new Sprite("LAMP_STANDARD", Sprite.FEATURES_LAYER));
@@ -239,45 +271,18 @@ namespace SkrGame.Universe.Factories {
 
 			#endregion
 
-			#region Walls
-
-			ef.Inherits("WALL_BRICK_DARK", "feature",
-			            new Sprite("WALL_BRICK_DARK", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_VERT", "feature",
-			            new Sprite("WALL_BRICK_DARK_VERT", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_HORZ", "feature",
-			            new Sprite("WALL_BRICK_DARK_HORZ", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_T_NORTH", "feature",
-			            new Sprite("WALL_BRICK_DARK_T_NORTH", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_T_SOUTH", "feature",
-			            new Sprite("WALL_BRICK_DARK_T_SOUTH", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_T_EAST", "feature",
-			            new Sprite("WALL_BRICK_DARK_T_EAST", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_T_WEST", "feature",
-			            new Sprite("WALL_BRICK_DARK_T_WEST", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_NORTHEAST", "feature",
-			            new Sprite("WALL_BRICK_DARK_NORTHEAST", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_NORTHWEST", "feature",
-			            new Sprite("WALL_BRICK_DARK_NORTHWEST", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_SOUTHWEST", "feature",
-			            new Sprite("WALL_BRICK_DARK_SOUTHWEST", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_BRICK_DARK_SOUTHEAST", "feature",
-			            new Sprite("WALL_BRICK_DARK_SOUTHEAST", Sprite.FEATURES_LAYER));
-			ef.Inherits("WALL_DRY", "feature",
-			            new Sprite("WALL_DRY", Sprite.FEATURES_LAYER));
-
-			#endregion
+			Walls(ef);
 
 			#region Stairs
 
-			ef.Inherits("STAIR_WOODEN_UP", "feature", new Sprite("STAIR_WOODEN_UP", Sprite.FEATURES_LAYER), new Blocker(true, true));
-			ef.Inherits("STAIR_WOODEN_DOWN", "feature", new Sprite("STAIR_WOODEN_DOWN", Sprite.FEATURES_LAYER), new Blocker(true, true));
+			ef.Inherits("STAIR_WOODEN_UP", "feature", new Sprite("STAIR_WOODEN_UP", Sprite.FEATURES_LAYER), new Scenery(true, true));
+			ef.Inherits("STAIR_WOODEN_DOWN", "feature", new Sprite("STAIR_WOODEN_DOWN", Sprite.FEATURES_LAYER), new Scenery(true, true));
 
 			#endregion
 
 			#region Misc Decorations
 
-			ef.Inherits("PLANTPOT_FIXED", "feature", new Sprite("PLANTPOT_FIXED", Sprite.FEATURES_LAYER), new Blocker(true, true));
+			ef.Inherits("PLANTPOT_FIXED", "feature", new Sprite("PLANTPOT_FIXED", Sprite.FEATURES_LAYER), new Scenery(true, true));
 
 			#endregion
 		}

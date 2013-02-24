@@ -6,11 +6,26 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
+using SkrGame.Actions.Features;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions.Movement {
+	public class JumpOverAction : FeatureAction {
+		public JumpOverAction(Entity entity, Entity feature) : base(entity, feature) {
+			
+		}
+		
+		public override int APCost {
+			get { return World.TURN_LENGTH_IN_AP * 3; }
+		}
+
+		public override ActionResult OnProcess() {
+			throw new NotImplementedException();
+		}
+	}
+
 	public class BumpAction : ActorAction {
 		private Direction direction;
 
@@ -29,16 +44,16 @@ namespace SkrGame.Actions.Movement {
 			Point newLocation = Entity.Get<GameObject>().Location + direction;
 
 			var bumpablesAtLocation = Entity.Get<GameObject>().Level.GetEntitiesAt(newLocation).FilteredBy<OnBump>();
-			bool blockedMovement = false;
+			bool movementAllowed = true;
 
 			//todo bumpables add action
 			foreach (var b in bumpablesAtLocation) {
 				if (b.Get<OnBump>().Action(Entity, b) == OnBump.BumpResult.BlockMovement) {
-					blockedMovement = true;
+					movementAllowed = false;
 				}
 			}
 
-			if (!blockedMovement) {
+			if (movementAllowed) {
 				Entity.Get<ActorComponent>().Enqueue(new WalkAction(Entity, direction));
 				return ActionResult.Success;
 			} else {

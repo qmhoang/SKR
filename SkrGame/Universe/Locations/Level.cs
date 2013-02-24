@@ -12,25 +12,6 @@ using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Universe.Locations {
-	/// <summary>
-	/// Tiles represent entities that are (normally immovable, but can be interacted with by actors)
-	/// </summary>
-	public class Terrain {
-		public string Definition { get; protected set; }
-		public string Asset { get; protected set; }
-		public bool Transparent { get; protected set; }
-		public bool Walkable { get; protected set; }
-		public double WalkPenalty { get; protected set; }
-
-		public Terrain(string definition, string asset, bool transparent, bool walkable, double walkPenalty) {
-			Definition = definition;
-			Asset = asset;
-			Transparent = transparent;
-			Walkable = walkable;
-			WalkPenalty = walkPenalty;
-		}
-	}
-
 	public class Level : AbstractLevel, IEquatable<Level> {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -71,7 +52,7 @@ namespace SkrGame.Universe.Locations {
 
 			this.World = world;
 			entities = world.EntityManager.Get<GameObject>();
-			blockers = world.EntityManager.Get(typeof(GameObject), typeof(Blocker));
+			blockers = world.EntityManager.Get(typeof(GameObject), typeof(Scenery));
 			Cells = new Cell[size.Width, size.Height];
 
 			for (int x = 0; x < Map.GetLength(0); x++) {
@@ -95,26 +76,26 @@ namespace SkrGame.Universe.Locations {
 			var position = entity.Get<GameObject>().Location;
 			SetBlocker(position);
 			entity.Get<GameObject>().PositionChanged -= OnBlockerPositionChanged;
-			entity.Get<Blocker>().WalkableChanged -= OnblockerWalkableChanged;
-			entity.Get<Blocker>().TransparencyChanged -= OnBlockerTransparencyChanged;
+			entity.Get<Scenery>().WalkableChanged -= OnblockerWalkableChanged;
+			entity.Get<Scenery>().TransparencyChanged -= OnBlockerTransparencyChanged;
 		}
 
 		private void InitializeBlocker(Entity entity) {
 			var position = entity.Get<GameObject>().Location;
 			SetBlocker(position);
 			entity.Get<GameObject>().PositionChanged += OnBlockerPositionChanged;
-			entity.Get<Blocker>().WalkableChanged += OnblockerWalkableChanged;
-			entity.Get<Blocker>().TransparencyChanged += OnBlockerTransparencyChanged;
+			entity.Get<Scenery>().WalkableChanged += OnblockerWalkableChanged;
+			entity.Get<Scenery>().TransparencyChanged += OnBlockerTransparencyChanged;
 		}
 
 		private void OnBlockerTransparencyChanged(Component sender, EventArgs @event) {
 			var position = sender.Entity.Get<GameObject>().Location;
-			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Transparent);
+			Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Scenery>().Transparent);
 		}
 
 		private void OnblockerWalkableChanged(Component sender, EventArgs @event) {
 			var position = sender.Entity.Get<GameObject>().Location;
-			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Walkable);			
+			Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Scenery>().Walkable);			
 		}
 
 		private void OnBlockerPositionChanged(Component sender, PositionChangedEvent e) {
@@ -124,9 +105,9 @@ namespace SkrGame.Universe.Locations {
 
 		private void SetBlocker(Point position) {
 			if (GetTerrain(position).Walkable)
-				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Walkable);
+				Cells[position.X, position.Y].Walkable = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Scenery>().Walkable);
 			if (GetTerrain(position).Transparent)
-				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Blocker>().Transparent);
+				Cells[position.X, position.Y].Transparent = blockers.Where(e => e.Get<GameObject>().Location == position).All(e => e.Get<Scenery>().Transparent);
 		}
 
 		public void SetTerrain(int x, int y, string t) {

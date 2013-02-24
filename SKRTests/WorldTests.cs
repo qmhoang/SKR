@@ -37,7 +37,14 @@ namespace SKRTests {
 
 		[Test]
 		public static void TestMethod() {
+			var lst = new List<int>
+			          {
+			          		11, 11, 2, 34, 2, 11
+			          };
 
+			foreach (var source in lst.Distinct()) {
+				Console.WriteLine(source);
+			}
 		}
 	}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Ogui.Core;
 using libtcod;
 
-namespace SKR.Universe {
+namespace SKR.UI {
 	public class AssetsManager {
 		private Dictionary<string, Tuple<char, Pigment>> assets;
 
@@ -62,7 +62,7 @@ namespace SKR.Universe {
 			assets.Add("SINK", new Tuple<char, Pigment>('n', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("BATH", new Tuple<char, Pigment>('D', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("SHOWER", new Tuple<char, Pigment>('H', new Pigment(ColorPresets.FloralWhite, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
-			assets.Add("TREE_SMALL", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Spade, new Pigment(ColorPresets.Green, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
+			assets.Add("TREE_SMALL", new Tuple<char, Pigment>((char)TCODSpecialCharacter.Spade, new Pigment(ColorPresets.Green, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("BED_WOODEN", new Tuple<char, Pigment>('B', new Pigment(new Color(145, 104, 58), ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("SHELF_WOOD", new Tuple<char, Pigment>('n', new Pigment(new Color(145, 104, 58), ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("SHELF_METAL", new Tuple<char, Pigment>('n', new Pigment(ColorPresets.LightGray, ColorPresets.Black, TCODBackgroundFlag.Alpha)));

@@ -14,7 +14,6 @@ using Ogui.UI;
 using SKR.UI.Menus;
 using SKR.UI.Menus.Debug;
 using SKR.UI.Prompts;
-using SKR.Universe;
 using SkrGame.Actions;
 using SkrGame.Actions.Combat;
 using SkrGame.Actions.Features;
@@ -389,10 +388,10 @@ namespace SKR.UI.Gameplay {
 														var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p);
 														sb.AppendLine(playerLocation.Level.GetTerrain(p).Definition);
 														foreach (var entity in entitiesAtLocation) {
-															sb.AppendFormat("Entity: {0} ", entity.Id);
+															sb.AppendFormat("Entity: {0} ", entity.Has<ReferenceId>() ? entity.Get<ReferenceId>().RefId : entity.Id.ToString());
 															sb.AppendFormat("Name: {0} ", Identifier.GetNameOrId(entity));
-															if (entity.Has<Blocker>())
-																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Blocker>().Transparent, entity.Get<Blocker>().Walkable);
+															if (entity.Has<Scenery>())
+																sb.AppendFormat("Transparent: {0}, Walkable: {1} ", entity.Get<Scenery>().Transparent, entity.Get<Scenery>().Walkable);
 
 															sb.AppendLine();
 														}

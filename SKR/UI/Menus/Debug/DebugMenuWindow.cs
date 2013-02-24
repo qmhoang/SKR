@@ -23,9 +23,10 @@ namespace SKR.UI.Menus.Debug {
 										  MinimumWidth = 20,
 										  Tooltip = "Nothing will block vision, see the entire map.",
 										  LabelAlignment = HorizontalAlignment.Left,
+										  InitialSelection = Program.SeeAll.Enabled ? 0 : 1,
 										  Items = new List<string>
 										          {
-										          		"Off", "On"
+										          		"On", "Off"
 										          }
 									  });
 
@@ -37,9 +38,10 @@ namespace SKR.UI.Menus.Debug {
 			                           		MinimumWidth = 20,
 			                           		Tooltip = "Heal 1000 hp every second.",
 			                           		LabelAlignment = HorizontalAlignment.Left,
+											InitialSelection = Program.GodMod.Enabled ? 0 : 1,
 											Items = new List<string>
 										          {
-										          		"Off", "On"
+										          		"On", "Off"
 										          }
 			                           });
 
