@@ -38,8 +38,8 @@ namespace SkrGame.Actions.Skills {
 
 		public override ActionResult OnProcess() {
 			if (feature.Get<LockedFeature>().Status == LockStatus.Opened) {
-				World.Log.Fail(String.Format("{0} isn't locked.", Identifier.GetNameOrId(feature)));
-				return ActionResult.Failed;
+				World.Log.Aborted(String.Format("{0} isn't locked.", Identifier.GetNameOrId(feature)));
+				return ActionResult.Aborted;
 			}
 
 			var person = Entity.Get<Person>();

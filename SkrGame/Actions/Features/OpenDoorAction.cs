@@ -44,7 +44,7 @@ namespace SkrGame.Actions.Features {
 				return ActionResult.Success;
 			}
 
-			World.Log.Fail(String.Format("{0} tries to {1}, but can't since it is already open.", EntityName, opening.OpenedDescription));
+			World.Log.Aborted(String.Format("{0} tries to {1}, but can't since it is already open.", EntityName, opening.OpenedDescription));
 			return ActionResult.Aborted;
 		}
 	}

@@ -6,6 +6,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using DEngine.Level;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
@@ -41,7 +42,7 @@ namespace SkrGame.Actions.Combat {
 					yield break;
 				}
 
-				var entitiesAt = currentLevel.GetEntitiesAt(location).Where(e => e.Has<DefendComponent>()).ToList();
+				var entitiesAt = currentLevel.GetEntitiesAt(location).FilteredBy<DefendComponent>().ToList();
 				if (entitiesAt.Count() > 0) {
 					foreach (var entity in entitiesAt) {
 						yield return entity;
@@ -78,7 +79,7 @@ namespace SkrGame.Actions.Combat {
 			IEnumerable<Entity> entitiesOnPath;
 			if (attackerLocation.Location == defenderLocation.Location) {
 				// suicide?
-				entitiesOnPath = attackerLocation.Level.GetEntitiesAt(defenderLocation.Location).Where(e => e.Has<DefendComponent>()).ToList();
+				entitiesOnPath = attackerLocation.Level.GetEntitiesAt(defenderLocation.Location).FilteredBy<DefendComponent>().ToList();
 
 			} else
 				entitiesOnPath = GetTargetsOnPath(attackerLocation.Level, attackerLocation.Location, defenderLocation.Location).ToList();

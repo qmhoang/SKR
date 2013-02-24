@@ -30,11 +30,11 @@ namespace SkrGame.Actions.Features {
 					World.Log.Normal(String.Format("{0} {1}.", EntityName, opening.ClosedDescription));
 					return ActionResult.Success;
 				} else {
-					World.Log.Normal(String.Format("{0} tries to {1}, but can't.", EntityName, opening.ClosedDescription));
+					World.Log.Fail(String.Format("{0} tries to {1}, but can't.", EntityName, opening.ClosedDescription));
 					return ActionResult.Failed;
 				}
 			}
-			World.Log.Fail(String.Format("{0} tries to {1}, but can't since it is already closed.", EntityName, opening.ClosedDescription));
+			World.Log.Aborted(String.Format("{0} tries to {1}, but can't since it is already closed.", EntityName, opening.ClosedDescription));
 			return ActionResult.Aborted;
 		}
 	}

@@ -25,7 +25,7 @@ namespace SkrGame.Actions.Items {
 				}
 				return ActionResult.SuccessNoTime;
 			} else {
-				World.Log.Fail("No items here to pick up.");
+				World.Log.Aborted("No items here to pick up.");
 				return ActionResult.Aborted;
 			}
 		}

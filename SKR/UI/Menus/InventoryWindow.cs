@@ -66,7 +66,7 @@ namespace SKR.UI.Menus {
 					                                      		ItemSelected = item => Equip(item, slot),
 					                                      }));					
 				else
-					World.Log.Fail("No items in inventory that go there.");
+					World.Log.Aborted("No items in inventory that go there.");
 			}
 
 		}
@@ -76,9 +76,9 @@ namespace SKR.UI.Menus {
 			foreach (string slotNeeded in item.Get<Equipable>().SlotsOccupied[slot]) {
 				if (equipment.IsSlotEquipped(slotNeeded)) {
 					canEquip = false;
-					World.Log.Fail(String.Format("{0} cannot go there, is takes multiple slots and {1} is already occupied.",
-					                             Identifier.GetNameOrId(item),
-					                             slotNeeded));
+					World.Log.Aborted(String.Format("{0} cannot go there, is takes multiple slots and {1} is already occupied.",
+					                                Identifier.GetNameOrId(item),
+					                                slotNeeded));
 
 					break;
 				}

@@ -4,6 +4,7 @@ using System.Linq;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
@@ -51,7 +52,7 @@ namespace SkrGame.Actions.Movement {
 				location.Location = newLocation;
 
 				// check if we're near anything
-				var nearEntities = location.Level.GetEntities().Where(e => e.Has<PassiveFeature>());
+				var nearEntities = location.Level.GetEntities().FilteredBy<PassiveFeature>();
 
 				foreach (var e in nearEntities) {
 					e.Get<PassiveFeature>().Near(Entity, e);
