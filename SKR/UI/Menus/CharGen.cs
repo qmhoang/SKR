@@ -32,7 +32,7 @@ namespace SKR.UI.Menus {
 			                   {
 			                   		Label = "Name: ",
 			                   		MaximumCharacters = 20,
-			                   		//                                  HasFrameBorder = false,
+//                                  HasFrameBorder = false,
 			                   		TopLeftPos = new Point(2, 2),
 			                   		Tooltip = "Enter your character's name",
 			                   		StartingField = "player",
@@ -158,50 +158,14 @@ namespace SKR.UI.Menus {
 			this.ExitWindow();
 			World.CurrentLevel = World.MapFactory.Construct("TestHouse");
 
-			var player = World.EntityManager.Create(new List<DEngine.Entities.Component>
-			                                        {
-			                                        		new Sprite("player", Sprite.PLAYER_LAYER),
-			                                        		new Identifier("Player"),
-			                                        		new GameObject(0, 0, World.CurrentLevel),
-			                                        		new ActorComponent(new Player(), new AP()),
-			                                        		new Person(),
-			                                        		DefendComponent.CreateHuman(50),
-			                                        		new ContainerComponent(),
-			                                        		new EquipmentComponent(),
-			                                        		new VisibleComponent(10),
-			                                        		new SightComponent()
-			                                        });
 
-			player.Add(new MeleeComponent(new MeleeComponent.Template
-			                              {
-			                              		ActionDescription = "punch",
-			                              		ActionDescriptionPlural = "punches",
-			                              		Skill = "skill_unarmed",
-			                              		HitBonus = 0,
-			                              		Damage = Rand.Constant(-5),
-			                              		DamageType = Combat.DamageTypes["crush"],
-			                              		Penetration = 1,
-			                              		WeaponSpeed = 100,
-			                              		APToReady = 1,
-			                              		Reach = 0,
-			                              		Strength = 1,
-			                              		Parry = 0
-			                              }));
+			World.Player = World.EntityManager.Create(World.EntityFactory.Get("player")).Add(new GameObject(0, 0, World.CurrentLevel));
 
-			World.Player = player;
+			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("boots")).Add(new GameObject(1, 1, World.CurrentLevel)), "Feet", true).OnProcess();
+			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("jeans")).Add(new GameObject(1, 1, World.CurrentLevel)), "Legs", true).OnProcess();
+			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("shirt")).Add(new GameObject(1, 1, World.CurrentLevel)), "Torso", true).OnProcess();
 
-			var npc = World.EntityManager.Create(new List<DEngine.Entities.Component>
-			                                     {
-			                                     		new Sprite("npc", Sprite.ACTOR_LAYER),
-			                                     		new Identifier("npc"),
-			                                     		new GameObject(6, 2, World.CurrentLevel),
-			                                     		new ActorComponent(new DoNothing(), new AP()),
-			                                     		new Person(),
-			                                     		DefendComponent.CreateHuman(50),
-			                                     		new VisibleComponent(10),
-			                                     		new ContainerComponent(),
-			                                     		new EquipmentComponent(),
-			                                     });
+			var npc = World.EntityManager.Create(World.EntityFactory.Get("npc")).Add(new GameObject(4, 2, World.CurrentLevel));
 
 			World.EntityManager.Create(World.EntityFactory.Get("smallknife")).Add(new GameObject(1, 1, World.CurrentLevel));
 			World.EntityManager.Create(World.EntityFactory.Get("axe")).Add(new GameObject(1, 1, World.CurrentLevel));
@@ -213,21 +177,6 @@ namespace SKR.UI.Menus {
 
 			var armor = World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
 			new EquipItemAction(npc, armor, "Torso", true).OnProcess();
-			npc.Add(new MeleeComponent(new MeleeComponent.Template
-			                           {
-			                           		ActionDescription = "punch",
-			                           		ActionDescriptionPlural = "punches",
-			                           		Skill = "skill_unarmed",
-			                           		HitBonus = 0,
-			                           		Damage = Rand.Constant(-5),
-			                           		DamageType = Combat.DamageTypes["crush"],
-			                           		Penetration = 1,
-			                           		WeaponSpeed = 100,
-			                           		APToReady = 1,
-			                           		Reach = 0,
-			                           		Strength = 1,
-			                           		Parry = 0
-			                           }));
 			World.Initialize();
 
 			ParentApplication.Push(new GameplayWindow(new SkrWindowTemplate()

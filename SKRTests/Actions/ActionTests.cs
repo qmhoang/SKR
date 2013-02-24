@@ -4,6 +4,7 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using NUnit.Framework;
+using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
@@ -34,6 +35,25 @@ namespace SKRTests.Actions {
 
 			World.Player = Entity = EntityManager.Create(new List<Component>
 			                                             {
+			                                             		new Sprite("player", Sprite.ACTOR_LAYER),
+			                                             		DefendComponent.CreateHuman(50),
+			                                             		new VisibleComponent(10),
+			                                             		new SightComponent(),
+			                                             		new MeleeComponent(new MeleeComponent.Template
+			                                             		                   {
+			                                             		                   		ActionDescription = "punch",
+			                                             		                   		ActionDescriptionPlural = "punches",
+			                                             		                   		Skill = "skill_unarmed",
+			                                             		                   		HitBonus = 0,
+			                                             		                   		Damage = Rand.Constant(-5),
+			                                             		                   		DamageType = Combat.DamageTypes["crush"],
+			                                             		                   		Penetration = 1,
+			                                             		                   		WeaponSpeed = 100,
+			                                             		                   		APToReady = 1,
+			                                             		                   		Reach = 0,
+			                                             		                   		Strength = 1,
+			                                             		                   		Parry = 0
+			                                             		                   }),
 			                                             		new GameObject(2, 2, Level),
 			                                             		new ContainerComponent(),
 			                                             		new ActorComponent(new Player(), new AP()),
@@ -46,7 +66,7 @@ namespace SKRTests.Actions {
 			                                             		                       })
 			                                             });
 
-			
+
 		}
 	}
 }

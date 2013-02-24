@@ -25,11 +25,7 @@ namespace SkrGame.Universe.Entities.Items {
 		private int amount;
 		public int Amount {
 			get {
-				if (StackType != StackType.Hard)
-					return 1;
-				if (amount <= 0)
-					return 1;
-				return amount;
+				return StackType != StackType.Hard ? 1 : amount;
 			}
 			set {
 				Contract.Requires<ArgumentException>(StackType == StackType.Hard);
@@ -54,7 +50,6 @@ namespace SkrGame.Universe.Entities.Items {
 		}
 
 		public override Component Copy() {
-
 			var copy = new Item
 			           {
 			           		StackType = StackType,

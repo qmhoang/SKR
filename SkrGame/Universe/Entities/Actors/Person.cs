@@ -85,13 +85,20 @@ namespace SkrGame.Universe.Entities.Actors {
 			Skills = new StaticDictionary<string, Skill>(
 					new Dictionary<string, Skill>
 					{
+							// STRENGTH
 							{"skill_jumping", new Skill("Jumping", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_strength"] + t.Rank)},
+
+							// AGILITY
+							{"skill_stealth", new Skill("Stealth", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
 							{"skill_unarmed", new Skill("Unarmed", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_pistol", new Skill("Pistol", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_knife", new Skill("Knife", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_axe", new Skill("Axe", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
+							{"skill_2haxe", new Skill("Two-Handed Axe", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+
+							// INTELLECT
 							{"skill_lockpicking", new Skill("Lockpicking", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},
 					});
 		}

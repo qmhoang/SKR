@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
@@ -25,16 +26,14 @@ namespace SkrGame.Universe.Entities.Items {
 				Resistances = resistances;
 			}
 		}
-		public Dictionary<string, Part> Defenses { get; private set; }
+		public StaticDictionary<string, Part> Defenses { get; private set; }
 		
 		public int DonTime { get; protected set; }
 
-		private ArmorComponent() {
-			Defenses = new Dictionary<string, Part>();
-		}
+		private ArmorComponent() {}
 
 		internal ArmorComponent(Template template) {
-			Defenses = new Dictionary<string, Part>();
+			var d = new Dictionary<string, Part>();
 
 			foreach (var locationProtected in template.Defenses) {
 				var resistances = new Dictionary<DamageType, int>(locationProtected.Resistances);
@@ -46,21 +45,20 @@ namespace SkrGame.Universe.Entities.Items {
 					}
 				}
 
-				Defenses.Add(locationProtected.BodyPart, new Part(locationProtected.BodyPart, locationProtected.Coverage, resistances));
+				d.Add(locationProtected.BodyPart, new Part(locationProtected.BodyPart, locationProtected.Coverage, resistances));
 			}
+
+			Defenses = new StaticDictionary<string, Part>(d);
 
 			DonTime = template.DonTime;
 		}
 
 		public override Component Copy() {
-			var armor = new ArmorComponent
+			return new ArmorComponent
 			            {
-			            		DonTime = DonTime
-			            };
-			foreach (var defense in Defenses) {
-				armor.Defenses.Add(defense.Key, new Part(defense.Value.BodyPart, defense.Value.Coverage, new Dictionary<DamageType, int>(defense.Value.Resistances)));
-			}			
-			return new ArmorComponent();
+			            		DonTime = DonTime,
+			            		Defenses = new StaticDictionary<string, Part>(Defenses)
+			            };			
 		}
 	}
 }

@@ -133,6 +133,7 @@
     <Compile Include="Systems\ActionSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
+    <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
     <Compile Include="Universe\Entities\Controllers\DoNothing.cs" />
     <Compile Include="Universe\Entities\Actors\Person.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Universe\Factories\FeatureFactory.cs" />
     <Compile Include="Universe\Entities\Features\Scenery.cs" />
     <Compile Include="Universe\Entities\Features\Opening.cs" />
+    <Compile Include="Universe\Factories\PersonFactory.cs" />
     <Compile Include="Universe\Locations\Level.cs" />
     <Compile Include="Universe\Locations\Terrain.cs" />
     <Compile Include="Universe\World.cs" />

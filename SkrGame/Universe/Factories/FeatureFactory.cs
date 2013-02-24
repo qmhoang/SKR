@@ -12,7 +12,7 @@ using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Factories {
-	public class FeatureFactory {
+	public static class FeatureFactory {
 		private const int WINDOW_USAGE_AP_COST = World.DEFAULT_SPEED;
 
 		private static Opening Door(string openAsset, string closedAsset) {
