@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using DEngine.Components;
 using DEngine.Entities;
 using NUnit.Framework;
-using SkrGame.Actions;
 using SkrGame.Actions.Items;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
-namespace SKRTests.Actions {
+namespace SKRTests.Actions.Items {
 	public class ItemTestsHelper : ActionTests {
 		protected Entity Item;
 		protected Entity StackedItem0;

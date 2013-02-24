@@ -43,23 +43,23 @@ namespace SkrGame.Actions.Skills {
 			}
 
 			var person = Entity.Get<Person>();
-			double difficulty = Item.Get<Lockpick>().Quality + person.Skills["skill_lockpicking"].Value - feature.Get<LockedFeature>().Quality;
+			double easeOfLock = Item.Get<Lockpick>().Quality + person.Skills["skill_lockpicking"].Value - feature.Get<LockedFeature>().Quality;
 
 			double roll = World.SkillRoll();
 
 			// intellect roll, reduces times
-			var bonus = -(roll - difficulty);
+			var bonus = -(roll - easeOfLock);
 
-			if (roll <= difficulty) {
+			if (roll <= easeOfLock) {
 				apRequired -= World.SecondsToActionPoints(bonus);				
 			}
 
 			Logger.InfoFormat("{0} attempts in Lockpicking/Intellect on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
-			                  Identifier.GetNameOrId(Entity),
+			                  EntityName,
 			                  Identifier.GetNameOrId(feature),
-			                  difficulty,
+			                  easeOfLock,
 			                  roll,
-			                  World.ChanceOfSuccess(difficulty));
+			                  World.ChanceOfSuccess(easeOfLock));
 
 			Entity.Get<ActorComponent>().Enqueue(
 					new LongAction(Entity,
@@ -75,14 +75,14 @@ namespace SkrGame.Actions.Skills {
 					               		                 bonus;
 
 					               		Logger.InfoFormat("{0} attempts in Lockpicking/Agility on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
-					               		                  Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature), agiDiff, agiRoll, World.ChanceOfSuccess(agiDiff));
+					               		                  EntityName, Identifier.GetNameOrId(feature), agiDiff, agiRoll, World.ChanceOfSuccess(agiDiff));
 
 					               		if (agiRoll <= agiDiff) {
 					               			feature.Get<LockedFeature>().Status = LockStatus.Opened;
-					               			World.Log.Good(String.Format("{0} succeeds in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
+					               			World.Log.Good(String.Format("{0} succeeds in lockpicking {1}.", EntityName, Identifier.GetNameOrId(feature)));
 					               			return ActionResult.Success;
 					               		}
-					               		World.Log.Fail(String.Format("{0} fails in lockpicking {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(feature)));
+					               		World.Log.Fail(String.Format("{0} fails in lockpicking {1}.", EntityName, Identifier.GetNameOrId(feature)));
 					               		return ActionResult.Failed;
 					               	}));
 

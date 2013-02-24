@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
@@ -12,6 +14,7 @@ namespace SkrGame.Actions.Items {
 
 		public DropItemAction(Entity entity, Entity item, int amount = 1)
 				: base(entity, item) {
+			Contract.Requires<ArgumentException>(entity.Get<ContainerComponent>().Contains(item));
 			this.amount = amount;
 		}
 
@@ -36,13 +39,13 @@ namespace SkrGame.Actions.Items {
 					var ne = Universe.Entities.Items.Item.Split(Item, amount);
 					ne.Get<VisibleComponent>().Reset();
 				}
-				World.Log.Normal(string.Format("{0} drops {2} {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item), amount));
+				World.Log.Normal(string.Format("{0} drops {2} {1}.", EntityName, ItemName, amount));
 			} else {
 				if (Item.Has<VisibleComponent>()) {
 					Item.Get<VisibleComponent>().Reset();
 				}
 				Entity.Get<ContainerComponent>().Remove(Item);
-				World.Log.Normal(string.Format("{0} drops {1}.", Identifier.GetNameOrId(Entity), Identifier.GetNameOrId(Item)));
+				World.Log.Normal(string.Format("{0} drops {1}.", EntityName, ItemName));
 			}
 			return ActionResult.Success;
 		}

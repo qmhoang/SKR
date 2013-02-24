@@ -1,16 +1,14 @@
 using DEngine.Core;
-using DEngine.Entities;
 using NUnit.Framework;
-using SkrGame.Actions;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
 
-namespace SKRTests.Actions {
+namespace SKRTests.Actions.Items {
 	[TestFixture]
 	public class GetItemActionTests : ItemTestsHelper {
 		[Test]
-		public void PickUpItem() {
+		public void TestPickUpItem() {
 			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 0);
 			Assert.AreEqual(Item.Get<VisibleComponent>().VisibilityIndex, 10);
 			Assert.AreEqual(Item.Get<GameObject>().Location, new Point(-1, -1));
@@ -24,7 +22,7 @@ namespace SKRTests.Actions {
 		}
 
 		[Test]
-		public void PickUpStacked() {
+		public void TestPickUpStacked() {
 			StackedItem0.Get<Item>().Amount = 3;
 			StackedItem1.Get<Item>().Amount = 3;
 
