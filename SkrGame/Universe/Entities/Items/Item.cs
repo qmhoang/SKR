@@ -84,7 +84,6 @@ namespace SkrGame.Universe.Entities.Items {
 
 	public enum StackType {
 		None,
-		Soft,
 		Hard
 	}
 

@@ -9,7 +9,7 @@ namespace SkrGame.Universe.Entities.Items {
 		public class Template {
 			public List<Part> Defenses { get; set; }
 
-			public int DonTime { get; set; }
+			public int DonTime { get; set; } // todo move to equipable?
 		}
 
 		public class Part {

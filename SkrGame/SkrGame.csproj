@@ -133,6 +133,7 @@
     <Compile Include="Systems\ActionSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
+    <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
     <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
     <Compile Include="Universe\Entities\Controllers\DoNothing.cs" />

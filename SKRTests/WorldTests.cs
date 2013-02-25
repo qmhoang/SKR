@@ -16,9 +16,9 @@ namespace SKRTests {
 		[Test]
 		public static void TestAPFunctions() {
 			// an action that takes 2 second should equal 200  AP
-			Assert.AreEqual(World.SecondsToActionPoints(2), 200);
+			Assert.AreEqual(World.SecondsToActionPoints(2), World.ONE_SECOND_IN_AP * 2);
 
-			Assert.AreEqual(World.SecondsToSpeed(10), 10);
+			Assert.AreEqual(World.SecondsToSpeed(10), World.DEFAULT_SPEED / 10);
 
 			Assert.AreEqual(World.SecondsToSpeed(World.SpeedToSeconds(5)), 5);
 			Assert.AreEqual(World.SecondsToSpeed(World.SpeedToSeconds(9)), 9);

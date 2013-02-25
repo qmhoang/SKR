@@ -6,43 +6,8 @@ using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class AmmoComponent : Component {
-		public class Template {
-			public string Type { get; set; }
-
-			public string ActionDescription { get; set; }
-			public string ActionDescriptionPlural { get; set; }
-		}
-
-		public string Type { get; private set; }
-
-		public string ActionDescription { get; private set; }
-		public string ActionDescriptionPlural { get; private set; }
-
-		private AmmoComponent() { }
-
-		internal AmmoComponent(Template template) {
-			Contract.Requires<ArgumentNullException>(template != null, "template");
-			ActionDescription = template.ActionDescription;
-			ActionDescriptionPlural = template.ActionDescriptionPlural;
-
-			Type = template.Type;
-		}
-
-		public override Component Copy() {
-			return new AmmoComponent
-			       {
-			       		ActionDescription = ActionDescription,
-			       		ActionDescriptionPlural = ActionDescriptionPlural,
-
-			       		Type = Type,
-			       };
-		}
-	}
 	// todo ammo cases
-
-
-
+	
 	public class RangeComponent : Component {
 		public class Template {
 			public int Accuracy { get; set; }
@@ -65,10 +30,14 @@ namespace SkrGame.Universe.Entities.Items {
 				get { return World.ActionPointsToSpeed(APToReload); }
 				set { APToReload = World.SpeedToActionPoints(value); }
 			}
+
+			public bool SwapClips { get; set; }	// for revolvers and shotguns
+
 			public int Recoil { get; set; }
 			public int Reliability { get; set; }
 			public string AmmoType { get; set; }
 			public int Shots { get; set; }
+			public bool OneInTheChamber { get; set; }	// does gun have a chamber that allows a bullet inside
 
 			public string ActionDescription { get; set; }
 			public string ActionDescriptionPlural { get; set; }
@@ -110,19 +79,22 @@ namespace SkrGame.Universe.Entities.Items {
 		public int Strength { get; protected set; }
 
 		public int Range { get; protected set; }
+
 		public int APToReload { get; protected set; }
+		public bool SwapClips { get; private set; }	// for revolvers and shotguns
 
 		public int Recoil { get; protected set; }
 		public int Reliability { get; protected set; }
 		public string AmmoType { get; protected set; }
 		public int Shots { get; set; }
 		public int ShotsRemaining { get; set; }
+		public bool OneInTheChamber { get; private set; }
 
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
 			Contract.Invariant(Recoil >= 0);
-			Contract.Invariant(Shots >= ShotsRemaining);
+			Contract.Invariant(OneInTheChamber ? Shots + 1 >= ShotsRemaining : Shots >= ShotsRemaining);
 			Contract.Invariant(Shots > 0);
 			Contract.Invariant(ShotsRemaining >= 0);
 			Contract.Invariant(Accuracy >= 0);
@@ -140,45 +112,9 @@ namespace SkrGame.Universe.Entities.Items {
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
 		}
 
-		private RangeComponent(	int str,
-								int acc,
-								Rand dmg,
-								DamageType type,
-								double pen,
-								Action<Entity, Entity> onhit,
-								int range,
-								int apready,
-								int apAtk,
-								int apReload,
-								int recoil,
-								int rel,
-								string ammo,
-								int shots,
-								int shotsRem,
-								string skill,
-								string actionDesc,
-								string actionDescPlural) {
-			Strength = str;
-			Accuracy = acc;
-			Damage = dmg;
-			DamageType = type;
-			Penetration = pen;
-			OnHit = onhit;
-			Range = range;
-			APToReady = apready;
-			APToAttack = apAtk;
-			APToReload = apReload;
-			Recoil = recoil;
-			Reliability = rel;
-			AmmoType = ammo;
-			Shots = shots;
-			ShotsRemaining = shotsRem;
-			Skill = skill;
-			ActionDescription = actionDesc;
-			ActionDescriptionPlural = actionDescPlural;
-		}
+		private RangeComponent() { }
 
-		internal RangeComponent(Template template) {
+		public RangeComponent(Template template) {
 			ActionDescription = template.ActionDescription;
 			ActionDescriptionPlural = template.ActionDescriptionPlural;
 
@@ -197,12 +133,39 @@ namespace SkrGame.Universe.Entities.Items {
 			Recoil = template.Recoil;
 			Reliability = template.Reliability;
 			AmmoType = template.AmmoType;
-			ShotsRemaining = Shots = template.Shots;
+			OneInTheChamber = template.OneInTheChamber;
+			ShotsRemaining = template.OneInTheChamber ? template.Shots + 1 : template.Shots;
+			Shots = template.Shots;
+			SwapClips = template.SwapClips;
 		}
 
 		public override Component Copy() {
-			return new RangeComponent(Strength, Accuracy, Damage, DamageType, Penetration, OnHit, Range, APToReady, APToAttack, APToReload, Recoil, Reliability, AmmoType, Shots, ShotsRemaining, Skill, ActionDescription,
-			                          ActionDescriptionPlural);
+			return new RangeComponent()
+			       {
+			       		ActionDescription = ActionDescription,
+			       		ActionDescriptionPlural = ActionDescriptionPlural,
+
+			       		Skill = Skill,
+						
+			       		Accuracy = Accuracy,
+			       		Damage = Damage,
+			       		DamageType = DamageType,
+			       		Penetration = Penetration,
+			       		OnHit = OnHit,
+			       		APToReady = APToReady,
+			       		APToAttack = APToAttack,
+			       		Range = Range,
+			       		APToReload = APToReload,
+			       		Recoil = Recoil,
+			       		Reliability = Reliability,
+			       		AmmoType = AmmoType,
+			       		ShotsRemaining = Shots,
+						Shots = Shots,
+						OneInTheChamber = OneInTheChamber,
+						SwapClips = SwapClips,
+						Strength = Strength,
+			       };
+			
 		}
 	}
 }
