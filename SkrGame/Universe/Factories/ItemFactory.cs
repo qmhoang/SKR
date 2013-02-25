@@ -144,6 +144,8 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 2,
 			            				Reliability = 18,
 			            				Strength = 8,
+										SwapClips = true,
+										OneInTheChamber = true,
 			            				AmmoType = "9x19mm",
 			            		}));
 
@@ -175,6 +177,8 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 2,
 			            				Reliability = 18,
 			            				Strength = 8,
+										SwapClips = true,
+										OneInTheChamber = true,
 			            				AmmoType = ".40S&W"
 			            		}));
 
@@ -206,6 +210,8 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 2,
 			            				Reliability = 18,
 			            				Strength = 9,
+										SwapClips = false,
+										OneInTheChamber = false,
 			            				AmmoType = ".38S"
 			            		}));
 
@@ -237,6 +243,8 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 3,
 			            				Reliability = 18,
 			            				Strength = 10,
+										SwapClips = false,
+										OneInTheChamber = false,
 			            				AmmoType = ".357M"
 			            		}));
 
@@ -268,6 +276,8 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 3,
 			            				Reliability = 18,
 			            				Strength = 10,
+										SwapClips = false,
+										OneInTheChamber = false,
 			            				AmmoType = ".357M"
 			            		}));
 
@@ -653,7 +663,7 @@ namespace SkrGame.Universe.Factories {
 			                               {
 			                               		Bonuses = new Dictionary<string, int>
 			                               		          {
-			                               		          		{"skill_stealth", 1}
+			                               		          		{"skill_stealth", 3}
 			                               		          }
 			                               }));
 
@@ -670,7 +680,7 @@ namespace SkrGame.Universe.Factories {
 			                              {
 			                              		Bonuses = new Dictionary<string, int>
 			                              		          {
-			                              		          		{"skill_stealth", -1}
+			                              		          		{"skill_stealth", -2}
 			                              		          }
 			                              }));
 
@@ -871,7 +881,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("footballpads", "shirt",
 			            new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
-			            new Identifier("Football Shoulder Pads"),
+			            new Identifier("Football Shoulder Pads", "Shoulder pads for football players.  Jersey not included."),
 			            new Item(new Item.Template
 			                     {
 			                     		Value = 5000,
@@ -900,7 +910,7 @@ namespace SkrGame.Universe.Factories {
 			            				           		                        		{Combat.DamageTypes["pierce_huge"], 4},
 			            				           		                        		{Combat.DamageTypes["burn"], 5},
 			            				           		                        }),
-			            				           		new ArmorComponent.Part("Arms",
+			            				           		new ArmorComponent.Part("Left Arm",
 			            				           		                        30,
 			            				           		                        new Dictionary<DamageType, int>
 			            				           		                        {
@@ -913,7 +923,21 @@ namespace SkrGame.Universe.Factories {
 			            				           		                        		{Combat.DamageTypes["pierce_large"], 4},
 			            				           		                        		{Combat.DamageTypes["pierce_huge"], 4},
 			            				           		                        		{Combat.DamageTypes["burn"], 4},
-			            				           		                        })
+			            				           		                        }),
+			            				           		new ArmorComponent.Part("Right Arm",
+			            				           		                        30,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 5},
+			            				           		                        		{Combat.DamageTypes["crush"], 8},
+			            				           		                        		{Combat.DamageTypes["impale"], 5},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 4},
+			            				           		                        		{Combat.DamageTypes["burn"], 4},
+			            				           		                        }),
 			            				           }
 			            		}));
 		}

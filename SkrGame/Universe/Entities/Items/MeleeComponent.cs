@@ -74,36 +74,21 @@ namespace SkrGame.Universe.Entities.Items {
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
 		}
 
-		private MeleeComponent( int str,
-								int hit,
-								Rand dmg,
-								DamageType type,
-								Action<Entity> onhit,
-								double pen,
-								int apready,
-								int apAtk,
-								int reach,
-								int parry,
-								int target,
-								string skill,
-								string actionDesc,
-								string actionDescPlural) {
-			ActionDescription = actionDesc;
-			ActionDescriptionPlural = actionDescPlural;
-
+		private MeleeComponent(string actionDescription, string actionDescriptionPlural, int hitBonus, DamageType damageType, double penetration, Action<Entity> onHit, int apToAttack, int apToReady, string skill, Rand damage, int strength, int reach, int parry, int targetting) {
+			ActionDescription = actionDescription;
+			ActionDescriptionPlural = actionDescriptionPlural;
+			HitBonus = hitBonus;
+			DamageType = damageType;
+			Penetration = penetration;
+			OnHit = onHit;
+			APToAttack = apToAttack;
+			APToReady = apToReady;
 			Skill = skill;
-
-			Strength = str;
-			HitBonus = hit;
-			Damage = dmg;
-			DamageType = type;
-			OnHit = onhit;
-			Penetration = pen;
-			APToReady = apready;
-			APToAttack = apAtk;
+			Damage = damage;
+			Strength = strength;
 			Reach = reach;
 			Parry = parry;
-			Targetting = target;
+			Targetting = targetting;
 		}
 
 		public MeleeComponent(Template template) {
@@ -130,7 +115,7 @@ namespace SkrGame.Universe.Entities.Items {
 		}
 
 		public override Component Copy() {
-			return new MeleeComponent(Strength, HitBonus, Damage, DamageType, OnHit, Penetration, APToReady, APToAttack, Reach, Parry, Targetting, Skill, ActionDescription, ActionDescriptionPlural);
+			return new MeleeComponent(ActionDescription, ActionDescriptionPlural, HitBonus, DamageType, Penetration, OnHit, APToAttack, APToReady, Skill, Damage, Strength, Reach, Parry, Targetting);
 		}
 	}
 }
