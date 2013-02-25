@@ -45,10 +45,10 @@ namespace SKR.UI.Gameplay {
 			base.OnSettingUp();
 
 			canvas = new Canvas(Size);
-			World.Turn += World_Turn;
+			World.ActionProcessed += World_ActionProcessed;
 		}
 
-		void World_Turn(World sender, EventArgs e) {
+		void World_ActionProcessed(World sender, EventArgs e) {
 			DrawGame();
 		}
 

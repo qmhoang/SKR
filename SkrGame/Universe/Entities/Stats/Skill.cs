@@ -24,7 +24,7 @@ namespace SkrGame.Universe.Entities.Stats {
 
 		private readonly Func<Person, Skill, int> calculateRealRank;
 
-		public Skill(string name, Person owner, int max, int initialRank = 0, Func<Person, Skill, int> calcRealRank = null) : base(name) {
+		public Skill(string name, Person owner, int initialRank, int max, Func<Person, Skill, int> calcRealRank = null) : base(name) {
 			Owner = owner;
 			Rank = initialRank;
 			MaximumValue = max;

@@ -82,14 +82,14 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		private DefendComponent(int health, int maxHealth, List<AttackablePart> bodyParts) {
-			Health = new Attribute("Health", maxHealth, health);
+			Health = new Attribute("Health", "HP ", maxHealth, health);
 
 			this.bodyParts = bodyParts;
 		}
 
 		public DefendComponent(int health, List<AttackablePart> bodyParts) {
 			Contract.Requires<ArgumentException>(bodyParts.Count > 0);
-			Health = new Attribute("Health", health, health);
+			Health = new Attribute("Health", "HP ", health, health);
 			this.bodyParts = bodyParts;
 
 			foreach (var part in bodyParts) {

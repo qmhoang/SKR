@@ -44,36 +44,45 @@ namespace SkrGame.Universe.Entities.Actors {
 			return Skills[skill];
 		}
 
+		private const int SKILL_INITIAL_RANK = 0;
+		private const int SKILL_MAX_RANK = World.MEAN * 2;
+
+		private const int ATTRIBUTE_INITIAL_RANK = World.MEAN;
+		private const int ATTRIBUTE_MAX_RANK = World.MEAN * 2;
+
+		private const int STAT_INITIAL_RANK = World.MEAN;
+		private const int STAT_MAX_RANK = World.MEAN;
+
 		public Person() {
 			Posture = Posture.Stand;
 			
 			Attributes = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
 					{
-							{"attribute_strength", new Attribute("Strength", World.MEAN * 2, World.MEAN)},
-							{"attribute_agility", new Attribute("Agility", World.MEAN * 2, World.MEAN)},
-							{"attribute_constitution", new Attribute("Constitution", World.MEAN * 2, World.MEAN)},
+							{"attribute_strength",		new Attribute("Strength",		"STR", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
+							{"attribute_agility",		new Attribute("Agility",		"AGI", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
+							{"attribute_constitution",	new Attribute("Constitution",	"CON", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
 
-							{"attribute_intellect", new Attribute("Intellect", World.MEAN * 2, World.MEAN)},
-							{"attribute_cunning", new Attribute("Cunning", World.MEAN * 2, World.MEAN)},
-							{"attribute_resolve", new Attribute("Resolve", World.MEAN * 2, World.MEAN)},
+							{"attribute_intellect",		new Attribute("Intellect",		"INT", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
+							{"attribute_cunning",		new Attribute("Cunning",		"CUN", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
+							{"attribute_resolve",		new Attribute("Resolve",		"RES", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
 
-							{"attribute_presence", new Attribute("Presence", World.MEAN * 2, World.MEAN)},
-							{"attribute_grace", new Attribute("Grace", World.MEAN * 2, World.MEAN)},
-							{"attribute_willpower", new Attribute("Willpower", World.MEAN * 2, World.MEAN)},
+							{"attribute_presence",		new Attribute("Presence",		"PRE", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
+							{"attribute_grace",			new Attribute("Grace",			"GRA", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
+							{"attribute_willpower",		new Attribute("Willpower",		"WIL", ATTRIBUTE_INITIAL_RANK, ATTRIBUTE_MAX_RANK)},
 					});
 
 			Stats = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
 					{
-							{"stat_stamina", new Attribute("Stamina", World.MEAN, World.MEAN)},
-							{"stat_composure", new Attribute("Composure", World.MEAN, World.MEAN)},
+							{"stat_stamina",			new Attribute("Stamina",		"SP ", STAT_INITIAL_RANK, STAT_MAX_RANK)},
+							{"stat_composure",			new Attribute("Composure",		"CP ", STAT_INITIAL_RANK, STAT_MAX_RANK)},
 
-							{"stat_energy", new Attribute("Energy", World.MEAN, World.MEAN)},
-							{"stat_food", new Attribute("Food", World.MEAN, World.MEAN)},
-							{"stat_water", new Attribute("Water", World.MEAN, World.MEAN)},
-							{"stat_bladder", new Attribute("Bladder", World.MEAN, World.MEAN)},
-							{"stat_cleanliness", new Attribute("Cleanliness", World.MEAN, World.MEAN)},
+							{"stat_energy",				new Attribute("Energy",			"SLP", STAT_INITIAL_RANK, STAT_MAX_RANK)},
+							{"stat_food",				new Attribute("Food",			"FOD", STAT_INITIAL_RANK, STAT_MAX_RANK)},
+							{"stat_water",				new Attribute("Water",			"H2O", STAT_INITIAL_RANK, STAT_MAX_RANK)},
+							{"stat_bladder",			new Attribute("Bladder",		"BLD", STAT_INITIAL_RANK, STAT_MAX_RANK)},
+							{"stat_cleanliness",		new Attribute("Cleanliness",	"CLN", STAT_INITIAL_RANK, STAT_MAX_RANK)},
 
 							// social?  - composure will replace for player
 							// environment - probably not necessary
@@ -84,20 +93,26 @@ namespace SkrGame.Universe.Entities.Actors {
 					new Dictionary<string, Skill>
 					{
 							// STRENGTH
-							{"skill_jumping", new Skill("Jumping", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_strength"] + t.Rank)},
+							{"skill_jumping",			new Skill("Jumping",		this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_strength"] + t.Rank)},
 
 							// AGILITY
-							{"skill_stealth", new Skill("Stealth", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							{"skill_stealth",			new Skill("Stealth",		this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
-							{"skill_unarmed", new Skill("Unarmed", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
-							{"skill_pistol", new Skill("Pistol", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
-							{"skill_knife", new Skill("Knife", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
-							{"skill_axe", new Skill("Axe", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							{"skill_unarmed",			new Skill("Unarmed",		this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							{"skill_pistol",			new Skill("Pistol",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							{"skill_knife",				new Skill("Knife",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							{"skill_axe",				new Skill("Axe",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
-							{"skill_2haxe", new Skill("Two-Handed Axe", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							{"skill_2haxe",				new Skill("Two-Handed Axe", this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
 							// INTELLECT
-							{"skill_lockpicking", new Skill("Lockpicking", this, 100, 0, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},
+							{"skill_lockpicking",		new Skill("Lockpicking",	this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},
+
+							// PRESENCE
+							// skill_intimidation
+							
+							// GRACE
+							// skill_manipulation
 					});
 		}
 

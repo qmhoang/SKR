@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.Contracts;
 using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Actions.Items {
@@ -12,6 +13,16 @@ namespace SkrGame.Actions.Items {
 			Contract.Requires<ArgumentNullException>(item != null, "item");
 			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
 			Item = item;
+		}
+
+		protected void MoveItemToEntityLocation(Entity i) { 
+			if (i.Has<GameObject>())
+				i.Get<GameObject>().Location = Entity.Get<GameObject>().Location;
+		}
+
+		protected void MakeInvisible(Entity i) { 
+			if (i.Has<VisibleComponent>())
+				i.Get<VisibleComponent>().VisibilityIndex = -1;
 		}
 	}
 }

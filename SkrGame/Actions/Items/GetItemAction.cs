@@ -39,12 +39,10 @@ namespace SkrGame.Actions.Items {
 
 		private void Get(Entity i) {
 			// make the item we just added invisible
-			if (i.Has<VisibleComponent>())
-				i.Get<VisibleComponent>().VisibilityIndex = -1;
+			MakeInvisible(i);
 
 			// just in case, move the item to the entity's location
-			if (i.Has<GameObject>())
-				i.Get<GameObject>().Location = Entity.Get<GameObject>().Location;
+			MoveItemToEntityLocation(i);
 
 			Entity.Get<ContainerComponent>().Add(i);
 

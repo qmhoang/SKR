@@ -34,7 +34,7 @@ namespace SkrGame.Universe.Entities.Features {
 
 		public event ComponentEventHandler<EventArgs<OpeningStatus>> Used;
 
-		public const int DEFAULT_DOOR_USE_APCOST = World.DEFAULT_SPEED / World.TURN_LENGTH_IN_SECONDS;
+		public const int DEFAULT_DOOR_USE_APCOST = World.ONE_SECOND_IN_AP;
 
 		public void OnUsed(EventArgs<OpeningStatus> e) {
 			Contract.Requires<ArgumentNullException>(e != null, "e");

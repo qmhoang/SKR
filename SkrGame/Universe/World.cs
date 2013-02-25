@@ -22,7 +22,7 @@ namespace SkrGame.Universe {
 		/// </summary>
 		public const int DEFAULT_SPEED = 1000; // 
 
-		public const int TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
+		public const double TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
 		public const int ONE_SECOND_IN_AP = 1000;	// how long is a turn in seconds
 		public const int MEAN = 50;						// what is the mean score for an attribute
 		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
@@ -58,10 +58,10 @@ namespace SkrGame.Universe {
 
 		public WorldStatus Status { get; private set; }
 
-		public event EventHandler<World, EventArgs> Turn;
+		public event EventHandler<World, EventArgs> ActionProcessed;
 
-		public void OnTurn() {
-			var handler = Turn;
+		public void OnActionProcessed() {
+			var handler = ActionProcessed;
 			if (handler != null)
 				handler(this, EventArgs.Empty);
 		}

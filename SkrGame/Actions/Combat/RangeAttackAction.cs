@@ -42,7 +42,7 @@ namespace SkrGame.Actions.Combat {
 					yield break;
 				}
 
-				var entitiesAt = currentLevel.GetEntitiesAt(location).FilteredBy<DefendComponent>().ToList();
+				var entitiesAt = currentLevel.GetEntitiesAt<DefendComponent>(location).ToList();
 				if (entitiesAt.Count() > 0) {
 					foreach (var entity in entitiesAt) {
 						yield return entity;
@@ -77,7 +77,7 @@ namespace SkrGame.Actions.Combat {
 			IEnumerable<Entity> entitiesOnPath;
 			if (attackerLocation.Location == defenderLocation.Location) {
 				// suicide?
-				entitiesOnPath = attackerLocation.Level.GetEntitiesAt(defenderLocation.Location).FilteredBy<DefendComponent>().ToList();
+				entitiesOnPath = attackerLocation.Level.GetEntitiesAt<DefendComponent>(defenderLocation.Location).ToList();
 
 			} else
 				entitiesOnPath = GetTargetsOnPath(attackerLocation.Level, attackerLocation.Location, defenderLocation.Location).ToList();

@@ -4,16 +4,18 @@ using System.Diagnostics.Contracts;
 using DEngine.Actions;
 using DEngine.Actor;
 using DEngine.Components;
+using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Actions.Features;
 using SkrGame.Actions.Movement;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Factories {
 	public static class FeatureFactory {
-		private const int WINDOW_USAGE_AP_COST = World.TURN_LENGTH_IN_SECONDS;
+		private const int WINDOW_USAGE_AP_COST = World.ONE_SECOND_IN_AP;
 
 		private static Opening Door(string openAsset, string closedAsset) {
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));
@@ -258,7 +260,8 @@ namespace SkrGame.Universe.Factories {
 						new Scenery(true, false, 1),
 						new OnBump(delegate (Entity user, Entity entity)
 						           	{
-										user.Get<ActorComponent>().Enqueue(new JumpOverAction(user, entity));
+										Direction d= entity.Get<GameObject>().Location - user.Get<GameObject>().Location;
+										user.Get<ActorComponent>().Enqueue(new JumpOverAction(user, d));
 						           		return OnBump.BumpResult.BlockMovement;
 						           	}));
 
