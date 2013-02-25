@@ -96,7 +96,7 @@ namespace SKR.UI.Gameplay {
 							Size = new Size(Size.Width - 2, Size.Height - mapTemplate.Size.Height - 2)
 					};
 
-			this.KeyPressed += GameplayWindow_KeyPressed;			
+			this.KeyPressed += GameplayWindow_KeyPressed;
 		}
 
 		private void GameplayWindow_KeyPressed(object sender, KeyboardEventArgs keyboardEvent) {
@@ -162,7 +162,7 @@ namespace SKR.UI.Gameplay {
 							{
 								Targets("Set AI of Entity", p =>
 								                            	{
-								                            		var entitiesAtLocation = playerLocation.Level.GetEntitiesAt(p).FilteredBy<ActorComponent>().ToList();
+																	var entitiesAtLocation = playerLocation.Level.GetEntitiesAt<ActorComponent>(p).ToList();
 								                            		var npc = entitiesAtLocation.First();
 								                            		var options = new List<Controller>
 								                            		              {
@@ -195,7 +195,7 @@ namespace SKR.UI.Gameplay {
 								        weapon => Directions("Attack where?",
 								                             p => Options("Attack where?",
 								                                          "Nothing at location to attack.",
-																		  player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<DefendComponent, Person>().ToList(),
+								                                          player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Person>(p).ToList(),
 								                                          Identifier.GetNameOrId,
 								                                          defender => Options("Attack at what?",
 								                                                              String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
@@ -220,7 +220,7 @@ namespace SKR.UI.Gameplay {
 								                            World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
 								                            p => Options("Shoot at what?",
 								                                         "Nothing there to shoot.",
-								                                         player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<DefendComponent>(),
+								                                         player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent>(p),
 								                                         Identifier.GetNameOrId,
 								                                         delegate(Entity defender)
 								                                         	{
@@ -240,7 +240,7 @@ namespace SKR.UI.Gameplay {
 								                            World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
 								                            p => Options("Shoot at what?",
 								                                         "Nothing there to shoot.",
-																		 player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<DefendComponent>(),
+								                                         player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent>(p),
 								                                         Identifier.GetNameOrId,
 								                                         defender => Options("What part?",
 								                                                             String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
@@ -270,9 +270,8 @@ namespace SKR.UI.Gameplay {
 							case 'u':
 								Directions("What direction?", p => Options("What object do you want to use?",
 								                                           "Nothing there to use.",
-								                                           playerLocation.Level.GetEntitiesAt(p).Where(e => e.Has<UseableFeature>() &&
-								                                                                                            e.Has<VisibleComponent>() &&
-								                                                                                            e.Get<VisibleComponent>().VisibilityIndex > 0), Identifier.GetNameOrId,
+								                                           playerLocation.Level.GetEntitiesAt<UseableFeature, VisibleComponent>(p).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0),
+								                                           Identifier.GetNameOrId,
 								                                           useable => Options(String.Format("Do what with {0}?", Identifier.GetNameOrId(useable)),
 								                                                              String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
 								                                                              useable.Get<UseableFeature>().Uses.ToList(),
@@ -302,10 +301,8 @@ namespace SKR.UI.Gameplay {
 								var inventory = player.Get<ContainerComponent>();
 
 								// get all items that have a location (eg present on the map) that are at the location where are player is
-								var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
-								                                                                                   e.Has<VisibleComponent>() &&
-								                                                                                   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-								                                                                                   !inventory.Items.Contains(e));
+								var items = playerLocation.Level.GetEntitiesAt<Item, VisibleComponent>(playerLocation.Location).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+								                                                                                                           !inventory.Items.Contains(e));
 
 								if (items.Count() > 0)
 									ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
@@ -327,15 +324,18 @@ namespace SKR.UI.Gameplay {
 								var inventory = player.Get<ContainerComponent>();
 
 								// get all items that have a location (eg present on the map) that are at the location where are player is
-								var items = playerLocation.Level.GetEntitiesAt(playerLocation.Location).Where(e => e.Has<Item>() &&
-								                                                                                   e.Has<VisibleComponent>() &&
-								                                                                                   e.Get<VisibleComponent>().VisibilityIndex > 0 &&
-								                                                                                   !inventory.Items.Contains(e));
+								var items = playerLocation.Level.GetEntitiesAt<Item, VisibleComponent>(playerLocation.Location).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0 &&
+																																		   !inventory.Items.Contains(e));
 
 								if (items.Count() > 0)
 									Enqueue(new GetAllItemsAction(player, items));
 								else
 									World.Log.Aborted("No items here to pick up.");
+							}
+								break;
+							case 'j':
+							{
+								Directions("Jump what direction?", p => Enqueue(new JumpOverAction(player, p - playerLocation.Location)));
 							}
 								break;
 							case 'i':
@@ -372,7 +372,7 @@ namespace SKR.UI.Gameplay {
 								        Identifier.GetNameOrId,
 								        lockpick => Directions("What direction?", p => Options("Select what to lockpick.",
 								                                                               "Nothing there to lockpick.",
-								                                                               player.Get<GameObject>().Level.GetEntitiesAt(p).FilteredBy<LockedFeature>(),
+																							   player.Get<GameObject>().Level.GetEntitiesAt<LockedFeature>(p),
 								                                                               Identifier.GetNameOrId,
 								                                                               feature => Enqueue(new LockpickAction(player, lockpick, feature)))));
 
@@ -431,12 +431,12 @@ namespace SKR.UI.Gameplay {
 
 			return items;
 		}
-		
+
 		private void Move(Direction direction) {
 			Point newLocation = player.Get<GameObject>().Location + direction;
 
 			// we check for attackables
-			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt(newLocation).FilteredBy<DefendComponent, Person>().ToList();
+			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Person>(newLocation).ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
 				Options("With that weapon?",
@@ -461,7 +461,7 @@ namespace SKR.UI.Gameplay {
 		public void Enqueue(IAction action) {
 			player.Get<ActorComponent>().Enqueue(action);
 		}
-		
+
 		#region Pickup/Drop items
 
 		private void PickUpItem(Entity user, Entity itemEntity) {
@@ -479,7 +479,6 @@ namespace SKR.UI.Gameplay {
 							                item.Amount,
 							                PromptTemplate));
 				}
-
 			else {
 				user.Get<ActorComponent>().Enqueue(new GetItemAction(user, itemEntity));
 			}
@@ -500,15 +499,15 @@ namespace SKR.UI.Gameplay {
 							                item.Amount,
 							                PromptTemplate));
 				}
-
 			else {
 				user.Get<ActorComponent>().Enqueue(new DropItemAction(user, itemEntity));
 			}
 		}
 
 		#endregion
-		
+
 		#region Prompts
+
 		private void Options<T>(string message, string fail, IEnumerable<T> entities, Func<T, string> descriptionFunc, Action<T> action) {
 			ParentApplication.Push(
 					new OptionsPrompt<T>(message,
@@ -519,11 +518,12 @@ namespace SKR.UI.Gameplay {
 					                     PromptTemplate));
 
 		}
+		
 
 		private void Directions(string message, Action<Point> action) {
 			ParentApplication.Push(
 					new DirectionalPrompt(message,
-					                      player.Get<GameObject>().Location,										  
+					                      player.Get<GameObject>().Location,
 					                      action,
 					                      PromptTemplate));
 		}
@@ -540,11 +540,11 @@ namespace SKR.UI.Gameplay {
 		private void TargetsAt(string message, Point point, Action<Point> action) {
 			ParentApplication.Push(
 					new TargetPrompt(message,
-									 player.Get<GameObject>().Location,
-									 point,
-									 action,
-									 MapPanel,
-									 PromptTemplate));
+					                 player.Get<GameObject>().Location,
+					                 point,
+					                 action,
+					                 MapPanel,
+					                 PromptTemplate));
 		}
 
 		private void Number(string message, int min, int max, int initial, Action<int> action) {
@@ -554,6 +554,7 @@ namespace SKR.UI.Gameplay {
 		private void Boolean(string message, bool defaultBool, Action<bool> action) {
 			ParentApplication.Push(new BooleanPrompt(message, defaultBool, action, PromptTemplate));
 		}
+
 		#endregion
 	}
 }

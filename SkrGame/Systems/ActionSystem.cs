@@ -33,11 +33,11 @@ namespace SkrGame.Systems {
 
 				if (result == ActionResult.Failed || result == ActionResult.Success) {
 					playerActor.AP.ActionPoints -= action.APCost;
+					world.OnActionProcessed();
 				}
 			}
 			if (!playerActor.AP.Updateable) {
 				playerActor.AP.Gain();
-				world.OnTurn();
 				foreach (var entity in entities) {
 					if (entity == player)
 						continue;
@@ -51,6 +51,7 @@ namespace SkrGame.Systems {
 
 						if (result == ActionResult.Failed || result == ActionResult.Success) {
 							entityActor.AP.ActionPoints -= action.APCost;
+							world.OnActionProcessed();
 						}
 					}
 				}

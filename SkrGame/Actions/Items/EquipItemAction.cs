@@ -50,13 +50,8 @@ namespace SkrGame.Actions.Items {
 				}
 			}
 
-			// make the item we just added invisible
-			if (Item.Has<VisibleComponent>())
-				Item.Get<VisibleComponent>().VisibilityIndex = -1;
-
-			// just in case, move the item to the entity's location
-			if (Item.Has<GameObject>())
-				Item.Get<GameObject>().Location = Entity.Get<GameObject>().Location;
+			MakeInvisible(Item);
+			MoveItemToEntityLocation(Item);
 
 			World.Log.Normal(String.Format("{0} equips {1} to {2}", EntityName, ItemName, slot));
 			

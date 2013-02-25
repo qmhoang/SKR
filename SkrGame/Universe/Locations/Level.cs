@@ -150,6 +150,18 @@ namespace SkrGame.Universe.Locations {
 			return GetEntities().Where(e => e.Get<GameObject>().Location == location);
 		}
 
+		public override IEnumerable<Entity> GetEntitiesAt<T>(Point location) {
+			return World.EntityManager.Get(typeof(T), typeof(GameObject)).Where(e => e.Get<GameObject>().Location == location);
+		}
+
+		public override IEnumerable<Entity> GetEntitiesAt<T1, T2>(Point location) {
+			return World.EntityManager.Get(typeof(T1), typeof(T2), typeof(GameObject)).Where(e => e.Get<GameObject>().Location == location);
+		}
+
+		public override IEnumerable<Entity> GetEntitiesAt<T1, T2, T3>(Point location) {
+			return World.EntityManager.Get(typeof(T1), typeof(T2), typeof(T3), typeof(GameObject)).Where(e => e.Get<GameObject>().Location == location);
+		}
+
 		public override IEnumerable<Entity> GetEntities() {
 			return entities;
 		}

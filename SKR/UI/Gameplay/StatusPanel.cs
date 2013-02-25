@@ -18,7 +18,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void PrintAttribute( int x, int y, Attribute attribute) {
-			Canvas.PrintString(x, y, String.Format("{0}: {1}/{2}", attribute.Name.Substring(0, 3), attribute.Value, attribute.MaximumValue));			
+			Canvas.PrintString(x, y, String.Format("{0}: {1}/{2}", attribute.Abbreviation, attribute.Value, attribute.MaximumValue));			
 		}
 
 		protected override void Redraw() {
@@ -43,7 +43,7 @@ namespace SKR.UI.Gameplay {
 			i++;
 			i++;
 			Canvas.PrintString(1, i++, calendar.Time.ToShortDateString());
-			Canvas.PrintString(1, i++, calendar.Time.ToLongTimeString());
+			Canvas.PrintString(1, i++, calendar.Time.ToLongTimeString());			
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace SkrGame.Actions.Movement {
 		public override ActionResult OnProcess() {
 			Point newLocation = Entity.Get<GameObject>().Location + direction;
 
-			var bumpablesAtLocation = Entity.Get<GameObject>().Level.GetEntitiesAt(newLocation).FilteredBy<OnBump>();
+			var bumpablesAtLocation = Entity.Get<GameObject>().Level.GetEntitiesAt<OnBump>(newLocation);
 			bool movementAllowed = true;
 
 			//todo bumpables add action
