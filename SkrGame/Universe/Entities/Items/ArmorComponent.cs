@@ -18,12 +18,12 @@ namespace SkrGame.Universe.Entities.Items {
 			/// How much area the armor covers that body part.
 			/// </summary>		
 			public int Coverage { get; private set; }
-			public Dictionary<DamageType, int> Resistances { get; private set; }
+			public StaticDictionary<DamageType, int> Resistances { get; private set; }
 
 			public Part(string bodyPart, int coverage, Dictionary<DamageType, int> resistances) {
 				BodyPart = bodyPart;
 				Coverage = coverage;
-				Resistances = resistances;
+				Resistances = new StaticDictionary<DamageType, int>(resistances);
 			}
 		}
 		public StaticDictionary<string, Part> Defenses { get; private set; }

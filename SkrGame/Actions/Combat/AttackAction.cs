@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
@@ -79,24 +81,20 @@ namespace SkrGame.Actions.Combat {
 			if (Defender.Has<EquipmentComponent>()) {
 				var equipment = Defender.Get<EquipmentComponent>();
 
-				if (equipment.ContainSlot(BodyPartTargetted.Name) && equipment.IsSlotEquipped(BodyPartTargetted.Name)) {
-					var armorEntity = equipment.GetEquippedItemAt(BodyPartTargetted.Name);
 
-					if (armorEntity.Has<ArmorComponent>()) {
-						var armor = armorEntity.Get<ArmorComponent>();
+				var armors = equipment.EquippedItems.FilteredBy<ArmorComponent>().Where(e => e.Get<ArmorComponent>().Defenses.ContainsKey(BodyPartTargetted.Name)).ToList();
+				if (!armors.IsEmpty()) {
+					var armorEntity = armors.First();
+					var armor = armorEntity.Get<ArmorComponent>();
 
-						if (armor.Defenses.ContainsKey(BodyPartTargetted.Name)) {
-
-							if (Rng.Chance(armor.Defenses[BodyPartTargetted.Name].Coverage / 100.0)) {
-								damageResistance = (int)Math.Floor(armor.Defenses[BodyPartTargetted.Name].Resistances[type] / penetration);
-								damageDealt = Math.Max(damage - damageResistance, 0);
-								Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, armor.OwnerUId, damageResistance, damage);
-							} else {
-								// we hit a chink in the armor
-								damageResistance = 0;
-								Logger.InfoFormat("Hit a chink in the armor, DR = 0");
-							}
-						}
+					if (Rng.Chance(armor.Defenses[BodyPartTargetted.Name].Coverage / 100.0)) {
+						damageResistance = (int) Math.Floor(armor.Defenses[BodyPartTargetted.Name].Resistances[type] / penetration);
+						damageDealt = Math.Max(damage - damageResistance, 0);
+						Logger.InfoFormat("Damage: {3} reduced to {0} because of {1} [DR: {2}]", damageDealt, Identifier.GetNameOrId(armorEntity), damageResistance, damage);
+					} else {
+						// we hit a chink in the armor
+						damageResistance = 0;
+						Logger.InfoFormat("Hit a chink in the armor, DR = 0");
 					}
 				}
 			}

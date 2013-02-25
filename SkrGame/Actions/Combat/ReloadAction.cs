@@ -39,7 +39,7 @@ namespace SkrGame.Actions.Combat {
 			// first we unload all ammos currently in the gun to the group, semi-simulating dropping the magazine
 			if (rangeWeapon.SwapClips && rangeWeapon.ShotsRemaining > (rangeWeapon.OneInTheChamber ? 1 : 0)) {
 				var droppedAmmo = ammo.Copy();
-				// todo cocking the gun
+				// todo cocking the gun takes more AP
 				if (rangeWeapon.OneInTheChamber) {
 					droppedAmmo.Get<Item>().Amount = rangeWeapon.ShotsRemaining - 1;
 					rangeWeapon.ShotsRemaining = 1;
@@ -117,7 +117,6 @@ namespace SkrGame.Actions.Combat {
 				}
 				
 			}
-
 
 			return ActionResult.Success;
 		}

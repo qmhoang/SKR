@@ -7,7 +7,7 @@ using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items {
 	// todo ammo cases
-	
+
 	public class RangeComponent : Component {
 		public class Template {
 			public int Accuracy { get; set; }
@@ -17,27 +17,31 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Range { get; set; }
 
 			public int APToAttack { get; set; }
+
 			public double AttackSpeed {
 				get { return World.ActionPointsToSpeed(APToAttack); }
 				set { APToAttack = World.SpeedToActionPoints(value); }
 			}
+
 			public int RoF {
-				get { return (int)Math.Round(1 / World.ActionPointsToSeconds(APToAttack)); }
+				get { return (int) Math.Round(1 / World.ActionPointsToSeconds(APToAttack)); }
 				set { APToAttack = World.SecondsToActionPoints(1.0 / value); }
 			}
+
 			public int APToReload { get; set; }
+
 			public double ReloadSpeed {
 				get { return World.ActionPointsToSpeed(APToReload); }
 				set { APToReload = World.SpeedToActionPoints(value); }
 			}
 
-			public bool SwapClips { get; set; }	// for revolvers and shotguns
+			public bool SwapClips { get; set; } // for revolvers and shotguns
 
 			public int Recoil { get; set; }
 			public int Reliability { get; set; }
 			public string AmmoType { get; set; }
 			public int Shots { get; set; }
-			public bool OneInTheChamber { get; set; }	// does gun have a chamber that allows a bullet inside
+			public bool OneInTheChamber { get; set; } // does gun have a chamber that allows a bullet inside
 
 			public string ActionDescription { get; set; }
 			public string ActionDescriptionPlural { get; set; }
@@ -46,19 +50,21 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Strength { get; set; }
 
 			public int APToReady { get; set; }
+
 			public double ReadySpeed {
 				get { return World.ActionPointsToSpeed(APToReady); }
 				set { APToReady = World.SpeedToActionPoints(value); }
 			}
+
 			public bool UnreadyAfterAttack { get; set; }
 
 			public DamageType DamageType { get; set; }
 
 			// not used yet
-//			public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
-//			public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
-//			public int BurstPenalty { get; set; }		// penalty for each shot of the burst
-//			public int BurstAP { get; set; }			// AP cost for a burst
+			//			public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
+			//			public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
+			//			public int BurstPenalty { get; set; }		// penalty for each shot of the burst
+			//			public int BurstAP { get; set; }			// AP cost for a burst
 		}
 
 		public string ActionDescription { get; private set; }
@@ -81,7 +87,7 @@ namespace SkrGame.Universe.Entities.Items {
 		public int Range { get; protected set; }
 
 		public int APToReload { get; protected set; }
-		public bool SwapClips { get; private set; }	// for revolvers and shotguns
+		public bool SwapClips { get; private set; } // for revolvers and shotguns
 
 		public int Recoil { get; protected set; }
 		public int Reliability { get; protected set; }
@@ -112,7 +118,30 @@ namespace SkrGame.Universe.Entities.Items {
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
 		}
 
-		private RangeComponent() { }
+		public RangeComponent(string actionDescription, string actionDescriptionPlural, int accuracy, Action<Entity, Entity> onHit, DamageType damageType, double penetration, int apToAttack, string skill,
+		                      Rand damage, int apToReady, int strength, int range, int apToReload, bool swapClips, int recoil, int reliability, string ammoType, int shots, int shotsRemaining,
+		                      bool oneInTheChamber) {
+			ActionDescription = actionDescription;
+			ActionDescriptionPlural = actionDescriptionPlural;
+			Accuracy = accuracy;
+			OnHit = onHit;
+			DamageType = damageType;
+			Penetration = penetration;
+			APToAttack = apToAttack;
+			Skill = skill;
+			Damage = damage;
+			APToReady = apToReady;
+			Strength = strength;
+			Range = range;
+			APToReload = apToReload;
+			SwapClips = swapClips;
+			Recoil = recoil;
+			Reliability = reliability;
+			AmmoType = ammoType;
+			Shots = shots;
+			ShotsRemaining = shotsRemaining;
+			OneInTheChamber = oneInTheChamber;
+		}
 
 		public RangeComponent(Template template) {
 			ActionDescription = template.ActionDescription;
@@ -140,32 +169,10 @@ namespace SkrGame.Universe.Entities.Items {
 		}
 
 		public override Component Copy() {
-			return new RangeComponent()
-			       {
-			       		ActionDescription = ActionDescription,
-			       		ActionDescriptionPlural = ActionDescriptionPlural,
+			return new RangeComponent(ActionDescription, ActionDescriptionPlural, Accuracy, OnHit, DamageType,
+			                          Penetration, APToAttack, Skill, Damage, APToReady, Strength, Range, APToReload, SwapClips, Recoil,
+			                          Reliability, AmmoType, Shots, ShotsRemaining, OneInTheChamber);
 
-			       		Skill = Skill,
-						
-			       		Accuracy = Accuracy,
-			       		Damage = Damage,
-			       		DamageType = DamageType,
-			       		Penetration = Penetration,
-			       		OnHit = OnHit,
-			       		APToReady = APToReady,
-			       		APToAttack = APToAttack,
-			       		Range = Range,
-			       		APToReload = APToReload,
-			       		Recoil = Recoil,
-			       		Reliability = Reliability,
-			       		AmmoType = AmmoType,
-			       		ShotsRemaining = Shots,
-						Shots = Shots,
-						OneInTheChamber = OneInTheChamber,
-						SwapClips = SwapClips,
-						Strength = Strength,
-			       };
-			
 		}
 	}
 }
