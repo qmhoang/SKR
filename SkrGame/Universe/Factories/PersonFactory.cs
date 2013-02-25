@@ -31,6 +31,7 @@ namespace SkrGame.Universe.Factories {
 												"Arms",
 												"Main Hand",
 			                              		"Off Hand",
+												"Hands",
 												"Legs",
 												"Feet"
 			                              }),

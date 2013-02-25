@@ -45,7 +45,7 @@ namespace SKRTests.Components {
 			Container.Add(StackedItem1);
 			Assert.AreEqual(Container.Count, 1);
 			Assert.AreEqual(Container.TotalCount, 2);
-			Assert.AreEqual(Container.GetItem(e => e.Get<ReferenceId>().RefId == "item").Get<Item>().Amount, 2);
+			Assert.AreEqual(Container.GetItem(e => e.Get<ReferenceId>() == StackedItem0.Get<ReferenceId>()).Get<Item>().Amount, 2);
 		}
 
 		[Test]

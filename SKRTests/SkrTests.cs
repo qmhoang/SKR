@@ -18,9 +18,13 @@ namespace SKRTests {
 		protected Level Level;
 		protected Entity Entity;
 		protected World World;
+
+		protected Entity Create(string id) {
+			return EntityManager.Create(World.EntityFactory.Get(id));
+		}
 		
 		[SetUp]
-		public void PreSetUp() {
+		public void Init() {
 			World = new World();
 			EntityManager = World.EntityManager;
 
@@ -48,7 +52,7 @@ namespace SKRTests {
 			                                             		                   		Damage = Rand.Constant(-5),
 			                                             		                   		DamageType = Combat.DamageTypes["crush"],
 			                                             		                   		Penetration = 1,
-			                                             		                   		AttackSpeed =  World.DEFAULT_SPEED,
+			                                             		                   		AttackSpeed = World.DEFAULT_SPEED,
 			                                             		                   		APToReady = 1,
 			                                             		                   		Reach = 0,
 			                                             		                   		Strength = 1,
@@ -62,11 +66,11 @@ namespace SKRTests {
 			                                             		new EquipmentComponent(new List<string>
 			                                             		                       {
 			                                             		                       		"slot1",
-			                                             		                       		"slot2"
+			                                             		                       		"slot2",
+																							"slot3",
+																							"slot4",
 			                                             		                       })
 			                                             });
-
-
 		}
 	}
 }

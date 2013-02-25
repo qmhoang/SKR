@@ -1,8 +1,11 @@
 using System;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
+using DEngine.Extensions;
+using SkrGame.Actions.Features;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
@@ -30,28 +33,49 @@ namespace SkrGame.Actions.Combat {
 		public override ActionResult OnProcess() {
 			var rangeWeapon = weapon.Get<RangeComponent>();
 			var ammunition = ammo.Get<Item>();
+
 			
-			// todo revolvers and single load weapons
 
 			// first we unload all ammos currently in the gun to the group, semi-simulating dropping the magazine
-			if (rangeWeapon.ShotsRemaining > 0) {
+			if (rangeWeapon.SwapClips && rangeWeapon.ShotsRemaining > (rangeWeapon.OneInTheChamber ? 1 : 0)) {
 				var droppedAmmo = ammo.Copy();
+				// todo cocking the gun
+				if (rangeWeapon.OneInTheChamber) {
+					droppedAmmo.Get<Item>().Amount = rangeWeapon.ShotsRemaining - 1;
+					rangeWeapon.ShotsRemaining = 1;
+				} else {
+					// probably will never be used except for bugs, what weapon do we swap clips and not have a closed-chamber?
+					droppedAmmo.Get<Item>().Amount = rangeWeapon.ShotsRemaining;
+					rangeWeapon.ShotsRemaining = 0;
+				}
 
-				droppedAmmo.Get<Item>().Amount = rangeWeapon.ShotsRemaining;
-				rangeWeapon.ShotsRemaining = 0;
-				droppedAmmo.Get<VisibleComponent>().Reset();
+				if (droppedAmmo.Has<VisibleComponent>()) {
+					droppedAmmo.Get<VisibleComponent>().Reset();
+				}
 
-				World.Log.Normal(String.Format("{0} reloads {1} with {2}, dropping all excess ammo.", Entity.Get<Identifier>().Name, weapon.Get<Identifier>().Name, ammo.Get<Identifier>().Name));
-			} else {
-				World.Log.Normal(String.Format("{0} reloads {1} with {2}.", Entity.Get<Identifier>().Name, weapon.Get<Identifier>().Name, ammo.Get<Identifier>().Name));
+				World.Log.Normal(String.Format("{0} removes the magazine, dropping all excess ammo.", EntityName));
 			}
 
-			if (ammunition.StackType == StackType.Hard) {
-				if (ammunition.Amount >= rangeWeapon.Shots) {
-					ammunition.Amount -= rangeWeapon.Shots;
-					rangeWeapon.ShotsRemaining = rangeWeapon.Shots;
+			// inserting ammo
+			if (rangeWeapon.SwapClips) {
+				if (ammunition.StackType == StackType.Hard) {
+					if (ammunition.Amount >= rangeWeapon.Shots) {
+						ammunition.Amount -= rangeWeapon.Shots;
+						rangeWeapon.ShotsRemaining += rangeWeapon.Shots;
+					} else {
+						rangeWeapon.ShotsRemaining += ammunition.Amount;
+						ammunition.Amount -= weapon.Get<Item>().Amount;
+
+						if (Entity.Has<ContainerComponent>()) {
+							Entity.Get<ContainerComponent>().Remove(ammo);
+						}
+
+						World.EntityManager.Remove(ammo);
+					}
+					World.Log.Normal(String.Format("{0} reloads {1} with {2}.", EntityName, Identifier.GetNameOrId(weapon), Identifier.GetNameOrId(ammo)));
+
 				} else {
-					ammunition.Amount -= weapon.Get<Item>().Amount;
+					rangeWeapon.ShotsRemaining++;
 
 					if (Entity.Has<ContainerComponent>()) {
 						Entity.Get<ContainerComponent>().Remove(ammo);
@@ -59,7 +83,42 @@ namespace SkrGame.Actions.Combat {
 
 					World.EntityManager.Remove(ammo);
 				}
+			} else {
+				if (rangeWeapon.ShotsRemaining == (rangeWeapon.Shots + (rangeWeapon.OneInTheChamber ? 1 : 0)))
+					return ActionResult.Aborted;
+
+				// we are inserting individual bullets
+				rangeWeapon.ShotsRemaining++;
+
+				if (ammunition.StackType == StackType.Hard) {
+					if (ammunition.Amount > 1) {
+						ammunition.Amount--;						
+					} else {
+						if (Entity.Has<ContainerComponent>()) {
+							Entity.Get<ContainerComponent>().Remove(ammo);
+						}
+
+						World.EntityManager.Remove(ammo);
+					}
+				} else {
+					if (Entity.Has<ContainerComponent>()) {
+						Entity.Get<ContainerComponent>().Remove(ammo);
+					}
+
+					World.EntityManager.Remove(ammo);
+				}
+
+				if (rangeWeapon.ShotsRemaining < rangeWeapon.Shots + (rangeWeapon.OneInTheChamber ? 1 : 0)) {
+					var ammos = Entity.Get<ContainerComponent>().Items.FilteredBy<Item, AmmoComponent>().Where(e => e.Get<AmmoComponent>().Type == rangeWeapon.AmmoType);
+					var enumerator = ammos.GetEnumerator();
+					while (enumerator.MoveNext()) {
+						Entity.Get<ActorComponent>().Enqueue(new ReloadAction(Entity, weapon, enumerator.Current));
+					}
+				}
+				
 			}
+
+
 			return ActionResult.Success;
 		}
 	}

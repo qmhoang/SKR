@@ -26,6 +26,7 @@ namespace SkrGame.Universe {
 		public const int ONE_SECOND_IN_AP = 1000;	// how long is a turn in seconds
 		public const int MEAN = 50;						// what is the mean score for an attribute
 		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
+		public const int STANDARD_INCREMENT = STANDARD_DEVIATION / 3;
 		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
 
 		public static double SkillRoll() {
@@ -143,10 +144,6 @@ namespace SkrGame.Universe {
 		/// </summary>
 		public static double SecondsToSpeed(double seconds) {
 			return ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
-		}
-
-		public static int ScaleSkill(int rank) {
-			return rank * World.STANDARD_DEVIATION / 3;
 		}
 
 		/// <summary>

@@ -70,10 +70,10 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "pistol whips",
 			            				Skill = "skill_unarmed",
 			            				HitBonus = -1,
-			            				Damage = Rand.Constant(5 * (1 - 2)),
+			            				Damage = Rand.Constant(World.STANDARD_INCREMENT * (1 - 2)),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-			            				AttackSpeed = .85 * World.DEFAULT_SPEED,
+			            				AttackSpeed = .86 * World.DEFAULT_SPEED,
 			            				APToReady = 100,
 			            				Reach = 0,
 			            				Strength = 8,
@@ -88,10 +88,28 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "pistol whips",
 			            				Skill = "skill_unarmed",
 			            				HitBonus = -1,
-			            				Damage = Rand.Constant(5 * (2 - 2)),
+			            				Damage = Rand.Constant(World.STANDARD_INCREMENT * (2 - 2)),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-										AttackSpeed = .85 * World.DEFAULT_SPEED,
+			            				AttackSpeed = .85 * World.DEFAULT_SPEED,
+			            				APToReady = 100,
+			            				Reach = 0,
+			            				Strength = 8,
+			            				Parry = -2
+			            		}));
+
+			ef.Inherits("pistol3", "gun",
+			            new MeleeComponent(
+			            		new MeleeComponent.Template
+			            		{
+			            				ActionDescription = "pistol whip",
+			            				ActionDescriptionPlural = "pistol whips",
+			            				Skill = "skill_unarmed",
+			            				HitBonus = -1,
+			            				Damage = Rand.Constant(World.STANDARD_INCREMENT * (3 - 2)),
+			            				DamageType = Combat.DamageTypes["crush"],
+			            				Penetration = 1,
+			            				AttackSpeed = .84 * World.DEFAULT_SPEED,
 			            				APToReady = 100,
 			            				Reach = 0,
 			            				Strength = 8,
@@ -115,7 +133,7 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
 			            				Accuracy = 2,
-			            				Damage = Rand.Dice(2, World.STANDARD_DEVIATION * 2) + Rand.Constant(10),
+			            				Damage = Rand.Dice(2, World.STANDARD_DEVIATION * 2) + Rand.Constant(2 * World.STANDARD_INCREMENT),
 			            				DamageType = Combat.DamageTypes["pierce"],
 			            				Penetration = 1,
 			            				Shots = 17,
@@ -139,7 +157,6 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 2,
 			                     		StackType = StackType.None,
 			                     }),
-
 			            new RangeComponent(
 			            		new RangeComponent.Template
 			            		{
@@ -159,6 +176,99 @@ namespace SkrGame.Universe.Factories {
 			            				Reliability = 18,
 			            				Strength = 8,
 			            				AmmoType = ".40S&W"
+			            		}));
+
+			ef.Inherits("model10", "pistol2",
+			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+			            new Identifier("S&W Model 10"),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 50000,
+			                     		Weight = 20,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new RangeComponent(
+			            		new RangeComponent.Template
+			            		{
+			            				ActionDescription = "shoot",
+			            				ActionDescriptionPlural = "shoots",
+			            				Skill = "skill_pistol",
+			            				Accuracy = 2,
+			            				Damage = Rand.Dice(2, World.STANDARD_DEVIATION * 2),
+			            				DamageType = Combat.DamageTypes["pierce_large"],
+			            				Penetration = 1,
+			            				Shots = 6,
+			            				Range = 110,
+			            				RoF = 3,
+			            				APToReady = World.SecondsToActionPoints(1f),
+			            				APToReload = World.SecondsToActionPoints(3),
+			            				Recoil = 2,
+			            				Reliability = 18,
+			            				Strength = 9,
+			            				AmmoType = ".38S"
+			            		}));
+
+			ef.Inherits("model27", "pistol2",
+			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+			            new Identifier("S&W Model 27"),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 60000,
+			                     		Weight = 30,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new RangeComponent(
+			            		new RangeComponent.Template
+			            		{
+			            				ActionDescription = "shoot",
+			            				ActionDescriptionPlural = "shoots",
+			            				Skill = "skill_pistol",
+			            				Accuracy = 2,
+			            				Damage = Rand.Dice(3, World.STANDARD_DEVIATION * 2),
+			            				DamageType = Combat.DamageTypes["pierce_large"],
+			            				Penetration = 1,
+			            				Shots = 6,
+			            				Range = 190,
+			            				RoF = 3,
+			            				APToReady = World.SecondsToActionPoints(1f),
+			            				APToReload = World.SecondsToActionPoints(3),
+			            				Recoil = 3,
+			            				Reliability = 18,
+			            				Strength = 10,
+			            				AmmoType = ".357M"
+			            		}));
+
+			ef.Inherits("cpython", "pistol2",
+			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+			            new Identifier("Colt Python"),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 85000,
+			                     		Weight = 29,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new RangeComponent(
+			            		new RangeComponent.Template
+			            		{
+			            				ActionDescription = "shoot",
+			            				ActionDescriptionPlural = "shoots",
+			            				Skill = "skill_pistol",
+			            				Accuracy = 2,
+			            				Damage = Rand.Dice(3, World.STANDARD_DEVIATION * 2),
+			            				DamageType = Combat.DamageTypes["pierce_large"],
+			            				Penetration = 1,
+			            				Shots = 6,
+			            				Range = 190,
+			            				RoF = 3,
+			            				APToReady = World.SecondsToActionPoints(1f),
+			            				APToReload = World.SecondsToActionPoints(3),
+			            				Recoil = 3,
+			            				Reliability = 18,
+			            				Strength = 10,
+			            				AmmoType = ".357M"
 			            		}));
 
 		}
@@ -438,6 +548,60 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "loads",
 			            				Type = "9x19mm",
 			            		}));
+
+			ef.Inherits(".357M", "bullet",
+			            new Identifier(".357 Magnum", "bullet"),
+			            new Item(
+			            		new Item.Template
+			            		{
+			            				Value = 30,
+			            				Weight = 0,
+			            				Size = 0,
+			            				StackType = StackType.Hard
+			            		}),
+			            new AmmoComponent(
+			            		new AmmoComponent.Template
+			            		{
+			            				ActionDescription = "load",
+			            				ActionDescriptionPlural = "loads",
+			            				Type = ".357M",
+			            		}));
+
+			ef.Inherits(".38S", "bullet",
+			            new Identifier(".357 Special", "bullet"),
+			            new Item(
+			            		new Item.Template
+			            		{
+			            				Value = 30,
+			            				Weight = 0,
+			            				Size = 0,
+			            				StackType = StackType.Hard
+			            		}),
+			            new AmmoComponent(
+			            		new AmmoComponent.Template
+			            		{
+			            				ActionDescription = "load",
+			            				ActionDescriptionPlural = "loads",
+			            				Type = ".38S",
+			            		}));
+
+			ef.Inherits(".44M", "bullet",
+			            new Identifier(".44 Magnum", "bullet"),
+			            new Item(
+			            		new Item.Template
+			            		{
+			            				Value = 30,
+			            				Weight = 0,
+			            				Size = 0,
+			            				StackType = StackType.Hard
+			            		}),
+			            new AmmoComponent(
+			            		new AmmoComponent.Template
+			            		{
+			            				ActionDescription = "load",
+			            				ActionDescriptionPlural = "loads",
+			            				Type = ".44M",
+			            		}));
 		}
 
 		private static void InitArmors(EntityFactory ef) {
@@ -492,6 +656,23 @@ namespace SkrGame.Universe.Factories {
 			                               		          		{"skill_stealth", 1}
 			                               		          }
 			                               }));
+
+			ef.Inherits("cleats", "sneakers",
+			            new Identifier("Cleats", "A pair of atheltic shoes fitted with spiked cleats."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 5000,
+			                     		Weight = 20,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new EquippedBonus(new EquippedBonus.Template
+			                              {
+			                              		Bonuses = new Dictionary<string, int>
+			                              		          {
+			                              		          		{"skill_stealth", -1}
+			                              		          }
+			                              }));
 
 			ef.Inherits("boots", "shoes",
 			            new Identifier("Boots", "A pair of good boots."),
@@ -557,6 +738,42 @@ namespace SkrGame.Universe.Factories {
 			            				           }
 								}));
 
+			#endregion
+
+			#region Gloves
+			ef.Inherits("gloves", "item",
+						new Sprite("GLOVES", Sprite.ITEMS_LAYER),
+						new Identifier("Gloves", "A pair of normal gloves."),
+						new Item(new Item.Template
+						{
+							Value = 3500,
+							Weight = 5,
+							Size = 1,
+							StackType = StackType.None,
+						}),
+						Equipable.SingleSlot("Hands"),
+						new ArmorComponent(
+								new ArmorComponent.Template
+								{
+									DonTime = 1,
+									Defenses = new List<ArmorComponent.Part>
+			            				           {
+			            				           		new ArmorComponent.Part("Hands",
+			            				           		                        50,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 1},
+			            				           		                        		{Combat.DamageTypes["crush"], 1},
+			            				           		                        		{Combat.DamageTypes["impale"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 1},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 1},
+			            				           		                        		{Combat.DamageTypes["burn"], 1},
+			            				           		                        })
+			            				           }
+								}));
 			#endregion
 
 			#region Pants
@@ -662,7 +879,7 @@ namespace SkrGame.Universe.Factories {
 			                     		Size = 11,
 			                     		StackType = StackType.None,
 			                     }),
-						Equipable.MultipleSlots("Torso", "Arms"),
+			            Equipable.MultipleSlots("Torso", "Arms"),
 			            new ArmorComponent(
 			            		new ArmorComponent.Template
 			            		{
@@ -670,7 +887,7 @@ namespace SkrGame.Universe.Factories {
 			            				Defenses = new List<ArmorComponent.Part>
 			            				           {
 			            				           		new ArmorComponent.Part("Torso",
-			            				           		                        30,
+			            				           		                        40,
 			            				           		                        new Dictionary<DamageType, int>
 			            				           		                        {
 			            				           		                        		{Combat.DamageTypes["true"], 0},
@@ -682,6 +899,20 @@ namespace SkrGame.Universe.Factories {
 			            				           		                        		{Combat.DamageTypes["pierce_large"], 4},
 			            				           		                        		{Combat.DamageTypes["pierce_huge"], 4},
 			            				           		                        		{Combat.DamageTypes["burn"], 5},
+			            				           		                        }),
+			            				           		new ArmorComponent.Part("Arms",
+			            				           		                        30,
+			            				           		                        new Dictionary<DamageType, int>
+			            				           		                        {
+			            				           		                        		{Combat.DamageTypes["true"], 0},
+			            				           		                        		{Combat.DamageTypes["cut"], 5},
+			            				           		                        		{Combat.DamageTypes["crush"], 8},
+			            				           		                        		{Combat.DamageTypes["impale"], 5},
+			            				           		                        		{Combat.DamageTypes["pierce_small"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce_large"], 4},
+			            				           		                        		{Combat.DamageTypes["pierce_huge"], 4},
+			            				           		                        		{Combat.DamageTypes["burn"], 4},
 			            				           		                        })
 			            				           }
 			            		}));
