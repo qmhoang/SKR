@@ -20,6 +20,12 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Coverage { get; private set; }
 			public StaticDictionary<DamageType, int> Resistances { get; private set; }
 
+			public Part(string bodyPart, int coverage, StaticDictionary<DamageType, int> resistances) {
+				BodyPart = bodyPart;
+				Coverage = coverage;
+				Resistances = resistances;
+			}
+
 			public Part(string bodyPart, int coverage, Dictionary<DamageType, int> resistances) {
 				BodyPart = bodyPart;
 				Coverage = coverage;
@@ -36,7 +42,7 @@ namespace SkrGame.Universe.Entities.Items {
 			var d = new Dictionary<string, Part>();
 
 			foreach (var locationProtected in template.Defenses) {
-				var resistances = new Dictionary<DamageType, int>(locationProtected.Resistances);
+				var resistances = new StaticDictionary<DamageType, int>(locationProtected.Resistances);
 
 				// check for missing resistances and throws errors
 				foreach (var value in Combat.DamageTypes.Values) {

@@ -72,7 +72,7 @@ namespace SkrGame.Gameplay.Combat {
 				                                         		{"burn", new DamageType("Burning")},
 				                                         });
 		
-		public static void Heal(DefendComponent.AttackablePart bodyPart, int amount) {
+		public static void Heal(DefendComponent.Appendage bodyPart, int amount) {
 			amount = Math.Min(amount, bodyPart.Owner.Health.MaximumValue - bodyPart.Owner.Health);
 			bodyPart.Owner.Health.Value += amount;
 			Logger.DebugFormat("{0} was healed {1} health", bodyPart.Owner.OwnerUId, amount);

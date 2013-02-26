@@ -19,7 +19,7 @@ namespace SkrGame.Universe.Entities.Actors {
 	public class DefendComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public class AttackablePart {
+		public class Appendage {
 			public string Name { get; private set; }
 			public DefendComponent Owner { get; set; }
 			
@@ -36,7 +36,7 @@ namespace SkrGame.Universe.Entities.Actors {
 				Contract.Invariant(RelativeSize > 0);
 			}
 
-			public AttackablePart(string name, int maxHealth, int relsize, int targettingPenalty, DefendComponent owner = null) {
+			public Appendage(string name, int maxHealth, int relsize, int targettingPenalty, DefendComponent owner = null) {
 				Contract.Requires<ArgumentException>(maxHealth > 0);
 				Contract.Requires<ArgumentException>(relsize > 0);
 				Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(name));
@@ -50,8 +50,8 @@ namespace SkrGame.Universe.Entities.Actors {
 				Owner = owner;
 			}
 
-			public AttackablePart Copy(DefendComponent newOwner = null) {
-				return new AttackablePart(Name, MaxHealth, RelativeSize, TargettingPenalty, newOwner);
+			public Appendage Copy(DefendComponent newOwner = null) {
+				return new Appendage(Name, MaxHealth, RelativeSize, TargettingPenalty, newOwner);
 			}
 		}
 		#region Health
@@ -62,18 +62,15 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return Health < 0; }
 		}
 
-		public void OnDeath() {
-		}
-
 		#endregion
 
-		private List<AttackablePart> bodyParts;
+		private List<Appendage> bodyParts;
 
-		public IEnumerable<AttackablePart> BodyPartsList {
+		public IEnumerable<Appendage> BodyPartsList {
 			get { return bodyParts; } 
 		}
 
-		public AttackablePart GetRandomPart() {
+		public Appendage GetRandomPart() {
 			return Rng.ItemWeighted(bodyParts, p => p.RelativeSize);
 		}
 
@@ -81,13 +78,13 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return 50; }
 		}
 
-		private DefendComponent(int health, int maxHealth, List<AttackablePart> bodyParts) {
+		private DefendComponent(int health, int maxHealth, List<Appendage> bodyParts) {
 			Health = new Attribute("Health", "HP ", maxHealth, health);
 
 			this.bodyParts = bodyParts;
 		}
 
-		public DefendComponent(int health, List<AttackablePart> bodyParts) {
+		public DefendComponent(int health, List<Appendage> bodyParts) {
 			Contract.Requires<ArgumentException>(bodyParts.Count > 0);
 			Health = new Attribute("Health", "HP ", health, health);
 			this.bodyParts = bodyParts;
@@ -98,23 +95,23 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public static DefendComponent CreateHuman(int health) {
-			return new DefendComponent(health, new List<AttackablePart>()
+			return new DefendComponent(health, new List<Appendage>()
 			                               {
-			                               		new AttackablePart("Torso", health, 125, 0),
-			                               		new AttackablePart("Head", health, 15, -World.STANDARD_DEVIATION * 5 / 3),
-			                               		new AttackablePart("Right Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new AttackablePart("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new AttackablePart("Main Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new AttackablePart("Off Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new AttackablePart("Legs", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3),
-			                               		new AttackablePart("Feet", health / 3, 10, -World.STANDARD_DEVIATION * 2 / 3),
+			                               		new Appendage("Torso", health, 125, 0),
+			                               		new Appendage("Head", health, 15, -World.STANDARD_DEVIATION * 5 / 3),
+			                               		new Appendage("Right Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new Appendage("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new Appendage("Main Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new Appendage("Off Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
+			                               		new Appendage("Legs", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3),
+			                               		new Appendage("Feet", health / 3, 10, -World.STANDARD_DEVIATION * 2 / 3),
 			                               });
 		}
 
 		public static DefendComponent SinglePart(int health, string name) {
-			return new DefendComponent(health, new List<AttackablePart>()
+			return new DefendComponent(health, new List<Appendage>
 			                                   {
-			                                   		new AttackablePart(name, health, 1, 0)
+			                                   		new Appendage(name, health, 1, 0)
 			                                   });
 		}
 
@@ -122,6 +119,8 @@ namespace SkrGame.Universe.Entities.Actors {
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
 			Contract.Invariant(Health != null);
+			Contract.Invariant(bodyParts != null);
+			Contract.Invariant(bodyParts.Count > 0);
 		}
 
 		public override Component Copy() {

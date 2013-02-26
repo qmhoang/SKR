@@ -40,10 +40,6 @@ namespace SkrGame.Universe.Entities.Actors {
 			get { return Attributes["attribute_strength"] * Attributes["attribute_strength"] * 18 * (int) Math.Pow(World.STANDARD_DEVIATION, -2.0); }
 		}
 
-		public Skill GetSkill(string skill) {
-			return Skills[skill];
-		}
-
 		private const int SKILL_INITIAL_RANK = 0;
 		private const int SKILL_MAX_RANK = World.MEAN * 2;
 
@@ -99,11 +95,15 @@ namespace SkrGame.Universe.Entities.Actors {
 							{"skill_stealth",			new Skill("Stealth",		this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
 							{"skill_unarmed",			new Skill("Unarmed",		this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
-							{"skill_pistol",			new Skill("Pistol",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_knife",				new Skill("Knife",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 							{"skill_axe",				new Skill("Axe",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
 
 							{"skill_2haxe",				new Skill("Two-Handed Axe", this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+
+							{"skill_pistol",			new Skill("Pistol",			this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_agility"] + t.Rank)},
+							
+							// skill_shotgun
+							// skill_rifle
 
 							// INTELLECT
 							{"skill_lockpicking",		new Skill("Lockpicking",	this, SKILL_INITIAL_RANK, SKILL_MAX_RANK, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},

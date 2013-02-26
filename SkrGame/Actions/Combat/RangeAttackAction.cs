@@ -18,7 +18,7 @@ using SkrGame.Universe.Locations;
 namespace SkrGame.Actions.Combat {
 	public class RangeAttackAction : AttackAction {
 		
-		public RangeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.AttackablePart bodyPartTargetted, bool targettingPenalty = false)
+		public RangeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bodyPartTargetted, bool targettingPenalty = false)
 				: base(attacker, defender, weapon, bodyPartTargetted, targettingPenalty) {
 			Contract.Requires<ArgumentException>(weapon.Has<RangeComponent>(), "weapon cannot range attack");
 		}

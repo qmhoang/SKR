@@ -156,7 +156,7 @@ namespace SKR.UI.Menus {
 
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
-			World.CurrentLevel = World.MapFactory.Construct("TestHouse");
+			World.CurrentLevel = World.MapFactory.Construct("TestMap");
 			
 			World.Player = World.EntityManager.Create(World.EntityFactory.Get("player")).Add(new GameObject(0, 0, World.CurrentLevel));
 

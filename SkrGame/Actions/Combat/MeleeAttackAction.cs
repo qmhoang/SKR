@@ -11,7 +11,7 @@ using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions.Combat {
 	public class MeleeAttackAction : AttackAction {
-		public MeleeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.AttackablePart bodyPartTargetted, bool targettingPenalty = false)
+		public MeleeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bodyPartTargetted, bool targettingPenalty = false)
 				: base(attacker, defender, weapon, bodyPartTargetted, targettingPenalty) {
 			Contract.Requires<ArgumentException>(weapon.Has<MeleeComponent>(), "weapon cannot melee attack");
 		}

@@ -229,8 +229,9 @@ namespace SkrGame.Universe.Factories {
 					                  "p8];;;d,,,8ccxccccccccccccccccccccccccxcccp",
 					                  "p88O8O88O88ccccccccxccccccccccccccccccccccp",
 					                  "ppppppppppppppppppppppppppppppppppppppppppp");
-			}
-			return null;
+				default:
+					throw new ArgumentException();
+			}			
 		}
 
 		private Level FromString(Dictionary<char, Tuple<string, string>> charIdentifiers, params string[] definition) {

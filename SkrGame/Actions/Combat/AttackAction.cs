@@ -17,9 +17,9 @@ namespace SkrGame.Actions.Combat {
 
 		public Entity Defender { get; private set; }
 		public Entity Weapon { get; private set; }
-		public DefendComponent.AttackablePart BodyPartTargetted { get; private set; }
+		public DefendComponent.Appendage BodyPartTargetted { get; private set; }
 
-		protected AttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.AttackablePart bodyPartTargetted, bool targettingPenalty) : base(attacker) {
+		protected AttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bodyPartTargetted, bool targettingPenalty) : base(attacker) {
 			Contract.Requires<ArgumentNullException>(attacker != null, "attacker");
 			Contract.Requires<ArgumentNullException>(weapon != null, "weapon");
 			Contract.Requires<ArgumentNullException>(defender != null, "defender");

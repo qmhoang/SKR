@@ -17,7 +17,7 @@ namespace SkrGame.Gameplay.Combat {
 		public Entity Attacker { get; private set; }
 		public Entity Defender { get; private set; }
 		public Entity Weapon { get; private set; }
-		public DefendComponent.AttackablePart BodyPart { get; private set; }
+		public DefendComponent.Appendage BodyPart { get; private set; }
 
 		public CombatEventResult Result { get; private set; }
 
@@ -25,7 +25,7 @@ namespace SkrGame.Gameplay.Combat {
 		public int DamageResisted { get; private set; }
 		public int DamageTaken { get; private set; }
 
-		public CombatEventArgs(Entity attacker, Entity defender, Entity weapon, DefendComponent.AttackablePart bp, CombatEventResult result = CombatEventResult.Miss, int damage = 0, int damageResisted = 0, int damageTaken = 0) {
+		public CombatEventArgs(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bp, CombatEventResult result = CombatEventResult.Miss, int damage = 0, int damageResisted = 0, int damageTaken = 0) {
 			Attacker = attacker;
 			Defender = defender;
 			Weapon = weapon;
@@ -37,10 +37,15 @@ namespace SkrGame.Gameplay.Combat {
 		}
 
 		public override string ToString() {
-			return String.Format("Attacker: {4}, Defender: {5}, Weapon: {6}, Result: {0} - damage: {1}, resisted: {2}, taken: {3}", Result.ToString(), Damage, DamageResisted, DamageTaken, 
+			return String.Format("Attacker: {4}, Defender: {5}, Part: {7}, Weapon: {6}, Result: {0} - damage: {1}, resisted: {2}, taken: {3}", 
+				Result.ToString(), 
+				Damage, 
+				DamageResisted, 
+				DamageTaken, 
 				Identifier.GetNameOrId(Attacker),
 				Identifier.GetNameOrId(Defender),
-				Identifier.GetNameOrId(Weapon));
+				Identifier.GetNameOrId(Weapon),
+				BodyPart.Name);
 		}
 	}
 }
