@@ -11,16 +11,10 @@ using SkrGame.Universe.Locations;
 namespace SkrGame.Universe.Entities.Controllers {
 	public class NPC : Controller {
 		private AStarPathFinder pf;
-		private VisionMap vision;
 		private Point oldPos;
 		private Level level;
 
 		public NPC() { }
-
-		private void ComputeFOV(GameObject position) {
-			
-			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, position.Level, position.Location.X, position.Location.Y, 10, true);
-		}
 
 		public override IAction NextAction() {
 			return Actions.Count == 0 ? CalculateNextMove() : Actions.Dequeue();
@@ -33,20 +27,16 @@ namespace SkrGame.Universe.Entities.Controllers {
 				level = location.Level;
 				oldPos = location.Location;
 				pf = new AStarPathFinder(level, 1.41f);
-				vision = new VisionMap(level.Size);
-				ComputeFOV(Holder.Entity.Get<GameObject>());
 			}
 
-			if (oldPos != location.Location) {
-				oldPos = location.Location;
-				ComputeFOV(Holder.Entity.Get<GameObject>());
-			}
+			oldPos = location.Location;
+			
 
 			var player = level.World.Player;
 
 			var target = player.Get<GameObject>().Location;
 
-			if (vision.IsVisible(target)) {
+			if (Holder.Entity.Get<SightComponent>().IsVisible(target)) {
 				var distance = location.Location.DistanceTo(target);
 
 				if (distance <= 1.5)

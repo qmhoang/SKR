@@ -12,9 +12,9 @@ namespace SKRTests.Components {
 
 		[SetUp]
 		public void SetUp() {
-			defend = new DefendComponent(100, new List<DefendComponent.AttackablePart>
+			defend = new DefendComponent(100, new List<DefendComponent.Appendage>
 			                                  {
-			                                  		new DefendComponent.AttackablePart("Part", 10, 1, -3)
+			                                  		new DefendComponent.Appendage("Part", 10, 1, -3)
 			                                  });
 		}
 

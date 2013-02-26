@@ -9,11 +9,39 @@ Priority Goals:
 Immediate Goals:
 * Zones of ownership
 * Facing and entities that occupy more than 1 block at a time
+	* diagonally long entities
 * More "zones" (houses, buildings, etc)
 * Missions
 * Traits and more skills
 * items give skill bonuses
+* crimes and criminal records
+* npc identifiers (sex, race, etc)...
+* night/day cycle
 
 Long term goals:
 * NPC speak (probably using inheritance styled speak tables)
 * Armor has multiple coverage for a single part (eg 30% coverage with 10 DR + 30% coverage with 5 DR).  Each part has a chance of blocking.
+* the Dark Passender storyline/quest ("voice in the head" will generate missions for player, usually to kill specific person)
+* weather
+* vehicles
+* bullet travel
+* animations
+* wounds
+
+Ideas:
+* safety needs-based stat? 
+	* actions can improve safety (using cell phones to report crimes, killing intruders, actions vary by NPC AI?)
+* crimes will probably be entities that broadcast themselves to other entities
+* security cameras
+* to get NPCs working, Work as a Needs?  
+	* We have a list of "own" entities that an NPC can use, NPC ai will prefer to use these entities over others depending on weights
+	* To satisfy work, they need to "work" at a item, be it a counter, computer, or something.
+	* on using these items, maybe the npc controller changes?
+		* for example, a police npc when not working and wants to work, "uses" his desk which has a "+work" needs
+		* the desk action then sets his controller to police from civilian
+* body part misses
+	* if you miss (close enough) when aiming for lungs, you might hit torso instead
+* possible npc speak tables
+	* sex: male, female
+	* occupation: police, homeless, etc
+* layers in the world, 2nd floor will display stuff on the 1st floor that can be seen (through a window)	

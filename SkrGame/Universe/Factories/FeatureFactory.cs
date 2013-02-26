@@ -66,9 +66,9 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("LockedDoor", "Door",
 						new LockedFeature(0),
-						new DefendComponent(10, new List<DefendComponent.AttackablePart>
+						new DefendComponent(10, new List<DefendComponent.Appendage>
 						                        {
-						                        		new DefendComponent.AttackablePart("Lock", 10, 10, -World.STANDARD_DEVIATION * 2)
+						                        		new DefendComponent.Appendage("Lock", 10, 10, -World.STANDARD_DEVIATION * 2)
 						                        }));
 
 			ef.Inherits("WALL_BRICK_DARK_DOOR_HORZ", "Door",
