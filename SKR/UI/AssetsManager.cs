@@ -110,10 +110,10 @@ namespace SKR.UI {
 			assets.Add("MAGAZINE_GLOCK22", new Tuple<char, Pigment>('.', new Pigment(ColorPresets.Brass, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("BULLET_.40S&W", new Tuple<char, Pigment>('.', new Pigment(ColorPresets.Brass, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 
-			assets.Add("SHIRT", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.LightGray, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
+			assets.Add("SHIRT", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.YellowGreen, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("FOOTBALL_SHOULDER_PADS", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.LightGray, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 
-			assets.Add("SHOES", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.SaddleBrown, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
+			assets.Add("SHOES", new Tuple<char, Pigment>('.', new Pigment(ColorPresets.SaddleBrown, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 
 			assets.Add("PANTS", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.Khaki, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
 			assets.Add("JEANS", new Tuple<char, Pigment>(']', new Pigment(ColorPresets.DarkerBlue, ColorPresets.Black, TCODBackgroundFlag.Alpha)));

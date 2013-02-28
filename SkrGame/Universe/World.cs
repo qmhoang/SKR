@@ -93,6 +93,12 @@ namespace SkrGame.Universe {
 			                                      {
 			                                      		new ActorComponent(Calendar, new AP(World.DEFAULT_SPEED))
 			                                      });
+
+			ActionProcessed += new EventHandler<World, EventArgs>(World_ActionProcessed);
+		}
+
+		void World_ActionProcessed(World sender, EventArgs e) {
+			visionSubsystem.Update();
 		}
 
 		void EntityManager_EntityRemoved(Entity entity) {
@@ -113,11 +119,6 @@ namespace SkrGame.Universe {
 		public void UpdateSystems() {
 			actionSystem.Update();
 		}
-
-		public void UpdateVision() {
-			visionSubsystem.Update();			
-		}
-
 
 		public static int SecondsToActionPoints(double seconds) {
 			return  (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);

@@ -11,6 +11,7 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
+using Ogui;
 using Ogui.Core;
 using Ogui.UI;
 using SKR.UI.Gameplay;
@@ -49,7 +50,7 @@ namespace SKR {
 	}
 
 
-	public class Program {
+	public static class Program {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		public const int FPS_LIMIT = 60;
@@ -60,7 +61,7 @@ namespace SKR {
 		public static readonly Size ScreenSize = new Size(80, 60);
 
 		public static BooleanSwitch SeeAll = new BooleanSwitch("SeeAll", "See everything (no FOV checking)");
-		public static BooleanSwitch GodMod = new BooleanSwitch("GodMode", "God mode");		
+		public static BooleanSwitch GodMod = new BooleanSwitch("GodMode", "God mode");
 
 		public static void Main(string[] args) {
 			XmlConfigurator.Configure(new FileInfo("Log.xml"));	
@@ -80,7 +81,7 @@ namespace SKR {
 				          		FpsLimit = FPS_LIMIT,
 				          		InitialDelay = INITIAL_DELAY,
 				          		IntervalDelay = INTERVAL_DELAY,
-				          		Pigments = new PigmentAlternatives()
+				          		Pigments = new PigmentAlternatives
 				          		           {
 				          		           		{PigmentType.FrameFocus, new Pigment(ColorPresets.White, ColorPresets.Black)},
 				          		           		{PigmentType.FrameNormal, new Pigment(ColorPresets.White, ColorPresets.Black)},
@@ -95,7 +96,8 @@ namespace SKR {
 				          		           		{PigmentType.ViewDepressed, new Pigment(ColorPresets.White, ColorPresets.DarkestGrey)},
 				          		           		{PigmentType.ViewSelected, new Pigment(ColorPresets.Green, ColorPresets.Black)}
 				          		           },
-				          		FontFlags = TCODFontFlags.Greyscale | TCODFontFlags.LayoutAsciiInRow
+				          		FontFlags = TCODFontFlags.Greyscale | TCODFontFlags.LayoutAsciiInRow,
+								RendererType = TCODRendererType.OpenGL
 				          });
 		}
 	}

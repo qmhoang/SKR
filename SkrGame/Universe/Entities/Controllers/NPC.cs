@@ -31,7 +31,6 @@ namespace SkrGame.Universe.Entities.Controllers {
 
 			oldPos = location.Location;
 			
-
 			var player = level.World.Player;
 
 			var target = player.Get<GameObject>().Location;

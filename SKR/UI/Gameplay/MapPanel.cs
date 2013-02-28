@@ -44,18 +44,11 @@ namespace SKR.UI.Gameplay {
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 
-			canvas = new Canvas(Size);
-			World.ActionProcessed += World_ActionProcessed;
-		}
-
-		void World_ActionProcessed(World sender, EventArgs e) {
-			DrawGame();
+			canvas = new Canvas(Size);			
 		}
 
 		protected void DrawGame() {
 			canvas.Clear();
-			World.UpdateVision();
-
 			var level = player.Get<GameObject>().Level;
 
 			ViewOffset = new Point(Math.Min(Math.Max(player.Get<GameObject>().X - canvas.Size.Width / 2, 0),
@@ -119,7 +112,7 @@ namespace SKR.UI.Gameplay {
 
 		protected override void Redraw() {
 			base.Redraw();
-
+			DrawGame();
 			Canvas.Blit(canvas, 0, 0);
 		}
 

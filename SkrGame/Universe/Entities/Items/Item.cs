@@ -13,6 +13,7 @@ namespace SkrGame.Universe.Entities.Items {
 			public int Weight { get; set; }
 			public int Size { get; set; }
 			public int Value { get; set; }
+			public int Hardness { get; set; }
 			public StackType StackType { get; set; }
 		}
 
@@ -36,27 +37,20 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public StackType StackType { get; private set; }
 
-		private Item() {
-			amount = 1;			
+		private Item(int weight, int size, int value, int hardness, StackType stackType) {
+			amount = 1;
+			Weight = weight;
+			Size = size;
+			Value = value;
+			Hardness = hardness;
+			StackType = stackType;
 		}
 
-		public Item(Template template) {
-			StackType = template.StackType;
-			amount = 1;
-//			Type = template.Type;
-			Weight = template.Weight;
-			Size = template.Size;
-			Value = template.Value;
-		}
+		public Item(Template template)
+			: this(template.Weight, template.Size, template.Value, template.Hardness, template.StackType) { }
 
 		public override Component Copy() {
-			var copy = new Item
-			           {
-			           		StackType = StackType,
-			           		Weight = Weight,
-			           		Size = Size,
-			           		Value = Value,
-			           };
+			var copy = new Item(Weight, Size, Value, Hardness, StackType);
 			if (copy.StackType == StackType.Hard)
 				copy.Amount = Amount;
 			return copy;
@@ -78,7 +72,7 @@ namespace SkrGame.Universe.Entities.Items {
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
-			Contract.Invariant(amount > 0);			
+			Contract.Invariant(StackType == StackType.Hard ? amount > 0 : amount == 1);
 		}
 	}
 

@@ -59,7 +59,7 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 1,
 			            				Reliability = 18,
 			            				Strength = 8,
-			            				AmmoType = "bullet",
+			            				AmmoCaliber = "bullet",
 			            		}));
 
 			ef.Inherits("pistol1", "gun",
@@ -146,7 +146,7 @@ namespace SkrGame.Universe.Factories {
 			            				Strength = 8,
 										SwapClips = true,
 										OneInTheChamber = true,
-			            				AmmoType = "9x19mm",
+			            				AmmoCaliber = "9x19mm",
 			            		}));
 
 			ef.Inherits("glock22", "pistol2",
@@ -179,7 +179,7 @@ namespace SkrGame.Universe.Factories {
 			            				Strength = 8,
 										SwapClips = true,
 										OneInTheChamber = true,
-			            				AmmoType = ".40S&W"
+			            				AmmoCaliber = ".40S&W"
 			            		}));
 
 			ef.Inherits("model10", "pistol2",
@@ -212,7 +212,7 @@ namespace SkrGame.Universe.Factories {
 			            				Strength = 9,
 										SwapClips = false,
 										OneInTheChamber = false,
-			            				AmmoType = ".38S"
+			            				AmmoCaliber = ".38S"
 			            		}));
 
 			ef.Inherits("model27", "pistol2",
@@ -245,11 +245,11 @@ namespace SkrGame.Universe.Factories {
 			            				Strength = 10,
 										SwapClips = false,
 										OneInTheChamber = false,
-			            				AmmoType = ".357M"
+			            				AmmoCaliber = ".357M"
 			            		}));
 
 			ef.Inherits("cpython", "pistol2",
-			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+			            //new Sprite("CPYTHON", Sprite.ITEMS_LAYER),
 			            new Identifier("Colt Python"),
 			            new Item(new Item.Template
 			                     {
@@ -278,7 +278,7 @@ namespace SkrGame.Universe.Factories {
 			            				Strength = 10,
 										SwapClips = false,
 										OneInTheChamber = false,
-			            				AmmoType = ".357M"
+			            				AmmoCaliber = ".357M"
 			            		}));
 
 		}
@@ -518,7 +518,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Type = "bullet",
+			            				Caliber = "bullet",
 			            		}));
 
 			ef.Inherits(".40S&W", "bullet",
@@ -537,7 +537,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Type = ".40S&W",
+			            				Caliber = ".40S&W",
 			            		}));
 
 			ef.Inherits("9x9mm", "bullet",
@@ -556,7 +556,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Type = "9x19mm",
+			            				Caliber = "9x19mm",
 			            		}));
 
 			ef.Inherits(".357M", "bullet",
@@ -574,7 +574,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Type = ".357M",
+			            				Caliber = ".357M",
 			            		}));
 
 			ef.Inherits(".38S", "bullet",
@@ -592,7 +592,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Type = ".38S",
+			            				Caliber = ".38S",
 			            		}));
 
 			ef.Inherits(".44M", "bullet",
@@ -610,7 +610,7 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Type = ".44M",
+			            				Caliber = ".44M",
 			            		}));
 		}
 

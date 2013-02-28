@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\Combat\AttackAction.cs" />
+    <Compile Include="Actions\Events\EventAction.cs" />
     <Compile Include="Actions\Features\CloseDoorAction.cs" />
     <Compile Include="Actions\Features\FeatureAction.cs" />
     <Compile Include="Actions\Features\OpenDoorAction.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Systems\ActionSystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
+    <Compile Include="Universe\Entities\Controllers\OneAction.cs" />
     <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
     <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
