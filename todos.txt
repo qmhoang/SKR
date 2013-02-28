@@ -6,6 +6,8 @@ Priority Goals:
 * More items
 * PC generation
 * More "zones" (houses, buildings, etc)
+* sneaking
+* conditions
 
 Immediate Goals:
 * Zones of ownership
@@ -29,6 +31,8 @@ Long term goals:
 * bullet travel
 * animations
 * wounds
+* cleaniless is a sum of body part's cleanliness
+* evidence and evidence denial (gloves, sunglasses, etc)
 
 Ideas:
 * safety needs-based stat? 

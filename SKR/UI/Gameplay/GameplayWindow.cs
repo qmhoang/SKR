@@ -266,11 +266,11 @@ namespace SKR.UI.Gameplay {
 							case 'u':
 								Directions("What direction?", p => Options("What object do you want to use?",
 																		   "Nothing there to use.",
-																		   playerLocation.Level.GetEntitiesAt<UseableFeature, VisibleComponent>(p).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0),
+																		   playerLocation.Level.GetEntitiesAt<UseBroadcaster, VisibleComponent>(p).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0),
 																		   Identifier.GetNameOrId,
 																		   useable => Options(String.Format("Do what with {0}?", Identifier.GetNameOrId(useable)),
 																							  String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
-																							  useable.Get<UseableFeature>().Uses.ToList(),
+																							  useable.Get<UseBroadcaster>().Actions.ToList(),
 																							  use => use.Description,
 																							  use => use.Use(player, useable, use))));
 								break;

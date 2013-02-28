@@ -83,18 +83,19 @@ namespace SkrGame.Universe {
 			ItemFactory.Init(EntityFactory);
 			FeatureFactory.Init(EntityFactory);
 			PersonFactory.Init(EntityFactory);
+			TestEntityFactory.Init(EntityFactory);
 
 			EntityFactory.Compile();
 
 			MapFactory = new MapFactory(this);
 
-			Calendar = new Calendar(new DateTime(2013, 4, 2, 6, 23, 52));
+			Calendar = new Calendar();
 			CalendarEntity = EntityManager.Create(new List<Component>
 			                                      {
 			                                      		new ActorComponent(Calendar, new AP(World.DEFAULT_SPEED))
 			                                      });
 
-			ActionProcessed += new EventHandler<World, EventArgs>(World_ActionProcessed);
+			ActionProcessed += World_ActionProcessed;
 		}
 
 		void World_ActionProcessed(World sender, EventArgs e) {

@@ -135,6 +135,7 @@
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\Controllers\OneAction.cs" />
+    <Compile Include="Universe\Entities\Features\Useables\TestUseableComponent.cs" />
     <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
     <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
@@ -152,7 +153,7 @@
     <Compile Include="Universe\Entities\Features\LockedFeature.cs" />
     <Compile Include="Universe\Entities\Features\OnBump.cs" />
     <Compile Include="Universe\Entities\Features\PassiveFeature.cs" />
-    <Compile Include="Universe\Entities\Features\UseableFeature.cs" />
+    <Compile Include="Universe\Entities\Features\UseBroadcaster.cs" />
     <Compile Include="Universe\Entities\Items\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Controllers\NPC.cs" />
     <Compile Include="Universe\Entities\Items\Equipable.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Universe\Entities\Features\Scenery.cs" />
     <Compile Include="Universe\Entities\Features\Opening.cs" />
     <Compile Include="Universe\Factories\PersonFactory.cs" />
+    <Compile Include="Universe\Factories\TestEntityFactory.cs" />
     <Compile Include="Universe\Locations\Level.cs" />
     <Compile Include="Universe\Locations\Terrain.cs" />
     <Compile Include="Universe\World.cs" />

@@ -54,15 +54,7 @@ namespace SkrGame.Universe.Factories {
 			            new Identifier("Door", "A basic door"),
 			            Door("OpenedDoor", "ClosedDoor"),
 			            new OnBump(DoorOnBump),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Use door", (user, featureEntity, action) =>
-			                               		                                         	{
-			                               		                                         		if (featureEntity.Has<Opening>())
-			                               		                                         			user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
-			                               		                                         		return ActionResult.Aborted;
-			                               		                                         	})
-			                               }));
+			            new UseBroadcaster());
 
 			ef.Inherits("LockedDoor", "Door",
 						new LockedFeature(0),
@@ -92,15 +84,7 @@ namespace SkrGame.Universe.Factories {
 			            Window("OpenedWindow", "ClosedWindow"),
 			            new Identifier("Window", "A window door"),
 			            new OnBump(WindowOnBump),
-			            new UseableFeature(new List<UseableFeature.UseAction>
-			                               {
-			                               		new UseableFeature.UseAction("Use window", (user, featureEntity, action) =>
-			                               		                                           	{
-			                               		                                           		if (featureEntity.Has<Opening>())
-			                               		                                           			user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, featureEntity));
-			                               		                                           		return ActionResult.Aborted;
-			                               		                                           	})
-			                               }));
+			            new UseBroadcaster());
 
 			ef.Inherits("WINDOW_HOUSE_VERT", "Window",
 			            new Sprite("WINDOW_HOUSE_VERT", Sprite.FEATURES_LAYER),
@@ -165,22 +149,23 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("SINK", "feature",
 			            new Sprite("SINK", Sprite.FEATURES_LAYER),
-						new Identifier("Sink", "A sink."),
-			            new UseableFeature(new UseableFeature.UseAction("Wash hands",
-			                                                            (entity, user, action) =>
-			                                                            	{
-//																				World.Instance.Log.Normal(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
-			                                                            		return ActionResult.Success;
-			                                                            	})));
+			            new Identifier("Sink", "A sink.") 
+//			            new UseBroadcaster(new UseAction("Wash hands",
+//			                                                            (entity, user, action) =>
+//			                                                            	{
+////																				World.Instance.Log.Normal(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
+//			                                                            		return ActionResult.Success;
+//			                                                            	}))
+					);
 
 			ef.Inherits("TOILET", "nonblockingfeature",
 			            new Sprite("TOILET", Sprite.FEATURES_LAYER),
-			            new UseableFeature(new UseableFeature.UseAction("Use toilet",
-			                                                            (entity, user, action) =>
-			                                                            	{
-//																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
-			                                                            		return ActionResult.Success;
-			                                                            	})),
+//			            new UseBroadcaster(new UseAction("Use toilet",
+//			                                                            (entity, user, action) =>
+//			                                                            	{
+////																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
+//			                                                            		return ActionResult.Success;
+//			                                                            	})),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 //			                               		var distanceTo = entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>());

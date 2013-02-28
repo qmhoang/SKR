@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using DEngine.Actions;
 using DEngine.Actor;
@@ -7,29 +8,31 @@ using DEngine.Entities;
 
 namespace SkrGame.Universe {
 	public class Calendar : Controller {
-		public DateTime Time { get; private set; }
+		private Calendar(Queue<IAction> actions, TimeSpan timeSpan) : base(actions) {
+			TimeSpan = timeSpan;
+		}
+
+		public static DateTime StartingDate = new DateTime(2013, 5, 13, 9, 4, 42);
+
+		public DateTime DateTime { get { return StartingDate + TimeSpan; } }
+		public TimeSpan TimeSpan { get; private set; }
 		
-		public Calendar() {
-			Time = new DateTime(2013, 5, 26);
-		}
+		public Calendar() : this(new Queue<IAction>(), new TimeSpan()) { }
 
-		public Calendar(DateTime timeSpan) {
-			this.Time = timeSpan;
-		}
-
+		
 		public override IAction NextAction() {
 			return new CalendarAction(this);
 		}
 
 		public override Controller Copy() {
-			return new Calendar(Time);
+			return new Calendar(new Queue<IAction>(), TimeSpan);
 		}
 
-		public void IncreaseTime(double seconds = 1) {
-			Time = Time.AddSeconds(seconds);
+		public void IncreaseTime(int seconds = 1, int milliseconds = 0) {
+			TimeSpan += new TimeSpan(0, 0, 0, seconds, milliseconds);
 		}
 
-		public sealed class CalendarAction : IAction {
+		private sealed class CalendarAction : IAction {
 			private Calendar calendar;
 
 			public CalendarAction(Calendar calendar) {
@@ -41,7 +44,7 @@ namespace SkrGame.Universe {
 			}
 
 			public ActionResult OnProcess() {
-				calendar.IncreaseTime(.1);
+				calendar.IncreaseTime(0, 100);
 				return ActionResult.Success;
 			}
 		}

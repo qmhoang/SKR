@@ -37,6 +37,8 @@ namespace SKR.UI {
 			assets.Add("CONCRETE_CRACK_1", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Block1, new Pigment(ColorPresets.White, ColorPresets.DarkerGrey)));
 			assets.Add("GRASS_ONE", new Tuple<char, Pigment>((char) TCODSpecialCharacter.Block3, new Pigment(ColorPresets.DarkGreen, ColorPresets.Green)));
 
+			assets.Add("FEATURE", new Tuple<char, Pigment>('#', new Pigment(ColorPresets.BurlyWood, ColorPresets.Black, TCODBackgroundFlag.Alpha)));
+			
 			assets.Add("WALL_BRICK_DARK", new Tuple<char, Pigment>('#', Brick));
 			assets.Add("WALL_BRICK_DARK_VERT", new Tuple<char, Pigment>((char) TCODSpecialCharacter.DoubleVertLine, Brick));
 			assets.Add("WALL_BRICK_DARK_HORZ", new Tuple<char, Pigment>((char) TCODSpecialCharacter.DoubleHorzLine, Brick));
