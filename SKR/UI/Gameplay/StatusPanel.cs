@@ -5,6 +5,7 @@ using DEngine.Entities;
 using Ogui.UI;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
+using libtcod;
 using Attribute = SkrGame.Universe.Entities.Stats.Attribute;
 
 namespace SKR.UI.Gameplay {
@@ -17,7 +18,7 @@ namespace SKR.UI.Gameplay {
 			calendar = world.Calendar;
 		}
 
-		private void PrintAttribute( int x, int y, Attribute attribute) {
+		private void PrintAttribute(int x, int y, Attribute attribute) {
 			Canvas.PrintString(x, y, String.Format("{0}: {1}/{2}", attribute.Abbreviation, attribute.Value, attribute.MaximumValue));			
 		}
 
@@ -42,8 +43,12 @@ namespace SKR.UI.Gameplay {
 			Canvas.PrintString(1, i++, person.Posture.ToString());			
 			i++;
 			i++;
-			Canvas.PrintString(1, i++, calendar.Time.ToShortDateString());
-			Canvas.PrintString(1, i++, calendar.Time.ToLongTimeString());			
+			Canvas.PrintString(1, i++, calendar.DateTime.ToShortDateString());
+			Canvas.PrintString(1, i++, calendar.DateTime.ToLongTimeString());
+			i++;
+			i++;
+			i++;
+			Canvas.PrintString(1, i++, String.Format("FPS: {0}", TCODSystem.getFps()));			
 		}
 	}
 }

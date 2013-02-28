@@ -1,15 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Actions.Features;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class Opening : Component {
+	public class Opening : Component, IUseable {
 		public enum OpeningStatus {
 			Opened,
 			Closed
@@ -53,7 +55,7 @@ namespace SkrGame.Universe.Entities.Features {
 			ClosedAsset = closedAsset;
 			WalkableOpened = walkableWhenOpened;
 			OpenedDescription = openDescription;
-			ClosedDescription = closedDescription;
+			ClosedDescription = closedDescription;			
 		}
 
 		[ContractInvariantMethod]
@@ -68,6 +70,32 @@ namespace SkrGame.Universe.Entities.Features {
 			if (Used != null)
 				opening.Used = (ComponentEventHandler<EventArgs<OpeningStatus>>) Used.Clone();
 			return opening;
+		}
+
+		private static readonly UseAction Open =
+				new UseAction("Open door", (user, featureEntity, action) =>
+				                           	{
+				                           		if (featureEntity.Has<Opening>())
+				                           			user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, featureEntity));
+				                           		return ActionResult.Aborted;
+				                           	});
+
+		private static readonly UseAction Close =
+				new UseAction("Close door", (user, featureEntity, action) =>
+				                            	{
+				                            		if (featureEntity.Has<Opening>())
+				                            			user.Get<ActorComponent>().Enqueue(new CloseDoorAction(user, featureEntity));
+				                            		return ActionResult.Aborted;
+				                            	});
+
+		public IEnumerable<UseAction> Uses {
+			get {
+				if (Status == OpeningStatus.Closed) {
+					yield return Open;
+				} else {
+					yield return Close;
+				}
+			}
 		}
 	}
 }
