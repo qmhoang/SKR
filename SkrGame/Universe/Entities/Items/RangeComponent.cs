@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using DEngine.Core;
@@ -35,11 +36,11 @@ namespace SkrGame.Universe.Entities.Items {
 				set { APToReload = World.SpeedToActionPoints(value); }
 			}
 
-			public bool SwapClips { get; set; } // for revolvers and shotguns
+			public bool SwapClips { get; set; } // if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
 
 			public int Recoil { get; set; }
 			public int Reliability { get; set; }
-			public string AmmoType { get; set; }
+			public string AmmoCaliber { get; set; }
 			public int Shots { get; set; }
 			public bool OneInTheChamber { get; set; } // does gun have a chamber that allows a bullet inside
 
@@ -56,12 +57,11 @@ namespace SkrGame.Universe.Entities.Items {
 				set { APToReady = World.SpeedToActionPoints(value); }
 			}
 
-			public bool UnreadyAfterAttack { get; set; }
+			//			public bool UnreadyAfterAttack { get; set; }
 
 			public DamageType DamageType { get; set; }
 
 			// not used yet
-			//			public bool SwapClips { get; set; }			// if true, a new clip replaces the old; if false, additional cartridges are added like as in a shotgun
 			//			public int ShotsPerBurst { get; set; }		// number of bullets fired per burst
 			//			public int BurstPenalty { get; set; }		// penalty for each shot of the burst
 			//			public int BurstAP { get; set; }			// AP cost for a burst
@@ -91,7 +91,7 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public int Recoil { get; protected set; }
 		public int Reliability { get; protected set; }
-		public string AmmoType { get; protected set; }
+		public string AmmoCaliber { get; protected set; }
 		public int Shots { get; set; }
 		public int ShotsRemaining { get; set; }
 		public bool OneInTheChamber { get; private set; }
@@ -111,16 +111,16 @@ namespace SkrGame.Universe.Entities.Items {
 			Contract.Invariant(APToAttack > 0);
 			Contract.Invariant(APToReady > 0);
 			Contract.Invariant(APToReload > 0);
-			Contract.Invariant(!String.IsNullOrEmpty(AmmoType));
+			Contract.Invariant(!String.IsNullOrEmpty(AmmoCaliber));
 			Contract.Invariant(!String.IsNullOrEmpty(Skill));
 			Contract.Invariant(DamageType != null);
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescription));
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
 		}
 
-		public RangeComponent(string actionDescription, string actionDescriptionPlural, int accuracy, Action<Entity, Entity> onHit, DamageType damageType, double penetration, int apToAttack, string skill,
-		                      Rand damage, int apToReady, int strength, int range, int apToReload, bool swapClips, int recoil, int reliability, string ammoType, int shots, int shotsRemaining,
-		                      bool oneInTheChamber) {
+		private RangeComponent(string actionDescription, string actionDescriptionPlural, int accuracy, Action<Entity, Entity> onHit, DamageType damageType, double penetration, int apToAttack, string skill,
+		                       Rand damage, int apToReady, int strength, int range, int apToReload, bool swapClips, int recoil, int reliability, string ammoType, int shots, int shotsRemaining,
+		                       bool oneInTheChamber) {
 			ActionDescription = actionDescription;
 			ActionDescriptionPlural = actionDescriptionPlural;
 			Accuracy = accuracy;
@@ -137,41 +137,38 @@ namespace SkrGame.Universe.Entities.Items {
 			SwapClips = swapClips;
 			Recoil = recoil;
 			Reliability = reliability;
-			AmmoType = ammoType;
+			AmmoCaliber = ammoType;
 			Shots = shots;
 			ShotsRemaining = shotsRemaining;
 			OneInTheChamber = oneInTheChamber;
 		}
 
-		public RangeComponent(Template template) {
-			ActionDescription = template.ActionDescription;
-			ActionDescriptionPlural = template.ActionDescriptionPlural;
-
-			Skill = template.Skill;
-
-			Strength = template.Strength;
-			Accuracy = template.Accuracy;
-			Damage = template.Damage;
-			DamageType = template.DamageType;
-			Penetration = template.Penetration;
-			OnHit = template.OnHit;
-			Range = template.Range;
-			APToReady = template.APToReady;
-			APToAttack = template.APToAttack;
-			APToReload = template.APToReload;
-			Recoil = template.Recoil;
-			Reliability = template.Reliability;
-			AmmoType = template.AmmoType;
-			OneInTheChamber = template.OneInTheChamber;
-			ShotsRemaining = template.OneInTheChamber ? template.Shots + 1 : template.Shots;
-			Shots = template.Shots;
-			SwapClips = template.SwapClips;
-		}
+		public RangeComponent(Template template) :
+				this(template.ActionDescription,
+				     template.ActionDescriptionPlural,
+				     template.Accuracy,
+				     template.OnHit,
+				     template.DamageType,
+				     template.Penetration,
+				     template.APToAttack,
+				     template.Skill,
+				     template.Damage,
+				     template.APToReady,
+				     template.Strength,
+				     template.Range,
+				     template.APToReload,
+				     template.SwapClips,
+				     template.Recoil,
+				     template.Reliability,
+				     template.AmmoCaliber,
+				     template.Shots,
+				     template.OneInTheChamber ? template.Shots + 1 : template.Shots,
+				     template.OneInTheChamber) {}
 
 		public override Component Copy() {
 			return new RangeComponent(ActionDescription, ActionDescriptionPlural, Accuracy, OnHit, DamageType,
 			                          Penetration, APToAttack, Skill, Damage, APToReady, Strength, Range, APToReload, SwapClips, Recoil,
-			                          Reliability, AmmoType, Shots, ShotsRemaining, OneInTheChamber);
+			                          Reliability, AmmoCaliber, Shots, ShotsRemaining, OneInTheChamber);
 
 		}
 	}

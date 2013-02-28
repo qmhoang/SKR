@@ -28,7 +28,7 @@ namespace SkrGame.Actions.Features {
 		public override ActionResult OnProcess() {
 			var result = Repeat(Entity);
 
-			if ((result == ActionResult.Success || result == ActionResult.SuccessNoTime) && (Count > 0)) {
+			if ((result == ActionResult.Success || result == ActionResult.SuccessNoTime) && (Count > 1)) {
 				Entity.Get<ActorComponent>().Enqueue(new RepeatAction(Entity, Count - 1, Repeat, APCostFunc));
 			}
 

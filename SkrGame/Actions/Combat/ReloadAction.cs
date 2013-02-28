@@ -20,7 +20,7 @@ namespace SkrGame.Actions.Combat {
 			Contract.Requires<ArgumentException>(ammo.Has<AmmoComponent>());
 			Contract.Requires<ArgumentException>(entity.Has<GameObject>());
 			Contract.Requires<ArgumentException>(entity.Has<ActorComponent>());
-			Contract.Requires<ArgumentException>(weapon.Get<RangeComponent>().AmmoType == ammo.Get<AmmoComponent>().Type);
+			Contract.Requires<ArgumentException>(weapon.Get<RangeComponent>().AmmoCaliber == ammo.Get<AmmoComponent>().Caliber);
 
 			this.weapon = weapon;
 			this.ammo = ammo;
@@ -109,7 +109,7 @@ namespace SkrGame.Actions.Combat {
 				}
 
 				if (rangeWeapon.ShotsRemaining < rangeWeapon.Shots + (rangeWeapon.OneInTheChamber ? 1 : 0)) {
-					var ammos = Entity.Get<ContainerComponent>().Items.FilteredBy<Item, AmmoComponent>().Where(e => e.Get<AmmoComponent>().Type == rangeWeapon.AmmoType);
+					var ammos = Entity.Get<ContainerComponent>().Items.FilteredBy<Item, AmmoComponent>().Where(e => e.Get<AmmoComponent>().Caliber == rangeWeapon.AmmoCaliber);
 					var enumerator = ammos.GetEnumerator();
 					while (enumerator.MoveNext()) {
 						Entity.Get<ActorComponent>().Enqueue(new ReloadAction(Entity, weapon, enumerator.Current));

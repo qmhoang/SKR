@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKR", "SKR\SKR.csproj", "{D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{58B44235-361D-4E7B-9D89-7D05DA588458}"
 	ProjectSection(SolutionItems) = preProject
+		SKR.psess = SKR.psess
 		todos.txt = todos.txt
 	EndProjectSection
 EndProject

@@ -49,7 +49,7 @@ namespace SkrGame.Universe.Factories {
 			                          		APToReady = 1,
 			                          		Reach = 0,
 			                          		Strength = 1,
-			                          		Parry = 0
+			                          		Parry = 0,
 			                          }));
 
 			ef.Inherits("npc", "person",

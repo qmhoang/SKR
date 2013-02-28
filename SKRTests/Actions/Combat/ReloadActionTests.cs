@@ -57,7 +57,7 @@ namespace SKRTests.Actions.Combat {
 			                              						Recoil = 1,
 			                              						Reliability = 18,
 			                              						Strength = 8,
-			                              						AmmoType = "pistol",
+			                              						AmmoCaliber = "pistol",
 			                              						OneInTheChamber = true,
 			                              						SwapClips = true,
 			                              				})
@@ -93,7 +93,7 @@ namespace SKRTests.Actions.Combat {
 			                                						Recoil = 1,
 			                                						Reliability = 18,
 			                                						Strength = 8,
-			                                						AmmoType = "revolver",
+			                                						AmmoCaliber = "revolver",
 			                                						OneInTheChamber = false,
 			                                						SwapClips = false,
 			                                				})
@@ -129,7 +129,7 @@ namespace SKRTests.Actions.Combat {
 			                                						Recoil = 1,
 			                                						Reliability = 18,
 			                                						Strength = 8,
-			                                						AmmoType = "shotgun",
+			                                						AmmoCaliber = "shotgun",
 			                                						OneInTheChamber = true,
 			                                						SwapClips = false,
 			                                				})
@@ -152,7 +152,7 @@ namespace SKRTests.Actions.Combat {
 			                                  				{
 			                                  						ActionDescription = "load",
 			                                  						ActionDescriptionPlural = "loads",
-			                                  						Type = "pistol",
+			                                  						Caliber = "pistol",
 			                                  				})
 			                                  });
 
@@ -175,7 +175,7 @@ namespace SKRTests.Actions.Combat {
 			                                    				{
 			                                    						ActionDescription = "load",
 			                                    						ActionDescriptionPlural = "loads",
-			                                    						Type = "revolver",
+			                                    						Caliber = "revolver",
 			                                    				})
 			                                    });
 
@@ -198,7 +198,7 @@ namespace SKRTests.Actions.Combat {
 			                                    				{
 			                                    						ActionDescription = "load",
 			                                    						ActionDescriptionPlural = "loads",
-			                                    						Type = "shotgun",
+			                                    						Caliber = "shotgun",
 			                                    				})
 			                                    });
 
