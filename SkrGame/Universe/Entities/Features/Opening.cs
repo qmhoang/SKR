@@ -11,7 +11,7 @@ using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class Opening : Component, IUseable {
+	public sealed class Opening : Component, IUseable {
 		public enum OpeningStatus {
 			Opened,
 			Closed
@@ -36,7 +36,7 @@ namespace SkrGame.Universe.Entities.Features {
 
 		public event ComponentEventHandler<EventArgs<OpeningStatus>> Used;
 
-		public const int DEFAULT_DOOR_USE_APCOST = World.ONE_SECOND_IN_AP;
+		public const int DefaultDoorUseAPCost = World.OneSecondInAP;
 
 		public void OnUsed(EventArgs<OpeningStatus> e) {
 			Contract.Requires<ArgumentNullException>(e != null, "e");
@@ -45,7 +45,7 @@ namespace SkrGame.Universe.Entities.Features {
 				handler(this, e);
 		}
 
-		public Opening(string openedAsset, string closedAsset, string openDescription, string closedDescription, bool walkableWhenOpened = true, int apCost = DEFAULT_DOOR_USE_APCOST, OpeningStatus status = OpeningStatus.Closed) {
+		public Opening(string openedAsset, string closedAsset, string openDescription, string closedDescription, bool walkableWhenOpened = true, int apCost = DefaultDoorUseAPCost, OpeningStatus status = OpeningStatus.Closed) {
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(openedAsset));
 

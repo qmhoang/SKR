@@ -5,7 +5,7 @@ using System.Text;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class Lockpick : Component {
+	public sealed class Lockpick : Component {
 		public int Quality { get; private set; }
 
 		public Lockpick(int quality) {

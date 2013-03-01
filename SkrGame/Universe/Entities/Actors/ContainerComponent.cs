@@ -15,7 +15,7 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class ContainerComponent : Component {
+	public sealed class ContainerComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly List<Entity> itemContainer;

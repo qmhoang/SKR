@@ -7,7 +7,7 @@ namespace SkrGame.Universe.Entities.Features {
 		Destroyed,
 	}
 
-	public class LockedFeature : Component {
+	public sealed class LockedFeature : Component {
 		public int Quality { get; set; }
 		public LockStatus Status { get; set; }
 

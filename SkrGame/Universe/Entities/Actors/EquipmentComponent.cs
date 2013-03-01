@@ -15,7 +15,7 @@ using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class EquipmentComponent : Component {
+	public sealed class EquipmentComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly Dictionary<string, Entity> equippedItems;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 using DEngine.Actions;
 using DEngine.Actor;
 using DEngine.Components;
@@ -8,7 +9,9 @@ using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
 using SkrGame.Systems;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Factories;
+using log4net;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe {
@@ -17,20 +20,22 @@ namespace SkrGame.Universe {
 		Initialized,
 	}
 	public class World {
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
 		/// <summary>
 		/// default speed, anything with 2x speed cost 1/2 AP 
 		/// </summary>
-		public const int DEFAULT_SPEED = 1000; // 
+		public const int DefaultSpeed = 1000; // 
 
-		public const double TURN_LENGTH_IN_SECONDS = 1;	// how long is a turn in seconds
-		public const int ONE_SECOND_IN_AP = 1000;	// how long is a turn in seconds
+		public const double TurnLengthInSeconds = 1;	// how long is a turn in seconds
+		public const int OneSecondInAP = 1000;	// how long is a turn in seconds
 		public const int MEAN = 50;						// what is the mean score for an attribute
-		public const int STANDARD_DEVIATION = 15;		// what is the stddev for an attribute score
-		public const int STANDARD_INCREMENT = STANDARD_DEVIATION / 3;
-		public const double TILE_LENGTH_IN_METER = 1f;	// length of 1 square tile
+		public const int StandardDeviation = 15;		// what is the stddev for an attribute score
+		public const int StandardIncrement = StandardDeviation / 3;
+		public const double TileLengthInMeter = 1f;	// length of 1 square tile
 
 		public static double SkillRoll() {
-			return Rng.GaussianDouble(MEAN, 5 * STANDARD_DEVIATION, STANDARD_DEVIATION);
+			return Rng.GaussianDouble(MEAN, 5 * StandardDeviation, StandardDeviation);
 		}
 
 		public MapFactory MapFactory { get; private set; }
@@ -78,6 +83,7 @@ namespace SkrGame.Universe {
 			EntityManager = new EntityManager();
 			Log = new Log();
 
+			EntityManager.EntityAdded += EntityManager_EntityAdded;
 			EntityManager.EntityRemoved += EntityManager_EntityRemoved;
 
 			ItemFactory.Init(EntityFactory);
@@ -92,10 +98,16 @@ namespace SkrGame.Universe {
 			Calendar = new Calendar();
 			CalendarEntity = EntityManager.Create(new List<Component>
 			                                      {
-			                                      		new ActorComponent(Calendar, new AP(World.DEFAULT_SPEED))
+			                                      		new ActorComponent(Calendar, new AP(World.DefaultSpeed))
 			                                      });
 
 			ActionProcessed += World_ActionProcessed;
+		}
+
+		void EntityManager_EntityAdded(Entity entity) {
+			if (entity.Has<OnCreation>()) {
+				entity.Get<OnCreation>().CreationFunc(entity, this);
+			}
 		}
 
 		void World_ActionProcessed(World sender, EventArgs e) {
@@ -122,11 +134,11 @@ namespace SkrGame.Universe {
 		}
 
 		public static int SecondsToActionPoints(double seconds) {
-			return  (int) Math.Round((seconds * DEFAULT_SPEED) / TURN_LENGTH_IN_SECONDS);
+			return (int) Math.Round((seconds * DefaultSpeed) / TurnLengthInSeconds);
 		}
 
 		public static double ActionPointsToSeconds(int ap) {
-			return (double) (ap * TURN_LENGTH_IN_SECONDS) / DEFAULT_SPEED;
+			return ap * TurnLengthInSeconds / DefaultSpeed;
 		}
 
 		public static int SpeedToActionPoints(double speed) {
@@ -138,14 +150,14 @@ namespace SkrGame.Universe {
 		}
 
 		public static double SpeedToSeconds(double speed) {
-			return (DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / speed;
+			return (DefaultSpeed * TurnLengthInSeconds) / speed;
 		}
 
 		/// <summary>
 		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
 		/// </summary>
 		public static double SecondsToSpeed(double seconds) {
-			return ((DEFAULT_SPEED * TURN_LENGTH_IN_SECONDS) / seconds);
+			return ((DefaultSpeed * TurnLengthInSeconds) / seconds);
 		}
 
 		/// <summary>
@@ -154,7 +166,7 @@ namespace SkrGame.Universe {
 		/// <param name="difficulty"></param>
 		/// <returns>Higher means easier</returns>
 		public static double ChanceOfSuccess(double difficulty) {
-			return GaussianDistribution.CumulativeTo(difficulty, World.MEAN, World.STANDARD_DEVIATION);
+			return GaussianDistribution.CumulativeTo(difficulty, World.MEAN, World.StandardDeviation);
 		}
 	}
 }

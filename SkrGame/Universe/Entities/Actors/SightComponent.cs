@@ -8,7 +8,7 @@ using DEngine.Entities;
 using DEngine.Level;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class SightComponent : Component {
+	public sealed class SightComponent : Component {
 		private VisionMap vision;
 		private AbstractLevel currLevel;
 

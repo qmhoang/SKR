@@ -16,7 +16,7 @@ namespace SkrGame.Universe.Entities.Actors {
 	/// <summary>
 	/// Add this to an entity if the entity can be attacked, it contains its defense information
 	/// </summary>
-	public class DefendComponent : Component {
+	public sealed class DefendComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public class Appendage {
@@ -98,13 +98,13 @@ namespace SkrGame.Universe.Entities.Actors {
 			return new DefendComponent(health, new List<Appendage>()
 			                               {
 			                               		new Appendage("Torso", health, 125, 0),
-			                               		new Appendage("Head", health, 15, -World.STANDARD_DEVIATION * 5 / 3),
-			                               		new Appendage("Right Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new Appendage("Left Arm", health / 2, 25, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new Appendage("Main Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new Appendage("Off Hand", health / 3, 5, -World.STANDARD_DEVIATION * 4 / 3),
-			                               		new Appendage("Legs", health / 2, 75, -World.STANDARD_DEVIATION * 2 / 3),
-			                               		new Appendage("Feet", health / 3, 10, -World.STANDARD_DEVIATION * 2 / 3),
+			                               		new Appendage("Head", health, 15, -World.StandardDeviation * 5 / 3),
+			                               		new Appendage("Right Arm", health / 2, 25, -World.StandardDeviation * 4 / 3),
+			                               		new Appendage("Left Arm", health / 2, 25, -World.StandardDeviation * 4 / 3),
+			                               		new Appendage("Main Hand", health / 3, 5, -World.StandardDeviation * 4 / 3),
+			                               		new Appendage("Off Hand", health / 3, 5, -World.StandardDeviation * 4 / 3),
+			                               		new Appendage("Legs", health / 2, 75, -World.StandardDeviation * 2 / 3),
+			                               		new Appendage("Feet", health / 3, 10, -World.StandardDeviation * 2 / 3),
 			                               });
 		}
 

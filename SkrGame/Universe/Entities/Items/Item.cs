@@ -8,7 +8,7 @@ using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class Item : Component {
+	public sealed class Item : Component {
 		public class Template {
 			public int Weight { get; set; }
 			public int Size { get; set; }

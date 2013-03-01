@@ -9,7 +9,7 @@ using SkrGame.Gameplay.Combat;
 namespace SkrGame.Universe.Entities.Items {
 	// todo ammo cases
 
-	public class RangeComponent : Component {
+	public sealed class RangeComponent : Component {
 		public class Template {
 			public int Accuracy { get; set; }
 			public Rand Damage { get; set; }

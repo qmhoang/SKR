@@ -18,7 +18,6 @@ namespace SkrGame.Actions.Movement {
 	// todo needs TLC refactoring
 	public class JumpOverAction : LoggedAction {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private Direction direction;
 		private Entity feature;
 		private Point landedLocation;
 		private int apCost;
@@ -28,7 +27,6 @@ namespace SkrGame.Actions.Movement {
 			Contract.Requires<ArgumentException>(entity.Has<Person>());
 			//			Contract.Requires<ArgumentException>(feature.Get<GameObject>().DistanceTo(entity.Get<GameObject>()) <= 1.5f);
 
-			this.direction = direction;
 			landedLocation = Entity.Get<GameObject>().Location + direction + direction;
 
 			var features = World.CurrentLevel.GetEntitiesAt<Scenery>(entity.Get<GameObject>().Location + direction).OrderByDescending(e => e.Get<Scenery>().JumpHeight);
@@ -36,10 +34,10 @@ namespace SkrGame.Actions.Movement {
 			if (features.IsEmpty()) {
 				feature = null;
 				Logger.InfoFormat("{0} is jumping over nothing.", EntityName);
-				apCost = (int) Math.Round(World.ONE_SECOND_IN_AP * direction.Offset.Length);
+				apCost = (int) Math.Round(World.OneSecondInAP * direction.Offset.Length);
 			} else {
 				feature = features.First();
-				apCost = (int) Math.Round(World.ONE_SECOND_IN_AP * direction.Offset.Length * Math.Max(feature.Get<Scenery>().JumpHeight + 3, 1.0));
+				apCost = (int) Math.Round(World.OneSecondInAP * direction.Offset.Length * Math.Max(feature.Get<Scenery>().JumpHeight + 3, 1.0));
 			}
 		}
 
@@ -60,7 +58,7 @@ namespace SkrGame.Actions.Movement {
 			double jumpRoll = World.SkillRoll();
 			double jumpEase = Entity.Get<Person>().Skills["skill_jumping"] - (feature == null ? 0 : feature.Get<Scenery>().JumpHeight);
 
-			jumpEase += World.STANDARD_DEVIATION; // todo fix hack, need to add size for objects (NOT IN GAMEOBJECT, ANOTHER COMPONENT)
+			jumpEase += World.StandardDeviation; // todo fix hack, need to add size for objects (NOT IN GAMEOBJECT, ANOTHER COMPONENT)
 
 			var thingJumpedOver = feature == null ? "location" : Identifier.GetNameOrId(feature);
 

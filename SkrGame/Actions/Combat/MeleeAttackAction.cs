@@ -21,7 +21,7 @@ namespace SkrGame.Actions.Combat {
 		}
 
 		public Rand GetStrengthDamage(int strength) {
-			return Rand.Gaussian(strength / 3, strength / 3 - 1, Math.Min(World.STANDARD_DEVIATION / 3, strength / 3));
+			return Rand.Gaussian(strength / 3, strength / 3 - 1, Math.Min(World.StandardDeviation / 3, strength / 3));
 		}
 
 		public override ActionResult OnProcess() {

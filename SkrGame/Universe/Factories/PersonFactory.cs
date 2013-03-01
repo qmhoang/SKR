@@ -6,6 +6,8 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using SkrGame.Actions.Items;
+using SkrGame.Conditions;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
@@ -16,24 +18,25 @@ namespace SkrGame.Universe.Factories {
 	public static class PersonFactory {
 		public static void Init(EntityFactory ef) {
 			ef.Add("person",
-			       new Sprite("npc", Sprite.ACTOR_LAYER),
+			       new Sprite("npc", Sprite.ActorLayer),
 			       new Identifier("npc"),
-			       new ActorComponent(new DoNothing(), new AP(World.DEFAULT_SPEED)),
+			       new ActorComponent(new DoNothing(), new AP(World.DefaultSpeed)),
 			       new Person(),
 			       DefendComponent.CreateHuman(50),
 			       new VisibleComponent(10),
 			       new ContainerComponent(),
+			       new EntityConditions(new HumanCondition()),
 			       new EquipmentComponent(new List<string>
 			                              {
-			                              		
-												"Head",
+
+			                              		"Head",
 			                              		"Torso",
-												"Arms",
-												"Main Hand",
+			                              		"Arms",
+			                              		"Main Hand",
 			                              		"Off Hand",
-												"Hands",
-												"Legs",
-												"Feet"
+			                              		"Hands",
+			                              		"Legs",
+			                              		"Feet"
 			                              }),
 			       new SightComponent(),
 			       new MeleeComponent(new MeleeComponent.Template
@@ -45,7 +48,7 @@ namespace SkrGame.Universe.Factories {
 			                          		Damage = Rand.Constant(-5),
 			                          		DamageType = Combat.DamageTypes["crush"],
 			                          		Penetration = 1,
-			                          		AttackSpeed = World.DEFAULT_SPEED,
+			                          		AttackSpeed = World.DefaultSpeed,
 			                          		APToReady = 1,
 			                          		Reach = 0,
 			                          		Strength = 1,
@@ -53,12 +56,12 @@ namespace SkrGame.Universe.Factories {
 			                          }));
 
 			ef.Inherits("npc", "person",
-						new ActorComponent(new NPC(), new AP(World.DEFAULT_SPEED)));
+			            new ActorComponent(new NPC(), new AP(World.DefaultSpeed)));
 
 			ef.Inherits("player", "person",
-			            new Sprite("player", Sprite.PLAYER_LAYER),
+			            new Sprite("player", Sprite.PlayerLayer),
 			            new Identifier("Player"),
-						new ActorComponent(new Player(), new AP(World.DEFAULT_SPEED)));
+			            new ActorComponent(new Player(), new AP(World.DefaultSpeed)));
 		}
 	}
 }

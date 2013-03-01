@@ -21,6 +21,7 @@ using SkrGame.Actions.Features;
 using SkrGame.Actions.Items;
 using SkrGame.Actions.Movement;
 using SkrGame.Actions.Skills;
+using SkrGame.Conditions;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Controllers;
@@ -394,7 +395,7 @@ namespace SKR.UI.Gameplay {
 								break;
 							case 'z':
 							{
-								
+								player.Get<EntityConditions>().Add(new PoisonCondition(new TimeSpan(0, 1, 0, 0), new TimeSpan(0, 0, 0, 1)));
 							} break;
 							case '`': {
 									ParentApplication.Push(new DebugMenuWindow(new SkrWindowTemplate()

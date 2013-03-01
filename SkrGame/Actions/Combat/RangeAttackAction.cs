@@ -86,12 +86,12 @@ namespace SkrGame.Actions.Combat {
 			foreach (var currentEntity in entitiesOnPath) {
 				var targetLocation = currentEntity.Get<GameObject>();
 
-				double range = targetLocation.DistanceTo(attackerLocation) * World.TILE_LENGTH_IN_METER;
-				double rangePenalty = Math.Min(0, -World.STANDARD_DEVIATION * RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.STANDARD_DEVIATION * 2 / 3);
+				double range = targetLocation.DistanceTo(attackerLocation) * World.TileLengthInMeter;
+				double rangePenalty = Math.Min(0, -World.StandardDeviation * RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.StandardDeviation * 2 / 3);
 				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, defenderName);
 
 				// not being targetted gives a sigma (std dev) penalty
-				rangePenalty -= Defender.Id == currentEntity.Id ? 0 : World.STANDARD_DEVIATION;
+				rangePenalty -= Defender.Id == currentEntity.Id ? 0 : World.StandardDeviation;
 
 				int easeOfShot = (int) Math.Round(hitBonus + rangePenalty + (targetsInTheWay * RANGE_PENALTY_TILE_OCCUPIED) + (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
 				Logger.InfoFormat("Ease of Shot: {0}, targetting penalty: {1}, weapon bonus: {2}, is original target: {3}",

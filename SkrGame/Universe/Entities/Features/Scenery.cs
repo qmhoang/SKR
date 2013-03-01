@@ -3,7 +3,7 @@ using DEngine.Components;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class Scenery : Component {
+	public sealed class Scenery : Component {
 		public Scenery() : this(true, true) { }
 
 		public Scenery(bool transparent, bool walkable) : this(transparent, walkable, int.MaxValue) { }

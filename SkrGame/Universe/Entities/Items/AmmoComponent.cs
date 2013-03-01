@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class AmmoComponent : Component {
+	public sealed class AmmoComponent : Component {
 		public class Template {
 			public string Caliber { get; set; }
 

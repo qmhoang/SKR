@@ -4,7 +4,7 @@ using DEngine.Actor;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class UseBroadcaster : Component {
+	public sealed class UseBroadcaster : Component {
 		public IEnumerable<UseAction> Actions {
 			get {
 				return Entity.Components.OfType<IUseable>().SelectMany(component => (component).Uses);
