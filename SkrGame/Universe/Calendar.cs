@@ -8,14 +8,6 @@ using DEngine.Core;
 using DEngine.Entities;
 
 namespace SkrGame.Universe {
-	public class TimeElapsed : EventArgs {
-		public int Milliseconds { get; private set; }
-
-		public TimeElapsed(int milliseconds) {
-			Milliseconds = milliseconds;
-		}
-	}
-
 	public class Calendar : Controller {
 		private Calendar(Queue<IAction> actions, TimeSpan timeSpan) : base(actions) {
 			TimeSpan = timeSpan;
@@ -25,14 +17,6 @@ namespace SkrGame.Universe {
 
 		public DateTime DateTime { get { return StartingDate + TimeSpan; } }
 		public TimeSpan TimeSpan { get; private set; }
-
-		public event EventHandler<TimeElapsed> TimeChanged;
-
-		private void OnTimeChanged(TimeElapsed e) {
-			EventHandler<TimeElapsed> handler = TimeChanged;
-			if (handler != null)
-				handler(this, e);
-		}
 
 		public Calendar() : this(new Queue<IAction>(), new TimeSpan()) { }
 
@@ -46,7 +30,6 @@ namespace SkrGame.Universe {
 
 		private void IncreaseTime(int seconds = 1, int milliseconds = 0) {
 			TimeSpan += new TimeSpan(0, 0, 0, seconds, milliseconds);
-			OnTimeChanged(new TimeElapsed(seconds * 1000 + milliseconds));
 		}
 
 		private sealed class CalendarAction : IAction {

@@ -1,10 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using DEngine.Actions;
 using DEngine.Actor;
+using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Actions.Features;
 
 namespace SkrGame.Universe.Entities.Useables {
+//	public class UseApplianceAction : FeatureAction {
+//		public UseApplianceAction(Entity entity, Entity feature) : base(entity, feature) {
+//			Contract.Requires<ArgumentException>(feature.Has<ApplianceComponent>());
+//		}
+//
+//		public override int APCost {
+//			get { throw new NotImplementedException(); }
+//		}
+//
+//		public override ActionResult OnProcess() {
+//			var appliance = Feature.Get<ApplianceComponent>();
+//			var apLength = World.SecondsToActionPoints(appliance.Length.TotalSeconds);
+//			Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity, apLength, e =>
+//			                                                                      	{
+//
+//																						return ActionResult.Success;			                                                                      		
+//			                                                                      	}, e =>
+//			                                                                      	   	{
+//			                                                                      	   		return ActionResult.Success;
+//			                                                                      	   	}));
+//		}
+//	}
+
 	public sealed class ApplianceComponent : Component {
-		
+		public TimeSpan Length { get; private set; }
+		public TimeSpan Interval { get; private set; }
+
+
 
 		public override Component Copy() {
 			throw new System.NotImplementedException();
