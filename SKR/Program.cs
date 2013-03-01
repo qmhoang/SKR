@@ -53,11 +53,11 @@ namespace SKR {
 	public static class Program {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
-		public const int FPS_LIMIT = 60;
-		public const int GAME_UPDATE_PER_SECOND = 30;
-		public const int GAME_UPDATE_HZ = 1000 / GAME_UPDATE_PER_SECOND;
-		public const int INITIAL_DELAY = 100;
-		public const int INTERVAL_DELAY = 75;
+		public const int FpsLimit = 60;
+		public const int GameUpdatePerSecond = 30;
+		public const int GameUpdateHz = 1000 / GameUpdatePerSecond;
+		public const int InitialDelay = 100;
+		public const int IntervalDelay = 75;
 		public static readonly Size ScreenSize = new Size(80, 60);
 
 		public static BooleanSwitch SeeAll = new BooleanSwitch("SeeAll", "See everything (no FOV checking)");
@@ -67,9 +67,9 @@ namespace SKR {
 			XmlConfigurator.Configure(new FileInfo("Log.xml"));	
 			
 			Logger.InfoFormat("TCODConsole.root initialized {0}", ScreenSize);
-			Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", INITIAL_DELAY,
-			                  INTERVAL_DELAY);
-			Logger.InfoFormat("FPS Limit: {0}.", FPS_LIMIT);
+			Logger.InfoFormat("Keyboard Repeat Limit.  Initial delay:: {0} milliseconds, Interval: {1} milliseconds", InitialDelay,
+			                  IntervalDelay);
+			Logger.InfoFormat("FPS Limit: {0}.", FpsLimit);
 			using (RoguelikeApp app = new RoguelikeApp())
 				app.Start(new ApplicationInfo()
 				          {
@@ -78,9 +78,9 @@ namespace SKR {
 //                    Font = "Data/Font/lucida10x10_gs_tc.png",
 //                    Font = "Data/Font/consolas12x12_gs_tc.png",
 				          		Font = "Data/Font/terminal12x12_gs_ro.png",
-				          		FpsLimit = FPS_LIMIT,
-				          		InitialDelay = INITIAL_DELAY,
-				          		IntervalDelay = INTERVAL_DELAY,
+				          		FpsLimit = FpsLimit,
+				          		InitialDelay = InitialDelay,
+				          		IntervalDelay = IntervalDelay,
 				          		Pigments = new PigmentAlternatives
 				          		           {
 				          		           		{PigmentType.FrameFocus, new Pigment(ColorPresets.White, ColorPresets.Black)},

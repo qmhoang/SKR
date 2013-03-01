@@ -146,6 +146,7 @@
     <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
     <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\OnCreation.cs" />
+    <Compile Include="Universe\Entities\Position.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
     <Compile Include="Universe\Entities\Controllers\DoNothing.cs" />
     <Compile Include="Universe\Entities\Actors\Person.cs" />
