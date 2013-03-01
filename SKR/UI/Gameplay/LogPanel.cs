@@ -11,93 +11,99 @@ namespace SKR.UI.Gameplay {
 	}
 
 	public class LogPanel : Panel {
-		private int currLine;
-		private Canvas textCanvas;
+		private readonly int maxNumOfDisplayLines;
+		private readonly int maxNumberOfCharacters;
+		private VScrollBar vScrollBar;
 		private bool alreadyDisposed;
 		private Log log;
 
 		public LogPanel(LogPanelTemplate template) : base(template) {
-			currLine = 0;
 			log = template.Log;
+			maxNumOfDisplayLines = Size.Height - 2;
+			maxNumberOfCharacters = Size.Width - 3;
 		}
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-			textCanvas = new Canvas(Size.Width - 2, Size.Height - 2);
+			vScrollBar = new VScrollBar(new VScrollBarTemplate
+			                            {
+											Height = Size.Height - 2,
+											MinimumValue = 0,
+											StartingValue = log.Entries.Count > maxNumOfDisplayLines ? log.Entries.Count - maxNumOfDisplayLines : 0,
+											MaximumValue = log.Entries.Count,
+											TopLeftPos = ScreenRect.TopRight.Shift(-2, 1),
+											SpinDelay = 100,
+											SpinSpeed = 50,
+			                            });
 			log.Logged += OnNewEntry;
+		}
+
+		protected override void OnAdded() {
+			base.OnAdded();
+			ParentWindow.AddControl(vScrollBar);
+		}
+
+		protected override void OnRemoved() {
+			base.OnRemoved();
+			ParentWindow.RemoveControl(vScrollBar);
 		}
 
 		protected override void Redraw() {
 			base.Redraw();
 
-			Canvas.Blit(textCanvas, Point.One);
+			int lineIndex = vScrollBar.CurrentValue;
+			int y = 0;
+
+			while (y < maxNumOfDisplayLines && lineIndex < log.Entries.Count) {
+				var entry = log.Entries[lineIndex];
+
+				Color fgColor;
+
+				switch (entry.Type) {
+					case MessageType.Aborted:
+						fgColor = ColorPresets.Gray;
+						break;
+					case MessageType.Fail:
+						fgColor = ColorPresets.LighterRed;
+						break;
+					case MessageType.Bad:
+						fgColor = ColorPresets.Red;
+						break;
+					case MessageType.Normal:
+						fgColor = ColorPresets.White;
+						break;
+					case MessageType.Good:
+						fgColor = ColorPresets.Green;
+						break;
+					case MessageType.Special:
+						fgColor = ColorPresets.Purple;
+						break;
+					default:
+						fgColor = ColorPresets.White;
+						break;
+				}
+				var lines = string.Format("* {0}", (entry.Count > 1 ? string.Format("{0}(x{1})", entry.Text, entry.Count) : entry.Text)).WordWrap(maxNumberOfCharacters);
+
+				for (int j = 0; j < lines.Length; j++) {
+					WriteLine(j == 0 ? 2 : 4, y + 1, lines[j], fgColor);
+					y++;
+				}
+				lineIndex++;
+			}
 		}
 
 		private void OnNewEntry(Log sender, EventArgs e) {
-			WriteEntry(log.Entries.Last());
+			if (log.Entries[log.Entries.Count - 1].Count == 1)
+				vScrollBar.MaximumValue++;
+			
+			if (log.Entries.Count - vScrollBar.CurrentValue > maxNumOfDisplayLines) {
+				vScrollBar.CurrentValue++;
+			}
+
 		}
 
-		private void WriteEntry(MessageEntry entry) {
-			Color fgColor;
-
-			switch (entry.Type) {
-				case MessageType.Aborted:
-					fgColor = ColorPresets.Gray; 
-					break;
-				case MessageType.Fail:
-					fgColor = ColorPresets.LighterRed; 
-					break;
-				case MessageType.Bad:
-					fgColor = ColorPresets.Red; 
-					break;
-				case MessageType.Normal:
-					fgColor = ColorPresets.White; 
-					break;
-				case MessageType.Good:
-					fgColor = ColorPresets.Green; 
-					break;
-				case MessageType.Special:
-					fgColor = ColorPresets.Purple; 
-					break;
-				default:
-					fgColor = ColorPresets.White;
-					break;
-			}
-
-			if (entry.Count > 1) {
-				string text = string.Format("* {0}", (entry.Count > 1 ? string.Format("{0}(x{1})", entry.Text, entry.Count) : entry.Text));
-
-				var lines = text.WordWrap(textCanvas.Size.Width - 2);
-
-				currLine -= lines.Length;
-
-				for (int i = 0; i < lines.Length; i++) {
-					if (i == 0)
-						textCanvas.PrintString(0, currLine, lines[i], Pigments[PigmentType.Window].ReplaceForeground(fgColor));
-					else {
-						textCanvas.PrintString(2, currLine, lines[i], Pigments[PigmentType.Window].ReplaceForeground(fgColor));
-					}
-					currLine++;
-				}	
-			} else {
-				string text = string.Format("* {0}", entry.Text);
-
-				var lines = text.WordWrap(textCanvas.Size.Width - 2);
-
-				if (currLine + lines.Length > textCanvas.Size.Height) {
-					textCanvas.Scroll(0, textCanvas.Size.Height - (lines.Length + currLine));
-					currLine += textCanvas.Size.Height - (lines.Length + currLine);
-				}
-
-				for (int i = 0; i < lines.Length; i++) {
-					if (i == 0)
-						textCanvas.PrintString(0, currLine, lines[i], Pigments[PigmentType.Window].ReplaceForeground(fgColor));
-					else {
-						textCanvas.PrintString(2, currLine, lines[i], Pigments[PigmentType.Window].ReplaceForeground(fgColor));
-					}
-					currLine++;
-				}	
-			}
+		private void WriteLine(int x, int y, string message, Color fgColor) {
+			Canvas.PrintString(x, y, message, Pigments[PigmentType.Window].ReplaceForeground(fgColor));			
 		}
 
 		protected override void Dispose(bool isDisposing) {
@@ -106,8 +112,8 @@ namespace SKR.UI.Gameplay {
 			if (alreadyDisposed)
 				return;
 			if (isDisposing)
-				if (textCanvas != null)
-					textCanvas.Dispose();
+				if (vScrollBar != null)
+					vScrollBar.Dispose();
 			alreadyDisposed = true;
 		}
 	}
