@@ -109,6 +109,7 @@
     <Compile Include="Actions\Events\EventAction.cs" />
     <Compile Include="Actions\Features\CloseDoorAction.cs" />
     <Compile Include="Actions\Features\FeatureAction.cs" />
+    <Compile Include="Actions\Features\IntervalAction.cs" />
     <Compile Include="Actions\Features\OpenDoorAction.cs" />
     <Compile Include="Actions\Features\RepeatingAction.cs" />
     <Compile Include="Actions\Features\ToggleDoorAction.cs" />

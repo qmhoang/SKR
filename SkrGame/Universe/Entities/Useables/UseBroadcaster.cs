@@ -21,7 +21,7 @@ namespace SkrGame.Universe.Entities.Useables {
 	}
 
 	public class UseAction {
-		public delegate ActionResult UseDelegate(Entity user, Entity useableEntity, UseAction action);
+		public delegate void UseDelegate(Entity user, Entity useableEntity, UseAction action);
 		public string Description { get; set; }
 		public UseDelegate Use { get; set; }
 

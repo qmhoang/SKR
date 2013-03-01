@@ -78,7 +78,6 @@ namespace SkrGame.Universe.Entities.Features {
 				                           	{
 				                           		if (featureEntity.Has<Opening>())
 				                           			user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, featureEntity));
-				                           		return ActionResult.Aborted;
 				                           	});
 
 		private static readonly UseAction Close =
@@ -86,7 +85,6 @@ namespace SkrGame.Universe.Entities.Features {
 				                            	{
 				                            		if (featureEntity.Has<Opening>())
 				                            			user.Get<ActorComponent>().Enqueue(new CloseDoorAction(user, featureEntity));
-				                            		return ActionResult.Aborted;
 				                            	});
 
 		public IEnumerable<UseAction> Uses {
