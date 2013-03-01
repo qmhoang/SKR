@@ -5,7 +5,7 @@ using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class ArmorComponent : Component {
+	public sealed class ArmorComponent : Component {
 		public class Template {
 			public List<Part> Defenses { get; set; }
 

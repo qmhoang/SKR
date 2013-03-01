@@ -6,7 +6,7 @@ using DEngine.Actor;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features.Useables {
-	public class TestUseableComponent : Component, IUseable {
+	public sealed class TestUseableComponent : Component, IUseable {
 		public override Component Copy() {
 			return new TestUseableComponent();
 		}

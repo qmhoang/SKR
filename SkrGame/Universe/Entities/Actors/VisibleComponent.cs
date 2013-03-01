@@ -1,7 +1,7 @@
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Actors {
-	public class VisibleComponent : Component {
+	public sealed class VisibleComponent : Component {
 		/// <summary>
 		/// How difficulty is it to see the item, -1 means its impossible to see
 		/// </summary>

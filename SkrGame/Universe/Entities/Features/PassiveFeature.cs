@@ -2,7 +2,7 @@ using System;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class PassiveFeature : Component {
+	public sealed class PassiveFeature : Component {
 		public delegate void NearDelegate(Entity entityNear, Entity featureEntity);
 		public NearDelegate Near { get; set; }
 

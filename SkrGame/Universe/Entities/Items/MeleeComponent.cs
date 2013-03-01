@@ -6,7 +6,7 @@ using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class MeleeComponent : Component {
+	public sealed class MeleeComponent : Component {
 		public class Template {
 			public int HitBonus { get; set; }
 			public Rand Damage { get; set; }

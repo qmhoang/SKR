@@ -23,7 +23,7 @@ namespace SKRTests.Actions.Features {
 			Door = EntityManager.Create(new List<Component>
 			                            {
 			                            		new GameObject(3, 2, Level),
-			                            		new Sprite("closed", Sprite.FEATURES_LAYER),
+			                            		new Sprite("closed", Sprite.FeaturesLayer),
 			                            		new Opening("opened", "closed", "open", "close"),
 												new Scenery(false, false)
 			                            });

@@ -14,7 +14,7 @@ namespace SkrGame.Universe.Factories {
 		public static void Init(EntityFactory ef) {
 			ef.Add("item",
 			       new VisibleComponent(10),
-			       new Sprite("ITEM", Sprite.ITEMS_LAYER),
+			       new Sprite("ITEM", Sprite.ItemsLayer),
 			       new Identifier("Junk", "A piece of junk."),
 			       new Item(
 			       		new Item.Template
@@ -32,7 +32,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("paperclip", "item",
 			            new Identifier("Paperclip", "A single paperclip."),
-			            new Lockpick(-World.STANDARD_DEVIATION * 3 / 2));
+			            new Lockpick(-World.StandardDeviation * 3 / 2));
 			ef.Inherits("lockpick", "item",
 			            new Identifier("Lockpick", "A basic lockpick."),
 			            new Lockpick(0));
@@ -40,7 +40,7 @@ namespace SkrGame.Universe.Factories {
 
 		private static void InitPistols(EntityFactory ef) {
 			ef.Inherits("gun", "meleeweapon",
-			            new Sprite("GUN", Sprite.ITEMS_LAYER),
+			            new Sprite("GUN", Sprite.ItemsLayer),
 			            new RangeComponent(
 			            		new RangeComponent.Template
 			            		{
@@ -70,10 +70,10 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "pistol whips",
 			            				Skill = "skill_unarmed",
 			            				HitBonus = -1,
-			            				Damage = Rand.Constant(World.STANDARD_INCREMENT * (1 - 2)),
+			            				Damage = Rand.Constant(World.StandardIncrement * (1 - 2)),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-			            				AttackSpeed = .86 * World.DEFAULT_SPEED,
+			            				AttackSpeed = .86 * World.DefaultSpeed,
 			            				APToReady = 100,
 			            				Reach = 0,
 			            				Strength = 8,
@@ -88,10 +88,10 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "pistol whips",
 			            				Skill = "skill_unarmed",
 			            				HitBonus = -1,
-			            				Damage = Rand.Constant(World.STANDARD_INCREMENT * (2 - 2)),
+			            				Damage = Rand.Constant(World.StandardIncrement * (2 - 2)),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-			            				AttackSpeed = .85 * World.DEFAULT_SPEED,
+			            				AttackSpeed = .85 * World.DefaultSpeed,
 			            				APToReady = 100,
 			            				Reach = 0,
 			            				Strength = 8,
@@ -106,10 +106,10 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "pistol whips",
 			            				Skill = "skill_unarmed",
 			            				HitBonus = -1,
-			            				Damage = Rand.Constant(World.STANDARD_INCREMENT * (3 - 2)),
+			            				Damage = Rand.Constant(World.StandardIncrement * (3 - 2)),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-			            				AttackSpeed = .84 * World.DEFAULT_SPEED,
+			            				AttackSpeed = .84 * World.DefaultSpeed,
 			            				APToReady = 100,
 			            				Reach = 0,
 			            				Strength = 8,
@@ -133,7 +133,7 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
 			            				Accuracy = 2,
-			            				Damage = Rand.Dice(2, World.STANDARD_DEVIATION * 2) + Rand.Constant(2 * World.STANDARD_INCREMENT),
+			            				Damage = Rand.Dice(2, World.StandardDeviation * 2) + Rand.Constant(2 * World.StandardIncrement),
 			            				DamageType = Combat.DamageTypes["pierce"],
 			            				Penetration = 1,
 			            				Shots = 17,
@@ -166,7 +166,7 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
 			            				Accuracy = 2,
-			            				Damage = Rand.Dice(2, World.STANDARD_DEVIATION * 2) + Rand.Constant(10),
+			            				Damage = Rand.Dice(2, World.StandardDeviation * 2) + Rand.Constant(10),
 			            				DamageType = Combat.DamageTypes["pierce_large"],
 			            				Penetration = 1,
 			            				Shots = 15,
@@ -199,7 +199,7 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
 			            				Accuracy = 2,
-			            				Damage = Rand.Dice(2, World.STANDARD_DEVIATION * 2),
+			            				Damage = Rand.Dice(2, World.StandardDeviation * 2),
 			            				DamageType = Combat.DamageTypes["pierce_large"],
 			            				Penetration = 1,
 			            				Shots = 6,
@@ -232,7 +232,7 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
 			            				Accuracy = 2,
-			            				Damage = Rand.Dice(3, World.STANDARD_DEVIATION * 2),
+			            				Damage = Rand.Dice(3, World.StandardDeviation * 2),
 			            				DamageType = Combat.DamageTypes["pierce_large"],
 			            				Penetration = 1,
 			            				Shots = 6,
@@ -265,7 +265,7 @@ namespace SkrGame.Universe.Factories {
 			            				ActionDescriptionPlural = "shoots",
 			            				Skill = "skill_pistol",
 			            				Accuracy = 2,
-			            				Damage = Rand.Dice(3, World.STANDARD_DEVIATION * 2),
+			            				Damage = Rand.Dice(3, World.StandardDeviation * 2),
 			            				DamageType = Combat.DamageTypes["pierce_large"],
 			            				Penetration = 1,
 			            				Shots = 6,
@@ -285,7 +285,7 @@ namespace SkrGame.Universe.Factories {
 
 		private static void InitMelees(EntityFactory ef) {
 			ef.Inherits("meleeweapon", "item",
-			            new Sprite("WEAPON", Sprite.ITEMS_LAYER),
+			            new Sprite("WEAPON", Sprite.ItemsLayer),
 						Equipable.SingleSlot("Main Hand", "Off Hand"),
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
@@ -297,7 +297,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(-10),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-										AttackSpeed = World.DEFAULT_SPEED,
+										AttackSpeed = World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 1,
@@ -329,7 +329,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(-5),
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
-										AttackSpeed = 1.1 * World.DEFAULT_SPEED,
+										AttackSpeed = 1.1 * World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 6,
@@ -357,7 +357,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(10),
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
-										AttackSpeed = .9 * World.DEFAULT_SPEED,
+										AttackSpeed = .9 * World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 11,
@@ -385,7 +385,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(0),
 			            				DamageType = Combat.DamageTypes["cut"],
 			            				Penetration = 1,
-										AttackSpeed = .92 * World.DEFAULT_SPEED,
+										AttackSpeed = .92 * World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 8,
@@ -413,7 +413,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(0),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-										AttackSpeed = World.DEFAULT_SPEED,
+										AttackSpeed = World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 0,
 			            				Strength = 1,
@@ -441,7 +441,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(0),
 			            				DamageType = Combat.DamageTypes["impale"],
 			            				Penetration = 1,
-										AttackSpeed = 1.2 * World.DEFAULT_SPEED,
+										AttackSpeed = 1.2 * World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 6,
@@ -467,7 +467,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(7),
 			            				DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-										AttackSpeed = .92 * World.DEFAULT_SPEED,
+										AttackSpeed = .92 * World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 10,
@@ -493,7 +493,7 @@ namespace SkrGame.Universe.Factories {
 			            				Damage = Rand.Constant(12),
 										DamageType = Combat.DamageTypes["crush"],
 			            				Penetration = 1,
-										AttackSpeed = .88 * World.DEFAULT_SPEED,
+										AttackSpeed = .88 * World.DefaultSpeed,
 			            				APToReady = World.SecondsToActionPoints(1f),
 			            				Reach = 1,
 			            				Strength = 10,
@@ -503,7 +503,7 @@ namespace SkrGame.Universe.Factories {
 
 		private static void InitAmmos(EntityFactory ef) {
 			ef.Inherits("bullet", "item",
-			            new Sprite("BULLET", Sprite.ITEMS_LAYER),
+			            new Sprite("BULLET", Sprite.ItemsLayer),
 			            new Identifier("Bullets"),
 			            new Item(
 			            		new Item.Template
@@ -617,7 +617,7 @@ namespace SkrGame.Universe.Factories {
 		private static void InitArmors(EntityFactory ef) {
 			#region Shoes
 			ef.Inherits("shoes", "item",
-			            new Sprite("SHOES", Sprite.ITEMS_LAYER),
+			            new Sprite("SHOES", Sprite.ItemsLayer),
 						new Identifier("Shoes", "A pair of shoes."),
 			            new Item(new Item.Template
 			                     {
@@ -752,7 +752,7 @@ namespace SkrGame.Universe.Factories {
 
 			#region Gloves
 			ef.Inherits("gloves", "item",
-						new Sprite("GLOVES", Sprite.ITEMS_LAYER),
+						new Sprite("GLOVES", Sprite.ItemsLayer),
 						new Identifier("Gloves", "A pair of normal gloves."),
 						new Item(new Item.Template
 						{
@@ -789,7 +789,7 @@ namespace SkrGame.Universe.Factories {
 			#region Pants
 
 			ef.Inherits("pants", "item",
-			            new Sprite("PANTS", Sprite.ITEMS_LAYER),
+			            new Sprite("PANTS", Sprite.ItemsLayer),
 			            new Identifier("Pants", "A pair of khaki pants."),
 			            new Item(new Item.Template
 			                     {
@@ -833,7 +833,7 @@ namespace SkrGame.Universe.Factories {
 			                     }));
 
 			ef.Inherits("jeans", "pants",
-						new Sprite("PANTS", Sprite.ITEMS_LAYER),
+						new Sprite("PANTS", Sprite.ItemsLayer),
 			            new Identifier("Jeans", "A pair of blue jeans."),
 			            new Item(new Item.Template
 			                     {
@@ -845,7 +845,7 @@ namespace SkrGame.Universe.Factories {
 			#endregion
 
 			ef.Inherits("shirt", "item",
-			            new Sprite("SHIRT", Sprite.ITEMS_LAYER),
+			            new Sprite("SHIRT", Sprite.ItemsLayer),
 			            new Identifier("Shirt", "A hawaiian shirt."),
 			            new Item(new Item.Template
 			                     {
@@ -880,7 +880,7 @@ namespace SkrGame.Universe.Factories {
 			            		}));
 
 			ef.Inherits("footballpads", "shirt",
-			            new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ITEMS_LAYER),
+			            new Sprite("FOOTBALL_SHOULDER_PADS", Sprite.ItemsLayer),
 			            new Identifier("Football Shoulder Pads", "Shoulder pads for football players.  Jersey not included."),
 			            new Item(new Item.Template
 			                     {

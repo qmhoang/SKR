@@ -8,7 +8,7 @@ using DEngine.Components;
 using DEngine.Entities;
 using DEngine.Extensions;
 using SkrGame.Universe;
-using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Systems {
@@ -33,6 +33,13 @@ namespace SkrGame.Systems {
 
 				if (result == ActionResult.Failed || result == ActionResult.Success) {
 					playerActor.AP.ActionPoints -= action.APCost;
+
+					if (player.Has<EntityConditions>()) {
+						foreach (var c in player.Get<EntityConditions>().Conditions) {
+							c.Update(action.APCost);
+						}
+					}
+
 					world.OnActionProcessed();
 				}
 			}
@@ -51,6 +58,13 @@ namespace SkrGame.Systems {
 
 						if (result == ActionResult.Failed || result == ActionResult.Success) {
 							entityActor.AP.ActionPoints -= action.APCost;
+
+							if (entity.Has<EntityConditions>()) {
+								foreach (var c in entity.Get<EntityConditions>().Conditions) {
+									c.Update(action.APCost);
+								}
+							}
+
 							world.OnActionProcessed();
 						}
 					}

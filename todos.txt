@@ -8,6 +8,7 @@ Priority Goals:
 * More "zones" (houses, buildings, etc)
 * sneaking
 * conditions
+	* all entities have condition holder component (is update when ap is gained, so when an entity is frozen in time, conditions don't update)
 
 Immediate Goals:
 * Zones of ownership

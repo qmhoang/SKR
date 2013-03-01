@@ -4,7 +4,7 @@ using DEngine.Core;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class EquippedBonus : Component {
+	public sealed class EquippedBonus : Component {
 		public class Template {
 			public Dictionary<string, int> Bonuses { get; set; }
 		}

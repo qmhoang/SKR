@@ -5,7 +5,7 @@ using DEngine.Core;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Items {
-	public class Equipable : Component {
+	public sealed class Equipable : Component {
 		public StaticDictionary<string, IEnumerable<string>> SlotsOccupied { get; private set; }
 		
 		private Equipable(StaticDictionary<string, IEnumerable<string>> slotsOccupied) {

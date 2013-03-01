@@ -9,7 +9,7 @@ using DEngine.Entities;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe.Entities {
-	public class GameObject : Component, IEquatable<GameObject> {
+	public sealed class GameObject : Component, IEquatable<GameObject> {
 		private Level level;
 		private Point location;
 

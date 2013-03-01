@@ -39,7 +39,7 @@ namespace SKRTests {
 
 			World.Player = Entity = EntityManager.Create(new List<Component>
 			                                             {
-			                                             		new Sprite("player", Sprite.ACTOR_LAYER),
+			                                             		new Sprite("player", Sprite.ActorLayer),
 			                                             		DefendComponent.CreateHuman(50),
 			                                             		new VisibleComponent(10),
 			                                             		new SightComponent(),
@@ -52,7 +52,7 @@ namespace SKRTests {
 			                                             		                   		Damage = Rand.Constant(-5),
 			                                             		                   		DamageType = Combat.DamageTypes["crush"],
 			                                             		                   		Penetration = 1,
-			                                             		                   		AttackSpeed = World.DEFAULT_SPEED,
+			                                             		                   		AttackSpeed = World.DefaultSpeed,
 			                                             		                   		APToReady = 1,
 			                                             		                   		Reach = 0,
 			                                             		                   		Strength = 1,
@@ -60,7 +60,7 @@ namespace SKRTests {
 			                                             		                   }),
 			                                             		new GameObject(2, 2, Level),
 			                                             		new ContainerComponent(),
-			                                             		new ActorComponent(new Player(), new AP(World.DEFAULT_SPEED)),
+			                                             		new ActorComponent(new Player(), new AP(World.DefaultSpeed)),
 			                                             		new Person(),
 			                                             		new Identifier("Player"),
 			                                             		new EquipmentComponent(new List<string>

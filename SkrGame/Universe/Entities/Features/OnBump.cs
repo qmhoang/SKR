@@ -2,7 +2,7 @@ using System;
 using DEngine.Entities;
 
 namespace SkrGame.Universe.Entities.Features {
-	public class OnBump : Component {
+	public sealed class OnBump : Component {
 		public enum BumpResult {
 			BlockMovement,
 			NormalMovement
