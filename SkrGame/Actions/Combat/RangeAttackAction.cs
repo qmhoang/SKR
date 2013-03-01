@@ -27,8 +27,8 @@ namespace SkrGame.Actions.Combat {
 			get { return Weapon.Get<RangeComponent>().APToAttack; }
 		}
 
-		public const double RANGE_PENALTY_STD_DEV_MULT = 0.87;
-		public const double RANGE_PENALTY_TILE_OCCUPIED = -World.MEAN * 4 / 3;
+		public const double RangePenaltyStdDevMultiplier = 0.87;
+		public const double RangePenaltyTileOccupied = -World.MEAN * 4 / 3;
 
 		private IEnumerable<Entity> GetTargetsOnPath(Level currentLevel, Point start, Point end) {
 			if (!currentLevel.IsWalkable(start))
@@ -87,13 +87,13 @@ namespace SkrGame.Actions.Combat {
 				var targetLocation = currentEntity.Get<GameObject>();
 
 				double range = targetLocation.DistanceTo(attackerLocation) * World.TileLengthInMeter;
-				double rangePenalty = Math.Min(0, -World.StandardDeviation * RANGE_PENALTY_STD_DEV_MULT * Math.Log(range) + World.StandardDeviation * 2 / 3);
+				double rangePenalty = Math.Min(0, -World.StandardDeviation * RangePenaltyStdDevMultiplier * Math.Log(range) + World.StandardDeviation * 2 / 3);
 				Logger.InfoFormat("Target: {2}, range to target: {0}, penalty: {1}", range, rangePenalty, defenderName);
 
 				// not being targetted gives a sigma (std dev) penalty
 				rangePenalty -= Defender.Id == currentEntity.Id ? 0 : World.StandardDeviation;
 
-				int easeOfShot = (int) Math.Round(hitBonus + rangePenalty + (targetsInTheWay * RANGE_PENALTY_TILE_OCCUPIED) + (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
+				int easeOfShot = (int) Math.Round(hitBonus + rangePenalty + (targetsInTheWay * RangePenaltyTileOccupied) + (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
 				Logger.InfoFormat("Ease of Shot: {0}, targetting penalty: {1}, weapon bonus: {2}, is original target: {3}",
 				                  easeOfShot, BodyPartTargetted.TargettingPenalty, hitBonus,
 				                  Defender.Id == currentEntity.Id);

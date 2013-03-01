@@ -33,8 +33,8 @@ namespace SkrGame.Universe.Entities.Items {
 			}
 		}
 		public StaticDictionary<string, Part> Defenses { get; private set; }
-		
-		public int DonTime { get; protected set; }
+
+		public int DonTime { get; private set; }
 
 		private ArmorComponent() {}
 

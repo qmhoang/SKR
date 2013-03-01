@@ -15,7 +15,7 @@ namespace SkrGame.Actions.Movement {
 	public class BumpAction : ActorAction {
 		private Direction direction;
 
-		private const int BUMP_COST = World.OneSecondInAP / 10;
+		private const int BumpCost = World.OneSecondInAP / 10;
 
 		public BumpAction(Entity entity, Direction direction) : base(entity) {
 			Contract.Requires<ArgumentException>(entity.Has<GameObject>());			
@@ -23,7 +23,7 @@ namespace SkrGame.Actions.Movement {
 		}
 
 		public override int APCost {
-			get { return BUMP_COST; }
+			get { return BumpCost; }
 		}
 
 		public override ActionResult OnProcess() {

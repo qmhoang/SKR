@@ -44,27 +44,28 @@ namespace SkrGame.Universe.Entities.Items {
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
 
-		public int HitBonus { get; protected set; }
+		public int HitBonus { get; private set; }
 
-		public DamageType DamageType { get; protected set; }
-		public double Penetration { get; protected set; }
+		public DamageType DamageType { get; private set; }
+		public double Penetration { get; private set; }
 
 		public Action<Entity> OnHit { get; private set; }
 
-		public int APToAttack { get; protected set; }
-		public int APToReady { get; protected set; }
+		public int APToAttack { get; private set; }
+		public int APToReady { get; private set; }
 
 		public string Skill { get; private set; }
 
-		public Rand Damage { get; protected set; }
-		public int Strength { get; protected set; }
+		public Rand Damage { get; private set; }
+		public int Strength { get; private set; }
 
-		public int Reach { get; protected set; }
-		public int Parry { get; protected set; }
-		public int Targetting { get; protected set; } // bonus for targetting
+		public int Reach { get; private set; }
+		public int Parry { get; private set; }
+		public int Targetting { get; private set; } // bonus for targetting
 
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		// ReSharper disable InvocationIsSkipped
 		private void ObjectInvariant() {
 			Contract.Invariant(Penetration > 0.0f);
 			Contract.Invariant(Damage != null);
@@ -77,7 +78,8 @@ namespace SkrGame.Universe.Entities.Items {
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescription));
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
 		}
-
+		// ReSharper enabled InvocationIsSkipped
+		
 		private MeleeComponent(string actionDescription, string actionDescriptionPlural, int hitBonus, DamageType damageType, double penetration, Action<Entity> onHit, int apToAttack, int apToReady,
 		                       string skill, Rand damage, int strength, int reach, int parry, int targetting) {
 			ActionDescription = actionDescription;

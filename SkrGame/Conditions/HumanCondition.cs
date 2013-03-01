@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using DEngine.Components;
 using SkrGame.Universe.Entities.Actors;
@@ -7,51 +8,52 @@ namespace SkrGame.Conditions {
 	public class HumanCondition : Condition {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private int staminaMilli;
-		private int needsMilli;
+		private int staminaMSCount;
+		private int needsMSCount;
 
-		private const int MillisecondsPerMinute = 60000;
+		private static readonly int StaminaRequirementInMS = (int) new TimeSpan(0, 0, 10, 0).TotalMilliseconds;
+		private static readonly int NeedsRequirementInMS = (int) new TimeSpan(0, 0, 9, 30).TotalMilliseconds;
 
 		public HumanCondition() {
-			staminaMilli = 0;
-			needsMilli = 0;
+			staminaMSCount = 0;
+			needsMSCount = 0;
 		}
 
 
 		public override Condition Copy() {
 			return new HumanCondition()
 			       {
-			       		staminaMilli = staminaMilli,
-						needsMilli = needsMilli
+			       		staminaMSCount = staminaMSCount,
+						needsMSCount = needsMSCount
 			       };
 		}
 
 		protected override void ConditionUpdate(int millisecondsElapsed) {
-			staminaMilli += millisecondsElapsed;
-			needsMilli += millisecondsElapsed;
+			staminaMSCount += millisecondsElapsed;
+			needsMSCount += millisecondsElapsed;
 
 			if (Holder.Entity.Has<Person>()) {
 				var person = Holder.Entity.Get<Person>();
 
-				while (staminaMilli / 200 > 0) {
+				while (staminaMSCount / StaminaRequirementInMS > 0) {
 					if (person.Stats["stat_energy"] > 0 &&
 					    person.Stats["stat_food"] > 0 &&
 					    person.Stats["stat_water"] > 0) {
 
 						person.Stats["stat_stamina"].Value++;
 					}
-					
-					staminaMilli -= 200;
+
+					staminaMSCount -= StaminaRequirementInMS;
 				}
 
-				while (needsMilli / MillisecondsPerMinute > 0) {
+				while (needsMSCount / NeedsRequirementInMS > 0) {
 
 					person.Stats["stat_energy"].Value--;
 					person.Stats["stat_food"].Value--;
 					person.Stats["stat_water"].Value--;
 					person.Stats["stat_bladder"].Value--;
 
-					needsMilli -= MillisecondsPerMinute;
+					needsMSCount -= NeedsRequirementInMS;
 				}
 			} else {
 				Logger.WarnFormat("{0} doesn't have person component.", Identifier.GetNameOrId(Holder.Entity));

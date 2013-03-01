@@ -70,34 +70,35 @@ namespace SkrGame.Universe.Entities.Items {
 		public string ActionDescription { get; private set; }
 		public string ActionDescriptionPlural { get; private set; }
 
-		public int Accuracy { get; protected set; }
+		public int Accuracy { get; private set; }
 
 		public Action<Entity, Entity> OnHit { get; private set; }
 
-		public DamageType DamageType { get; protected set; }
-		public double Penetration { get; protected set; }
-		public int APToAttack { get; protected set; }
+		public DamageType DamageType { get; private set; }
+		public double Penetration { get; private set; }
+		public int APToAttack { get; private set; }
 
 		public string Skill { get; private set; }
 
-		public Rand Damage { get; protected set; }
-		public int APToReady { get; protected set; }
-		public int Strength { get; protected set; }
+		public Rand Damage { get; private set; }
+		public int APToReady { get; private set; }
+		public int Strength { get; private set; }
 
-		public int Range { get; protected set; }
+		public int Range { get; private set; }
 
-		public int APToReload { get; protected set; }
+		public int APToReload { get; private set; }
 		public bool SwapClips { get; private set; } // for revolvers and shotguns
 
-		public int Recoil { get; protected set; }
-		public int Reliability { get; protected set; }
-		public string AmmoCaliber { get; protected set; }
+		public int Recoil { get; private set; }
+		public int Reliability { get; private set; }
+		public string AmmoCaliber { get; private set; }
 		public int Shots { get; set; }
 		public int ShotsRemaining { get; set; }
 		public bool OneInTheChamber { get; private set; }
 
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+		// ReSharper disable InvocationIsSkipped
 		private void ObjectInvariant() {
 			Contract.Invariant(Recoil >= 0);
 			Contract.Invariant(OneInTheChamber ? Shots + 1 >= ShotsRemaining : Shots >= ShotsRemaining);
@@ -117,6 +118,7 @@ namespace SkrGame.Universe.Entities.Items {
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescription));
 			Contract.Invariant(!String.IsNullOrEmpty(ActionDescriptionPlural));
 		}
+		// ReSharper restore InvocationIsSkipped
 
 		private RangeComponent(string actionDescription, string actionDescriptionPlural, int accuracy, Action<Entity, Entity> onHit, DamageType damageType, double penetration, int apToAttack, string skill,
 		                       Rand damage, int apToReady, int strength, int range, int apToReload, bool swapClips, int recoil, int reliability, string ammoType, int shots, int shotsRemaining,

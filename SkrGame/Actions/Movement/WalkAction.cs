@@ -14,7 +14,7 @@ namespace SkrGame.Actions.Movement {
 	public class WalkAction : LoggedAction {
 		private Direction direction;
 
-		private const int WALK_COST = World.OneSecondInAP;
+		private const int WalkCost = World.OneSecondInAP;
 
 		public WalkAction(Entity entity, Direction direction)
 				: base(entity) {
@@ -23,7 +23,7 @@ namespace SkrGame.Actions.Movement {
 		}
 
 		public override int APCost {
-			get { return (int) Math.Round(WALK_COST * direction.Offset.Length / PostureModifier()); }
+			get { return (int) Math.Round(WalkCost * direction.Offset.Length / PostureModifier()); }
 		}
 
 		private double PostureModifier() {
