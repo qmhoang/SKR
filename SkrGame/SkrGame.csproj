@@ -129,9 +129,9 @@
     <Compile Include="Actions\Movement\WaitAction.cs" />
     <Compile Include="Actions\Skills\LockpickAction.cs" />
     <Compile Include="Actions\Movement\WalkAction.cs" />
-    <Compile Include="Conditions\Condition.cs" />
-    <Compile Include="Conditions\HumanCondition.cs" />
-    <Compile Include="Conditions\PoisonCondition.cs" />
+    <Compile Include="Effects\Effect.cs" />
+    <Compile Include="Effects\HumanNeedsEffect.cs" />
+    <Compile Include="Effects\PoisonEffect.cs" />
     <Compile Include="Gameplay\Combat\Combat.cs" />
     <Compile Include="Gameplay\Combat\CombatEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -142,11 +142,11 @@
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\EntityConditions.cs" />
     <Compile Include="Universe\Entities\Controllers\OneAction.cs" />
-    <Compile Include="Universe\Entities\Features\Useables\TestUseableComponent.cs" />
+    <Compile Include="Universe\Entities\Useables\TestUseableComponent.cs" />
     <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
     <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\OnCreation.cs" />
-    <Compile Include="Universe\Entities\Position.cs" />
+    <Compile Include="Universe\Entities\PositionChangedEvent.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
     <Compile Include="Universe\Entities\Controllers\DoNothing.cs" />
     <Compile Include="Universe\Entities\Actors\Person.cs" />
@@ -161,7 +161,7 @@
     <Compile Include="Universe\Entities\Features\LockedFeature.cs" />
     <Compile Include="Universe\Entities\Features\OnBump.cs" />
     <Compile Include="Universe\Entities\Features\PassiveFeature.cs" />
-    <Compile Include="Universe\Entities\Features\UseBroadcaster.cs" />
+    <Compile Include="Universe\Entities\Useables\UseBroadcaster.cs" />
     <Compile Include="Universe\Entities\Items\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Controllers\NPC.cs" />
     <Compile Include="Universe\Entities\Items\Equipable.cs" />

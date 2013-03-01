@@ -3,7 +3,7 @@ using System.Linq;
 using DEngine.Actor;
 using DEngine.Entities;
 
-namespace SkrGame.Universe.Entities.Features {
+namespace SkrGame.Universe.Entities.Useables {
 	public sealed class UseBroadcaster : Component {
 		public IEnumerable<UseAction> Actions {
 			get {

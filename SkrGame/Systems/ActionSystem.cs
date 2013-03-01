@@ -35,7 +35,7 @@ namespace SkrGame.Systems {
 					playerActor.AP.ActionPoints -= action.APCost;
 
 					if (player.Has<EntityConditions>()) {
-						foreach (var c in player.Get<EntityConditions>().Conditions) {
+						foreach (var c in player.Get<EntityConditions>().Effects) {
 							c.Update(action.APCost);
 						}
 					}
@@ -60,7 +60,7 @@ namespace SkrGame.Systems {
 							entityActor.AP.ActionPoints -= action.APCost;
 
 							if (entity.Has<EntityConditions>()) {
-								foreach (var c in entity.Get<EntityConditions>().Conditions) {
+								foreach (var c in entity.Get<EntityConditions>().Effects) {
 									c.Update(action.APCost);
 								}
 							}

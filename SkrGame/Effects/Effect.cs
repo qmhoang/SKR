@@ -13,8 +13,8 @@ using SkrGame.Universe;
 using SkrGame.Universe.Entities;
 using log4net;
 
-namespace SkrGame.Conditions {
-	public abstract class Condition {
+namespace SkrGame.Effects {
+	public abstract class Effect {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private EntityConditions holder;
@@ -29,7 +29,7 @@ namespace SkrGame.Conditions {
 		public void Update(int ap) {
 			Contract.Requires<ArgumentException>(Holder != null);
 
-			ConditionUpdate((int) Math.Round(World.ActionPointsToSeconds(ap) * 1000));
+			OnTick((int) Math.Round(World.ActionPointsToSeconds(ap) * 1000));
 		}
 
 		public void End() {
@@ -38,12 +38,12 @@ namespace SkrGame.Conditions {
 			var result = Holder.Entity.Get<EntityConditions>().Remove(this);
 			if (!result)
 				Logger.ErrorFormat("Condition was attempted to be removed from an entity: {0} that doesn't contain it.", Identifier.GetNameOrId(Holder.Entity));
-			ConditionEnd();
+			OnEnd();
 		}
 
-		public abstract Condition Copy();
+		public abstract Effect Copy();
 
-		protected abstract void ConditionUpdate(int millisecondsElapsed);
-		protected virtual void ConditionEnd() { }
+		protected abstract void OnTick(int millisecondsElapsed);
+		protected virtual void OnEnd() { }
 	}
 }

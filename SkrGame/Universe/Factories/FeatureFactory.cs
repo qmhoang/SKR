@@ -11,6 +11,7 @@ using SkrGame.Actions.Movement;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Features;
+using SkrGame.Universe.Entities.Useables;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Factories {

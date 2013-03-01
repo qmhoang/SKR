@@ -1,11 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using DEngine.Actor;
 using DEngine.Entities;
 
-namespace SkrGame.Universe.Entities.Features.Useables {
+namespace SkrGame.Universe.Entities.Useables {
+	public sealed class ApplianceComponent : Component {
+		
+
+		public override Component Copy() {
+			throw new System.NotImplementedException();
+		}
+	}
+
 	public sealed class TestUseableComponent : Component, IUseable {
 		public override Component Copy() {
 			return new TestUseableComponent();
