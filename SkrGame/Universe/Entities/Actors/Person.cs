@@ -67,6 +67,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			Stats = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
 					{
+							{"stat_health",				new Attribute("Health",			"HP ", World.MEAN, World.MEAN)},
 							{"stat_stamina",			new Attribute("Stamina",		"SP ", World.MEAN, World.MEAN)},
 							{"stat_composure",			new Attribute("Composure",		"CP ", World.MEAN, World.MEAN)},
 
@@ -110,6 +111,8 @@ namespace SkrGame.Universe.Entities.Actors {
 							// GRACE
 							// skill_manipulation
 					});
+
+
 		}
 
 		public override Component Copy() {

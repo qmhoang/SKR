@@ -46,6 +46,10 @@ namespace SkrGame.Actions.Combat {
 		public bool TargettingPenalty { get; private set; }
 
 		public CombatEventResult Attack(string attackerName, string defenderName, double easeOfAttack, double easeOfDodging = World.MEAN, bool dodge = true, bool block = true, bool parry = true) {
+			if (Defender.Has<ActorComponent>()) {
+				Defender.Get<ActorComponent>().Disturb();
+			}
+
 			double atkRoll = World.SkillRoll();
 
 			if (atkRoll > easeOfAttack) {
@@ -97,10 +101,6 @@ namespace SkrGame.Actions.Combat {
 						Logger.InfoFormat("Hit a chink in the armor, DR = 0");
 					}
 				}
-			}
-
-			if (Defender.Has<ActorComponent>()) {
-				Defender.Get<ActorComponent>().Disturb();
 			}
 
 			if (damageDealt > BodyPartTargetted.MaxHealth) {
