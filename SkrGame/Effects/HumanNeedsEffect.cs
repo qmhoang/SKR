@@ -4,8 +4,8 @@ using DEngine.Components;
 using SkrGame.Universe.Entities.Actors;
 using log4net;
 
-namespace SkrGame.Conditions {
-	public class HumanCondition : Condition {
+namespace SkrGame.Effects {
+	public class HumanNeedsEffect : Effect {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private int staminaMSCount;
@@ -14,21 +14,22 @@ namespace SkrGame.Conditions {
 		private static readonly int StaminaRequirementInMS = (int) new TimeSpan(0, 0, 10, 0).TotalMilliseconds;
 		private static readonly int NeedsRequirementInMS = (int) new TimeSpan(0, 0, 9, 30).TotalMilliseconds;
 
-		public HumanCondition() {
+		public HumanNeedsEffect() {
 			staminaMSCount = 0;
 			needsMSCount = 0;
 		}
 
 
-		public override Condition Copy() {
-			return new HumanCondition()
+		public override Effect Copy() {
+			return new HumanNeedsEffect()
 			       {
 			       		staminaMSCount = staminaMSCount,
 						needsMSCount = needsMSCount
 			       };
 		}
 
-		protected override void ConditionUpdate(int millisecondsElapsed) {
+		protected override void OnTick(int millisecondsElapsed) {
+			// todo need tuning
 			staminaMSCount += millisecondsElapsed;
 			needsMSCount += millisecondsElapsed;
 

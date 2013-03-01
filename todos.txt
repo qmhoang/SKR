@@ -7,8 +7,6 @@ Priority Goals:
 * PC generation
 * More "zones" (houses, buildings, etc)
 * sneaking
-* conditions
-	* all entities have condition holder component (is update when ap is gained, so when an entity is frozen in time, conditions don't update)
 
 Immediate Goals:
 * Zones of ownership
@@ -22,6 +20,8 @@ Immediate Goals:
 * night/day cycle
 * weapon mods?
 * different ammos types
+* more conditions
+	* poisons, drugs, etc
 
 Long term goals:
 * NPC speak (probably using inheritance styled speak tables)

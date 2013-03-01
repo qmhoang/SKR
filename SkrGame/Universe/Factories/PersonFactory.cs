@@ -7,7 +7,7 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Actions.Items;
-using SkrGame.Conditions;
+using SkrGame.Effects;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
@@ -25,7 +25,7 @@ namespace SkrGame.Universe.Factories {
 			       DefendComponent.CreateHuman(50),
 			       new VisibleComponent(10),
 			       new ContainerComponent(),
-			       new EntityConditions(new HumanCondition()),
+			       new EntityConditions(new HumanNeedsEffect()),
 			       new EquipmentComponent(new List<string>
 			                              {
 

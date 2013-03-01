@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using DEngine.Entities;
 using SkrGame.Universe.Entities.Features;
-using SkrGame.Universe.Entities.Features.Useables;
+using SkrGame.Universe.Entities.Useables;
 
 namespace SkrGame.Universe.Factories {
 	public static class TestEntityFactory {

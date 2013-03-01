@@ -8,6 +8,7 @@ using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Actions.Features;
 using SkrGame.Universe.Entities.Actors;
+using SkrGame.Universe.Entities.Useables;
 using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Features {
