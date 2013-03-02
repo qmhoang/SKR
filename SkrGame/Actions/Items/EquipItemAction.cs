@@ -43,8 +43,8 @@ namespace SkrGame.Actions.Items {
 			Entity.Get<EquipmentComponent>().Equip(slot, Item);
 
 			// skill bonuses
-			if (Entity.Has<Person>() && Item.Has<EquippedBonus>()) {
-				var p = Entity.Get<Person>();
+			if (Entity.Has<Creature>() && Item.Has<EquippedBonus>()) {
+				var p = Entity.Get<Creature>();
 				foreach (var bonus in Item.Get<EquippedBonus>().Bonuses) {
 					p.Skills[bonus.Key].Temporary += bonus.Value;
 				}
@@ -95,8 +95,8 @@ namespace SkrGame.Actions.Items {
 				}
 				World.Log.Normal(String.Format("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), slot));
 
-				if (Entity.Has<Person>() && removed.Has<EquippedBonus>()) {
-					var p = Entity.Get<Person>();
+				if (Entity.Has<Creature>() && removed.Has<EquippedBonus>()) {
+					var p = Entity.Get<Creature>();
 					foreach (var bonus in removed.Get<EquippedBonus>().Bonuses) {
 						p.Skills[bonus.Key].Temporary -= bonus.Value;
 					}

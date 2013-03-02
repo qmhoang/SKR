@@ -30,9 +30,9 @@ namespace SkrGame.Actions.Combat {
 
 			//apply skill
 			if (Attacker.Has<ActorComponent>()) {
-				hitBonus += Attacker.Get<Person>().Skills[melee.Skill];
+				hitBonus += Attacker.Get<Creature>().Skills[melee.Skill];
 			} else {
-				hitBonus += World.MEAN;
+				hitBonus += World.Mean;
 			}
 
 			var defenderName = Identifier.GetNameOrId(Defender);
@@ -41,7 +41,7 @@ namespace SkrGame.Actions.Combat {
 			var result = Attack(attackerName, defenderName, hitBonus + melee.HitBonus - (TargettingPenalty ? BodyPartTargetted.TargettingPenalty : 0));
 
 			if (result == CombatEventResult.Hit) {
-				var damage = Math.Max(melee.Damage.Roll() + GetStrengthDamage(Attacker.Get<Person>().Attributes["attribute_strength"]).Roll(), 1);
+				var damage = Math.Max(melee.Damage.Roll() + GetStrengthDamage(Attacker.Get<Creature>().Attributes["attribute_strength"]).Roll(), 1);
 				int damageResistance, realDamage;
 
 				Damage(damage, melee.Penetration, melee.DamageType, out damageResistance, out realDamage);

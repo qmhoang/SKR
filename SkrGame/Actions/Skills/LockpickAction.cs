@@ -42,7 +42,7 @@ namespace SkrGame.Actions.Skills {
 				return ActionResult.Aborted;
 			}
 
-			var person = Entity.Get<Person>();
+			var person = Entity.Get<Creature>();
 			double easeOfLock = Item.Get<Lockpick>().Quality + person.Skills["skill_lockpicking"].Value - feature.Get<LockedFeature>().Quality;
 
 			double roll = World.SkillRoll();

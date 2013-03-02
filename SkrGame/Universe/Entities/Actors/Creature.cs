@@ -23,7 +23,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		Prone		// facing up / facing down?
 	}
 
-	public sealed class Person : Component {
+	public sealed class Creature : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public StaticDictionary<string, Skill> Skills { get; private set; }
@@ -37,15 +37,15 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		private const int SkillInitialRank = 0;
-		private const int SkillMaxRank = World.MEAN * 2;
+		private const int SkillMaxRank = World.Mean * 2;
 
-		private const int AttributeInitialRank = World.MEAN;
-		private const int AttributeMaxRank = World.MEAN * 2;
+		private const int AttributeInitialRank = World.Mean;
+		private const int AttributeMaxRank = World.Mean * 2;
 
 		private const int StatInitialRank = 100;
 		private const int StatMaxRank = 150;
 
-		public Person() {
+		public Creature() {
 			Posture = Posture.Stand;
 			
 			Attributes = new StaticDictionary<string, Attribute>(
@@ -67,9 +67,9 @@ namespace SkrGame.Universe.Entities.Actors {
 			Stats = new StaticDictionary<string, Attribute>(
 					new Dictionary<string, Attribute>
 					{
-							{"stat_health",				new Attribute("Health",			"HP ", World.MEAN, World.MEAN)},
-							{"stat_stamina",			new Attribute("Stamina",		"SP ", World.MEAN, World.MEAN)},
-							{"stat_composure",			new Attribute("Composure",		"CP ", World.MEAN, World.MEAN)},
+							{"stat_health",				new Attribute("Health",			"HP ", World.Mean, World.Mean)},
+							{"stat_stamina",			new Attribute("Stamina",		"SP ", World.Mean, World.Mean)},
+							{"stat_composure",			new Attribute("Composure",		"CP ", World.Mean, World.Mean)},
 
 							{"stat_energy",				new Attribute("Energy",			"SLP", StatInitialRank, StatMaxRank)},
 							{"stat_food",				new Attribute("Food",			"FOD", StatInitialRank, StatMaxRank)},
@@ -117,7 +117,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public override Component Copy() {
 			//todo
-			return new Person();
+			return new Creature();
 		}
 	}
 }

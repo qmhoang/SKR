@@ -21,7 +21,7 @@ namespace SkrGame.Universe.Factories {
 			       new Sprite("npc", Sprite.ActorLayer),
 			       new Identifier("npc"),
 			       new ActorComponent(new DoNothing(), new AP(World.DefaultSpeed)),
-			       new Person(),
+			       new Creature(),
 			       DefendComponent.CreateHuman(50),
 			       new VisibleComponent(10),
 			       new ContainerComponent(),

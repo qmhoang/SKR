@@ -23,16 +23,16 @@ namespace SkrGame.Universe.Factories {
 			                                   		                           new TimeSpan(0, 0, 0, 2),
 			                                   		                           (e, app) =>
 			                                   		                           	{
-			                                   		                           		if (e.Has<Person>()) {
-			                                   		                           			e.Get<Person>().Stats["stat_water"].Value++;
+			                                   		                           		if (e.Has<Creature>()) {
+			                                   		                           			e.Get<Creature>().Stats["stat_water"].Value++;
 			                                   		                           			return ActionResult.Success;
 			                                   		                           		}
 			                                   		                           		return ActionResult.Aborted;
 			                                   		                           	},
 			                                   		                           (e, app) =>
 			                                   		                           	{
-			                                   		                           		if (e.Has<Person>()) {
-			                                   		                           			e.Get<Person>().Stats["stat_water"].Value++;
+			                                   		                           		if (e.Has<Creature>()) {
+			                                   		                           			e.Get<Creature>().Stats["stat_water"].Value++;
 
 			                                   		                           			e.Get<GameObject>().Level.World.Log.Normal(
 			                                   		                           					String.Format("{0} finishes drinking from the {1}.",

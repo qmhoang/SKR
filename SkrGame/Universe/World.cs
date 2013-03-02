@@ -26,16 +26,15 @@ namespace SkrGame.Universe {
 		/// default speed, anything with 2x speed cost 1/2 AP 
 		/// </summary>
 		public const int DefaultSpeed = 1000; // 
-
 		public const double TurnLengthInSeconds = 1;	// how long is a turn in seconds
 		public const int OneSecondInAP = 1000;	// how long is a turn in seconds
-		public const int MEAN = 50;						// what is the mean score for an attribute
+		public const int Mean = 50;						// what is the mean score for an attribute
 		public const int StandardDeviation = 15;		// what is the stddev for an attribute score
 		public const int StandardIncrement = StandardDeviation / 3;
 		public const double TileLengthInMeter = 1f;	// length of 1 square tile
-
+		
 		public static double SkillRoll() {
-			return Rng.GaussianDouble(MEAN, 5 * StandardDeviation, StandardDeviation);
+			return Rng.GaussianDouble(Mean, 5 * StandardDeviation, StandardDeviation);
 		}
 
 		public MapFactory MapFactory { get; private set; }
@@ -166,7 +165,7 @@ namespace SkrGame.Universe {
 		/// <param name="difficulty"></param>
 		/// <returns>Higher means easier</returns>
 		public static double ChanceOfSuccess(double difficulty) {
-			return GaussianDistribution.CumulativeTo(difficulty, World.MEAN, World.StandardDeviation);
+			return GaussianDistribution.CumulativeTo(difficulty, World.Mean, World.StandardDeviation);
 		}
 	}
 }

@@ -33,8 +33,8 @@ namespace SkrGame.Effects {
 			staminaMSCount += millisecondsElapsed;
 			needsMSCount += millisecondsElapsed;
 
-			if (Holder.Entity.Has<Person>()) {
-				var person = Holder.Entity.Get<Person>();
+			if (Holder.Entity.Has<Creature>()) {
+				var person = Holder.Entity.Get<Creature>();
 
 				while (staminaMSCount / StaminaRequirementInMS > 0) {
 					if (person.Stats["stat_energy"] > 0 &&

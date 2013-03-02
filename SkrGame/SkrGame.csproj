@@ -138,11 +138,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\ActionSystem.cs" />
     <Compile Include="Systems\ITimeElapsedSubsystem.cs" />
-    <Compile Include="Systems\NeedsSubsystem.cs" />
+    <Compile Include="Systems\EncumbranceSubsystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\EntityConditions.cs" />
     <Compile Include="Universe\Entities\Controllers\OneAction.cs" />
+    <Compile Include="Universe\Entities\Useables\ApplianceComponent.cs" />
     <Compile Include="Universe\Entities\Useables\TestUseableComponent.cs" />
     <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
     <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
@@ -150,7 +151,7 @@
     <Compile Include="Universe\Entities\PositionChangedEvent.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
     <Compile Include="Universe\Entities\Controllers\DoNothing.cs" />
-    <Compile Include="Universe\Entities\Actors\Person.cs" />
+    <Compile Include="Universe\Entities\Actors\Creature.cs" />
     <Compile Include="Universe\Entities\Actors\DefendComponent.cs" />
     <Compile Include="Universe\Entities\Actors\ContainerComponent.cs" />
     <Compile Include="Universe\Entities\Actors\EquipmentComponent.cs" />

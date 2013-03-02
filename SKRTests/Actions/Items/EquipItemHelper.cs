@@ -61,16 +61,16 @@ namespace SKRTests.Actions.Items {
 		[Test]
 		public void TestEquipSkilledItem() {
 			Assert.IsFalse(Entity.Get<EquipmentComponent>().IsSlotEquipped("slot1"));
-			Assert.AreEqual(Entity.Get<Person>().Skills["skill_stealth"].Temporary, 0);
+			Assert.AreEqual(Entity.Get<Creature>().Skills["skill_stealth"].Temporary, 0);
 
 			Equip("slot1", Slot1Item2StealthBonus);
 
 			Assert.IsTrue(Entity.Get<EquipmentComponent>().IsSlotEquipped("slot1"));
-			Assert.AreEqual(Entity.Get<Person>().Skills["skill_stealth"].Temporary, 1);
+			Assert.AreEqual(Entity.Get<Creature>().Skills["skill_stealth"].Temporary, 1);
 
 			Unequip("slot1");
 			Assert.IsFalse(Entity.Get<EquipmentComponent>().IsSlotEquipped("slot1"));
-			Assert.AreEqual(Entity.Get<Person>().Skills["skill_stealth"].Temporary, 0);
+			Assert.AreEqual(Entity.Get<Creature>().Skills["skill_stealth"].Temporary, 0);
 		}
 	}
 }

@@ -24,7 +24,7 @@ namespace SkrGame.Actions.Movement {
 
 		public JumpOverAction(Entity entity, Direction direction)
 				: base(entity) {
-			Contract.Requires<ArgumentException>(entity.Has<Person>());
+			Contract.Requires<ArgumentException>(entity.Has<Creature>());
 			//			Contract.Requires<ArgumentException>(feature.Get<GameObject>().DistanceTo(entity.Get<GameObject>()) <= 1.5f);
 
 			landedLocation = Entity.Get<GameObject>().Location + direction + direction;
@@ -56,7 +56,7 @@ namespace SkrGame.Actions.Movement {
 			}
 
 			double jumpRoll = World.SkillRoll();
-			double jumpEase = Entity.Get<Person>().Skills["skill_jumping"] - (feature == null ? 0 : feature.Get<Scenery>().JumpHeight);
+			double jumpEase = Entity.Get<Creature>().Skills["skill_jumping"] - (feature == null ? 0 : feature.Get<Scenery>().JumpHeight);
 
 			jumpEase += World.StandardDeviation; // todo fix hack, need to add size for objects (NOT IN GAMEOBJECT, ANOTHER COMPONENT)
 

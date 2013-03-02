@@ -34,6 +34,7 @@ Long term goals:
 * wounds
 * cleaniless is a sum of body part's cleanliness
 * evidence and evidence denial (gloves, sunglasses, etc)
+* appliances - breakes after x number of uses
 
 Ideas:
 * safety needs-based stat? 
@@ -51,4 +52,4 @@ Ideas:
 * possible npc speak tables
 	* sex: male, female
 	* occupation: police, homeless, etc
-* layers in the world, 2nd floor will display stuff on the 1st floor that can be seen (through a window)	
+* layers in the world, 2nd floor will display stuff on the 1st floor that can be seen (through a window or at the edge of a layer transition)	
