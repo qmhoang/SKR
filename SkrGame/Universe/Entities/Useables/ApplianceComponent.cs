@@ -4,8 +4,10 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using DEngine.Actor;
 using DEngine.Components;
+using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Actions.Features;
+using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Useables {
 	// todo breakage, needs repairing
@@ -27,6 +29,44 @@ namespace SkrGame.Universe.Entities.Useables {
 				Interval = interval;
 				OnInterval = onInterval;
 				OnFinish = onFinish;
+			}
+
+			public static Use UseAppliance(string description, string statName, TimeSpan length, TimeSpan interval, Action<Entity, ApplianceComponent> onFinish, Action<Entity, ApplianceComponent> onFailure) {
+				return new Use(description,
+				               length,
+				               interval,
+				               (e, app) =>
+				               	{
+				               		if (e.Has<Creature>()) {
+				               			if (!e.Get<Creature>().Stats.ContainsKey(statName)) {
+				               				throw new ArgumentException();
+				               			}
+
+				               			var stat = e.Get<Creature>().Stats[statName];
+				               			if (stat >= stat.MaximumValue) {
+				               				return ActionResult.Aborted;
+				               			}
+
+				               			stat.Value++;
+
+				               			return ActionResult.Success;
+				               		}
+				               		return ActionResult.Aborted;
+				               	},
+				               (e, app) =>
+				               	{
+				               		if (e.Has<Creature>()) {
+				               			var stat = e.Get<Creature>().Stats[statName];
+
+				               			onFinish(e, app);
+
+				               			stat.Value++;
+				               			return ActionResult.Success;
+				               		}
+
+				               		onFailure(e, app);
+				               		return ActionResult.Aborted;
+				               	});
 			}
 		}
 
