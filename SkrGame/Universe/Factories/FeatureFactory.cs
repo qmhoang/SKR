@@ -169,69 +169,51 @@ namespace SkrGame.Universe.Factories {
 			            //			                                                            	})),
 			            new ApplianceComponent(new List<ApplianceComponent.Use>
 			                                   {
-			                                   		new ApplianceComponent.Use("Use",
-			                                   		                           new TimeSpan(0, 0, 1, 0),
-			                                   		                           new TimeSpan(0, 0, 0, 1, 150),
-			                                   		                           (e, app) =>
-			                                   		                           	{
-			                                   		                           		if (e.Has<Creature>()) {
-			                                   		                           			e.Get<Creature>().Stats["stat_bladder"].Value++;
-			                                   		                           			return ActionResult.Success;
-			                                   		                           		}
-			                                   		                           		return ActionResult.Aborted;
-			                                   		                           	},
-			                                   		                           (e, app) =>
-			                                   		                           	{
-			                                   		                           		if (e.Has<Creature>()) {
-																						e.Get<Creature>().Stats["stat_bladder"].Value++;
-
-			                                   		                           			e.Get<GameObject>().Level.World.Log.Normal(
-			                                   		                           					String.Format("{0} finishes using the {1}.",
-			                                   		                           					              Identifier.GetNameOrId(e),
-			                                   		                           					              Identifier.GetNameOrId(app.Entity)));
-
-			                                   		                           			return ActionResult.Success;
-			                                   		                           		}
-			                                   		                           		return ActionResult.Aborted;
-			                                   		                           	})
+			                                   		ApplianceComponent.Use.UseAppliance("Use",
+			                                   		                                    "stat_bladder",
+			                                   		                                    new TimeSpan(0, 0, 1, 0),
+			                                   		                                    new TimeSpan(0, 0, 0, 1, 150),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} finishes using the {1}.",
+			                                   		                                                                                                         Identifier.GetNameOrId(e),
+			                                   		                                                                                                         Identifier.GetNameOrId(app.Entity)),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} is unable to use the {1}.",
+			                                   		                                                                                                         Identifier.GetNameOrId(e),
+			                                   		                                                                                                         Identifier.GetNameOrId(app.Entity)))
 			                                   }));
 
 			ef.Inherits("BATHROOMSINK", "SINK",
 			            new Sprite("BATHROOMSINK", Sprite.FeaturesLayer),
-						new ApplianceComponent(new List<ApplianceComponent.Use>
+			            new ApplianceComponent(new List<ApplianceComponent.Use>
 			                                   {
-			                                   		new ApplianceComponent.Use("Wash hands",
-			                                   		                           new TimeSpan(0, 0, 0, 30),
-			                                   		                           new TimeSpan(0, 0, 0, 3),
-			                                   		                           (e, app) =>
-			                                   		                           	{
-			                                   		                           		if (e.Has<Creature>()) {
-			                                   		                           			e.Get<Creature>().Stats["stat_cleanliness"].Value++;
-			                                   		                           			return ActionResult.Success;
-			                                   		                           		}
-			                                   		                           		return ActionResult.Aborted;
-			                                   		                           	},
-			                                   		                           (e, app) =>
-			                                   		                           	{
-			                                   		                           		if (e.Has<Creature>()) {
-																						e.Get<Creature>().Stats["stat_cleanliness"].Value++;
-
-			                                   		                           			e.Get<GameObject>().Level.World.Log.Normal(
-			                                   		                           					String.Format("{0} finishes washing his hands.",
-			                                   		                           					              Identifier.GetNameOrId(e)));
-
-			                                   		                           			return ActionResult.Success;
-			                                   		                           		}
-			                                   		                           		return ActionResult.Aborted;
-			                                   		                           	})
+			                                   		ApplianceComponent.Use.UseAppliance("Wash hands",
+			                                   		                                    "stat_cleanliness",
+			                                   		                                    new TimeSpan(0, 0, 0, 30),
+			                                   		                                    new TimeSpan(0, 0, 0, 3),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} finishes washing his hands.",
+			                                   		                                                                                                         Identifier.GetNameOrId(e)),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} is unable to use the {1}.",
+			                                   		                                                                                                         Identifier.GetNameOrId(e),
+			                                   		                                                                                                         Identifier.GetNameOrId(app.Entity)))
 			                                   }));
 
 			ef.Inherits("BATH", "nonblockingfeature",
 			            new Sprite("BATH", Sprite.FeaturesLayer),
+			            new ApplianceComponent(new List<ApplianceComponent.Use>
+			                                   {
+			                                   		ApplianceComponent.Use.UseAppliance("Take a bath",
+			                                   		                                    "stat_cleanliness",
+			                                   		                                    new TimeSpan(0, 0, 30, 0),
+			                                   		                                    new TimeSpan(0, 0, 0, 30),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} finishes taking a bath.",
+			                                   		                                                                                                 Identifier.GetNameOrId(e)),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} is unable to use the {1}.",
+			                                   		                                                                                                 Identifier.GetNameOrId(e),
+			                                   		                                                                                                 Identifier.GetNameOrId(app.Entity)))
+			                                   }),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
-//			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
-//													World.Instance.Log.Normal(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
+			                               		//			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)
+			                               		//													World.Instance.Log.Normal(String.Format("{0} steps into the bathtub.", Identifier.GetNameOrId(entityNear)));
 			                               	}));
 
 			ef.Inherits("SHOWER", "nonblockingfeature",
@@ -245,6 +227,18 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("BED_WOODEN", "nonblockingfeature",
 			            new Sprite("BED_WOODEN", Sprite.FeaturesLayer),
+						new ApplianceComponent(new List<ApplianceComponent.Use>
+			                                   {
+			                                   		ApplianceComponent.Use.UseAppliance("Sleep",
+			                                   		                                    "stat_energy",
+			                                   		                                    new TimeSpan(0, 8, 0, 0),
+			                                   		                                    new TimeSpan(0, 0, 5, 0),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} finishes sleeping.",
+			                                   		                                                                                                 Identifier.GetNameOrId(e)),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} is unable to use the {1}.",
+			                                   		                                                                                                 Identifier.GetNameOrId(e),
+			                                   		                                                                                                 Identifier.GetNameOrId(app.Entity)))
+			                                   }),
 			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
 			                               	{
 //			                               		if (Math.Abs(entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>()) - 0) < Double.Epsilon)

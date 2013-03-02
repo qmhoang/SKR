@@ -28,6 +28,8 @@ namespace SkrGame.Actions.Features {
 		public int LengthInAP { get { return World.SecondsToActionPoints(Length.TotalSeconds); } }
 		
 		public Func<Entity, ActionResult> OnInterval { get; private set; }
+
+		// on finish will be called even if onInterval returns an abort or failed.
 		public Func<Entity, ActionResult> OnFinish { get; private set; }
 
 		public override int APCost {
@@ -45,7 +47,7 @@ namespace SkrGame.Actions.Features {
 					var result = OnInterval(Entity);
 
 					if (result == ActionResult.Aborted || result == ActionResult.Failed) {
-						return result;
+						return OnFinish(Entity);
 					} else if (result == ActionResult.SuccessNoTime) { // prevents infinite queuing
 						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval, Length - ts, Interval, OnInterval, OnFinish));
 						return ActionResult.Success;

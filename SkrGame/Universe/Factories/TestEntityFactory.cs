@@ -18,31 +18,16 @@ namespace SkrGame.Universe.Factories {
 			            new TestUseableComponent(),
 			            new ApplianceComponent(new List<ApplianceComponent.Use>()
 			                                   {
-			                                   		new ApplianceComponent.Use("Drink from",
-			                                   		                           new TimeSpan(0, 0, 1, 0),
-			                                   		                           new TimeSpan(0, 0, 0, 2),
-			                                   		                           (e, app) =>
-			                                   		                           	{
-			                                   		                           		if (e.Has<Creature>()) {
-			                                   		                           			e.Get<Creature>().Stats["stat_water"].Value++;
-			                                   		                           			return ActionResult.Success;
-			                                   		                           		}
-			                                   		                           		return ActionResult.Aborted;
-			                                   		                           	},
-			                                   		                           (e, app) =>
-			                                   		                           	{
-			                                   		                           		if (e.Has<Creature>()) {
-			                                   		                           			e.Get<Creature>().Stats["stat_water"].Value++;
-
-			                                   		                           			e.Get<GameObject>().Level.World.Log.Normal(
-			                                   		                           					String.Format("{0} finishes drinking from the {1}.",
-			                                   		                           					              Identifier.GetNameOrId(e),
-			                                   		                           					              Identifier.GetNameOrId(app.Entity)));
-
-			                                   		                           			return ActionResult.Success;
-			                                   		                           		}
-			                                   		                           		return ActionResult.Aborted;
-			                                   		                           	})
+			                                   		ApplianceComponent.Use.UseAppliance("Use",
+			                                   		                                    "stat_bladder",
+			                                   		                                    new TimeSpan(0, 0, 1, 0),
+			                                   		                                    new TimeSpan(0, 0, 0, 1, 150),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} finishes using the {1}.",
+			                                   		                                                                                                         Identifier.GetNameOrId(e),
+			                                   		                                                                                                         Identifier.GetNameOrId(app.Entity)),
+			                                   		                                    (e, app) => e.Get<GameObject>().Level.World.Log.NormalFormat("{0} is unable to use the {1}.",
+			                                   		                                                                                                         Identifier.GetNameOrId(e),
+			                                   		                                                                                                         Identifier.GetNameOrId(app.Entity)))
 			                                   }));
 		}
 	}
