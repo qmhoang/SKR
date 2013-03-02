@@ -14,11 +14,11 @@ namespace SkrGame.Actions.Movement {
 	public class WalkAction : LoggedAction {
 		private Direction direction;
 
-		private const int WalkCost = World.OneSecondInAP;
+		private const int WalkCost = (int) (World.OneSecondInAP * World.TileLengthInMeter) / 2;
 
 		public WalkAction(Entity entity, Direction direction)
 				: base(entity) {
-			Contract.Requires<ArgumentException>(entity.Has<Person>());
+			Contract.Requires<ArgumentException>(entity.Has<Creature>());
 			this.direction = direction;
 		}
 
@@ -27,7 +27,7 @@ namespace SkrGame.Actions.Movement {
 		}
 
 		private double PostureModifier() {
-			switch (Entity.Get<Person>().Posture) {
+			switch (Entity.Get<Creature>().Posture) {
 				case Posture.Run:
 					return 3.0f;
 				case Posture.Stand:

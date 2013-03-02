@@ -3,7 +3,7 @@ using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Stats {
 	public sealed class Skill : Stat {
-		public Person Owner { get; set; }
+		public Creature Owner { get; set; }
 		/// <summary>
 		/// raw rank represents this talent's skill, unmodified by anything
 		/// </summary>
@@ -22,9 +22,9 @@ namespace SkrGame.Universe.Entities.Stats {
 
 		public override int MaximumValue { get; set; }
 
-		private readonly Func<Person, Skill, int> calculateRealRank;
+		private readonly Func<Creature, Skill, int> calculateRealRank;
 
-		public Skill(string name, Person owner, int initialRank, int max, Func<Person, Skill, int> calcRealRank = null) : base(name) {
+		public Skill(string name, Creature owner, int initialRank, int max, Func<Creature, Skill, int> calcRealRank = null) : base(name) {
 			Owner = owner;
 			Rank = initialRank;
 			MaximumValue = max;

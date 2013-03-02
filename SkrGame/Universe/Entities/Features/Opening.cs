@@ -74,14 +74,14 @@ namespace SkrGame.Universe.Entities.Features {
 		}
 
 		private static readonly UseAction Open =
-				new UseAction("Open door", (user, featureEntity, action) =>
+				new UseAction("Open door", (user, featureEntity) =>
 				                           	{
 				                           		if (featureEntity.Has<Opening>())
 				                           			user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, featureEntity));
 				                           	});
 
 		private static readonly UseAction Close =
-				new UseAction("Close door", (user, featureEntity, action) =>
+				new UseAction("Close door", (user, featureEntity) =>
 				                            	{
 				                            		if (featureEntity.Has<Opening>())
 				                            			user.Get<ActorComponent>().Enqueue(new CloseDoorAction(user, featureEntity));

@@ -25,7 +25,7 @@ namespace SKR.UI.Gameplay {
 		protected override void Redraw() {
 			base.Redraw();
 
-			var person = player.Get<Person>();
+			var person = player.Get<Creature>();
 			int i = 1;
 			Canvas.PrintString(1, i++, player.Get<Identifier>().Name);
 			i++;

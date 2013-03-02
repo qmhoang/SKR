@@ -196,7 +196,7 @@ namespace SKR.UI.Gameplay {
 											weapon => Directions("Attack where?",
 																 p => Options("Attack where?",
 																			  "Nothing at location to attack.",
-																			  player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Person>(p).ToList(),
+																			  player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Creature>(p).ToList(),
 																			  Identifier.GetNameOrId,
 																			  defender => Options("Attack at what?",
 																								  String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
@@ -274,7 +274,7 @@ namespace SKR.UI.Gameplay {
 																							  String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
 																							  useable.Get<UseBroadcaster>().Actions.ToList(),
 																							  use => use.Description,
-																							  use => use.Use(player, useable, use))));
+																							  use => use.Use(player, useable))));
 								break;
 							case 'd': {
 									var inventory = player.Get<ContainerComponent>();
@@ -431,7 +431,7 @@ namespace SKR.UI.Gameplay {
 			Point newLocation = player.Get<GameObject>().Location + direction;
 
 			// we check for attackables
-			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Person>(newLocation).ToList();
+			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Creature>(newLocation).ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
 				Options("With that weapon?",

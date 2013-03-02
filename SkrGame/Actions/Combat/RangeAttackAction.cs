@@ -28,7 +28,7 @@ namespace SkrGame.Actions.Combat {
 		}
 
 		public const double RangePenaltyStdDevMultiplier = 0.87;
-		public const double RangePenaltyTileOccupied = -World.MEAN * 4 / 3;
+		public const double RangePenaltyTileOccupied = -World.Mean * 4 / 3;
 
 		private IEnumerable<Entity> GetTargetsOnPath(Level currentLevel, Point start, Point end) {
 			if (!currentLevel.IsWalkable(start))
@@ -61,9 +61,9 @@ namespace SkrGame.Actions.Combat {
 			
 			//apply skill
 			if (Attacker.Has<ActorComponent>()) {
-				hitBonus += Attacker.Get<Person>().Skills[weapon.Skill];
+				hitBonus += Attacker.Get<Creature>().Skills[weapon.Skill];
 			} else {
-				hitBonus += World.MEAN;
+				hitBonus += World.Mean;
 			}
 
 			if (weapon.ShotsRemaining <= 0) {

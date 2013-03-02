@@ -61,7 +61,7 @@ namespace SKRTests {
 			                                             		new GameObject(2, 2, Level),
 			                                             		new ContainerComponent(),
 			                                             		new ActorComponent(new Player(), new AP(World.DefaultSpeed)),
-			                                             		new Person(),
+			                                             		new Creature(),
 			                                             		new Identifier("Player"),
 			                                             		new EquipmentComponent(new List<string>
 			                                             		                       {

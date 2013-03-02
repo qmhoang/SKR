@@ -161,22 +161,70 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("TOILET", "nonblockingfeature",
 			            new Sprite("TOILET", Sprite.FeaturesLayer),
-//			            new UseBroadcaster(new UseAction("Use toilet",
-//			                                                            (entity, user, action) =>
-//			                                                            	{
-////																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
-//			                                                            		return ActionResult.Success;
-//			                                                            	})),
-			            new PassiveFeature(delegate(Entity entityNear, Entity featureEntity)
-			                               	{
-//			                               		var distanceTo = entityNear.Get<Location>().DistanceTo(featureEntity.Get<Location>());
-//			                               		if (Math.Abs(distanceTo - 0) < Double.Epsilon)
-//													World.Instance.Log.Normal(String.Format("{0} stands on top of the toilet.  Ew.",
-//			                               			                                        Identifier.GetNameOrId(entityNear)));
-			                               	}));
+			            //			            new UseBroadcaster(new UseAction("Use toilet",
+			            //			                                                            (entity, user, action) =>
+			            //			                                                            	{
+			            ////																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
+			            //			                                                            		return ActionResult.Success;
+			            //			                                                            	})),
+			            new ApplianceComponent(new List<ApplianceComponent.Use>
+			                                   {
+			                                   		new ApplianceComponent.Use("Use",
+			                                   		                           new TimeSpan(0, 0, 1, 0),
+			                                   		                           new TimeSpan(0, 0, 0, 1, 150),
+			                                   		                           (e, app) =>
+			                                   		                           	{
+			                                   		                           		if (e.Has<Creature>()) {
+			                                   		                           			e.Get<Creature>().Stats["stat_bladder"].Value++;
+			                                   		                           			return ActionResult.Success;
+			                                   		                           		}
+			                                   		                           		return ActionResult.Aborted;
+			                                   		                           	},
+			                                   		                           (e, app) =>
+			                                   		                           	{
+			                                   		                           		if (e.Has<Creature>()) {
+																						e.Get<Creature>().Stats["stat_bladder"].Value++;
+
+			                                   		                           			e.Get<GameObject>().Level.World.Log.Normal(
+			                                   		                           					String.Format("{0} finishes using the {1}.",
+			                                   		                           					              Identifier.GetNameOrId(e),
+			                                   		                           					              Identifier.GetNameOrId(app.Entity)));
+
+			                                   		                           			return ActionResult.Success;
+			                                   		                           		}
+			                                   		                           		return ActionResult.Aborted;
+			                                   		                           	})
+			                                   }));
 
 			ef.Inherits("BATHROOMSINK", "SINK",
-			            new Sprite("BATHROOMSINK", Sprite.FeaturesLayer));
+			            new Sprite("BATHROOMSINK", Sprite.FeaturesLayer),
+						new ApplianceComponent(new List<ApplianceComponent.Use>
+			                                   {
+			                                   		new ApplianceComponent.Use("Wash hands",
+			                                   		                           new TimeSpan(0, 0, 0, 30),
+			                                   		                           new TimeSpan(0, 0, 0, 3),
+			                                   		                           (e, app) =>
+			                                   		                           	{
+			                                   		                           		if (e.Has<Creature>()) {
+			                                   		                           			e.Get<Creature>().Stats["stat_cleanliness"].Value++;
+			                                   		                           			return ActionResult.Success;
+			                                   		                           		}
+			                                   		                           		return ActionResult.Aborted;
+			                                   		                           	},
+			                                   		                           (e, app) =>
+			                                   		                           	{
+			                                   		                           		if (e.Has<Creature>()) {
+																						e.Get<Creature>().Stats["stat_cleanliness"].Value++;
+
+			                                   		                           			e.Get<GameObject>().Level.World.Log.Normal(
+			                                   		                           					String.Format("{0} finishes washing his hands.",
+			                                   		                           					              Identifier.GetNameOrId(e)));
+
+			                                   		                           			return ActionResult.Success;
+			                                   		                           		}
+			                                   		                           		return ActionResult.Aborted;
+			                                   		                           	})
+			                                   }));
 
 			ef.Inherits("BATH", "nonblockingfeature",
 			            new Sprite("BATH", Sprite.FeaturesLayer),
