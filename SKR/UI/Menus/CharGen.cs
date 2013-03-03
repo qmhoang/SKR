@@ -122,50 +122,6 @@ namespace SKR.UI.Menus {
 			treeTemplate1.AlignTo(LayoutDirection.South, treeTemplate, 1);
 			AddControl(new TreeView(treeTemplate1));
 
-			var textBoxTemplate = new TextBoxTemplate()
-			                      {
-			                      		Title = "Log",
-			                      		HasFrame = true,
-			                      		Size = new Size(26, 16)
-			                      };
-			textBoxTemplate.AlignTo(LayoutDirection.South, treeTemplate1, 1);
-
-			textBox = new TextBox(textBoxTemplate);
-
-			textBox.AddText("blah");
-
-			AddControl(textBox);
-
-			var addTextbuttonT = new ButtonTemplate()
-			{
-				Label = "Add Text",
-			};
-			addTextbuttonT.AlignTo(LayoutDirection.South, textBoxTemplate, 1);
-			var addTextbutton = new Button(addTextbuttonT);
-			addTextbutton.ButtonPushed += (sender, e) => textBox.AddText("Text stuff blah blah blah.\n", ColorPresets.LightCoral);
-
-			AddControl(addTextbutton);
-
-			var minusT = new ButtonTemplate()
-			{
-				Label = "-",
-			};
-			minusT.AlignTo(LayoutDirection.South, addTextbuttonT, 0);
-			var minusB = new Button(minusT);
-			minusB.ButtonPushed += (sender, e) => textBox.Canvas.Scroll(0, -1);
-
-			AddControl(minusB);
-
-			var plusT = new ButtonTemplate()
-			{
-				Label = "+",
-			};
-			plusT.AlignTo(LayoutDirection.South, minusT, 0);
-			var plusB = new Button(plusT);
-			plusB.ButtonPushed += (sender, e) => textBox.Canvas.Scroll(0, 1);
-
-			AddControl(plusB);
-
 			var sliderTestTemplate = new SliderTemplate()
 			                         {
 			                         		Label = "Slider",
@@ -201,7 +157,7 @@ namespace SKR.UI.Menus {
 
 		private void StartNewGame(object sender, EventArgs e) {
 			this.ExitWindow();
-			World.CurrentLevel = World.MapFactory.Construct("TestMap");
+			World.CurrentLevel = World.MapFactory.Construct("TestMotel");
 			
 			World.Player = World.EntityManager.Create(World.EntityFactory.Get("player")).Add(new GameObject(0, 0, World.CurrentLevel));
 

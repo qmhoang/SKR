@@ -67,7 +67,7 @@ namespace SkrGame.Actions.Combat {
 			}
 
 			if (weapon.ShotsRemaining <= 0) {
-				World.Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
+				Log.Normal(String.Format("{0} attempts to use the only to realize the weapon is not loaded",
 				                               attackerName));
 				return ActionResult.Failed;
 			}
@@ -106,7 +106,7 @@ namespace SkrGame.Actions.Combat {
 
 					Damage(weapon.Damage.Roll(), weapon.Penetration, weapon.DamageType, out damageResistance, out realDamage);
 
-					World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					Log.Normal(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
 					                               attackerName, weapon.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name, "todo-description"));
 
 					Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Hit, damage,
@@ -114,7 +114,7 @@ namespace SkrGame.Actions.Combat {
 					return ActionResult.Success;
 				} else if (result == CombatEventResult.Miss) {
 					if (Defender.Id == currentEntity.Id) // if this is where the actor targetted
-						World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
+						Log.Normal(String.Format("{0} {1} {2}'s {3}.... and misses.",
 						                               attackerName, weapon.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
 
 					Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted));
@@ -122,7 +122,7 @@ namespace SkrGame.Actions.Combat {
 
 				} else if (result == CombatEventResult.Dodge) {
 					if (Defender.Id == currentEntity.Id) // if this is where the actor targetted
-						World.Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
+						Log.Normal(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
 						                               attackerName, weapon.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
 
 					Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Dodge));
@@ -133,7 +133,7 @@ namespace SkrGame.Actions.Combat {
 
 			// todo drop ammo casing
 
-			World.Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
+			Log.Normal(String.Format("{0} {1} and hits nothing", attackerName, weapon.ActionDescriptionPlural));
 			return ActionResult.Failed;
 		}
 	}

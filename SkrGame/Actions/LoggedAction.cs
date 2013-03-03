@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using DEngine.Actions;
 using DEngine.Components;
+using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities;
@@ -15,6 +16,7 @@ namespace SkrGame.Actions {
 			Contract.Requires<ArgumentException>(entity.Has<GameObject>());
 		}
 
-		public World World { get { return Entity.Get<GameObject>().Level.World; } }		
+		public World World { get { return Entity.Get<GameObject>().Level.World; } }
+		public Log Log { get { return World.Log; } }
 	}
 }

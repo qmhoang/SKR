@@ -22,12 +22,13 @@ namespace SkrGame.Universe.Entities.Actors {
 			return vision.IsVisible(x, y);
 		}
 
-		public void CalculateSight(AbstractLevel level, int x, int y, int radius) {
-			if (currLevel != level) {
-				currLevel = level;
+		public void CalculateSight() {
+			var level = Entity.Get<GameObject>();
+			if (currLevel != level.Level) {
+				currLevel = level.Level;
 				vision = new VisionMap(currLevel.Size);	
 			}
-			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, currLevel, x, y, radius, true);
+			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, currLevel, level.X, level.Y, 16, true);
 		}
 
 		public override Component Copy() {

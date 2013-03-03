@@ -73,27 +73,27 @@ namespace SkrGame.Actions.Movement {
 				return ActionResult.Success;
 			}
 
-			World.Log.Normal(String.Format("{0} is already doing that.", EntityName));
+			Log.Normal(String.Format("{0} is already doing that.", EntityName));
 			return ActionResult.Aborted;
 		}
 
 		private void SetPosture(Posture p) {
 			switch (p) {
 				case Posture.Run:
-					World.Log.Normal(String.Format("{0} starts to run.", EntityName));
+					Log.Normal(String.Format("{0} starts to run.", EntityName));
 					break;
 				case Posture.Stand:
-					World.Log.Normal(Entity.Get<Creature>().Posture == Posture.Run
+					Log.Normal(Entity.Get<Creature>().Posture == Posture.Run
 					                 		? String.Format("{0} stops running.", EntityName)
 					                 		: String.Format("{0} stands up.", EntityName));
 					break;
 				case Posture.Crouch:
-					World.Log.Normal(Entity.Get<Creature>().Posture == Posture.Prone 
+					Log.Normal(Entity.Get<Creature>().Posture == Posture.Prone 
 						? String.Format("{0} pushes up into a crouch.", EntityName) 
 						: String.Format("{0} crouches down.", EntityName));
 					break;
 				case Posture.Prone:
-					World.Log.Normal(String.Format("{0} goes prone.", EntityName));
+					Log.Normal(String.Format("{0} goes prone.", EntityName));
 					break;
 				default:
 					throw new ArgumentOutOfRangeException("p");

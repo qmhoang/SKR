@@ -27,14 +27,14 @@ namespace SkrGame.Actions.Skills {
 			Contract.Requires<ArgumentException>(feature.Has<LockedFeature>());
 
 			this.feature = feature;
-			apRequired = World.SecondsToActionPoints(60);
+			lengthRequired = new TimeSpan(0, 0, 1, 0);
 		}
 
 		public override int APCost {
 			get { return 1; }
 		}
 
-		private int apRequired;
+		private TimeSpan lengthRequired;
 
 		public override ActionResult OnProcess() {
 			if (feature.Get<LockedFeature>().Status == LockStatus.Opened) {
@@ -51,7 +51,7 @@ namespace SkrGame.Actions.Skills {
 			var bonus = -(roll - easeOfLock);
 
 			if (roll <= easeOfLock) {
-				apRequired -= World.SecondsToActionPoints(bonus);				
+				lengthRequired -= new TimeSpan(0, 0, 0, 0, (int) (bonus * 1000));
 			}
 
 			Logger.InfoFormat("{0} attempts in Lockpicking/Intellect on {1} (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
@@ -63,7 +63,7 @@ namespace SkrGame.Actions.Skills {
 
 			Entity.Get<ActorComponent>().Enqueue(
 					new LongAction(Entity,
-					               apRequired,
+					               lengthRequired,
 					               e => ActionResult.Success,
 					               e =>
 					               	{

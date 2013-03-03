@@ -6,9 +6,15 @@ using DEngine.Entities;
 using SkrGame.Universe;
 
 namespace SkrGame.Actions.Features {
+	/// <summary>
+	/// Recursion like action that does something at every interval for a specified length of time.
+	/// </summary>
 	public sealed class IntervalAction : LoggedAction {
 		public IntervalAction(Entity entity, TimeSpan length, TimeSpan interval, Func<Entity, ActionResult> onInterval, Func<Entity, ActionResult> onFinish) :
-				this(entity, new TimeSpan(), length, interval, onInterval, onFinish) {}
+			this(entity, new TimeSpan(), length, interval, onInterval, onFinish) {
+
+			Log.Normal("Press 'z' to cancel action.");
+		}
 
 		private IntervalAction(Entity entity, TimeSpan counter, TimeSpan length, TimeSpan interval, Func<Entity, ActionResult> onInterval, Func<Entity, ActionResult> onFinish) : base(entity) {
 			Contract.Requires<ArgumentNullException>(onInterval != null, "onInterval");
@@ -18,7 +24,7 @@ namespace SkrGame.Actions.Features {
 			Length = length;
 			Interval = interval;
 			OnInterval = onInterval;
-			OnFinish = onFinish;
+			OnFinish = onFinish;	
 		}
 
 		public TimeSpan Length { get; private set; }

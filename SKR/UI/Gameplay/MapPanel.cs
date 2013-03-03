@@ -58,6 +58,7 @@ namespace SKR.UI.Gameplay {
 
 			//draw map
 			var sight = player.Get<SightComponent>();
+			sight.CalculateSight();
 			for (int x = 0; x < canvas.Size.Width; x++) {
 				for (int y = 0; y < canvas.Size.Height; y++) {
 					Point screenPosition = new Point(x, y);
@@ -103,7 +104,7 @@ namespace SKR.UI.Gameplay {
 								canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);
 						}
 					} else {
-						canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);
+						canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);						
 					}
 				}
 			}

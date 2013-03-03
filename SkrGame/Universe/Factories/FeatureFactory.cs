@@ -135,6 +135,7 @@ namespace SkrGame.Universe.Factories {
 			Contract.Requires<ArgumentNullException>(ef != null, "ef");
 			ef.Add("feature",
 			       new VisibleComponent(10),
+				   new UseBroadcaster(),
 			       new Sprite("FEATURE", Sprite.FeaturesLayer),
 			       new Identifier("Feature"),
 			       new Scenery(false, false));
@@ -146,27 +147,17 @@ namespace SkrGame.Universe.Factories {
 			#region House Features
 
 			ef.Inherits("COUNTER_WOOD_RED", "feature",
+						new Scenery(true, false, 1),
 			            new Sprite("COUNTER_WOOD_RED", Sprite.FeaturesLayer));
 
 			ef.Inherits("SINK", "feature",
 			            new Sprite("SINK", Sprite.FeaturesLayer),
-			            new Identifier("Sink", "A sink.") 
-//			            new UseBroadcaster(new UseAction("Wash hands",
-//			                                                            (entity, user, action) =>
-//			                                                            	{
-////																				World.Instance.Log.Normal(String.Format("{0} uses the sink.", Identifier.GetNameOrId(user)));
-//			                                                            		return ActionResult.Success;
-//			                                                            	}))
+						new Scenery(true, false, 1),
+			            new Identifier("Sink", "A sink.")
 					);
 
 			ef.Inherits("TOILET", "nonblockingfeature",
 			            new Sprite("TOILET", Sprite.FeaturesLayer),
-			            //			            new UseBroadcaster(new UseAction("Use toilet",
-			            //			                                                            (entity, user, action) =>
-			            //			                                                            	{
-			            ////																				World.Instance.Log.Normal(String.Format("{0} uses the toilet.", Identifier.GetNameOrId(user)));
-			            //			                                                            		return ActionResult.Success;
-			            //			                                                            	})),
 			            new ApplianceComponent(new List<ApplianceComponent.Use>
 			                                   {
 			                                   		ApplianceComponent.Use.UseAppliance("Use",
@@ -198,6 +189,7 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("BATH", "nonblockingfeature",
 			            new Sprite("BATH", Sprite.FeaturesLayer),
+						new Scenery(true, false, -1),
 			            new ApplianceComponent(new List<ApplianceComponent.Use>
 			                                   {
 			                                   		ApplianceComponent.Use.UseAppliance("Take a bath",
@@ -220,6 +212,7 @@ namespace SkrGame.Universe.Factories {
 			            new Sprite("SHOWER", Sprite.FeaturesLayer));
 
 			ef.Inherits("CHAIR_WOODEN", "nonblockingfeature",
+			            new Scenery(true, false, 1),
 			            new Sprite("CHAIR_WOODEN", Sprite.FeaturesLayer));
 
 			ef.Inherits("TREE_SMALL", "nonblockingfeature",
@@ -246,6 +239,7 @@ namespace SkrGame.Universe.Factories {
 			                               	}));
 
 			ef.Inherits("SHELF_WOOD", "feature",
+						new Scenery(true, false, 2),
 			            new Sprite("SHELF_WOOD", Sprite.FeaturesLayer));
 
 			ef.Inherits("SHELF_METAL", "feature",
@@ -264,6 +258,7 @@ namespace SkrGame.Universe.Factories {
 			            new Sprite("FRIDGE", Sprite.FeaturesLayer));
 
 			ef.Inherits("DESK_WOODEN", "feature",
+						new Scenery(true, false, 1),
 			            new Sprite("DESK_WOODEN", Sprite.FeaturesLayer));
 
 			ef.Inherits("CASH_REGISTER", "feature",

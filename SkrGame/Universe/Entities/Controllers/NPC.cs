@@ -13,7 +13,7 @@ namespace SkrGame.Universe.Entities.Controllers {
 		private AStarPathFinder pf;
 		private Point oldPos;
 		private Level level;
-
+		
 		public NPC() { }
 
 		public override IAction NextAction() {
@@ -26,8 +26,9 @@ namespace SkrGame.Universe.Entities.Controllers {
 			if (level != location.Level) {
 				level = location.Level;
 				oldPos = location.Location;
-				pf = new AStarPathFinder(level, 1.41f);
+				pf = new AStarPathFinder(level, 1.41f);				
 			}
+			
 
 			oldPos = location.Location;
 			
@@ -35,7 +36,9 @@ namespace SkrGame.Universe.Entities.Controllers {
 
 			var target = player.Get<GameObject>().Location;
 
-			if (Holder.Entity.Get<SightComponent>().IsVisible(target)) {
+			var sight = Holder.Entity.Get<SightComponent>();
+			sight.CalculateSight();
+			if (sight.IsVisible(target)) {
 				var distance = location.Location.DistanceTo(target);
 
 				if (distance <= 1.5)

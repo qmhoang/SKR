@@ -19,7 +19,7 @@ namespace SkrGame.Systems {
 		public void Update() {
 			foreach (var entity in entities) {
 				var p = entity.Get<GameObject>();
-				entity.Get<SightComponent>().CalculateSight(p.Level, p.Location.X, p.Location.Y, 16);
+				entity.Get<SightComponent>().CalculateSight();
 			}
 		}
 	}
