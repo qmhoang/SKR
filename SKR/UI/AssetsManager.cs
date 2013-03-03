@@ -129,7 +129,7 @@ namespace SKR.UI {
 			                                                                                                                                TCODBackgroundFlag.Alpha)));
 			assets.Add("TREE_SMALL",
 			           new Tuple<char, Tuple<TCODColor, TCODColor, TCODBackgroundFlag>>((char) TCODSpecialCharacter.Spade,
-			                                                                            new Tuple<TCODColor, TCODColor, TCODBackgroundFlag>(ColorPresets.Green.TCODColor, ColorPresets.Black.TCODColor, TCODBackgroundFlag.Alpha)));
+			                                                                            new Tuple<TCODColor, TCODColor, TCODBackgroundFlag>(ColorPresets.Green.TCODColor, ColorPresets.Black.TCODColor, TCODBackgroundFlag.Set)));
 			assets.Add("BED_WOODEN",
 			           new Tuple<char, Tuple<TCODColor, TCODColor, TCODBackgroundFlag>>('B',
 			                                                                            new Tuple<TCODColor, TCODColor, TCODBackgroundFlag>(new TCODColor(145, 104, 58), ColorPresets.Black.TCODColor, TCODBackgroundFlag.Alpha)));

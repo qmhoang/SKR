@@ -54,10 +54,10 @@ namespace SKR {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		public const int FpsLimit = 60;
-		public const int GameUpdatePerSecond = 30;
+		public const int GameUpdatePerSecond = 100;
 		public const int GameUpdateHz = 1000 / GameUpdatePerSecond;
 		public const int InitialDelay = 100;
-		public const int IntervalDelay = 75;
+		public const int IntervalDelay = 100;
 		public static readonly Size ScreenSize = new Size(80, 60);
 
 		public static BooleanSwitch SeeAll = new BooleanSwitch("SeeAll", "See everything (no FOV checking)");
@@ -78,7 +78,8 @@ namespace SKR {
 //                    Font = "Data/Font/lucida10x10_gs_tc.png",
 //                    Font = "Data/Font/consolas12x12_gs_tc.png",
 				          		Font = "Data/Font/terminal12x12_gs_ro.png",
-				          		FpsLimit = FpsLimit,
+//				          		UpdatesPerSecondLimit = GameUpdatePerSecond,
+								FpsLimit = FpsLimit,
 				          		InitialDelay = InitialDelay,
 				          		IntervalDelay = IntervalDelay,
 				          		Pigments = new PigmentAlternatives
