@@ -76,10 +76,10 @@ namespace SKR.UI.Gameplay {
 					if (IsPointWithinPanel(screenPosition)) {
 						if (!Program.SeeAll.Enabled) {
 							if (sight.IsVisible(location)) {
-								canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);
+								PrintChar(screenPosition, texture);
 							}
 						} else {
-							canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);
+							PrintChar(screenPosition, texture);
 						}
 					}
 
@@ -101,14 +101,21 @@ namespace SKR.UI.Gameplay {
 					if (!Program.SeeAll.Enabled) {
 						if (sight.IsVisible(entity.Get<GameObject>().Location)) {
 							if (entity.Get<VisibleComponent>().VisibilityIndex > 0)
-								canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);
+								PrintChar(screenPosition, texture);
 						}
 					} else {
-						canvas.PrintChar(screenPosition, texture.Item1, texture.Item2);						
+						PrintChar(screenPosition, texture);
 					}
 				}
 			}
 
+		}
+
+		private void PrintChar(Point screenPosition, Tuple<char, Tuple<TCODColor, TCODColor, TCODBackgroundFlag>> texture) {
+			canvas.Console.setChar(screenPosition.X, screenPosition.Y, texture.Item1);
+
+			canvas.Console.setCharBackground(screenPosition.X, screenPosition.Y, texture.Item2.Item2, texture.Item2.Item3);
+			canvas.Console.setCharForeground(screenPosition.X, screenPosition.Y, texture.Item2.Item1);
 		}
 
 		protected override void Redraw() {

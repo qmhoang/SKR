@@ -46,7 +46,7 @@ namespace SkrGame.Actions.Features {
 		}
 
 		public override ActionResult OnProcess() {
-			var ts = new TimeSpan(0, 0, 0, 0, (int) World.ActionPointsToSeconds(APCost) * 1000);
+			var ts = new TimeSpan(0, 0, 0, 0, (int) Math.Round(World.ActionPointsToSeconds(APCost) * 1000));
 			
 			if (LengthInAP > APCost) {
 				if (counter > Interval) {
@@ -55,10 +55,10 @@ namespace SkrGame.Actions.Features {
 					if (result == ActionResult.Aborted || result == ActionResult.Failed) {
 						return OnFinish(Entity);
 					} else if (result == ActionResult.SuccessNoTime) { // prevents infinite queuing
-						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval, Length - ts, Interval, OnInterval, OnFinish));
+						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
 						return ActionResult.Success;
 					} else {
-						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval, Length - ts, Interval, OnInterval, OnFinish));
+						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
 						return result;
 					}
 				} else {
