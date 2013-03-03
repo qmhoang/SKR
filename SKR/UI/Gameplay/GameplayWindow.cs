@@ -396,7 +396,7 @@ namespace SKR.UI.Gameplay {
 								break;
 							case 'z':
 							{
-								player.Get<EntityConditions>().Add(new PoisonEffect(new TimeSpan(0, 0, 0, 10), new TimeSpan(0, 0, 0, 1)));
+								player.Get<ActorComponent>().Cancel();
 							} break;
 							case '`': {
 									ParentApplication.Push(new DebugMenuWindow(new SkrWindowTemplate()

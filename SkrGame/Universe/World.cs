@@ -25,7 +25,7 @@ namespace SkrGame.Universe {
 		/// <summary>
 		/// default speed, anything with 2x speed cost 1/2 AP 
 		/// </summary>
-		public const int DefaultSpeed = 1000; // 
+		public const int OneSecondInSpeed = 1000; // 
 		public const double TurnLengthInSeconds = 1;	// how long is a turn in seconds
 		public const int OneSecondInAP = 1000;	// how long is a turn in seconds
 		public const int Mean = 50;						// what is the mean score for an attribute
@@ -97,10 +97,10 @@ namespace SkrGame.Universe {
 			Calendar = new Calendar();
 			CalendarEntity = EntityManager.Create(new List<Component>
 			                                      {
-			                                      		new ActorComponent(Calendar, new AP(World.DefaultSpeed))
+			                                      		new ActorComponent(Calendar, new AP(World.OneSecondInSpeed / 10))
 			                                      });
 
-			ActionProcessed += World_ActionProcessed;
+//			ActionProcessed += World_ActionProcessed;
 		}
 
 		void EntityManager_EntityAdded(Entity entity) {
@@ -109,9 +109,9 @@ namespace SkrGame.Universe {
 			}
 		}
 
-		void World_ActionProcessed(World sender, EventArgs e) {
-			visionSubsystem.Update();
-		}
+//		void World_ActionProcessed(World sender, EventArgs e) {
+//			visionSubsystem.Update();
+//		}
 
 		void EntityManager_EntityRemoved(Entity entity) {
 			if (TagManager.HasTags(entity)) 
@@ -133,11 +133,11 @@ namespace SkrGame.Universe {
 		}
 
 		public static int SecondsToActionPoints(double seconds) {
-			return (int) Math.Round((seconds * DefaultSpeed) / TurnLengthInSeconds);
+			return (int) Math.Round((seconds * OneSecondInSpeed) / TurnLengthInSeconds);
 		}
 
 		public static double ActionPointsToSeconds(int ap) {
-			return ap * TurnLengthInSeconds / DefaultSpeed;
+			return ap * TurnLengthInSeconds / OneSecondInSpeed;
 		}
 
 		public static int SpeedToActionPoints(double speed) {
@@ -149,14 +149,14 @@ namespace SkrGame.Universe {
 		}
 
 		public static double SpeedToSeconds(double speed) {
-			return (DefaultSpeed * TurnLengthInSeconds) / speed;
+			return (OneSecondInSpeed * TurnLengthInSeconds) / speed;
 		}
 
 		/// <summary>
 		/// Convert how fast an action in seconds to its speed, where speed represents how fast an action is
 		/// </summary>
 		public static double SecondsToSpeed(double seconds) {
-			return ((DefaultSpeed * TurnLengthInSeconds) / seconds);
+			return ((OneSecondInSpeed * TurnLengthInSeconds) / seconds);
 		}
 
 		/// <summary>

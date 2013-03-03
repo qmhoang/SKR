@@ -5,6 +5,7 @@ using System.Text;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Entities;
+using SkrGame.Universe;
 
 namespace SkrGame.Actions.Features {
 	public sealed class LongAction : LoggedAction {
@@ -13,7 +14,12 @@ namespace SkrGame.Actions.Features {
 		public Func<Entity, ActionResult> OnRepeat { get; private set; }
 		public Func<Entity, ActionResult> OnFinish { get; private set; }
 
-		public LongAction(Entity entity,  int lengthInAP, Func<Entity, ActionResult> onRepeat, Func<Entity, ActionResult> onFinish) : base(entity) {
+		public LongAction(Entity entity, TimeSpan length, Func<Entity, ActionResult> onRepeat, Func<Entity, ActionResult> onFinish) :
+				this(entity, World.SecondsToActionPoints(length.TotalSeconds), onRepeat, onFinish) {
+			Log.Normal("Press 'z' to cancel action.");			
+		}
+
+		private LongAction(Entity entity, int lengthInAP, Func<Entity, ActionResult> onRepeat, Func<Entity, ActionResult> onFinish) : base(entity) {
 			this.LengthInAP = lengthInAP;
 			this.OnFinish = onFinish;
 			this.OnRepeat = onRepeat;

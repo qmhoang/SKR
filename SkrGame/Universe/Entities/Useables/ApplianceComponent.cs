@@ -35,7 +35,7 @@ namespace SkrGame.Universe.Entities.Useables {
 				return new Use(description,
 				               length,
 				               interval,
-				               (e, app) =>
+							   (e, app) =>
 				               	{
 				               		if (e.Has<Creature>()) {
 				               			if (!e.Get<Creature>().Stats.ContainsKey(statName)) {

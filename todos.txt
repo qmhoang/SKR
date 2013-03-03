@@ -7,6 +7,7 @@ Priority Goals:
 * PC generation
 * More "zones" (houses, buildings, etc)
 * sneaking
+* redo calendar
 
 Immediate Goals:
 * Zones of ownership
@@ -22,6 +23,7 @@ Immediate Goals:
 * different ammos types
 * more conditions
 	* poisons, drugs, etc
+* fast forward time 
 
 Long term goals:
 * NPC speak (probably using inheritance styled speak tables)
