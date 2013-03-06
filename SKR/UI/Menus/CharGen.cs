@@ -161,26 +161,26 @@ namespace SKR.UI.Menus {
 			
 			World.Player = World.EntityManager.Create(World.EntityFactory.Get("player")).Add(new GameObject(0, 0, World.CurrentLevel));
 
-			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("boots")).Add(new GameObject(1, 1, World.CurrentLevel)), "Feet", true).OnProcess();
-			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("jeans")).Add(new GameObject(1, 1, World.CurrentLevel)), "Legs", true).OnProcess();
-			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("shirt")).Add(new GameObject(1, 1, World.CurrentLevel)), "Torso", true).OnProcess();
+			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("boots")).Add(new GameObject(0, 0, World.CurrentLevel)), "Feet", true).OnProcess();
+			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("jeans")).Add(new GameObject(0, 0, World.CurrentLevel)), "Legs", true).OnProcess();
+			new EquipItemAction(World.Player, World.EntityManager.Create(World.EntityFactory.Get("shirt")).Add(new GameObject(0, 0, World.CurrentLevel)), "Torso", true).OnProcess();
 
 			var npc = World.EntityManager.Create(World.EntityFactory.Get("person")).Add(new GameObject(4, 2, World.CurrentLevel));
 
-			World.EntityManager.Create(World.EntityFactory.Get("smallknife")).Add(new GameObject(1, 1, World.CurrentLevel));
-			World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
-			World.EntityManager.Create(World.EntityFactory.Get("axe")).Add(new GameObject(1, 1, World.CurrentLevel));
-			World.EntityManager.Create(World.EntityFactory.Get("glock17")).Add(new GameObject(1, 1, World.CurrentLevel));
-			World.EntityManager.Create(World.EntityFactory.Get("lockpick")).Add(new GameObject(1, 1, World.CurrentLevel));
-			var ammo = World.EntityManager.Create(World.EntityFactory.Get("9x9mm")).Add(new GameObject(1, 1, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("smallknife")).Add(new GameObject(0, 0, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(0, 0, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("axe")).Add(new GameObject(0, 0, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("glock17")).Add(new GameObject(0, 0, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("lockpick")).Add(new GameObject(0, 0, World.CurrentLevel));
+			var ammo = World.EntityManager.Create(World.EntityFactory.Get("9x9mm")).Add(new GameObject(0, 0, World.CurrentLevel));
 			ammo.Get<Item>().Amount = 30;
-			World.EntityManager.Create(World.EntityFactory.Get("bullet")).Add(new GameObject(1, 1, World.CurrentLevel));
+			World.EntityManager.Create(World.EntityFactory.Get("bullet")).Add(new GameObject(0, 0, World.CurrentLevel));
 
 			var armor = World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
 			new EquipItemAction(npc, armor, "Torso", true).OnProcess();
 			World.Initialize();
 
-			ParentApplication.Push(new GameplayWindow(new SkrWindowTemplate()
+			ParentApplication.Push(new GameplayWindow(new SkrWindowTemplate
 			                                          {
 			                                          		World = World
 			                                          }));

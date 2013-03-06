@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 using DEngine.Core;
 using DEngine.Entities;
 using NUnit.Framework;
 using SkrGame.Universe;
 using System.Linq;
+using libtcod;
 
 
 namespace SKRTests {
@@ -37,7 +40,9 @@ namespace SKRTests {
 
 		[Test]
 		public static void TestMethod() {
-			var i = World.SpeedToActionPoints(100);
+			Stopwatch sw = new Stopwatch();
+			TimeSpan ts = new TimeSpan(Stopwatch.GetTimestamp());
+
 		}
 	}
 }

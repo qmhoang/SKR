@@ -41,8 +41,8 @@ namespace SKR {
 			                 }));
 		}
 
-		protected override void Update() {
-			base.Update();
+		protected override void Update(uint elapsedTime) {
+			base.Update(elapsedTime);
 			if (world.Status == WorldStatus.Initialized) {
 				world.UpdateSystems();				
 			}
@@ -55,13 +55,13 @@ namespace SKR {
 		
 		public const int FpsLimit = 60;
 		public const int GameUpdatePerSecond = 100;
-		public const int GameUpdateHz = 1000 / GameUpdatePerSecond;
 		public const int InitialDelay = 100;
 		public const int IntervalDelay = 100;
 		public static readonly Size ScreenSize = new Size(80, 60);
 
 		public static BooleanSwitch SeeAll = new BooleanSwitch("SeeAll", "See everything (no FOV checking)");
 		public static BooleanSwitch GodMod = new BooleanSwitch("GodMode", "God mode");
+		public static BooleanSwitch FreeWalk = new BooleanSwitch("Free Walk", "Lets the player walk anywhere.");
 
 		public static void Main(string[] args) {
 			XmlConfigurator.Configure(new FileInfo("Log.xml"));	
@@ -78,7 +78,7 @@ namespace SKR {
 //                    Font = "Data/Font/lucida10x10_gs_tc.png",
 //                    Font = "Data/Font/consolas12x12_gs_tc.png",
 				          		Font = "Data/Font/terminal12x12_gs_ro.png",
-//				          		UpdatesPerSecondLimit = GameUpdatePerSecond,
+				          		UpdatesPerSecondLimit = GameUpdatePerSecond,
 								FpsLimit = FpsLimit,
 				          		InitialDelay = InitialDelay,
 				          		IntervalDelay = IntervalDelay,

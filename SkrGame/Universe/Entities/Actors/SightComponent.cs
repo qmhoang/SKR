@@ -28,7 +28,7 @@ namespace SkrGame.Universe.Entities.Actors {
 				currLevel = level.Level;
 				vision = new VisionMap(currLevel.Size);	
 			}
-			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, currLevel, level.X, level.Y, 16, true);
+			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, currLevel, level.X, level.Y, 32, true);
 		}
 
 		public override Component Copy() {
