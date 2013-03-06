@@ -73,6 +73,7 @@ namespace SkrGame.Universe.Entities.Items {
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
 			Contract.Invariant(StackType == StackType.Hard ? amount > 0 : amount == 1);
+			Contract.Invariant(Size >= 0);
 		}
 	}
 

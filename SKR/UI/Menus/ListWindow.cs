@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Collections.Generic;
 using DEngine.Core;
+using DEngine.Extensions;
 using Ogui.UI;
 using SkrGame.Universe;
 
@@ -21,8 +22,7 @@ namespace SKR.UI.Menus {
 		/// </summary>
 		protected abstract Rectangle ListRect { get; }
 
-//		protected Dictionary<char, T> Items;
-		protected IEnumerable<T> List;
+		protected readonly IEnumerable<T> List;
 
 		protected ListWindow(Action<T> selectItem, ListWindowTemplate<T> template)
 				: base(template) {
@@ -32,13 +32,6 @@ namespace SKR.UI.Menus {
 			this.selectItem = selectItem;
 			HasFrame = template.HasFrame;
 			List = template.Items;
-//			Items = new Dictionary<char, T>();
-
-//			int count = 0;
-//			foreach (var i in template.Items) {
-//				Items.Add((char) ('A' + count), i);
-//				count++;
-//			}
 		}
 
 		[ContractInvariantMethod]
@@ -81,7 +74,7 @@ namespace SKR.UI.Menus {
 		protected override void Update() {
 			base.Update();
 
-			if (List.Count() == 0)
+			if (List.IsEmpty())
 				ExitWindow();
 		}
 
@@ -91,17 +84,8 @@ namespace SKR.UI.Menus {
 			if (selectItem != null)
 				selectItem(item);
 
-			if (List.Count() <= 0)
+			if (List.IsEmpty())
 				ExitWindow();
-//			else {
-//				Items.Clear();
-//
-//				int count = 0;
-//				foreach (var i in List) {
-//					Items.Add((char) ('A' + count), i);
-//					count++;
-//				}
-//			}
 		}
 	}
 }

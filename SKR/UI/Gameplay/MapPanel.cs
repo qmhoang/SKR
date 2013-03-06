@@ -27,7 +27,6 @@ namespace SKR.UI.Gameplay {
 
 		public World World { get; private set; }
 
-		private Canvas canvas;
 		private bool alreadyDisposed;
 
 		public MapPanel(World world, AssetsManager assetsManager, PanelTemplate template)
@@ -41,26 +40,28 @@ namespace SKR.UI.Gameplay {
 			player = world.Player;
 		}
 
-		protected override void OnSettingUp() {
-			base.OnSettingUp();
+		private void PrintChar(Point screenPosition, Tuple<char, Tuple<TCODColor, TCODColor, TCODBackgroundFlag>> texture) {
+			Canvas.Console.setChar(screenPosition.X, screenPosition.Y, texture.Item1);
 
-			canvas = new Canvas(Size);			
+			Canvas.Console.setCharBackground(screenPosition.X, screenPosition.Y, texture.Item2.Item2, texture.Item2.Item3);
+			Canvas.Console.setCharForeground(screenPosition.X, screenPosition.Y, texture.Item2.Item1);
 		}
 
-		protected void DrawGame() {
-			canvas.Clear();
+		protected override void Redraw() {
+			base.Redraw();
+			Canvas.Clear();
 			var level = player.Get<GameObject>().Level;
 
-			ViewOffset = new Point(Math.Min(Math.Max(player.Get<GameObject>().X - canvas.Size.Width / 2, 0),
-											level.Width - canvas.Size.Width),
-								   Math.Min(Math.Max(player.Get<GameObject>().Y - canvas.Size.Height / 2, 0),
-											level.Height - canvas.Size.Height));
+			ViewOffset = new Point(Math.Min(Math.Max(player.Get<GameObject>().X - Canvas.Size.Width / 2, 0),
+											level.Width - Canvas.Size.Width),
+								   Math.Min(Math.Max(player.Get<GameObject>().Y - Canvas.Size.Height / 2, 0),
+											level.Height - Canvas.Size.Height));
 
 			//draw map
 			var sight = player.Get<SightComponent>();
 			sight.CalculateSight();
-			for (int x = 0; x < canvas.Size.Width; x++) {
-				for (int y = 0; y < canvas.Size.Height; y++) {
+			for (int x = 0; x < Canvas.Size.Width; x++) {
+				for (int y = 0; y < Canvas.Size.Height; y++) {
 					Point screenPosition = new Point(x, y);
 					Point location = ViewOffset + screenPosition;
 
@@ -87,7 +88,7 @@ namespace SKR.UI.Gameplay {
 			}
 
 			// draw entities
-			foreach (var entity in entities.OrderBy(entity => entity.Get<Sprite>().ZOrder)) {
+			foreach (var entity in entities.OrderBy(e => e.Get<Sprite>().ZOrder)) {
 				Point screenPosition = entity.Get<GameObject>().Location - ViewOffset;
 
 				var texture = assets[entity.Get<Sprite>().Asset];
@@ -108,24 +109,10 @@ namespace SKR.UI.Gameplay {
 					}
 				}
 			}
-
-		}
-
-		private void PrintChar(Point screenPosition, Tuple<char, Tuple<TCODColor, TCODColor, TCODBackgroundFlag>> texture) {
-			canvas.Console.setChar(screenPosition.X, screenPosition.Y, texture.Item1);
-
-			canvas.Console.setCharBackground(screenPosition.X, screenPosition.Y, texture.Item2.Item2, texture.Item2.Item3);
-			canvas.Console.setCharForeground(screenPosition.X, screenPosition.Y, texture.Item2.Item1);
-		}
-
-		protected override void Redraw() {
-			base.Redraw();
-			DrawGame();
-			Canvas.Blit(canvas, 0, 0);
 		}
 
 		private bool IsPointWithinPanel(Point p) {
-			return p.X < canvas.Size.Width && p.Y < canvas.Size.Height && p.X >= 0 && p.Y >= 0;
+			return p.X < Canvas.Size.Width && p.Y < Canvas.Size.Height && p.X >= 0 && p.Y >= 0;
 		}
 
 		private bool IsPointWithinPanel(int x, int y) {
@@ -138,8 +125,8 @@ namespace SKR.UI.Gameplay {
 			if (alreadyDisposed)
 				return;
 			if (isDisposing)
-				if (canvas != null)
-					canvas.Dispose();
+				if (Canvas != null)
+					Canvas.Dispose();
 			alreadyDisposed = true;
 		}
 	}
