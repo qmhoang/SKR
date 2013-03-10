@@ -11,6 +11,7 @@ using SkrGame.Actions.Movement;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Equipables;
 
 namespace SKRTests.Actions {
 	[TestFixture]

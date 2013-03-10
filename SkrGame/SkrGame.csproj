@@ -120,6 +120,7 @@
     <Compile Include="Actions\Items\EquipItemAction.cs" />
     <Compile Include="Actions\Items\GetAllItemsAction.cs" />
     <Compile Include="Actions\Items\GetItemAction.cs" />
+    <Compile Include="Actions\Items\UnequipItemAction.cs" />
     <Compile Include="Actions\LoggedAction.cs" />
     <Compile Include="Actions\Combat\ReloadAction.cs" />
     <Compile Include="Actions\Combat\MeleeAttackAction.cs" />
@@ -143,10 +144,15 @@
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\EntityConditions.cs" />
     <Compile Include="Universe\Entities\Controllers\OneAction.cs" />
+    <Compile Include="Universe\Entities\Items\Equipables\ArmorComponent.cs" />
+    <Compile Include="Universe\Entities\Items\Equipables\Equipable.cs" />
+    <Compile Include="Universe\Entities\Items\Equipables\EquippedBonus.cs" />
+    <Compile Include="Universe\Entities\Items\Equipables\MeleeComponent.cs" />
+    <Compile Include="Universe\Entities\Items\Equipables\RangeComponent.cs" />
+    <Compile Include="Universe\Entities\Items\Tools\Lockpick.cs" />
     <Compile Include="Universe\Entities\Useables\ApplianceComponent.cs" />
     <Compile Include="Universe\Entities\Useables\TestUseableComponent.cs" />
     <Compile Include="Universe\Entities\Items\AmmoComponent.cs" />
-    <Compile Include="Universe\Entities\Items\EquippedBonus.cs" />
     <Compile Include="Universe\Entities\OnCreation.cs" />
     <Compile Include="Universe\Entities\PositionChangedEvent.cs" />
     <Compile Include="Universe\Entities\Stats\Attribute.cs" />
@@ -164,13 +170,8 @@
     <Compile Include="Universe\Entities\Features\OnBump.cs" />
     <Compile Include="Universe\Entities\Features\PassiveFeature.cs" />
     <Compile Include="Universe\Entities\Useables\UseBroadcaster.cs" />
-    <Compile Include="Universe\Entities\Items\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Controllers\NPC.cs" />
-    <Compile Include="Universe\Entities\Items\Equipable.cs" />
-    <Compile Include="Universe\Entities\Items\RangeComponent.cs" />
     <Compile Include="Universe\Entities\Items\Item.cs" />
-    <Compile Include="Universe\Entities\Items\MeleeComponent.cs" />
-    <Compile Include="Universe\Entities\Items\Lockpick.cs" />
     <Compile Include="Universe\Entities\GameObject.cs" />
     <Compile Include="Universe\Factories\ItemFactory.cs" />
     <Compile Include="Universe\Factories\MapFactory.cs" />
@@ -190,9 +191,7 @@
       <Name>DEngine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Universe\Entities\Items\Components\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

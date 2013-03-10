@@ -15,6 +15,7 @@ using SkrGame.Actions.Items;
 using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Equipables;
 using libtcod;
 
 namespace SKR.UI.Menus {

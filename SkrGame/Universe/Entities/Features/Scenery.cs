@@ -38,16 +38,15 @@ namespace SkrGame.Universe.Entities.Features {
 		/// </summary>
 		public int JumpHeight { get; set; }
 
-		public event ComponentEventHandler<EventArgs> TransparencyChanged;
-		public event ComponentEventHandler<EventArgs> WalkableChanged;
+		public event ComponentEventHandler<Scenery, EventArgs> TransparencyChanged;
+		public event ComponentEventHandler<Scenery, EventArgs> WalkableChanged;
 
 		public void OnTransparencyChanged() {
 			var handler = TransparencyChanged;
 			if (handler != null)
 				handler(this, EventArgs.Empty);
 		}
-
-
+		
 		public void OnWalkableChanged() {
 			var handler = WalkableChanged;
 			if (handler != null)
@@ -57,27 +56,15 @@ namespace SkrGame.Universe.Entities.Features {
 		public override Component Copy() {
 			var b = new Scenery(transparent, walkable, JumpHeight);
 			if (TransparencyChanged != null)
-				b.TransparencyChanged = (ComponentEventHandler<EventArgs>)TransparencyChanged.Clone();
+				b.TransparencyChanged = (ComponentEventHandler<Scenery, EventArgs>)TransparencyChanged.Clone();
 			if (WalkableChanged != null)
-				b.WalkableChanged = (ComponentEventHandler<EventArgs>)WalkableChanged.Clone();
+				b.WalkableChanged = (ComponentEventHandler<Scenery, EventArgs>)WalkableChanged.Clone();
 
 			return b;
 		}
 
 		public override string ToString() {
 			return String.Format("Transparent: {0}, Walkable: {1}, Height: {2}", Transparent, Walkable, JumpHeight);
-		}
-	}
-	
-	public class FeaturePropertyChangeEvent : EventArgs {
-		public bool Transparency { get; private set; }
-		public bool Walkable { get; private set; }
-		public double WalkPenalty { get; private set; }
-
-		public FeaturePropertyChangeEvent(bool transparency, bool walkable, double walkPenalty) {
-			Transparency = transparency;
-			Walkable = walkable;
-			WalkPenalty = walkPenalty;
 		}
 	}
 }

@@ -117,7 +117,10 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public override Component Copy() {
 			//todo
-			return new Creature();
+			return new Creature()
+			       {
+//			       		Attributes = new StaticDictionary<string, Attribute>()
+			       };
 		}
 	}
 }

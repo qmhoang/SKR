@@ -13,6 +13,7 @@ using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Controllers;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Equipables;
 
 namespace SkrGame.Universe.Factories {
 	public static class PersonFactory {

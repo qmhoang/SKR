@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DEngine.Entities;
 
-namespace SkrGame.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items.Tools {
 	public sealed class Lockpick : Component {
 		public int Quality { get; private set; }
 

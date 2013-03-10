@@ -15,7 +15,7 @@ Immediate Goals:
 	* diagonally long entities
 * Missions
 * Traits and more skills
-* items give skill bonuses
+* more items give skill bonuses
 * crimes and criminal records
 * npc identifiers (sex, race, etc)...
 * night/day cycle
@@ -24,6 +24,8 @@ Immediate Goals:
 * more conditions
 	* poisons, drugs, etc
 * fast forward time 
+	* need to work on ogui fps/update logic
+* item containers
 
 Long term goals:
 * NPC speak (probably using inheritance styled speak tables)
@@ -36,7 +38,11 @@ Long term goals:
 * wounds
 * cleaniless is a sum of body part's cleanliness
 * evidence and evidence denial (gloves, sunglasses, etc)
-* appliances - breakes after x number of uses
+* appliances - breaks after x number of uses
+* appliance logic - making food ala sims style
+* features give coverage at certain postures/heights.  They can also block vision when crouched/prone.
+* influence / appearances? 
+* batteries
 
 Ideas:
 * safety needs-based stat? 
@@ -55,3 +61,4 @@ Ideas:
 	* sex: male, female
 	* occupation: police, homeless, etc
 * layers in the world, 2nd floor will display stuff on the 1st floor that can be seen (through a window or at the edge of a layer transition)	
+* should actions have a lower and upper APCost bound?  Actions that are longer should use Long/Interval/Repeating actions?

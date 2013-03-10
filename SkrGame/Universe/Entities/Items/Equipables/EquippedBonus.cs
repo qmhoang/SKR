@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using DEngine.Core;
 using DEngine.Entities;
 
-namespace SkrGame.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items.Equipables {
 	public sealed class EquippedBonus : Component {
 		public class Template {
 			public Dictionary<string, int> Bonuses { get; set; }

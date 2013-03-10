@@ -7,39 +7,34 @@ using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Equipables;
+using SkrGame.Universe.Entities.Items.Tools;
 using log4net;
 
 namespace SkrGame.Universe.Factories {
 	public static class ItemFactory {
 		public static void Init(EntityFactory ef) {
-			ef.Add("item",
+			ef.Add("base_item",
 			       new VisibleComponent(10),
-			       new Sprite("ITEM", Sprite.ItemsLayer),
+			       new Sprite("base_item", Sprite.ItemsLayer),
 			       new Identifier("Junk", "A piece of junk."),
-			       new Item(
-			       		new Item.Template
-			       		{
-			       				Value = 0,
-			       				Weight = 0,
-			       				Size = 0,
-			       				StackType = StackType.None,
-			       		}));
+			       new Item(0, 0, 0, 0, StackType.None));
 
 			InitMelees(ef);
 			InitPistols(ef);
 			InitAmmos(ef);
 			InitArmors(ef);
 
-			ef.Inherits("paperclip", "item",
+			ef.Inherits("paperclip", "base_item",
 			            new Identifier("Paperclip", "A single paperclip."),
 			            new Lockpick(-World.StandardDeviation * 3 / 2));
-			ef.Inherits("lockpick", "item",
+			ef.Inherits("lockpick", "base_item",
 			            new Identifier("Lockpick", "A basic lockpick."),
 			            new Lockpick(0));
 		}
 
 		private static void InitPistols(EntityFactory ef) {
-			ef.Inherits("gun", "meleeweapon",
+			ef.Inherits("base_gun", "base_meleeweapon",
 			            new Sprite("GUN", Sprite.ItemsLayer),
 			            new RangeComponent(
 			            		new RangeComponent.Template
@@ -59,10 +54,10 @@ namespace SkrGame.Universe.Factories {
 			            				Recoil = 1,
 			            				Reliability = 18,
 			            				Strength = 8,
-			            				AmmoCaliber = "bullet",
+			            				AmmoCaliber = "base_bullet",
 			            		}));
 
-			ef.Inherits("pistol1", "gun",
+			ef.Inherits("base_pistol1", "base_gun",
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
 			            		{
@@ -80,7 +75,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -2
 			            		}));
 
-			ef.Inherits("pistol2", "gun",
+			ef.Inherits("base_pistol2", "base_gun",
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
 			            		{
@@ -98,7 +93,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -2
 			            		}));
 
-			ef.Inherits("pistol3", "gun",
+			ef.Inherits("base_pistol3", "base_gun",
 			            new MeleeComponent(
 			            		new MeleeComponent.Template
 			            		{
@@ -116,7 +111,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -2
 			            		}));
 
-			ef.Inherits("glock17", "pistol2",
+			ef.Inherits("glock17", "base_pistol2",
 			            //new Sprite("GLOCK17", Sprite.ITEMS_LAYER),
 			            new Identifier("Glock 17"),
 			            new Item(new Item.Template
@@ -149,7 +144,7 @@ namespace SkrGame.Universe.Factories {
 			            				AmmoCaliber = "9x19mm",
 			            		}));
 
-			ef.Inherits("glock22", "pistol2",
+			ef.Inherits("glock22", "base_pistol2",
 			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
 			            new Identifier("Glock 22"),
 			            new Item(new Item.Template
@@ -182,7 +177,7 @@ namespace SkrGame.Universe.Factories {
 			            				AmmoCaliber = ".40S&W"
 			            		}));
 
-			ef.Inherits("model10", "pistol2",
+			ef.Inherits("model10", "base_pistol2",
 			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
 			            new Identifier("S&W Model 10"),
 			            new Item(new Item.Template
@@ -215,7 +210,7 @@ namespace SkrGame.Universe.Factories {
 			            				AmmoCaliber = ".38S"
 			            		}));
 
-			ef.Inherits("model27", "pistol2",
+			ef.Inherits("model27", "base_pistol2",
 			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
 			            new Identifier("S&W Model 27"),
 			            new Item(new Item.Template
@@ -248,7 +243,7 @@ namespace SkrGame.Universe.Factories {
 			            				AmmoCaliber = ".357M"
 			            		}));
 
-			ef.Inherits("cpython", "pistol2",
+			ef.Inherits("cpython", "base_pistol2",
 			            //new Sprite("CPYTHON", Sprite.ITEMS_LAYER),
 			            new Identifier("Colt Python"),
 			            new Item(new Item.Template
@@ -284,7 +279,7 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private static void InitMelees(EntityFactory ef) {
-			ef.Inherits("meleeweapon", "item",
+			ef.Inherits("base_meleeweapon", "base_item",
 			            new Sprite("WEAPON", Sprite.ItemsLayer),
 						Equipable.SingleSlot("Main Hand", "Off Hand"),
 			            new MeleeComponent(
@@ -304,10 +299,10 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -3
 			            		}));
 
-			ef.Inherits("2hmelee", "meleeweapon",
+			ef.Inherits("base_2hmelee", "base_meleeweapon",
 			            Equipable.MultipleSlots("Main Hand", "Off Hand"));
 
-			ef.Inherits("largeknife", "meleeweapon",
+			ef.Inherits("largeknife", "base_meleeweapon",
 			            //new Sprite("LARGE_KNIFE", Sprite.ITEMS_LAYER),
 			            new Identifier("Knife, Large", "A large knife."),
 			            new Item(
@@ -336,7 +331,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -1
 			            		}));
 
-			ef.Inherits("axe", "meleeweapon",
+			ef.Inherits("axe", "base_meleeweapon",
 			            //new Sprite("AXE", Sprite.ITEMS_LAYER),
 			            new Identifier("Axe", "An axe."),
 			            new Item(
@@ -364,7 +359,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = 0
 			            		}));
 
-			ef.Inherits("hatchet", "meleeweapon",
+			ef.Inherits("hatchet", "base_meleeweapon",
 			            //new Sprite("HATCHET", Sprite.ITEMS_LAYER),
 			            new Identifier("Hatchet", "A hatchet."),
 			            new Item(
@@ -392,7 +387,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = 0
 			            		}));
 
-			ef.Inherits("brassknuckles", "meleeweapon",
+			ef.Inherits("brassknuckles", "base_meleeweapon",
 			            //new Sprite("BRASS_KNUCKLES", Sprite.ITEMS_LAYER),
 			            new Identifier("Brass Knuckles"),
 			            new Item(
@@ -420,7 +415,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -1
 			            		}));
 
-			ef.Inherits("smallknife", "meleeweapon",
+			ef.Inherits("smallknife", "base_meleeweapon",
 			            //new Sprite("SMALL_KNIFE", Sprite.ITEMS_LAYER),
 			            new Identifier("Knife", "A knife."),
 			            new Item(
@@ -448,7 +443,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = -1
 			            		}));
 
-			ef.Inherits("club", "meleeweapon",
+			ef.Inherits("club", "base_meleeweapon",
 			            new Identifier("Club", "A good size club."),
 			            new Item(new Item.Template
 			                     {
@@ -474,7 +469,7 @@ namespace SkrGame.Universe.Factories {
 			            				Parry = 0
 			            		}));
 
-			ef.Inherits("baseball_bat", "2hmelee",
+			ef.Inherits("baseball_bat", "base_2hmelee",
 			            new Identifier("Baseball bat", "A baseball bat."),
 			            new Item(new Item.Template
 			                     {
@@ -502,7 +497,7 @@ namespace SkrGame.Universe.Factories {
 		}
 
 		private static void InitAmmos(EntityFactory ef) {
-			ef.Inherits("bullet", "item",
+			ef.Inherits("base_bullet", "base_item",
 			            new Sprite("BULLET", Sprite.ItemsLayer),
 			            new Identifier("Bullets"),
 			            new Item(
@@ -518,10 +513,10 @@ namespace SkrGame.Universe.Factories {
 			            		{
 			            				ActionDescription = "load",
 			            				ActionDescriptionPlural = "loads",
-			            				Caliber = "bullet",
+			            				Caliber = "base_bullet",
 			            		}));
 
-			ef.Inherits(".40S&W", "bullet",
+			ef.Inherits(".40S&W", "base_bullet",
 			            //new Sprite("BULLET_.40S&W", Sprite.ITEMS_LAYER),
 			            new Identifier(".40S&W", ".40 Smith & Wesson bullet"),
 			            new Item(
@@ -540,7 +535,7 @@ namespace SkrGame.Universe.Factories {
 			            				Caliber = ".40S&W",
 			            		}));
 
-			ef.Inherits("9x9mm", "bullet",
+			ef.Inherits("9x9mm", "base_bullet",
 			            //new Sprite("BULLET_9x19MM", Sprite.ITEMS_LAYER),
 			            new Identifier("9x9mm", "9x19mm Parabellum bullet"),
 			            new Item(
@@ -559,8 +554,8 @@ namespace SkrGame.Universe.Factories {
 			            				Caliber = "9x19mm",
 			            		}));
 
-			ef.Inherits(".357M", "bullet",
-			            new Identifier(".357 Magnum", "bullet"),
+			ef.Inherits(".357M", "base_bullet",
+			            new Identifier(".357 Magnum", "base_bullet"),
 			            new Item(
 			            		new Item.Template
 			            		{
@@ -577,8 +572,8 @@ namespace SkrGame.Universe.Factories {
 			            				Caliber = ".357M",
 			            		}));
 
-			ef.Inherits(".38S", "bullet",
-			            new Identifier(".357 Special", "bullet"),
+			ef.Inherits(".38S", "base_bullet",
+			            new Identifier(".357 Special", "base_bullet"),
 			            new Item(
 			            		new Item.Template
 			            		{
@@ -595,8 +590,8 @@ namespace SkrGame.Universe.Factories {
 			            				Caliber = ".38S",
 			            		}));
 
-			ef.Inherits(".44M", "bullet",
-			            new Identifier(".44 Magnum", "bullet"),
+			ef.Inherits(".44M", "base_bullet",
+			            new Identifier(".44 Magnum", "base_bullet"),
 			            new Item(
 			            		new Item.Template
 			            		{
@@ -616,9 +611,9 @@ namespace SkrGame.Universe.Factories {
 
 		private static void InitArmors(EntityFactory ef) {
 			#region Shoes
-			ef.Inherits("shoes", "item",
+			ef.Inherits("shoes", "base_item",
 			            new Sprite("SHOES", Sprite.ItemsLayer),
-						new Identifier("Shoes", "A pair of shoes."),
+						new Identifier("Shoes", "A pair of plain shoes."),
 			            new Item(new Item.Template
 			                     {
 			                     		Value = 3500,
@@ -663,9 +658,44 @@ namespace SkrGame.Universe.Factories {
 			                               {
 			                               		Bonuses = new Dictionary<string, int>
 			                               		          {
-			                               		          		{"skill_stealth", 3}
+			                               		          		{"skill_stealth", 2}
 			                               		          }
 			                               }));
+
+			ef.Inherits("flipflop", "shoes",
+			            new Identifier("Flip-flops", "A pair of thong flip-flops."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 3000,
+			                     		Weight = 12,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+			            new EquippedBonus(new EquippedBonus.Template
+			                              {
+			                              		Bonuses = new Dictionary<string, int>
+			                              		          {
+//			                               		          		{"skill_run", -5}
+			                              		          }
+			                              }));
+
+			ef.Inherits("heels", "shoes",
+			            new Identifier("Heels", "A pair of women's high heel shoes."),
+			            new Item(new Item.Template
+			                     {
+			                     		Value = 9000,
+			                     		Weight = 13,
+			                     		Size = 2,
+			                     		StackType = StackType.None,
+			                     }),
+								 // reaction?  influence?  appearence?
+			            new EquippedBonus(new EquippedBonus.Template
+			                              {
+			                              		Bonuses = new Dictionary<string, int>
+			                              		          {
+//			                               		          		{"skill_run", -10}
+			                              		          }
+			                              }));
 
 			ef.Inherits("cleats", "sneakers",
 			            new Identifier("Cleats", "A pair of atheltic shoes fitted with spiked cleats."),
@@ -716,7 +746,7 @@ namespace SkrGame.Universe.Factories {
 			            				           }
 			            		}));
 
-			ef.Inherits("ruggedboots", "item",
+			ef.Inherits("ruggedboots", "base_item",
 						new Identifier("Rugged boots", "A pair of rugged work boots with a steel toe."),
 						new Item(new Item.Template
 						{
@@ -751,7 +781,7 @@ namespace SkrGame.Universe.Factories {
 			#endregion
 
 			#region Gloves
-			ef.Inherits("gloves", "item",
+			ef.Inherits("gloves", "base_item",
 						new Sprite("GLOVES", Sprite.ItemsLayer),
 						new Identifier("Gloves", "A pair of normal gloves."),
 						new Item(new Item.Template
@@ -788,7 +818,7 @@ namespace SkrGame.Universe.Factories {
 
 			#region Pants
 
-			ef.Inherits("pants", "item",
+			ef.Inherits("pants", "base_item",
 			            new Sprite("PANTS", Sprite.ItemsLayer),
 			            new Identifier("Pants", "A pair of khaki pants."),
 			            new Item(new Item.Template
@@ -844,7 +874,7 @@ namespace SkrGame.Universe.Factories {
 			                     }));
 			#endregion
 
-			ef.Inherits("shirt", "item",
+			ef.Inherits("shirt", "base_item",
 			            new Sprite("SHIRT", Sprite.ItemsLayer),
 			            new Identifier("Shirt", "A hawaiian shirt."),
 			            new Item(new Item.Template
