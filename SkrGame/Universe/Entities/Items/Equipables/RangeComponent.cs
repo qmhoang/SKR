@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
-namespace SkrGame.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items.Equipables {
 	// todo ammo cases
 
 	public sealed class RangeComponent : Component {

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
-namespace SkrGame.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items.Equipables {
 	public sealed class ArmorComponent : Component {
 		public class Template {
 			public List<Part> Defenses { get; set; }

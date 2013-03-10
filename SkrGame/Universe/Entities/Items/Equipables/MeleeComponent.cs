@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using DEngine.Core;
 using DEngine.Entities;
 using SkrGame.Gameplay.Combat;
 
-namespace SkrGame.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items.Equipables {
 	public sealed class MeleeComponent : Component {
 		public class Template {
 			public int HitBonus { get; set; }

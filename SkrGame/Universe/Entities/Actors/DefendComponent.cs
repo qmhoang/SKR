@@ -56,7 +56,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 		#region Health
 
-		public Attribute Health { get; private set; }
+		public Attribute Health { get; set; }
 
 		public bool Dead {
 			get { return Health < 0; }

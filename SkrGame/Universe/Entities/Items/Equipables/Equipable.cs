@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using DEngine.Core;
 using DEngine.Entities;
 
-namespace SkrGame.Universe.Entities.Items {
+namespace SkrGame.Universe.Entities.Items.Equipables {
 	public sealed class Equipable : Component {
 		public StaticDictionary<string, IEnumerable<string>> SlotsOccupied { get; private set; }
 		

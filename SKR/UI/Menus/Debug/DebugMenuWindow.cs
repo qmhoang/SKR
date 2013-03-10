@@ -45,12 +45,29 @@ namespace SKR.UI.Menus.Debug {
 										          }
 			                           });
 
+			freeWalkButton = new MenuButton(new MenuButtonTemplate()
+			                                {
+			                                		Label = "Free Walk",
+			                                		VAlignment = VerticalAlignment.Top,
+			                                		TopLeftPos = new Point(1, 7),
+			                                		MinimumWidth = 20,
+			                                		Tooltip = "Walk anywhere.",
+			                                		LabelAlignment = HorizontalAlignment.Left,
+			                                		InitialSelection = Program.FreeWalk.Enabled ? 0 : 1,
+			                                		Items = new List<string>
+			                                		        {
+			                                		        		"On",
+			                                		        		"Off"
+			                                		        }
+			                                });
+
 			seeAllButton.ButtonPushed += seeAllButton_ButtonPushed;
 			godModeButton.ButtonPushed += godModeButton_ButtonPushed;
+			freeWalkButton.ButtonPushed += freeWalkButton_ButtonPushed;
 
-			AddControls(seeAllButton, godModeButton);
+			AddControls(seeAllButton, godModeButton, freeWalkButton);
 		}
-
+		
 		protected override void OnKeyPressed(KeyboardData keyData) {
 			base.OnKeyPressed(keyData);
 
@@ -68,7 +85,13 @@ namespace SKR.UI.Menus.Debug {
 			Program.SeeAll.Enabled = !Program.SeeAll.Enabled;
 		}
 
+		void freeWalkButton_ButtonPushed(object sender, EventArgs e) {
+			Program.FreeWalk.Enabled = !Program.FreeWalk.Enabled;
+		}
+
 		private Button seeAllButton;
 		private Button godModeButton;
+		private Button freeWalkButton;
+
 	}
 }

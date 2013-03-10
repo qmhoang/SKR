@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
@@ -10,14 +11,19 @@ using SkrGame.Actions.Features;
 using SkrGame.Universe.Entities.Actors;
 using SkrGame.Universe.Entities.Useables;
 using SkrGame.Universe.Locations;
+using log4net;
 
 namespace SkrGame.Universe.Entities.Features {
 	public sealed class Opening : Component, IUseable {
+		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
 		public enum OpeningStatus {
 			Opened,
 			Closed
 		}
+
 		public int APCost { get; set; }
+
 		private OpeningStatus status;
 		public OpeningStatus Status {
 			get { return status; }
@@ -35,13 +41,13 @@ namespace SkrGame.Universe.Entities.Features {
 
 		public bool WalkableOpened { get; private set; }
 
-		public event ComponentEventHandler<EventArgs<OpeningStatus>> Used;
+		public event ComponentEventHandler<Opening, EventArgs<OpeningStatus>> Used;
 
 		public const int DefaultDoorUseAPCost = World.OneSecondInAP;
 
 		public void OnUsed(EventArgs<OpeningStatus> e) {
 			Contract.Requires<ArgumentNullException>(e != null, "e");
-			ComponentEventHandler<EventArgs<OpeningStatus>> handler = Used;
+			var handler = Used;
 			if (handler != null)
 				handler(this, e);
 		}
@@ -69,7 +75,7 @@ namespace SkrGame.Universe.Entities.Features {
 		public override Component Copy() {
 			var opening = new Opening(OpenedAsset, ClosedAsset, OpenedDescription, ClosedDescription, WalkableOpened, APCost, Status);
 			if (Used != null)
-				opening.Used = (ComponentEventHandler<EventArgs<OpeningStatus>>) Used.Clone();
+				opening.Used = (ComponentEventHandler<Opening, EventArgs<OpeningStatus>>)Used.Clone();
 			return opening;
 		}
 
@@ -78,6 +84,9 @@ namespace SkrGame.Universe.Entities.Features {
 				                           	{
 				                           		if (featureEntity.Has<Opening>())
 				                           			user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, featureEntity));
+				                           		else {
+				                           			Logger.WarnFormat("{0} has no {1} component.", Identifier.GetNameOrId(featureEntity), (typeof(Opening)));
+				                           		}
 				                           	});
 
 		private static readonly UseAction Close =
@@ -85,6 +94,9 @@ namespace SkrGame.Universe.Entities.Features {
 				                            	{
 				                            		if (featureEntity.Has<Opening>())
 				                            			user.Get<ActorComponent>().Enqueue(new CloseDoorAction(user, featureEntity));
+													else {
+														Logger.WarnFormat("{0} has no {1} component.", Identifier.GetNameOrId(featureEntity), (typeof(Opening)));
+													}
 				                            	});
 
 		public IEnumerable<UseAction> Uses {

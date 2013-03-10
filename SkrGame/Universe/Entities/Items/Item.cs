@@ -8,6 +8,22 @@ using DEngine.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Universe.Entities.Items {
+	public sealed class Food : Component {
+		public TimeSpan EatTimeLength { get; private set; }
+		public int Nutrition { get; private set; }
+		public int Water { get; private set; }
+
+		public Food(TimeSpan eatTimeLength, int nutrition, int water) {
+			EatTimeLength = eatTimeLength;
+			Nutrition = nutrition;
+			Water = water;
+		}
+
+		public override Component Copy() {
+			return new Food(EatTimeLength, Nutrition, Water);
+		}
+	}
+
 	public sealed class Item : Component {
 		public class Template {
 			public int Weight { get; set; }
@@ -37,7 +53,7 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public StackType StackType { get; private set; }
 
-		private Item(int weight, int size, int value, int hardness, StackType stackType) {
+		public Item(int weight, int size, int value, int hardness, StackType stackType = StackType.None) {
 			amount = 1;
 			Weight = weight;
 			Size = size;

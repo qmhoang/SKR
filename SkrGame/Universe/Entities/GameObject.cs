@@ -37,8 +37,8 @@ namespace SkrGame.Universe.Entities {
 		public int Y {
 			get { return Location.Y; }			
 		}
-		
-		public event ComponentEventHandler<EventArgs<Level>> MapChanged;
+
+		public event ComponentEventHandler<GameObject, EventArgs<Level>> MapChanged;
 
 		public void OnMapChanged(EventArgs<Level> e) {
 			var handler = MapChanged;
@@ -57,7 +57,7 @@ namespace SkrGame.Universe.Entities {
 			return new GameObject(Location, Level);
 		}
 
-		public event ComponentEventHandler<PositionChangedEvent> PositionChanged;
+		public event ComponentEventHandler<GameObject, PositionChangedEvent> PositionChanged;
 
 		public void OnPositionChanged(PositionChangedEvent e) {
 			var handler = PositionChanged;
@@ -72,14 +72,6 @@ namespace SkrGame.Universe.Entities {
 
 		public double DistanceTo(Point p) {
 			return Location.DistanceTo(p);
-		}
-
-		public bool IsNear(int x, int y, int radius) {
-			return IsNear(new Point(x, y), radius);
-		}
-
-		public bool IsNear(Point p, int radius) {
-			return p.IsInCircle(Location, radius);
 		}
 
 		public bool Equals(GameObject other) {
@@ -106,12 +98,6 @@ namespace SkrGame.Universe.Entities {
 
 		public static bool operator !=(GameObject left, GameObject right) {
 			return !Equals(left, right);
-		}
-
-		public override int GetHashCode() {
-			unchecked {
-				return ((level != null ? level.GetHashCode() : 0) * 397) ^ location.GetHashCode();
-			}
 		}
 	}
 }

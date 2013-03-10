@@ -40,8 +40,9 @@ namespace SKRTests {
 
 		[Test]
 		public static void TestMethod() {
-			Stopwatch sw = new Stopwatch();
-			TimeSpan ts = new TimeSpan(Stopwatch.GetTimestamp());
+			SkrGame.Universe.Entities.Stats.Attribute a = new SkrGame.Universe.Entities.Stats.Attribute("4", "3", 0, 10);
+			var b = a;
+			b.Value++;
 
 		}
 	}

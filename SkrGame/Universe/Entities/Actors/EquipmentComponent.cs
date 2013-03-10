@@ -12,6 +12,7 @@ using DEngine.Entities;
 using DEngine.Extensions;
 using SkrGame.Actions;
 using SkrGame.Universe.Entities.Items;
+using SkrGame.Universe.Entities.Items.Equipables;
 using log4net;
 
 namespace SkrGame.Universe.Entities.Actors {
@@ -21,17 +22,17 @@ namespace SkrGame.Universe.Entities.Actors {
 		private readonly Dictionary<string, Entity> equippedItems;
 		private List<string> slots;
 
-		public event ComponentEventHandler<EventArgs<string, Entity>> ItemEquipped;
-		public event ComponentEventHandler<EventArgs<string, Entity>> ItemUnequipped;
+		public event ComponentEventHandler<EquipmentComponent, EventArgs<string, Entity>> ItemEquipped;
+		public event ComponentEventHandler<EquipmentComponent, EventArgs<string, Entity>> ItemUnequipped;
 
 		public void OnItemEquipped(EventArgs<string, Entity> e) {
-			ComponentEventHandler<EventArgs<string, Entity>> handler = ItemEquipped;
+			var handler = ItemEquipped;
 			if (handler != null)
 				handler(this, e);
 		}
 
 		public void OnItemUnequipped(EventArgs<string, Entity> e) {
-			ComponentEventHandler<EventArgs<string, Entity>> handler = ItemUnequipped;
+			var handler = ItemUnequipped;
 			if (handler != null)
 				handler(this, e);
 		}
@@ -131,9 +132,9 @@ namespace SkrGame.Universe.Entities.Actors {
 			}
 
 			if (ItemEquipped != null)
-				equipment.ItemEquipped = (ComponentEventHandler<EventArgs<string, Entity>>)ItemEquipped.Clone();
+				equipment.ItemEquipped = (ComponentEventHandler<EquipmentComponent, EventArgs<string, Entity>>)ItemEquipped.Clone();
 			if (ItemUnequipped != null)
-				equipment.ItemUnequipped = (ComponentEventHandler<EventArgs<string, Entity>>)ItemUnequipped.Clone();
+				equipment.ItemUnequipped = (ComponentEventHandler<EquipmentComponent, EventArgs<string, Entity>>)ItemUnequipped.Clone();
 
 			return equipment;
 		}
