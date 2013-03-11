@@ -131,6 +131,7 @@
     <Compile Include="Actions\Movement\WaitAction.cs" />
     <Compile Include="Actions\Skills\LockpickAction.cs" />
     <Compile Include="Actions\Movement\WalkAction.cs" />
+    <Compile Include="Effects\CreatureEncumbranceEffect.cs" />
     <Compile Include="Effects\Effect.cs" />
     <Compile Include="Effects\HumanNeedsEffect.cs" />
     <Compile Include="Effects\PoisonEffect.cs" />
@@ -138,8 +139,8 @@
     <Compile Include="Gameplay\Combat\CombatEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\ActionSystem.cs" />
-    <Compile Include="Systems\ITimeElapsedSubsystem.cs" />
     <Compile Include="Systems\EncumbranceSubsystem.cs" />
+    <Compile Include="Systems\ITimeElapsedSubsystem.cs" />
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\EntityConditions.cs" />

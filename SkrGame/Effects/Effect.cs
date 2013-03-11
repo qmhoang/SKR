@@ -29,7 +29,7 @@ namespace SkrGame.Effects {
 		public void Update(int ap) {
 			Contract.Requires<ArgumentException>(Holder != null);
 
-			OnTick((int) Math.Round(World.ActionPointsToSeconds(ap) * 1000));
+			OnTick(ap);
 		}
 
 		public void End() {
@@ -43,7 +43,7 @@ namespace SkrGame.Effects {
 
 		public abstract Effect Copy();
 
-		protected abstract void OnTick(int millisecondsElapsed);
+		protected abstract void OnTick(int apElapsed);
 		protected virtual void OnEnd() { }
 	}
 }

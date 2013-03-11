@@ -80,7 +80,9 @@ namespace SkrGame.Actions.Movement {
 		private void SetPosture(Posture p) {
 			switch (p) {
 				case Posture.Run:
-					Log.Normal(String.Format("{0} starts to run.", EntityName));
+					Log.Normal(Entity.Get<Creature>().Posture == Posture.Stand
+					           		? String.Format("{0} starts to run.", EntityName)
+					           		: String.Format("{0} starts running from a crouch.", EntityName));
 					break;
 				case Posture.Stand:
 					Log.Normal(Entity.Get<Creature>().Posture == Posture.Run
