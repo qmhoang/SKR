@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using DEngine.Actor;
 using DEngine.Components;
@@ -32,9 +33,11 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		public Posture Posture { get; set; }
 		
-		public int Lift {
-			get { return Attributes["attribute_strength"] * Attributes["attribute_strength"] * 18 * (int) Math.Pow(World.StandardDeviation, -2.0); }
+		public double Lift {
+			get { return Attributes["attribute_strength"] * Attributes["attribute_strength"] * 18 * Math.Pow(World.StandardDeviation, -2.0) + 1; }
 		}
+
+		public double EncumbrancePenalty { get; set; }
 
 		private const int SkillInitialRank = 0;
 		private const int SkillMaxRank = World.Mean * 2;
@@ -46,6 +49,8 @@ namespace SkrGame.Universe.Entities.Actors {
 		private const int StatMaxRank = 150;
 
 		public Creature() {
+			EncumbrancePenalty = 0.0f;
+
 			Posture = Posture.Stand;
 			
 			Attributes = new StaticDictionary<string, Attribute>(

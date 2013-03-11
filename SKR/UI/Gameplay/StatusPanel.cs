@@ -40,7 +40,8 @@ namespace SKR.UI.Gameplay {
 			PrintAttribute(1, i++, person.Stats["stat_cleanliness"]);
 			i++;
 			i++;
-			Canvas.PrintString(1, i++, person.Posture.ToString());			
+			Canvas.PrintString(1, i++, String.Format("{0:0.00}", person.EncumbrancePenalty));
+			Canvas.PrintString(1, i++, person.Posture.ToString());
 			i++;
 			i++;
 			Canvas.PrintString(1, i++, calendar.DateTime.ToShortDateString());

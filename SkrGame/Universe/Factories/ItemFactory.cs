@@ -16,7 +16,7 @@ namespace SkrGame.Universe.Factories {
 		public static void Init(EntityFactory ef) {
 			ef.Add("base_item",
 			       new VisibleComponent(10),
-			       new Sprite("base_item", Sprite.ItemsLayer),
+			       new Sprite("ITEM", Sprite.ItemsLayer),
 			       new Identifier("Junk", "A piece of junk."),
 			       new Item(0, 0, 0, 0, StackType.None));
 
@@ -880,7 +880,7 @@ namespace SkrGame.Universe.Factories {
 			            new Item(new Item.Template
 			                     {
 			                     		Value = 2000,
-			                     		Weight = 100,
+			                     		Weight = 10,
 			                     		Size = 11,
 			                     		StackType = StackType.None,
 

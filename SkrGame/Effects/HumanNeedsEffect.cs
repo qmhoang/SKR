@@ -1,35 +1,11 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using DEngine.Components;
+using SkrGame.Universe;
 using SkrGame.Universe.Entities.Actors;
-using SkrGame.Universe.Entities.Items;
 using log4net;
 
 namespace SkrGame.Effects {
-	public class CreatureEncumbranceEffect : Effect {
-		public override Effect Copy() {
-			throw new NotImplementedException();
-		}
-
-		protected override void OnTick(int millisecondsElapsed) {
-			if (Holder.Entity.Has<Creature>()) {
-				var person = Holder.Entity.Get<Creature>();
-				int weight = 0;
-
-				if (Holder.Entity.Has<ContainerComponent>()) {
-					weight += Holder.Entity.Get<ContainerComponent>().Items.Sum(i => i.Get<Item>().Weight);
-				}
-
-				if (Holder.Entity.Has<EquipmentComponent>()) {
-					weight += Holder.Entity.Get<EquipmentComponent>().EquippedItems.Sum(i => i.Get<Item>().Weight);					
-				}
-
-
-			}
-		}
-	}
-
 	public class HumanNeedsEffect : Effect {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -53,8 +29,10 @@ namespace SkrGame.Effects {
 			       };
 		}
 
-		protected override void OnTick(int millisecondsElapsed) {
+		protected override void OnTick(int apElapsed) {
 			// todo need tuning
+			int millisecondsElapsed = (int) Math.Round(World.ActionPointsToSeconds(apElapsed) * 1000);
+
 			staminaMSCount += millisecondsElapsed;
 			needsMSCount += millisecondsElapsed;
 

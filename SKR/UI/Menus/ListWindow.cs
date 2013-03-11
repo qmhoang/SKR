@@ -45,13 +45,13 @@ namespace SKR.UI.Menus {
 			MouseOverIndex = MouseToIndex(mouseData);
 		}
 
-		protected abstract int MouseToIndex(MouseData mouseData);		
+		protected abstract int MouseToIndex(MouseData mouseData);
 
 		protected override void OnMouseButtonUp(MouseData mouseData) {
 			base.OnMouseButtonDown(mouseData);			
 
 			int index = MouseToIndex(mouseData);
-			if (index >= 0 && index < List.Count()) {				
+			if (index >= 0 && index < List.Count()) {
 				var t = List.ElementAt(index);
 				OnSelectItem(t);
 			}

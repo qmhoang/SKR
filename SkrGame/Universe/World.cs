@@ -97,7 +97,7 @@ namespace SkrGame.Universe {
 			Calendar = new Calendar();
 			CalendarEntity = EntityManager.Create(new List<Component>
 			                                      {
-			                                      		new ActorComponent(Calendar, new AP(World.OneSecondInSpeed / 10))
+			                                      		new ActorComponent(Calendar, new AP(World.OneSecondInSpeed / 2))
 			                                      });
 
 //			ActionProcessed += World_ActionProcessed;

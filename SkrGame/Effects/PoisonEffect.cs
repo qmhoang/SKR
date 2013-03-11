@@ -4,26 +4,26 @@ using SkrGame.Universe.Entities;
 using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Effects {
-	public class PoisonEffect : Effect {
+	public class TestingPoisonEffect : Effect {
 		public TimeSpan Length { get; private set; }
 		public TimeSpan Interval { get; private set; }
 		public TimeSpan Counter { get; private set; }
 
-		public PoisonEffect(TimeSpan length, TimeSpan interval) {
+		public TestingPoisonEffect(TimeSpan length, TimeSpan interval) {
 			this.Length = length;
 			this.Interval = interval;
 			Counter = new TimeSpan();
 		}
 
 		public override Effect Copy() {
-			return new PoisonEffect(Length, Interval)
+			return new TestingPoisonEffect(Length, Interval)
 			       {
 			       		Counter = Counter
 			       };
 		}
 
-		protected override void OnTick(int millisecondsElapsed) {
-			var ts = new TimeSpan(0, 0, 0, 0, millisecondsElapsed);
+		protected override void OnTick(int apElapsed) {
+			var ts = new TimeSpan(0, 0, 0, 0, apElapsed);
 			Length -= ts;
 			Counter += ts;
 

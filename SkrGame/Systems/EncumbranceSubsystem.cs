@@ -12,7 +12,19 @@ namespace SkrGame.Systems {
 			entities = em.Get(typeof(Creature));
 			containers = em.Get<ContainerComponent>();
 			equipments = em.Get<EquipmentComponent>();
+
+			containers.OnEntityAdd += containers_OnEntityAdd;
 		}
+
+		void containers_OnEntityAdd(Entity entity) {
+			entity.Get<ContainerComponent>().ItemAdded += Container_ItemChanged;
+		}
+
+		void Container_ItemChanged(ContainerComponent sender, DEngine.Core.EventArgs<Entity> e) {
+			
+		}
+
+
 	}
 
 }

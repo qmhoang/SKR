@@ -16,9 +16,10 @@ namespace SKR.UI.Menus {
 		public Action<Entity> ItemSelected { get; set; }
 		public bool SelectSingleItem { get; set; }
 	}
-	public class ItemWindow : ListWindow<Entity> {        
-		private readonly bool singleItem;        		
-		private Rectangle sizeList;		
+
+	public class ItemWindow : ListWindow<Entity> {
+		private readonly bool singleItem;
+		private Rectangle sizeList;	
 
 		protected override Rectangle ListRect {
 			get { return sizeList; }
@@ -39,7 +40,7 @@ namespace SKR.UI.Menus {
 		protected override void CustomDraw(Rectangle rect) {
 			int y = 0;
 			char letter = 'A';
-			foreach (var entity in List) {								
+			foreach (var entity in List) {
 				var item = entity.Get<Item>();
 
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + y, String.Format("{2}{0}{3} - {1}{4}", letter, entity.Get<Identifier>().Name, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode,

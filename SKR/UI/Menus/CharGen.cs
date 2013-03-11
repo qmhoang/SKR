@@ -174,8 +174,6 @@ namespace SKR.UI.Menus {
 			World.EntityManager.Create(World.EntityFactory.Get("lockpick")).Add(new GameObject(0, 0, World.CurrentLevel));
 			var ammo = World.EntityManager.Create(World.EntityFactory.Get("9x9mm")).Add(new GameObject(0, 0, World.CurrentLevel));
 			ammo.Get<Item>().Amount = 30;
-			World.EntityManager.Create(World.EntityFactory.Get("bullet")).Add(new GameObject(0, 0, World.CurrentLevel));
-
 			var armor = World.EntityManager.Create(World.EntityFactory.Get("footballpads")).Add(new GameObject(1, 1, World.CurrentLevel));
 			new EquipItemAction(npc, armor, "Torso", true).OnProcess();
 			World.Initialize();
