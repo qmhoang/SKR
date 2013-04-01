@@ -20,10 +20,6 @@ namespace SKRTests {
 		protected Entity Entity;
 		protected World World;
 
-		protected Entity Create(string id) {
-			return EntityManager.Create(World.EntityFactory.Get(id));
-		}
-		
 		[SetUp]
 		public void Init() {
 			World = new World();
