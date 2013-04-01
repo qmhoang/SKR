@@ -318,7 +318,7 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Revolver, RevolverAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
 				Entity.Get<ActorComponent>().NextAction().OnProcess();
 			}
 
@@ -337,7 +337,7 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Revolver, RevolverAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
 				Entity.Get<ActorComponent>().NextAction().OnProcess();
 			}
 
@@ -357,7 +357,7 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Revolver, RevolverAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
 				Entity.Get<ActorComponent>().NextAction().OnProcess();
 			}
 
@@ -379,7 +379,7 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Shotgun, ShotgunAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
 				Entity.Get<ActorComponent>().NextAction().OnProcess();
 			}
 
@@ -399,7 +399,7 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Shotgun, ShotgunAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
 				Entity.Get<ActorComponent>().NextAction().OnProcess();
 			}
 
@@ -419,7 +419,7 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Shotgun, ShotgunAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.Actions.Count > 0) {
+			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
 				Entity.Get<ActorComponent>().NextAction().OnProcess();
 			}
 

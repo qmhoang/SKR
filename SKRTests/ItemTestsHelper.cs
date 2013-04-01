@@ -25,12 +25,52 @@ namespace SKRTests {
 
 		[SetUp]
 		public void SetUp() {
-			Item0 = Create("item").Add(new GameObject(-1, -1, null));
-			Item1 = Create("item").Add(new GameObject(-1, -1, null));
-			Item2 = Create("item").Add(new GameObject(-1, -1, null));
+			Item0 = EntityManager.Create(new List<Component>
+			                             {
+			                             		new GameObject(-1, -1, null),
+												new ReferenceId("item"),
+			                             		new VisibleComponent(10),
+			                             		new Sprite("ITEM", Sprite.ItemsLayer),
+			                             		new Identifier("Junk", "A piece of junk."),
+			                             		new Item(0, 0, 0, 0, StackType.None)
+			                             });
+			Item1 = EntityManager.Create(new List<Component>
+			                             {
+			                             		new GameObject(-1, -1, null),
+												new ReferenceId("item"),
+			                             		new VisibleComponent(10),
+			                             		new Sprite("ITEM", Sprite.ItemsLayer),
+			                             		new Identifier("Junk", "A piece of junk."),
+			                             		new Item(0, 0, 0, 0, StackType.None)
+			                             });
+			Item2 = EntityManager.Create(new List<Component>
+			                             {
+			                             		new GameObject(-1, -1, null),
+												new ReferenceId("item"),
+			                             		new VisibleComponent(10),
+			                             		new Sprite("ITEM", Sprite.ItemsLayer),
+			                             		new Identifier("Junk", "A piece of junk."),
+			                             		new Item(0, 0, 0, 0, StackType.None)
+			                             });
 
-			StackedItem0 = Create("bullet").Add(new GameObject(-1, -1, null));
-			StackedItem1 = Create("bullet").Add(new GameObject(-1, -1, null));
+			StackedItem0 = EntityManager.Create(new List<Component>
+			                             {
+			                             		new GameObject(-1, -1, null),
+												new ReferenceId("stackeditem"),
+			                             		new VisibleComponent(10),
+			                             		new Sprite("ITEM", Sprite.ItemsLayer),
+			                             		new Identifier("Junk", "A piece of junk."),
+			                             		new Item(0, 0, 0, 0, StackType.Hard)
+			                             });
+			StackedItem1 = EntityManager.Create(new List<Component>
+			                             {
+			                             		new GameObject(-1, -1, null),
+												new ReferenceId("stackeditem"),
+			                             		new VisibleComponent(10),
+			                             		new Sprite("ITEM", Sprite.ItemsLayer),
+			                             		new Identifier("Junk", "A piece of junk."),
+			                             		new Item(0, 0, 0, 0, StackType.Hard)
+			                             });
 
 			Slot1Item0 = EntityManager.Create(new List<Component>
 			                                  {
