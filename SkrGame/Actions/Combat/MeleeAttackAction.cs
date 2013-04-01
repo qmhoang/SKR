@@ -48,11 +48,11 @@ namespace SkrGame.Actions.Combat {
 				Damage(damage, melee.Penetration, melee.DamageType, out damageResistance, out realDamage);
 
 				if (World.Player == Attacker) {
-					Log.Good(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                             attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name, "todo-description"));
+					Log.GoodFormat("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					               attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name, "todo-description");
 				} else {
-					Log.Bad(String.Format("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
-					                            attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name, "todo-description"));
+					Log.BadFormat("{0} {1} {2}'s {3}.... and inflict {4} wounds.",
+					              attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name, "todo-description");
 				}
 				
 				Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted, CombatEventResult.Hit, damage,
@@ -61,22 +61,22 @@ namespace SkrGame.Actions.Combat {
 
 			} else if (result == CombatEventResult.Miss) {
 				if (World.Player == Attacker) {
-					Log.Bad(String.Format("{0} {1} {2}'s {3}.... and misses.",
-					                            attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
+					Log.BadFormat("{0} {1} {2}'s {3}.... and misses.",
+					              attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name);
 				} else {
-					Log.Good(String.Format("{0} {1} {2}'s {3}.... and misses.",
-					                             attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
+					Log.GoodFormat("{0} {1} {2}'s {3}.... and misses.",
+					               attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name);
 				}
 
 
 				Logger.Info(new CombatEventArgs(Attacker, Defender, Weapon, BodyPartTargetted));
 			} else if (result == CombatEventResult.Dodge) {
 				if (World.Player == Attacker) {
-					Log.Bad(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-					                            attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
+					Log.BadFormat("{0} {1} {2}'s {3}.... and {2} dodges.",
+					              attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name);
 				} else {
-					Log.Good(String.Format("{0} {1} {2}'s {3}.... and {2} dodges.",
-					                             attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name));
+					Log.GoodFormat("{0} {1} {2}'s {3}.... and {2} dodges.",
+					               attackerName, melee.ActionDescriptionPlural, defenderName, BodyPartTargetted.Name);
 				}
 
 

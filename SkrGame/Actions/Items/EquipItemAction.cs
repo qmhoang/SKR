@@ -52,7 +52,7 @@ namespace SkrGame.Actions.Items {
 			MakeInvisible(Item);
 			MoveItemToEntityLocation(Item);
 
-			World.Log.Normal(String.Format("{0} equips {1} to {2}", EntityName, ItemName, slot));
+			World.Log.NormalFormat("{0} equips {1} to {2}", EntityName, ItemName, slot);
 			
 			return force ? ActionResult.SuccessNoTime : ActionResult.Success;
 		}

@@ -144,7 +144,7 @@
     <Compile Include="Systems\VisionSubsystem.cs" />
     <Compile Include="Universe\Calendar.cs" />
     <Compile Include="Universe\Entities\EntityConditions.cs" />
-    <Compile Include="Universe\Entities\Controllers\OneAction.cs" />
+    <Compile Include="Universe\Entities\Controllers\QueuedController.cs" />
     <Compile Include="Universe\Entities\Items\Equipables\ArmorComponent.cs" />
     <Compile Include="Universe\Entities\Items\Equipables\Equipable.cs" />
     <Compile Include="Universe\Entities\Items\Equipables\EquippedBonus.cs" />

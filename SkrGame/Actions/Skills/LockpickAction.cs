@@ -39,7 +39,7 @@ namespace SkrGame.Actions.Skills {
 
 		public override ActionResult OnProcess() {
 			if (feature.Get<LockedFeature>().Status == LockStatus.Opened) {
-				World.Log.Aborted(String.Format("{0} isn't locked.", Identifier.GetNameOrId(feature)));
+				World.Log.AbortedFormat("{0} isn't locked.", Identifier.GetNameOrId(feature));
 				return ActionResult.Aborted;
 			}
 
@@ -80,10 +80,10 @@ namespace SkrGame.Actions.Skills {
 
 					               		if (agiRoll <= agiDiff) {
 					               			feature.Get<LockedFeature>().Status = LockStatus.Opened;
-					               			World.Log.Good(String.Format("{0} succeeds in lockpicking {1}.", EntityName, Identifier.GetNameOrId(feature)));
+					               			World.Log.GoodFormat("{0} succeeds in lockpicking {1}.", EntityName, Identifier.GetNameOrId(feature));
 					               			return ActionResult.Success;
 					               		}
-					               		World.Log.Fail(String.Format("{0} fails in lockpicking {1}.", EntityName, Identifier.GetNameOrId(feature)));
+					               		World.Log.FailFormat("{0} fails in lockpicking {1}.", EntityName, Identifier.GetNameOrId(feature));
 					               		return ActionResult.Failed;
 					               	}));
 

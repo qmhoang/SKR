@@ -51,7 +51,7 @@ namespace SkrGame.Actions.Movement {
 
 			if (!level.IsWalkable(landedLocation)) {
 				Logger.InfoFormat("{0} cannot be walked on.  We can't jump over {1}.", landedLocation, EntityName);
-				World.Log.Aborted(String.Format("Can't jump over location."));
+				World.Log.Aborted("Can't jump over location.");
 				return ActionResult.Aborted;
 			}
 
@@ -88,11 +88,11 @@ namespace SkrGame.Actions.Movement {
 					}
 				}
 
-				World.Log.Normal(String.Format("{0} vaults over the {1} successfully.", EntityName, thingJumpedOver));
+				World.Log.NormalFormat("{0} vaults over the {1} successfully.", EntityName, thingJumpedOver);
 
 				return ActionResult.Success;
 			} else {
-				World.Log.Fail(String.Format("{0} fails to move past the {1}.", EntityName, thingJumpedOver));
+				World.Log.FailFormat("{0} fails to move past the {1}.", EntityName, thingJumpedOver);
 				return ActionResult.Failed;
 			}
 		}

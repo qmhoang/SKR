@@ -27,14 +27,14 @@ namespace SkrGame.Actions.Features {
 						Feature.Get<Sprite>().Asset = opening.ClosedAsset;
 
 					opening.Status = Opening.OpeningStatus.Closed;
-					World.Log.Normal(String.Format("{0} {1}.", EntityName, opening.ClosedDescription));
+					World.Log.NormalFormat("{0} {1}.", EntityName, opening.ClosedDescription);
 					return ActionResult.Success;
 				} else {
-					World.Log.Fail(String.Format("{0} tries to {1}, but can't.", EntityName, opening.ClosedDescription));
+					World.Log.FailFormat("{0} tries to {1}, but can't.", EntityName, opening.ClosedDescription);
 					return ActionResult.Failed;
 				}
 			}
-			World.Log.Aborted(String.Format("{0} tries to {1}, but can't since it is already closed.", EntityName, opening.ClosedDescription));
+			World.Log.AbortedFormat("{0} tries to {1}, but can't since it is already closed.", EntityName, opening.ClosedDescription);
 			return ActionResult.Aborted;
 		}
 	}

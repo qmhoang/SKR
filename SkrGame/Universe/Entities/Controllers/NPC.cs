@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DEngine.Actions;
 using DEngine.Actor;
 using DEngine.Core;
@@ -14,12 +15,19 @@ namespace SkrGame.Universe.Entities.Controllers {
 		private Point oldPos;
 		private Level level;
 		
-		public NPC() { }
+		public NPC() : this(new Queue<IAction>()) { }
+
+		private NPC(Queue<IAction> actions) {
+			Actions = actions;
+		}
+
+		public Queue<IAction> Actions { get; private set; }
 
 		public override IAction NextAction() {
 			return Actions.Count == 0 ? CalculateNextMove() : Actions.Dequeue();
 		}
 
+		
 		private ActorAction CalculateNextMove() {
 			var location = Holder.Entity.Get<GameObject>();
 
@@ -65,7 +73,7 @@ namespace SkrGame.Universe.Entities.Controllers {
 		}
 
 		public override Controller Copy() {
-			return new NPC();
+			return new NPC(new Queue<IAction>(Actions));
 		}
 
 		public override void Disturb() {

@@ -30,7 +30,8 @@ namespace SkrGame.Effects {
 			while (Counter.Ticks / Interval.Ticks > 0) {
 				Holder.Entity.Get<DefendComponent>().Health.Value--;
 
-				Holder.Entity.Get<GameObject>().Level.World.Log.Bad(String.Format("{0} is poisoned.", Identifier.GetNameOrId(Holder.Entity)));
+				// todo ew, fix this
+				Holder.Entity.Get<GameObject>().Level.World.Log.BadFormat("{0} is poisoned.", Identifier.GetNameOrId(Holder.Entity));
 
 				Counter -= Interval;
 			}
