@@ -26,7 +26,7 @@ namespace SkrGame.Systems {
 		public void Update() {
 			var playerActor = player.Get<ActorComponent>();
 
-			while (playerActor.AP.Updateable && playerActor.Controller.Actions.Count != 0) {
+			while (playerActor.AP.Updateable && playerActor.Controller.HasActionsQueued) {
 				var action = player.Get<ActorComponent>().NextAction();
 
 				var result = action.OnProcess();

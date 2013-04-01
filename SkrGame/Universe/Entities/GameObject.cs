@@ -9,7 +9,7 @@ using DEngine.Entities;
 using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe.Entities {
-	public sealed class GameObject : Component, IEquatable<GameObject> {
+	public sealed class GameObject : Component {
 		private Level level;
 		private Point location;
 
@@ -72,32 +72,6 @@ namespace SkrGame.Universe.Entities {
 
 		public double DistanceTo(Point p) {
 			return Location.DistanceTo(p);
-		}
-
-		public bool Equals(GameObject other) {
-			if (ReferenceEquals(null, other))
-				return false;
-			if (ReferenceEquals(this, other))
-				return true;
-			return Equals(other.level, level) && other.location.Equals(location);
-		}
-
-		public override bool Equals(object obj) {
-			if (ReferenceEquals(null, obj))
-				return false;
-			if (ReferenceEquals(this, obj))
-				return true;
-			if (obj.GetType() != typeof(GameObject))
-				return false;
-			return Equals((GameObject) obj);
-		}
-
-		public static bool operator ==(GameObject left, GameObject right) {
-			return Equals(left, right);
-		}
-
-		public static bool operator !=(GameObject left, GameObject right) {
-			return !Equals(left, right);
-		}
+		}				
 	}
 }

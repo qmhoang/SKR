@@ -54,7 +54,7 @@ namespace SkrGame.Actions.Combat {
 					droppedAmmo.Get<VisibleComponent>().Reset();
 				}
 
-				Log.Normal(String.Format("{0} removes the magazine, dropping all excess ammo.", EntityName));
+				Log.NormalFormat("{0} removes the magazine, dropping all excess ammo.", EntityName);
 			}
 
 			// inserting ammo
@@ -73,7 +73,7 @@ namespace SkrGame.Actions.Combat {
 
 						World.EntityManager.Remove(ammo);
 					}
-					Log.Normal(String.Format("{0} reloads {1} with {2}.", EntityName, Identifier.GetNameOrId(weapon), Identifier.GetNameOrId(ammo)));
+					Log.NormalFormat("{0} reloads {1} with {2}.", EntityName, Identifier.GetNameOrId(weapon), Identifier.GetNameOrId(ammo));
 
 				} else {
 					rangeWeapon.ShotsRemaining++;

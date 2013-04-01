@@ -41,7 +41,7 @@ namespace SkrGame.Actions.Items {
 				if (removed.Has<VisibleComponent>()) {
 					removed.Get<VisibleComponent>().Reset();
 				}
-				World.Log.Normal(String.Format("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), slot));
+				World.Log.NormalFormat("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), slot);
 
 				if (Entity.Has<Creature>() && removed.Has<EquippedBonus>()) {
 					var p = Entity.Get<Creature>();

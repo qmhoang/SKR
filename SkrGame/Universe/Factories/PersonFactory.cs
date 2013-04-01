@@ -29,8 +29,7 @@ namespace SkrGame.Universe.Factories {
 			       new EntityConditions(new HumanNeedsEffect(), new CreatureEncumbranceEffect()),
 			       new EquipmentComponent(new List<string>
 			                              {
-
-			                              		"Head",
+												"Head",
 			                              		"Torso",
 			                              		"Arms",
 			                              		"Main Hand",

@@ -107,14 +107,23 @@ namespace SkrGame.Universe.Entities.Actors {
 							// skill_shotgun
 							// skill_rifle
 
+							// CONSTITUTION
+							// skill_running
+
 							// INTELLECT
 							{"skill_lockpicking",		new Skill("Lockpicking",	this, SkillInitialRank, SkillMaxRank, (user, t) => t.Owner.Attributes["attribute_intellect"] + t.Rank)},
+
+							// CUNNING
+
+							// RESOLVE
 
 							// PRESENCE
 							// skill_intimidation
 							
 							// GRACE
 							// skill_manipulation
+
+							// WILLPOWER
 					});
 
 

@@ -77,9 +77,9 @@ namespace SKR.UI.Menus {
 			foreach (string slotNeeded in item.Get<Equipable>().SlotsOccupied[slot]) {
 				if (equipment.IsSlotEquipped(slotNeeded)) {
 					canEquip = false;
-					World.Log.Aborted(String.Format("{0} cannot go there, is takes multiple slots and {1} is already occupied.",
-					                                Identifier.GetNameOrId(item),
-					                                slotNeeded));
+					World.Log.AbortedFormat("{0} cannot go there, is takes multiple slots and {1} is already occupied.",
+					                        Identifier.GetNameOrId(item),
+					                        slotNeeded);
 
 					break;
 				}

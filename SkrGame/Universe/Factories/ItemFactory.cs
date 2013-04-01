@@ -211,7 +211,7 @@ namespace SkrGame.Universe.Factories {
 			            		}));
 
 			ef.Inherits("model27", "base_pistol2",
-			            //new Sprite("GLOCK22", Sprite.ITEMS_LAYER),
+			            //new Sprite("MODEL27", Sprite.ITEMS_LAYER),
 			            new Identifier("S&W Model 27"),
 			            new Item(new Item.Template
 			                     {
@@ -874,6 +874,7 @@ namespace SkrGame.Universe.Factories {
 			                     }));
 			#endregion
 
+			#region Shirts
 			ef.Inherits("shirt", "base_item",
 			            new Sprite("SHIRT", Sprite.ItemsLayer),
 			            new Identifier("Shirt", "A hawaiian shirt."),
@@ -970,6 +971,7 @@ namespace SkrGame.Universe.Factories {
 			            				           		                        }),
 			            				           }
 			            		}));
+			#endregion
 		}
 	}
 }

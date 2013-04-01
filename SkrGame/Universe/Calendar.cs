@@ -9,7 +9,7 @@ using DEngine.Entities;
 
 namespace SkrGame.Universe {
 	public class Calendar : Controller {
-		private Calendar(Queue<IAction> actions, TimeSpan timeSpan) : base(actions) {
+		private Calendar(TimeSpan timeSpan) {
 			TimeSpan = timeSpan;
 		}
 
@@ -18,14 +18,14 @@ namespace SkrGame.Universe {
 		public DateTime DateTime { get { return StartingDate + TimeSpan; } }
 		public TimeSpan TimeSpan { get; private set; }
 
-		public Calendar() : this(new Queue<IAction>(), new TimeSpan()) { }
+		public Calendar() : this(new TimeSpan()) { }
 
 		public override IAction NextAction() {
 			return new CalendarAction(this);
 		}
 
 		public override Controller Copy() {
-			return new Calendar(new Queue<IAction>(), TimeSpan);
+			return new Calendar(TimeSpan);
 		}
 
 		private void IncreaseTime(int seconds = 1, int milliseconds = 0) {

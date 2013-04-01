@@ -6,11 +6,12 @@ using System.Text;
 using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Level;
+using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Actors {
 	public sealed class SightComponent : Component {
 		private VisionMap vision;
-		private AbstractLevel currLevel;
+		private Level currLevel;
 
 		[Pure]
 		public bool IsVisible(Point p) {

@@ -73,7 +73,7 @@ namespace SkrGame.Actions.Movement {
 				return ActionResult.Success;
 			}
 
-			Log.Normal(String.Format("{0} is already doing that.", EntityName));
+			Log.NormalFormat("{0} is already doing that.", EntityName);
 			return ActionResult.Aborted;
 		}
 
@@ -95,7 +95,7 @@ namespace SkrGame.Actions.Movement {
 						: String.Format("{0} crouches down.", EntityName));
 					break;
 				case Posture.Prone:
-					Log.Normal(String.Format("{0} goes prone.", EntityName));
+					Log.NormalFormat("{0} goes prone.", EntityName);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException("p");
