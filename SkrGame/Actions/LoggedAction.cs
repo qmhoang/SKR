@@ -17,6 +17,6 @@ namespace SkrGame.Actions {
 		}
 
 		public World World { get { return Entity.Get<GameObject>().Level.World; } }
-		public Log Log { get { return World.Log; } }
+		public GameLog Log { get { return World.Log; } }
 	}
 }

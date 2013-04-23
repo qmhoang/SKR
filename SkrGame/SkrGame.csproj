@@ -181,6 +181,7 @@
     <Compile Include="Universe\Entities\Features\Opening.cs" />
     <Compile Include="Universe\Factories\PersonFactory.cs" />
     <Compile Include="Universe\Factories\TestEntityFactory.cs" />
+    <Compile Include="Universe\GameLog.cs" />
     <Compile Include="Universe\Locations\Level.cs" />
     <Compile Include="Universe\Locations\Terrain.cs" />
     <Compile Include="Actions\RealTimeAction.cs" />

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Random;
 using SkrGame.Gameplay.Combat;
 
 namespace SkrGame.Universe.Entities.Items.Equipables {

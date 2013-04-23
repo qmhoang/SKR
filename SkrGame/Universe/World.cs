@@ -8,6 +8,7 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
+using DEngine.Random;
 using SkrGame.Systems;
 using SkrGame.Universe.Entities;
 using SkrGame.Universe.Factories;
@@ -19,6 +20,7 @@ namespace SkrGame.Universe {
 		Created,
 		Initialized,
 	}
+
 	public class World {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -53,17 +55,17 @@ namespace SkrGame.Universe {
 		public GroupManager<string> GroupManager { get; private set; }
 		public EntityFactory EntityFactory { get; private set; }
 		public EntityManager EntityManager { get; private set; }
-		public Log Log { get; private set; }
+		public GameLog Log { get; private set; }
 
 		public Calendar Calendar { get; private set; }
 		public Entity CalendarEntity { get; private set; }
 
-		private ActionSystem actionSystem;
-		private VisionSubsystem visionSubsystem;
+		private ActionSystem _actionSystem;
+		private VisionSubsystem _visionSubsystem;
 
 		public WorldStatus Status { get; private set; }
 
-		public event EventHandler<World, EventArgs> ActionProcessed;
+		public event ComplexEventHandler<World, EventArgs> ActionProcessed;
 
 		public void OnActionProcessed() {
 			var handler = ActionProcessed;
@@ -80,7 +82,7 @@ namespace SkrGame.Universe {
 			GroupManager = new GroupManager<string>();
 			EntityFactory = new EntityFactory();
 			EntityManager = new EntityManager();
-			Log = new Log();
+			Log = new GameLog();
 
 			EntityManager.EntityAdded += EntityManager_EntityAdded;
 			EntityManager.EntityRemoved += EntityManager_EntityRemoved;
@@ -122,14 +124,14 @@ namespace SkrGame.Universe {
 		}
 		
 		public void Initialize() {
-			actionSystem = new ActionSystem(this);
-			visionSubsystem = new VisionSubsystem(this);
+			_actionSystem = new ActionSystem(this);
+			_visionSubsystem = new VisionSubsystem(this);
 			Status = WorldStatus.Initialized;
 		}
 
 		// todo events when a turn is processed
 		public void UpdateSystems() {
-			actionSystem.Update();
+			_actionSystem.Update();
 		}
 
 		public static int SecondsToActionPoints(double seconds) {

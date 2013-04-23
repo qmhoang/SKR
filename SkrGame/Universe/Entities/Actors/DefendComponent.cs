@@ -7,6 +7,7 @@ using System.Reflection;
 using DEngine.Actor;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Random;
 using SkrGame.Gameplay.Combat;
 using log4net;
 using log4net.Repository.Hierarchy;
