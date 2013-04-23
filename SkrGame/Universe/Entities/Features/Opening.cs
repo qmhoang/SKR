@@ -24,12 +24,12 @@ namespace SkrGame.Universe.Entities.Features {
 
 		public int APCost { get; set; }
 
-		private OpeningStatus status;
+		private OpeningStatus _status;
 		public OpeningStatus Status {
-			get { return status; }
+			get { return _status; }
 			set {
-				status = value;
-				OnUsed(new EventArgs<OpeningStatus>(status));
+				_status = value;
+				OnUsed(new EventArgs<OpeningStatus>(_status));
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace SkrGame.Universe.Entities.Features {
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(closedAsset));
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(openedAsset));
 
-			this.status = status;
+			this._status = status;
 			APCost = apCost;
 			OpenedAsset = openedAsset;
 			ClosedAsset = closedAsset;

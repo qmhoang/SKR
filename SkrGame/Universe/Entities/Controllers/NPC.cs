@@ -11,9 +11,9 @@ using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Controllers {
 	public class NPC : Controller {
-		private AStarPathFinder pf;
-		private Point oldPos;
-		private Level level;
+		private AStarPathFinder _pf;
+		private Point _oldPos;
+		private Level _level;
 		
 		public NPC() : this(new Queue<IAction>()) { }
 
@@ -31,16 +31,16 @@ namespace SkrGame.Universe.Entities.Controllers {
 		private ActorAction CalculateNextMove() {
 			var location = Holder.Entity.Get<GameObject>();
 
-			if (level != location.Level) {
-				level = location.Level;
-				oldPos = location.Location;
-				pf = new AStarPathFinder(level, 1.41f);				
+			if (_level != location.Level) {
+				_level = location.Level;
+				_oldPos = location.Location;
+				_pf = new AStarPathFinder(_level, 1.41f);				
 			}
 			
 
-			oldPos = location.Location;
+			_oldPos = location.Location;
 			
-			var player = level.World.Player;
+			var player = _level.World.Player;
 
 			var target = player.Get<GameObject>().Location;
 
@@ -52,10 +52,10 @@ namespace SkrGame.Universe.Entities.Controllers {
 				if (distance <= 1.5)
 					return new MeleeAttackAction(Holder.Entity, player, Holder.Entity, player.Get<DefendComponent>().GetRandomPart());
 				else {
-					pf.Compute(location.X, location.Y, target.X, target.Y);
+					_pf.Compute(location.X, location.Y, target.X, target.Y);
 					int nx = location.X, ny = location.Y;
 
-					if (pf.Walk(ref nx, ref ny, false)) {
+					if (_pf.Walk(ref nx, ref ny, false)) {
 						var newPosition = new Point(nx, ny);
 						Direction dir = Direction.Towards(newPosition - location.Location);
 

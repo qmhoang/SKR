@@ -10,12 +10,12 @@ using Attribute = SkrGame.Universe.Entities.Stats.Attribute;
 
 namespace SKR.UI.Gameplay {
 	public class StatusPanel : Panel {
-		private Entity player;
-		private Calendar calendar;
+		private Entity _player;
+		private Calendar _calendar;
 		public StatusPanel(World world, PanelTemplate template)
 				: base(template) {
-			this.player = world.Player;
-			calendar = world.Calendar;
+			this._player = world.Player;
+			this._calendar = world.Calendar;
 		}
 
 		private void PrintAttribute(int x, int y, Attribute attribute) {
@@ -25,11 +25,11 @@ namespace SKR.UI.Gameplay {
 		protected override void Redraw() {
 			base.Redraw();
 
-			var person = player.Get<Creature>();
+			var person = _player.Get<Creature>();
 			int i = 1;
-			Canvas.PrintString(1, i++, player.Get<Identifier>().Name);
+			Canvas.PrintString(1, i++, _player.Get<Identifier>().Name);
 			i++;
-			PrintAttribute(1, i++, player.Get<DefendComponent>().Health);
+			PrintAttribute(1, i++, _player.Get<DefendComponent>().Health);
 			PrintAttribute(1, i++, person.Stats["stat_stamina"]);
 			PrintAttribute(1, i++, person.Stats["stat_composure"]);
 			i++;
@@ -44,8 +44,8 @@ namespace SKR.UI.Gameplay {
 			Canvas.PrintString(1, i++, person.Posture.ToString());
 			i++;
 			i++;
-			Canvas.PrintString(1, i++, calendar.DateTime.ToShortDateString());
-			Canvas.PrintString(1, i++, calendar.DateTime.ToLongTimeString());
+			Canvas.PrintString(1, i++, _calendar.DateTime.ToShortDateString());
+			Canvas.PrintString(1, i++, _calendar.DateTime.ToLongTimeString());
 			i++;
 			i++;
 			i++;

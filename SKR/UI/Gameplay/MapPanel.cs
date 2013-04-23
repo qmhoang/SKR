@@ -20,24 +20,24 @@ namespace SKR.UI.Gameplay {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		internal Point ViewOffset { get; private set; }
-		private AssetsManager assets;
+		private AssetsManager _assets;
 
-		private FilteredCollection entities;
-		private Entity player;
+		private FilteredCollection _entities;
+		private Entity _player;
 
 		public World World { get; private set; }
 
-		private bool alreadyDisposed;
+		private bool _alreadyDisposed;
 
 		public MapPanel(World world, AssetsManager assetsManager, PanelTemplate template)
 				: base(template) {	
 			ViewOffset = new Point(0, 0);
-			assets = assetsManager;
+			_assets = assetsManager;
 
 			World = world;
 			
-			entities = world.EntityManager.Get(typeof(GameObject), typeof(Sprite), typeof(VisibleComponent));
-			player = world.Player;
+			_entities = world.EntityManager.Get(typeof(GameObject), typeof(Sprite), typeof(VisibleComponent));
+			_player = world.Player;
 		}
 
 		private void PrintChar(Point screenPosition, Tuple<char, Tuple<TCODColor, TCODColor, TCODBackgroundFlag>> texture) {
@@ -50,15 +50,15 @@ namespace SKR.UI.Gameplay {
 		protected override void Redraw() {
 			base.Redraw();
 			Canvas.Clear();
-			var level = player.Get<GameObject>().Level;
+			var level = _player.Get<GameObject>().Level;
 
-			ViewOffset = new Point(Math.Min(Math.Max(player.Get<GameObject>().X - Canvas.Size.Width / 2, 0),
+			ViewOffset = new Point(Math.Min(Math.Max(_player.Get<GameObject>().X - Canvas.Size.Width / 2, 0),
 											level.Width - Canvas.Size.Width),
-								   Math.Min(Math.Max(player.Get<GameObject>().Y - Canvas.Size.Height / 2, 0),
+								   Math.Min(Math.Max(_player.Get<GameObject>().Y - Canvas.Size.Height / 2, 0),
 											level.Height - Canvas.Size.Height));
 
 			//draw map
-			var sight = player.Get<SightComponent>();
+			var sight = _player.Get<SightComponent>();
 			sight.CalculateSight();
 			for (int x = 0; x < Canvas.Size.Width; x++) {
 				for (int y = 0; y < Canvas.Size.Height; y++) {
@@ -68,7 +68,7 @@ namespace SKR.UI.Gameplay {
 					if (!level.IsInBounds(location))
 						continue;
 
-					var texture = assets[level.GetTerrain(location).Asset];
+					var texture = _assets[level.GetTerrain(location).Asset];
 					if (texture == null) {
 						Logger.WarnFormat("Texture not found for asset: {0}!", level.GetTerrain(location).Asset);
 						continue;
@@ -88,10 +88,10 @@ namespace SKR.UI.Gameplay {
 			}
 
 			// draw entities
-			foreach (var entity in entities.OrderBy(e => e.Get<Sprite>().ZOrder)) {
+			foreach (var entity in _entities.OrderBy(e => e.Get<Sprite>().ZOrder)) {
 				Point screenPosition = entity.Get<GameObject>().Location - ViewOffset;
 
-				var texture = assets[entity.Get<Sprite>().Asset];
+				var texture = _assets[entity.Get<Sprite>().Asset];
 				if (texture == null) {
 					Logger.WarnFormat("Texture not found for asset: {0}!", entity.Get<Sprite>().Asset);
 					continue;
@@ -122,12 +122,12 @@ namespace SKR.UI.Gameplay {
 		protected override void Dispose(bool isDisposing) {
 			base.Dispose(isDisposing);
 
-			if (alreadyDisposed)
+			if (_alreadyDisposed)
 				return;
 			if (isDisposing)
 				if (Canvas != null)
 					Canvas.Dispose();
-			alreadyDisposed = true;
+			_alreadyDisposed = true;
 		}
 	}
 }

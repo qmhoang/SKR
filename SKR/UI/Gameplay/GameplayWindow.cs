@@ -44,13 +44,13 @@ namespace SKR.UI.Gameplay {
 
 		public PromptWindowTemplate PromptTemplate;
 
-		private Entity player;
+		private Entity _player;
 
 		public GameplayWindow(SkrWindowTemplate template)
 				: base(template) {
 			AssetsManager = new AssetsManager();
 
-			player = template.World.Player;
+			_player = template.World.Player;
 		}
 
 		protected override void OnSettingUp() {
@@ -104,7 +104,7 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void GameplayWindow_KeyPressed(object sender, KeyboardEventArgs keyboardEvent) {
-			var playerLocation = player.Get<GameObject>();
+			var playerLocation = _player.Get<GameObject>();
 
 			switch (keyboardEvent.KeyboardData.KeyCode) {
 				case TCODKeyCode.Up:
@@ -120,7 +120,7 @@ namespace SKR.UI.Gameplay {
 					Move(Direction.West);
 					break;
 				case TCODKeyCode.KeypadFive:
-					Enqueue(new WaitAction(player));
+					Enqueue(new WaitAction(_player));
 					break;
 				case TCODKeyCode.Right:
 				case TCODKeyCode.KeypadSix:
@@ -144,22 +144,22 @@ namespace SKR.UI.Gameplay {
 						switch (keyboardEvent.KeyboardData.Character) {
 							case 'r':
 							{
-								Enqueue(new ChangePostureAction(player, Posture.Run));
+								Enqueue(new ChangePostureAction(_player, Posture.Run));
 							}
 								break;
 							case 's':
 							{
-								Enqueue(new ChangePostureAction(player, Posture.Stand));
+								Enqueue(new ChangePostureAction(_player, Posture.Stand));
 							}
 								break;
 							case 'c':
 							{
-								Enqueue(new ChangePostureAction(player, Posture.Crouch));
+								Enqueue(new ChangePostureAction(_player, Posture.Crouch));
 							}
 								break;
 							case 'p':
 							{
-								Enqueue(new ChangePostureAction(player, Posture.Prone));
+								Enqueue(new ChangePostureAction(_player, Posture.Prone));
 							}
 								break;
 							case 'z':
@@ -193,18 +193,18 @@ namespace SKR.UI.Gameplay {
 							case 'A': {
 									Options("With that weapon?",
 											"No possible way of attacking.",
-											FilterEquippedItems<MeleeComponent>(player).ToList(),
+											FilterEquippedItems<MeleeComponent>(_player).ToList(),
 											Identifier.GetNameOrId,
 											weapon => Directions("Attack where?",
 																 p => Options("Attack where?",
 																			  "Nothing at location to attack.",
-																			  player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Creature>(p).ToList(),
+																			  _player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Creature>(p).ToList(),
 																			  Identifier.GetNameOrId,
 																			  defender => Options("Attack at what?",
 																								  String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
 																								  defender.Get<DefendComponent>().BodyPartsList,
 																								  bp => bp.Name,
-																								  bp => Enqueue(new MeleeAttackAction(player,
+																								  bp => Enqueue(new MeleeAttackAction(_player,
 																																	  defender,
 																																	  weapon,
 																																	  bp,
@@ -216,18 +216,18 @@ namespace SKR.UI.Gameplay {
 							case 'f': {
 									Options("With what weapon?",
 											"No possible way of shooting target.",
-											FilterEquippedItems<RangeComponent>(player).ToList(),
+											FilterEquippedItems<RangeComponent>(_player).ToList(),
 											Identifier.GetNameOrId,
 											weapon => TargetsAt("Shoot where?",
 																World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
 																p => Options("Shoot at what?",
 																			 "Nothing there to shoot.",
-																			 player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent>(p),
+																			 _player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent>(p),
 																			 Identifier.GetNameOrId,
 																			 delegate(Entity defender)
 																			 {
-																				 World.TagManager.Register(defender, "target");
-																				 Enqueue(new RangeAttackAction(player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart()));
+																				 World.TagManager.Register("target", defender);
+																				 Enqueue(new RangeAttackAction(_player, defender, weapon, defender.Get<DefendComponent>().GetRandomPart()));
 																			 })));
 
 								}
@@ -235,13 +235,13 @@ namespace SKR.UI.Gameplay {
 							case 'F': {
 									Options("With what weapon?",
 											"No possible way of shooting target.",
-											FilterEquippedItems<RangeComponent>(player).ToList(),
+											FilterEquippedItems<RangeComponent>(_player).ToList(),
 											Identifier.GetNameOrId,
 											weapon => TargetsAt("Shoot where?",
 																World.TagManager.IsRegistered("target") ? World.TagManager.GetEntity("target").Get<GameObject>().Location : playerLocation.Location,
 																p => Options("Shoot at what?",
 																			 "Nothing there to shoot.",
-																			 player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent>(p),
+																			 _player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent>(p),
 																			 Identifier.GetNameOrId,
 																			 defender => Options("What part?",
 																								 String.Format("{0} has no possible part to attack.  How did we get here?", Identifier.GetNameOrId(defender)),
@@ -249,8 +249,8 @@ namespace SKR.UI.Gameplay {
 																								 bp => bp.Name,
 																								 bp =>
 																								 {
-																									 World.TagManager.Register(defender, "target");
-																									 Enqueue(new RangeAttackAction(player, defender, weapon, bp, true));
+																									 World.TagManager.Register("target", defender);
+																									 Enqueue(new RangeAttackAction(_player, defender, weapon, bp, true));
 																								 }))));
 
 								}
@@ -258,13 +258,13 @@ namespace SKR.UI.Gameplay {
 							case 'r': {
 									Options("Reload what weapon?",
 											"No weapons to reload.",
-											FilterEquippedItems<RangeComponent>(player).ToList(),
+											FilterEquippedItems<RangeComponent>(_player).ToList(),
 											Identifier.GetNameOrId, weapon => Options("What ammo?",
 																					  "No possible ammo for selected weapon.",
-																					  player.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() &&
+																					  _player.Get<ContainerComponent>().Items.Where(e => e.Has<AmmoComponent>() &&
 																																		e.Get<AmmoComponent>().Caliber == weapon.Get<RangeComponent>().AmmoCaliber).ToList(),
 																					  Identifier.GetNameOrId,
-																					  ammo => Enqueue(new ReloadAction(player, weapon, ammo))));
+																					  ammo => Enqueue(new ReloadAction(_player, weapon, ammo))));
 								}
 								break;
 							case 'u':
@@ -276,10 +276,10 @@ namespace SKR.UI.Gameplay {
 																							  String.Format("No possible action on {0}", Identifier.GetNameOrId(useable)),
 																							  useable.Get<UseBroadcaster>().Actions.ToList(),
 																							  use => use.Description,
-																							  use => use.Use(player, useable))));
+																							  use => use.Use(_player, useable))));
 								break;
 							case 'd': {
-									var inventory = player.Get<ContainerComponent>();
+									var inventory = _player.Get<ContainerComponent>();
 									if (inventory.Count > 0)
 										ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
 																			  {
@@ -289,14 +289,14 @@ namespace SKR.UI.Gameplay {
 																				  World = World,
 																				  Items = inventory.Items,
 																				  SelectSingleItem = false,
-																				  ItemSelected = i => DropItem(player, i),
+																				  ItemSelected = i => DropItem(_player, i),
 																			  }));
 									else
 										World.Log.Aborted("You are carrying no items to drop.");
 								}
 								break;
 							case 'g': {
-									var inventory = player.Get<ContainerComponent>();
+									var inventory = _player.Get<ContainerComponent>();
 
 									// get all items that have a location (eg present on the map) that are at the location where are player is
 									var items = playerLocation.Level.GetEntitiesAt<Item, VisibleComponent>(playerLocation.Location).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0 &&
@@ -311,31 +311,31 @@ namespace SKR.UI.Gameplay {
 																				  World = World,
 																				  Items = items,
 																				  SelectSingleItem = false,
-																				  ItemSelected = i => PickUpItem(player, i),
+																				  ItemSelected = i => PickUpItem(_player, i),
 																			  }));
 									else
 										World.Log.Aborted("No items here to pick up.");
 								}
 								break;
 							case 'G': {
-									var inventory = player.Get<ContainerComponent>();
+									var inventory = _player.Get<ContainerComponent>();
 
 									// get all items that have a location (eg present on the map) that are at the location where are player is
 									var items = playerLocation.Level.GetEntitiesAt<Item, VisibleComponent>(playerLocation.Location).Where(e => e.Get<VisibleComponent>().VisibilityIndex > 0 &&
 																																			   !inventory.Items.Contains(e));
 
 									if (items.Count() > 0)
-										Enqueue(new GetAllItemsAction(player, items));
+										Enqueue(new GetAllItemsAction(_player, items));
 									else
 										World.Log.Aborted("No items here to pick up.");
 								}
 								break;
 							case 'j': {
-									Directions("Jump what direction?", p => Enqueue(new JumpOverAction(player, p - playerLocation.Location)));
+									Directions("Jump what direction?", p => Enqueue(new JumpOverAction(_player, p - playerLocation.Location)));
 								}
 								break;
 							case 'i': {
-									var inventory = player.Get<ContainerComponent>();
+									var inventory = _player.Get<ContainerComponent>();
 									ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
 																		  {
 																			  Size = MapPanel.Size,
@@ -356,19 +356,19 @@ namespace SKR.UI.Gameplay {
 																			   IsPopup = true,
 																			   HasFrame = true,
 																			   World = World,
-																			   Items = player.Get<EquipmentComponent>().Slots.ToList(),
+																			   Items = _player.Get<EquipmentComponent>().Slots.ToList(),
 																		   }));
 								break;
 							case 'p': {
 									Options("With what?",
 											"No lockpicks available.",
-											player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()),
+											_player.Get<ContainerComponent>().Items.Where(i => i.Has<Lockpick>()),
 											Identifier.GetNameOrId,
 											lockpick => Directions("What direction?", p => Options("Select what to lockpick.",
 																								   "Nothing there to lockpick.",
-																								   player.Get<GameObject>().Level.GetEntitiesAt<LockedFeature>(p),
+																								   _player.Get<GameObject>().Level.GetEntitiesAt<LockedFeature>(p),
 																								   Identifier.GetNameOrId,
-																								   feature => Enqueue(new LockpickAction(player, lockpick, feature)))));
+																								   feature => Enqueue(new LockpickAction(_player, lockpick, feature)))));
 
 								}
 								break;
@@ -398,7 +398,7 @@ namespace SKR.UI.Gameplay {
 								break;
 							case 'z':
 							{
-								player.Get<ActorComponent>().Cancel();
+								_player.Get<ActorComponent>().Cancel();
 							} break;
 							case '`': {
 									ParentApplication.Push(new DebugMenuWindow(new SkrWindowTemplate()
@@ -430,21 +430,21 @@ namespace SKR.UI.Gameplay {
 		}
 
 		private void Move(Direction direction) {
-			Point newLocation = player.Get<GameObject>().Location + direction;
+			Point newLocation = _player.Get<GameObject>().Location + direction;
 
 			// we check for attackables
-			var actorsAtNewLocation = player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Creature>(newLocation).ToList();
+			var actorsAtNewLocation = _player.Get<GameObject>().Level.GetEntitiesAt<DefendComponent, Creature>(newLocation).ToList();
 
 			if (actorsAtNewLocation.Count > 0) {
 				Options("With that weapon?",
 				        "No possible way of attacking.",
-				        FilterEquippedItems<MeleeComponent>(player).ToList(),
+				        FilterEquippedItems<MeleeComponent>(_player).ToList(),
 				        Identifier.GetNameOrId,
 				        weapon => Options("Attack what?",
 				                          "Nothing at location to attack.", actorsAtNewLocation,
 				                          Identifier.GetNameOrId,
 				                          target =>
-				                          Enqueue(new MeleeAttackAction(player,
+				                          Enqueue(new MeleeAttackAction(_player,
 				                                                        target,
 				                                                        weapon,
 				                                                        target.Get<DefendComponent>().GetRandomPart()))));
@@ -452,11 +452,11 @@ namespace SKR.UI.Gameplay {
 				return;
 			}
 
-			Enqueue(new BumpAction(player, direction));
+			Enqueue(new BumpAction(_player, direction));
 		}
 
 		public void Enqueue(IAction action) {
-			player.Get<ActorComponent>().Enqueue(action);
+			_player.Get<ActorComponent>().Enqueue(action);
 		}
 
 		#region Pickup/Drop items
@@ -520,7 +520,7 @@ namespace SKR.UI.Gameplay {
 		private void Directions(string message, Action<Point> action) {
 			ParentApplication.Push(
 					new DirectionalPrompt(message,
-					                      player.Get<GameObject>().Location,
+					                      _player.Get<GameObject>().Location,
 					                      action,
 					                      PromptTemplate));
 		}
@@ -528,7 +528,7 @@ namespace SKR.UI.Gameplay {
 		private void Targets(string message, Action<Point> action) {
 			ParentApplication.Push(
 					new TargetPrompt(message,
-					                 player.Get<GameObject>().Location,
+					                 _player.Get<GameObject>().Location,
 					                 action,
 					                 MapPanel,
 					                 PromptTemplate));
@@ -537,7 +537,7 @@ namespace SKR.UI.Gameplay {
 		private void TargetsAt(string message, Point point, Action<Point> action) {
 			ParentApplication.Push(
 					new TargetPrompt(message,
-					                 player.Get<GameObject>().Location,
+					                 _player.Get<GameObject>().Location,
 					                 point,
 					                 action,
 					                 MapPanel,

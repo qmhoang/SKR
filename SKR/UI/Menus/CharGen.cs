@@ -19,10 +19,10 @@ using libtcod;
 
 namespace SKR.UI.Menus {
 	public class CharGen : SkrWindow {
-		private ListBox occupationListBox;
-		private MenuButton sexButton;
-		private TextEntry nameEntry;
-		private TextBox textBox;
+		private ListBox _occupationListBox;
+		private MenuButton _sexButton;
+		private TextEntry _nameEntry;
+		private TextBox _textBox;
 
 		public CharGen(SkrWindowTemplate template) : base(template) {}
 
@@ -45,9 +45,9 @@ namespace SKR.UI.Menus {
 			                   		           		{PigmentType.ViewSelected, new Pigment(ColorPresets.Green, ColorPresets.Black)}
 			                   		           }
 			                   };
-			nameEntry = new TextEntry(nameTemplate);
+			_nameEntry = new TextEntry(nameTemplate);
 
-			AddControl(nameEntry);
+			AddControl(_nameEntry);
 
 			var jobs = new List<ListItemData>();
 
@@ -65,8 +65,8 @@ namespace SKR.UI.Menus {
 			                         		Items = jobs
 			                         };
 			occupationTemplate.AlignTo(LayoutDirection.South, nameTemplate);
-			occupationListBox = new ListBox(occupationTemplate);
-			AddControl(occupationListBox);
+			_occupationListBox = new ListBox(occupationTemplate);
+			AddControl(_occupationListBox);
 			jobs.Add(new ListItemData("test"));
 
 			var sexTemplate = new MenuButtonTemplate()
@@ -81,8 +81,8 @@ namespace SKR.UI.Menus {
 			                  		        		"Female"
 			                  		        },
 			                  };
-			sexButton = new MenuButton(sexTemplate);
-			AddControl(sexButton);
+			_sexButton = new MenuButton(sexTemplate);
+			AddControl(_sexButton);
 
 			var nodes = new List<TreeNode>();
 			int index = 0;
@@ -150,7 +150,7 @@ namespace SKR.UI.Menus {
 		}
 
 		private void CharGen_KeyPressed(object sender, KeyboardEventArgs e) {
-			if ((e.KeyboardData.KeyCode == TCODKeyCode.Enter || e.KeyboardData.KeyCode == TCODKeyCode.KeypadEnter) && !nameEntry.HasKeyboardFocus)
+			if ((e.KeyboardData.KeyCode == TCODKeyCode.Enter || e.KeyboardData.KeyCode == TCODKeyCode.KeypadEnter) && !_nameEntry.HasKeyboardFocus)
 				StartNewGame(this, EventArgs.Empty);
 		}
 

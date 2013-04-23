@@ -6,6 +6,7 @@ using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
 using DEngine.Extensions;
+using DEngine.Random;
 using NUnit.Framework;
 using SkrGame.Actions.Combat;
 using SkrGame.Actions.Items;

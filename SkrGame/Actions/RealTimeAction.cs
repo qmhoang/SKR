@@ -5,20 +5,20 @@ using SkrGame.Universe;
 
 namespace SkrGame.Actions {
 	public sealed class RealTimeAction : IAction {
-		private int apCost;
-		private Action action;
+		private readonly int _apCost;
+		private readonly Action _action;
 
 		public RealTimeAction(int seconds, Action action) {
-			apCost = World.SecondsToActionPoints(seconds);
-			this.action = action;
+			_apCost = World.SecondsToActionPoints(seconds);
+			this._action = action;
 		}
 
 		public int APCost {
-			get { return apCost; }
+			get { return _apCost; }
 		}
 
 		public ActionResult OnProcess() {
-			action();
+			_action();
 			return ActionResult.Success;
 		}
 	}
