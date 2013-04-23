@@ -18,49 +18,49 @@ namespace SkrGame.Actions.Movement {
 	// todo needs TLC refactoring
 	public class JumpOverAction : LoggedAction {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private Entity feature;
-		private Point landedLocation;
-		private int apCost;
+		private Entity _feature;
+		private Point _landedLocation;
+		private int _apCost;
 
 		public JumpOverAction(Entity entity, Direction direction)
 				: base(entity) {
 			Contract.Requires<ArgumentException>(entity.Has<Creature>());
 			//			Contract.Requires<ArgumentException>(feature.Get<GameObject>().DistanceTo(entity.Get<GameObject>()) <= 1.5f);
 
-			landedLocation = Entity.Get<GameObject>().Location + direction + direction;
+			_landedLocation = Entity.Get<GameObject>().Location + direction + direction;
 
 			var features = World.CurrentLevel.GetEntitiesAt<Scenery>(entity.Get<GameObject>().Location + direction).OrderByDescending(e => e.Get<Scenery>().JumpHeight);
 
 			if (features.IsEmpty()) {
-				feature = null;
+				_feature = null;
 				Logger.InfoFormat("{0} is jumping over nothing.", EntityName);
-				apCost = (int) Math.Round(World.OneSecondInAP * direction.Offset.Length);
+				_apCost = (int) Math.Round(World.OneSecondInAP * direction.Offset.Length);
 			} else {
-				feature = features.First();
-				apCost = (int) Math.Round(World.OneSecondInAP * direction.Offset.Length * Math.Max(feature.Get<Scenery>().JumpHeight + 3, 1.0));
+				_feature = features.First();
+				_apCost = (int) Math.Round(World.OneSecondInAP * direction.Offset.Length * Math.Max(_feature.Get<Scenery>().JumpHeight + 3, 1.0));
 			}
 		}
 
 		public override int APCost {
-			get { return apCost; }
+			get { return _apCost; }
 		}
 
 		public override ActionResult OnProcess() {
 			// todo stamina burning
 			var level = Entity.Get<GameObject>().Level;
 
-			if (!level.IsWalkable(landedLocation)) {
-				Logger.InfoFormat("{0} cannot be walked on.  We can't jump over {1}.", landedLocation, EntityName);
+			if (!level.IsWalkable(_landedLocation)) {
+				Logger.InfoFormat("{0} cannot be walked on.  We can't jump over {1}.", _landedLocation, EntityName);
 				World.Log.Aborted("Can't jump over location.");
 				return ActionResult.Aborted;
 			}
 
 			double jumpRoll = World.SkillRoll();
-			double jumpEase = Entity.Get<Creature>().Skills["skill_jumping"] - (feature == null ? 0 : feature.Get<Scenery>().JumpHeight);
+			double jumpEase = Entity.Get<Creature>().Skills["skill_jumping"] - (_feature == null ? 0 : _feature.Get<Scenery>().JumpHeight);
 
 			jumpEase += World.StandardDeviation; // todo fix hack, need to add size for objects (NOT IN GAMEOBJECT, ANOTHER COMPONENT)
 
-			var thingJumpedOver = feature == null ? "location" : Identifier.GetNameOrId(feature);
+			var thingJumpedOver = _feature == null ? "location" : Identifier.GetNameOrId(_feature);
 
 			Logger.InfoFormat("{0} tries to jump over the {1} : (needs:{2:0.00}, rolled:{3:0.00}, difficulty: {4:0.00}%)",
 			                  EntityName,
@@ -71,20 +71,20 @@ namespace SkrGame.Actions.Movement {
 
 			if (jumpRoll <= jumpEase) {
 				// success
-				Entity.Get<GameObject>().Location = landedLocation;
+				Entity.Get<GameObject>().Location = _landedLocation;
 
 				// move all items in inventory with entity
 				if (Entity.Has<ContainerComponent>()) {
 					foreach (var item in Entity.Get<ContainerComponent>().Items) {
 						if (item.Has<GameObject>())
-							item.Get<GameObject>().Location = landedLocation;
+							item.Get<GameObject>().Location = _landedLocation;
 					}
 				}
 				// move all equipped items with entity
 				if (Entity.Has<EquipmentComponent>()) {
 					foreach (var item in Entity.Get<EquipmentComponent>().EquippedItems) {
 						if (item.Has<GameObject>())
-							item.Get<GameObject>().Location = landedLocation;
+							item.Get<GameObject>().Location = _landedLocation;
 					}
 				}
 

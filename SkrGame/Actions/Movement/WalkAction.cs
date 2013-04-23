@@ -12,18 +12,18 @@ using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions.Movement {
 	public class WalkAction : LoggedAction {
-		private Direction direction;
+		private Direction _direction;
 
 		private const int WalkCost = (int) (World.OneSecondInAP * World.TileLengthInMeter) / 2;
 
 		public WalkAction(Entity entity, Direction direction)
 				: base(entity) {
 			Contract.Requires<ArgumentException>(entity.Has<Creature>());
-			this.direction = direction;
+			this._direction = direction;
 		}
 
 		public override int APCost {
-			get { return (int) Math.Round(WalkCost * direction.Offset.Length / PostureModifier()); }
+			get { return (int) Math.Round(WalkCost * _direction.Offset.Length / PostureModifier()); }
 		}
 
 		private double PostureModifier() {
@@ -46,7 +46,7 @@ namespace SkrGame.Actions.Movement {
 			// todo stamina burning
 			var location = Entity.Get<GameObject>();
 
-			Point newLocation = location.Location + direction;
+			Point newLocation = location.Location + _direction;
 
 			if (location.Level.IsWalkable(newLocation)) {
 				location.Location = newLocation;

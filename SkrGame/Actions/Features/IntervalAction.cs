@@ -20,7 +20,7 @@ namespace SkrGame.Actions.Features {
 			Contract.Requires<ArgumentNullException>(onInterval != null, "onInterval");
 			Contract.Requires<ArgumentNullException>(onFinish != null, "onFinish");
 			
-			this.counter = counter;
+			this._counter = counter;
 			Length = length;
 			Interval = interval;
 			OnInterval = onInterval;
@@ -29,7 +29,8 @@ namespace SkrGame.Actions.Features {
 
 		public TimeSpan Length { get; private set; }
 		public TimeSpan Interval { get; private set; }
-		private TimeSpan counter;
+
+		private TimeSpan _counter;
 
 		public int LengthInAP { get { return World.SecondsToActionPoints(Length.TotalSeconds); } }
 		
@@ -49,20 +50,20 @@ namespace SkrGame.Actions.Features {
 			var ts = new TimeSpan(0, 0, 0, 0, (int) Math.Round(World.ActionPointsToSeconds(APCost) * 1000));
 			
 			if (LengthInAP > APCost) {
-				if (counter > Interval) {
+				if (_counter > Interval) {
 					var result = OnInterval(Entity);
 
 					if (result == ActionResult.Aborted || result == ActionResult.Failed) {
 						return OnFinish(Entity);
 					} else if (result == ActionResult.SuccessNoTime) { // prevents infinite queuing
-						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
+						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, _counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
 						return ActionResult.Success;
 					} else {
-						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
+						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, _counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
 						return result;
 					}
 				} else {
-					Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, counter + ts, Length - ts, Interval, OnInterval, OnFinish));
+					Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, _counter + ts, Length - ts, Interval, OnInterval, OnFinish));
 					return ActionResult.Success;
 				}
 			}

@@ -9,8 +9,8 @@ using SkrGame.Universe.Entities.Items.Equipables;
 
 namespace SkrGame.Actions.Items {
 	public class UnequipItemAction : LoggedAction {
-		private string slot;
-		private int apCost;
+		private string _slot;
+		private int _apCost;
 
 		public UnequipItemAction(Entity entity, string slot)
 				: base(entity) {
@@ -21,27 +21,27 @@ namespace SkrGame.Actions.Items {
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().ContainSlot(slot), "Entity doesn't have slot.");
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().IsSlotEquipped(slot), "No item equipped in slot.");
 
-			this.slot = slot;
-			this.apCost = 1;
+			this._slot = slot;
+			this._apCost = 1;
 		}
 
 		public override int APCost {
-			get { return apCost; }
+			get { return _apCost; }
 		}
 
 		public override ActionResult OnProcess() {
-			var removed = Entity.Get<EquipmentComponent>()[slot];
+			var removed = Entity.Get<EquipmentComponent>()[_slot];
 
-			Entity.Get<EquipmentComponent>().Unequip(slot);
+			Entity.Get<EquipmentComponent>().Unequip(_slot);
 
 			if (removed != null) {
 				Entity.Get<ContainerComponent>().Add(removed);
-				apCost = removed.Get<Item>().Size * 10;
+				_apCost = removed.Get<Item>().Size * 10;
 
 				if (removed.Has<VisibleComponent>()) {
 					removed.Get<VisibleComponent>().Reset();
 				}
-				World.Log.NormalFormat("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), slot);
+				World.Log.NormalFormat("{0} unequips {1} from {2}", EntityName, Identifier.GetNameOrId(removed), _slot);
 
 				if (Entity.Has<Creature>() && removed.Has<EquippedBonus>()) {
 					var p = Entity.Get<Creature>();
