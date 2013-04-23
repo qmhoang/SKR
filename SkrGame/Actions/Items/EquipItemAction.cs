@@ -9,8 +9,8 @@ using SkrGame.Universe.Entities.Items.Equipables;
 
 namespace SkrGame.Actions.Items {
 	public class EquipItemAction : AbstractItemAction {
-		private string slot;
-		private bool force;
+		private string _slot;
+		private bool _force;
 
 		public EquipItemAction(Entity entity, Entity item, string slot, bool force = false) : base(entity, item) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
@@ -24,8 +24,8 @@ namespace SkrGame.Actions.Items {
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().ContainSlot(slot), "Entity doesn't have slot.");
 			Contract.Requires<ArgumentException>(force || entity.Get<ContainerComponent>().Contains(item), "Entity doesn't have item in inventory.");
 
-			this.slot = slot;
-			this.force = force;
+			this._slot = slot;
+			this._force = force;
 		}
 
 		public override int APCost {
@@ -33,13 +33,13 @@ namespace SkrGame.Actions.Items {
 		}
 
 		public override ActionResult OnProcess() {
-			if (!Entity.Get<ContainerComponent>().Contains(Item) && !force) {
+			if (!Entity.Get<ContainerComponent>().Contains(Item) && !_force) {
 				World.Log.Aborted("You cannot equip an item you don't have in your inventory");
 				return ActionResult.Aborted;
 			}
 
 			Entity.Get<ContainerComponent>().Remove(Item);
-			Entity.Get<EquipmentComponent>().Equip(slot, Item);
+			Entity.Get<EquipmentComponent>().Equip(_slot, Item);
 
 			// skill bonuses
 			if (Entity.Has<Creature>() && Item.Has<EquippedBonus>()) {
@@ -52,9 +52,9 @@ namespace SkrGame.Actions.Items {
 			MakeInvisible(Item);
 			MoveItemToEntityLocation(Item);
 
-			World.Log.NormalFormat("{0} equips {1} to {2}", EntityName, ItemName, slot);
+			World.Log.NormalFormat("{0} equips {1} to {2}", EntityName, ItemName, _slot);
 			
-			return force ? ActionResult.SuccessNoTime : ActionResult.Success;
+			return _force ? ActionResult.SuccessNoTime : ActionResult.Success;
 		}
 	}
 }

@@ -40,6 +40,10 @@ namespace SKRTests {
 		}
 
 		public class MyClass {
+			private static readonly int a = c + 1;
+			private static readonly int b = a + 1;
+			private static readonly int c = b + 1;
+
 			public int Value { get; set; }
 
 			public MyClass(int value) {

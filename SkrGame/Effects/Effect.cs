@@ -17,12 +17,13 @@ namespace SkrGame.Effects {
 	public abstract class Effect {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private EntityConditions holder;
+		private EntityConditions _holder;
+
 		public EntityConditions Holder {
-			get { return holder; }
+			get { return _holder; }
 			internal set {
 				Contract.Requires<ArgumentNullException>(value != null, "value");
-				holder = value;
+				_holder = value;
 			}
 		}
 

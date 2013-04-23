@@ -7,11 +7,11 @@ using SkrGame.Universe.Entities.Items;
 
 namespace SkrGame.Actions.Items {
 	public class GetAllItemsAction : LoggedAction {
-		private List<Entity> items;
+		private List<Entity> _items;
 
 		public GetAllItemsAction(Entity entity, IEnumerable<Entity> items)
 				: base(entity) {
-			this.items = items.ToList();
+			this._items = items.ToList();
 		}
 
 		public override int APCost {
@@ -19,8 +19,8 @@ namespace SkrGame.Actions.Items {
 		}
 
 		public override ActionResult OnProcess() {
-			if (items.Count > 0) {
-				foreach (var entity in items) {
+			if (_items.Count > 0) {
+				foreach (var entity in _items) {
 					Entity.Get<ActorComponent>().Enqueue(new GetItemAction(Entity, entity, entity.Get<Item>().Amount));
 				}
 				return ActionResult.SuccessNoTime;

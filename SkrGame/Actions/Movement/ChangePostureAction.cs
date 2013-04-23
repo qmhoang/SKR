@@ -8,68 +8,68 @@ using SkrGame.Universe.Entities.Actors;
 
 namespace SkrGame.Actions.Movement {
 	public class ChangePostureAction : LoggedAction {
-		private Posture posture;
-		private Posture current;
+		private Posture _posture;
+		private Posture _current;
 
 		public ChangePostureAction(Entity entity, Posture posture)
 				: base(entity) {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			Contract.Requires<ArgumentException>(entity.Has<Creature>());
 			
-			this.current = entity.Get<Creature>().Posture;
-			this.posture = posture;
-			apcost = World.OneSecondInAP / 2;
+			this._current = entity.Get<Creature>().Posture;
+			this._posture = posture;
+			_apcost = World.OneSecondInAP / 2;
 		}
 
-		private int apcost;
+		private int _apcost;
 
 		public override int APCost {
-			get { return apcost; }	// todo fat people take more time?
+			get { return _apcost; }	// todo fat people take more time?
 		}
 
 		public override ActionResult OnProcess() {
 			// stand -> run and run -> stand
-			if ((current == Posture.Stand && posture == Posture.Run) || 
-				(current == Posture.Run && posture == Posture.Stand)) {
+			if ((_current == Posture.Stand && _posture == Posture.Run) || 
+				(_current == Posture.Run && _posture == Posture.Stand)) {
 
-				apcost = World.OneSecondInAP / 10;
-				SetPosture(posture);
+				_apcost = World.OneSecondInAP / 10;
+				SetPosture(_posture);
 				return ActionResult.Success;
 			}
 			// crouch -> run and run -> crouch
-			if ((current == Posture.Crouch && posture == Posture.Run) || 
-				(current == Posture.Run && posture == Posture.Crouch)) {
+			if ((_current == Posture.Crouch && _posture == Posture.Run) || 
+				(_current == Posture.Run && _posture == Posture.Crouch)) {
 
-				SetPosture(posture);
+				SetPosture(_posture);
 				return ActionResult.Success;
 			}
 			// stand -> crouch and crouch -> stand
-			if ((current == Posture.Crouch && posture == Posture.Stand) || 
-				(current == Posture.Stand && posture == Posture.Crouch)) {
+			if ((_current == Posture.Crouch && _posture == Posture.Stand) || 
+				(_current == Posture.Stand && _posture == Posture.Crouch)) {
 
-				SetPosture(posture);
+				SetPosture(_posture);
 				return ActionResult.Success;
 			}
 			// crouch -> prone and prone -> crouch
-			if ((current == Posture.Crouch && posture == Posture.Prone) || 
-				(current == Posture.Prone && posture == Posture.Crouch)) {
+			if ((_current == Posture.Crouch && _posture == Posture.Prone) || 
+				(_current == Posture.Prone && _posture == Posture.Crouch)) {
 
-				SetPosture(posture);
+				SetPosture(_posture);
 				return ActionResult.Success;
 			}
 			// prone -> stand or prone -> run requires we crouch first
-			if ((current == Posture.Prone && posture == Posture.Stand) || 
-				(current == Posture.Prone && posture == Posture.Run)) {
+			if ((_current == Posture.Prone && _posture == Posture.Stand) || 
+				(_current == Posture.Prone && _posture == Posture.Run)) {
 
 				SetPosture(Posture.Crouch);
-				Entity.Get<ActorComponent>().Enqueue(new ChangePostureAction(Entity, posture));
+				Entity.Get<ActorComponent>().Enqueue(new ChangePostureAction(Entity, _posture));
 				return ActionResult.Success;
 			}
 			// stand -> prone and run -> prone
-			if ((current == Posture.Stand && posture == Posture.Prone) || 
-				(current == Posture.Run && posture == Posture.Prone)) {
+			if ((_current == Posture.Stand && _posture == Posture.Prone) || 
+				(_current == Posture.Run && _posture == Posture.Prone)) {
 
-				SetPosture(posture);
+				SetPosture(_posture);
 				return ActionResult.Success;
 			}
 

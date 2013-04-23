@@ -13,13 +13,13 @@ using SkrGame.Universe.Entities.Features;
 
 namespace SkrGame.Actions.Movement {
 	public class BumpAction : ActorAction {
-		private Direction direction;
+		private Direction _direction;
 
 		private const int BumpCost = World.OneSecondInAP / 10;
 
 		public BumpAction(Entity entity, Direction direction) : base(entity) {
 			Contract.Requires<ArgumentException>(entity.Has<GameObject>());			
-			this.direction = direction;
+			this._direction = direction;
 		}
 
 		public override int APCost {
@@ -27,7 +27,7 @@ namespace SkrGame.Actions.Movement {
 		}
 
 		public override ActionResult OnProcess() {
-			Point newLocation = Entity.Get<GameObject>().Location + direction;
+			Point newLocation = Entity.Get<GameObject>().Location + _direction;
 
 			var bumpablesAtLocation = Entity.Get<GameObject>().Level.GetEntitiesAt<OnBump>(newLocation);
 			bool movementAllowed = true;
@@ -40,7 +40,7 @@ namespace SkrGame.Actions.Movement {
 			}
 
 			if (movementAllowed) {
-				Entity.Get<ActorComponent>().Enqueue(new WalkAction(Entity, direction));
+				Entity.Get<ActorComponent>().Enqueue(new WalkAction(Entity, _direction));
 				return ActionResult.Success;
 			} else {
 				return ActionResult.Failed;				
