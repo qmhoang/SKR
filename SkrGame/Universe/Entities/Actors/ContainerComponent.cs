@@ -18,7 +18,7 @@ namespace SkrGame.Universe.Entities.Actors {
 	public sealed class ContainerComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private readonly List<Entity> itemContainer;
+		private readonly List<Entity> _itemContainer;
 
 		public event ComponentEventHandler<ContainerComponent, EventArgs<Entity>> ItemRemoved;
 		public event ComponentEventHandler<ContainerComponent, EventArgs<Entity>> ItemAdded;
@@ -36,22 +36,22 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public ContainerComponent() {
-			itemContainer = new List<Entity>();	
+			_itemContainer = new List<Entity>();	
 		}
 
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
-			Contract.Invariant(itemContainer != null);			
+			Contract.Invariant(_itemContainer != null);			
 		}
 
 		[Pure]
 		public bool Contains(Entity item) {
-			return itemContainer.Contains(item);
+			return _itemContainer.Contains(item);
 		}
 		
 		public int Count {
-			get { return itemContainer.Count; }
+			get { return _itemContainer.Count; }
 		}
 
 		/// <summary>
@@ -59,17 +59,17 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// </summary>
 		public int TotalCount {
 			get {
-				return itemContainer.Sum(i => i.Has<Item>() ? i.Get<Item>().Amount : 1);
+				return _itemContainer.Sum(i => i.Has<Item>() ? i.Get<Item>().Amount : 1);
 			}
 		}
 		
 		public IEnumerable<Entity> Items {
-			get { return itemContainer; }
+			get { return _itemContainer; }
 		}
 
 		public bool Exist(Predicate<Entity> match) {
 			Contract.Requires<ArgumentNullException>(match != null, "match");
-			return itemContainer.Exists(match);
+			return _itemContainer.Exists(match);
 		}
 
 		/// <summary>
@@ -79,7 +79,7 @@ namespace SkrGame.Universe.Entities.Actors {
 		/// <returns></returns>
 		public Entity GetItem(Predicate<Entity> match) {
 			Contract.Requires<ArgumentNullException>(match != null, "match");
-			return itemContainer.Find(match);
+			return _itemContainer.Find(match);
 		}
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 				return true;
 			} else {
-				itemContainer.Add(item);
+				_itemContainer.Add(item);
 				OnItemAdded(new EventArgs<Entity>(item));
 
 				return true;
@@ -115,13 +115,13 @@ namespace SkrGame.Universe.Entities.Actors {
 		public bool Remove(Entity item) {
 			if (item == null)
 				return false;
-			if (!itemContainer.Contains(item))
+			if (!_itemContainer.Contains(item))
 				return false;
 
 			Logger.DebugFormat("{0} is removing {1} to his inventory.", OwnerUId, Identifier.GetNameOrId(item));
 
 			OnItemRemoved(new EventArgs<Entity>(item));
-			itemContainer.Remove(item);
+			_itemContainer.Remove(item);
 
 			return true;
 		}
@@ -129,8 +129,8 @@ namespace SkrGame.Universe.Entities.Actors {
 		public override Component Copy() {
 			var container = new ContainerComponent();
 
-			foreach (var entity in itemContainer) {
-				container.itemContainer.Add(entity.Copy());
+			foreach (var entity in _itemContainer) {
+				container._itemContainer.Add(entity.Copy());
 			}
 
 			if (ItemAdded != null)

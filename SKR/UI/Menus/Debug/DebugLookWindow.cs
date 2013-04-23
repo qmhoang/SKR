@@ -11,10 +11,10 @@ using libtcod;
 
 namespace SKR.UI.Menus.Debug {
 	public class DebugLookWindow : LookWindow {
-		private TreeView v;
-		private World world;
+		private TreeView _v;
+		private World _world;
 		public DebugLookWindow(Point origin, World world, MapPanel panel, PromptWindowTemplate template) : base(origin, null, panel, template) {
-			this.world = world;
+			this._world = world;
 		}
 
 		protected override void OnSettingUp() {
@@ -29,9 +29,9 @@ namespace SKR.UI.Menus.Debug {
 
 		protected override void MovePosition(Direction direction) {
 			base.MovePosition(direction);
-			if (v != null && ContainsControl(v))
-				RemoveControl(v);
-			var entitiesAt = world.CurrentLevel.GetEntitiesAt(SelectedPosition).ToList();
+			if (_v != null && ContainsControl(_v))
+				RemoveControl(_v);
+			var entitiesAt = _world.CurrentLevel.GetEntitiesAt(SelectedPosition).ToList();
 			if (entitiesAt.Count > 0) {
 				var nodes = new List<TreeNode>();
 
@@ -45,7 +45,7 @@ namespace SKR.UI.Menus.Debug {
 					nodes.Add(n);
 				}
 
-				v = new TreeView(new TreeViewTemplate
+				_v = new TreeView(new TreeViewTemplate
 				{
 					FrameTitle = false,
 					TopLeftPos = Point.One,
@@ -53,7 +53,7 @@ namespace SKR.UI.Menus.Debug {
 					Items = nodes
 				});
 				
-				AddControl(v);
+				AddControl(_v);
 			}			
 		}
 

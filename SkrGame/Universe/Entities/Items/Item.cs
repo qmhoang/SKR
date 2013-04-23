@@ -39,22 +39,22 @@ namespace SkrGame.Universe.Entities.Items {
 
 		public int Hardness { get; set; }
 
-		private int amount;
+		private int _amount;
 		public int Amount {
 			get {
-				return StackType != StackType.Hard ? 1 : amount;
+				return StackType != StackType.Hard ? 1 : _amount;
 			}
 			set {
 				Contract.Requires<ArgumentException>(StackType == StackType.Hard);
 				Contract.Requires<ArgumentException>(value > 0);
-				amount = value;				
+				_amount = value;				
 			}
 		}
 
 		public StackType StackType { get; private set; }
 
 		public Item(int weight, int size, int value, int hardness, StackType stackType = StackType.None) {
-			amount = 1;
+			_amount = 1;
 			Weight = weight;
 			Size = size;
 			Value = value;
@@ -88,7 +88,7 @@ namespace SkrGame.Universe.Entities.Items {
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
-			Contract.Invariant(StackType == StackType.Hard ? amount > 0 : amount == 1);
+			Contract.Invariant(StackType == StackType.Hard ? _amount > 0 : _amount == 1);
 			Contract.Invariant(Size >= 0);
 		}
 	}

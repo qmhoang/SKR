@@ -2,12 +2,13 @@
 using DEngine.Core;
 using Ogui.Core;
 using Ogui.UI;
+using SkrGame.Universe;
 using libtcod;
 using log4net;
 
 namespace SKR.UI.Prompts {
 	public class PromptWindowTemplate : WindowTemplate {
-		public Log Log { get; set; }
+		public GameLog Log { get; set; }
 	}
 
 	public abstract class PromptWindow : Window {
@@ -15,7 +16,7 @@ namespace SKR.UI.Prompts {
 		
 		protected static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected Log GameLog;
+		protected GameLog GameLog;
 		
 		protected PromptWindow(PromptWindowTemplate template)
 			: base(template) {

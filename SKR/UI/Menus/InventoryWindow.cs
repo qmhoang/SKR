@@ -24,15 +24,15 @@ namespace SKR.UI.Menus {
 	}
 
 	public class InventoryWindow : ListWindow<string> {
-		private int bodyPartWidth;
-		private ContainerComponent inventory;
-		private EquipmentComponent equipment;
-		private Entity player;
+		private int _bodyPartWidth;
+		private ContainerComponent _inventory;
+		private EquipmentComponent _equipment;
+		private Entity _player;
 
-		private Rectangle sizeList;
+		private Rectangle _sizeList;
 		
 		protected override Rectangle ListRect {
-			get { return sizeList; }
+			get { return _sizeList; }
 		}
 
 		public InventoryWindow(InventoryWindowTemplate template)
@@ -41,20 +41,20 @@ namespace SKR.UI.Menus {
 			Contract.Requires<ArgumentNullException>(template.Items != null, "template.Items");
 			Contract.Requires<ArgumentNullException>(template.World != null, "player");			
 
-			inventory = template.World.Player.Get<ContainerComponent>();
-			equipment = template.World.Player.Get<EquipmentComponent>();
-			player = template.World.Player;
+			_inventory = template.World.Player.Get<ContainerComponent>();
+			_equipment = template.World.Player.Get<EquipmentComponent>();
+			_player = template.World.Player;
 
-			bodyPartWidth = equipment.Slots.Max(s => s.Length) + 5;  // todo replace to code            
-			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
+			_bodyPartWidth = _equipment.Slots.Max(s => s.Length) + 5;  // todo replace to code            
+			_sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 			
 		}
 
 		protected override void OnSelectItem(string slot) {
-			if (equipment.IsSlotEquipped(slot)) {
-				player.Get<ActorComponent>().Enqueue(new UnequipItemAction(player, slot));
+			if (_equipment.IsSlotEquipped(slot)) {
+				_player.Get<ActorComponent>().Enqueue(new UnequipItemAction(_player, slot));
 			} else {
-				var items = inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().SlotsOccupied.ContainsKey(slot)).ToList();
+				var items = _inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().SlotsOccupied.ContainsKey(slot)).ToList();
 				if (items.Count > 0)
 					ParentApplication.Push(new ItemWindow(new ItemWindowTemplate
 					                                      {
@@ -75,7 +75,7 @@ namespace SKR.UI.Menus {
 		private void Equip(Entity item, string slot) {
 			var canEquip = true;
 			foreach (string slotNeeded in item.Get<Equipable>().SlotsOccupied[slot]) {
-				if (equipment.IsSlotEquipped(slotNeeded)) {
+				if (_equipment.IsSlotEquipped(slotNeeded)) {
 					canEquip = false;
 					World.Log.AbortedFormat("{0} cannot go there, is takes multiple slots and {1} is already occupied.",
 					                        Identifier.GetNameOrId(item),
@@ -86,7 +86,7 @@ namespace SKR.UI.Menus {
 			}
 
 			if (canEquip)
-				player.Get<ActorComponent>().Enqueue(new EquipItemAction(player, item, slot));
+				_player.Get<ActorComponent>().Enqueue(new EquipItemAction(_player, item, slot));
 		}
 
 		protected override void OnKeyPressed(KeyboardData keyData) {
@@ -107,11 +107,11 @@ namespace SKR.UI.Menus {
 			char letter = 'A';
 			foreach (var bodyPart in List) {
 				Canvas.PrintString(rect.TopLeft.X, rect.TopLeft.Y + positionY, String.Format("{2}{0}{3} - {1}", letter, bodyPart, ColorPresets.Yellow.ForegroundCodeString, Color.StopColorCode));
-				Canvas.PrintString(rect.TopLeft.X + bodyPartWidth, rect.TopLeft.Y + positionY, ":");
+				Canvas.PrintString(rect.TopLeft.X + _bodyPartWidth, rect.TopLeft.Y + positionY, ":");
 
-				if (equipment.IsSlotEquipped(bodyPart)) {
-					var item = equipment.GetEquippedItemAt(bodyPart);			
-					Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY,
+				if (_equipment.IsSlotEquipped(bodyPart)) {
+					var item = _equipment.GetEquippedItemAt(bodyPart);			
+					Canvas.PrintString(rect.TopLeft.X + _bodyPartWidth + 2, rect.TopLeft.Y + positionY,
 					                   String.Format("{0}{1}",
 					                                 item.Get<Identifier>().Name,
 					                                 (item.Has<RangeComponent>()
@@ -119,7 +119,7 @@ namespace SKR.UI.Menus {
 					                                  		                item.Get<RangeComponent>().ShotsRemaining, item.Get<RangeComponent>().Shots)
 					                                  		: String.Empty)));
 				} else {
-					Canvas.PrintString(rect.TopLeft.X + bodyPartWidth + 2, rect.TopLeft.Y + positionY, "-");
+					Canvas.PrintString(rect.TopLeft.X + _bodyPartWidth + 2, rect.TopLeft.Y + positionY, "-");
 				}
 
 

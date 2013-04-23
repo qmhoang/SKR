@@ -8,11 +8,11 @@ using SkrGame.Universe.Entities.Actors;
 namespace SKRTests.Components {
 	[TestFixture]
 	public class DefendComponentTests {
-		private DefendComponent defend;
+		private DefendComponent _defend;
 
 		[SetUp]
 		public void SetUp() {
-			defend = new DefendComponent(100, new List<DefendComponent.Appendage>
+			_defend = new DefendComponent(100, new List<DefendComponent.Appendage>
 			                                  {
 			                                  		new DefendComponent.Appendage("Part", 10, 1, -3)
 			                                  });

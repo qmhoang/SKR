@@ -55,6 +55,7 @@ namespace SkrGame.Universe.Entities.Actors {
 				return new Appendage(Name, MaxHealth, RelativeSize, TargettingPenalty, newOwner);
 			}
 		}
+
 		#region Health
 
 		public Attribute Health { get; set; }

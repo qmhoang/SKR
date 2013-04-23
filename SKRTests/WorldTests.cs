@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Threading;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Extensions;
 using NUnit.Framework;
 using SkrGame.Universe;
 using System.Linq;
@@ -38,9 +39,40 @@ namespace SKRTests {
 			Assert.AreEqual(World.SecondsToActionPoints(World.SpeedToSeconds(World.ActionPointsToSpeed(value))), value);
 		}
 
+		public class MyClass {
+			public int Value { get; set; }
+
+			public MyClass(int value) {
+				Value = value;
+			}
+		}
+
 		[Test]
 		public static void TestMethod() {
-			
+			var list = new SortedList<MyClass, MyClass>(new LambdaComparer<MyClass>((x, y) => x.Value - y.Value));
+			var m1 = new MyClass(10);
+			list.Add(m1, m1);
+
+			var m2 = new MyClass(9);
+			list.Add(m2, m2);
+
+			var m3 = new MyClass(11);
+			list.Add(m3, m3);
+
+			m2.Value = 20;
+//			SortedSet<MyClass> set = new SortedSet<MyClass>(new LambdaComparer<MyClass>((x, y) => x.Value - y.Value));
+//
+//			set.Add(new MyClass(10));
+//			set.Add(new MyClass(4));
+//			set.Add(new MyClass(15));
+//			set.Add(new MyClass(1));
+//			set.Add(new MyClass(-4));
+//
+//			var m = new MyClass(6);
+//			set.Add(m);
+//
+//			m.Value = 16;
+
 		}
 	}
 }

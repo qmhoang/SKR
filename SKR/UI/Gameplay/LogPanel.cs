@@ -4,58 +4,59 @@ using DEngine.Core;
 using DEngine.Extensions;
 using Ogui.Core;
 using Ogui.UI;
+using SkrGame.Universe;
 
 namespace SKR.UI.Gameplay {
 	public class LogPanelTemplate : PanelTemplate {
-		public Log Log { get; set; }
+		public GameLog Log { get; set; }
 	}
 
 	public class LogPanel : Panel {
-		private readonly int maxNumOfDisplayLines;
-		private readonly int maxNumberOfCharacters;
-		private VScrollBar vScrollBar;
-		private bool alreadyDisposed;
-		private Log log;
+		private readonly int _maxNumOfDisplayLines;
+		private readonly int _maxNumberOfCharacters;
+		private VScrollBar _vScrollBar;
+		private bool _alreadyDisposed;
+		private GameLog _log;
 
 		public LogPanel(LogPanelTemplate template) : base(template) {
-			log = template.Log;
-			maxNumOfDisplayLines = Size.Height - 2;
-			maxNumberOfCharacters = Size.Width - 3;
+			_log = template.Log;
+			_maxNumOfDisplayLines = Size.Height - 2;
+			_maxNumberOfCharacters = Size.Width - 3;
 		}
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-			vScrollBar = new VScrollBar(new VScrollBarTemplate
+			_vScrollBar = new VScrollBar(new VScrollBarTemplate
 			                            {
 											Height = Size.Height - 2,
 											MinimumValue = 0,
-											StartingValue = log.Entries.Count > maxNumOfDisplayLines ? log.Entries.Count - maxNumOfDisplayLines : 0,
-											MaximumValue = log.Entries.Count,
+											StartingValue = _log.Entries.Count > _maxNumOfDisplayLines ? _log.Entries.Count - _maxNumOfDisplayLines : 0,
+											MaximumValue = _log.Entries.Count,
 											TopLeftPos = ScreenRect.TopRight.Shift(-2, 1),
 											SpinDelay = 100,
 											SpinSpeed = 50,
 			                            });
-			log.Logged += OnNewEntry;
+			_log.Logged += OnNewEntry;
 		}
 
 		protected override void OnAdded() {
 			base.OnAdded();
-			ParentWindow.AddControl(vScrollBar);
+			ParentWindow.AddControl(_vScrollBar);
 		}
 
 		protected override void OnRemoved() {
 			base.OnRemoved();
-			ParentWindow.RemoveControl(vScrollBar);
+			ParentWindow.RemoveControl(_vScrollBar);
 		}
 
 		protected override void Redraw() {
 			base.Redraw();
 
-			int lineIndex = vScrollBar.CurrentValue;
+			int lineIndex = _vScrollBar.CurrentValue;
 			int y = 0;
 
-			while (y < maxNumOfDisplayLines && lineIndex < log.Entries.Count) {
-				var entry = log.Entries[lineIndex];
+			while (y < _maxNumOfDisplayLines && lineIndex < _log.Entries.Count) {
+				var entry = _log.Entries[lineIndex];
 
 				Color fgColor;
 
@@ -82,7 +83,7 @@ namespace SKR.UI.Gameplay {
 						fgColor = ColorPresets.White;
 						break;
 				}
-				var lines = string.Format("* {0}", (entry.Count > 1 ? string.Format("{0}(x{1})", entry.Text, entry.Count) : entry.Text)).WordWrap(maxNumberOfCharacters);
+				var lines = string.Format("* {0}", (entry.Count > 1 ? string.Format("{0}(x{1})", entry.Text, entry.Count) : entry.Text)).WordWrap(_maxNumberOfCharacters);
 
 				for (int j = 0; j < lines.Length; j++) {
 					WriteLine(j == 0 ? 2 : 4, y + 1, lines[j], fgColor);
@@ -92,12 +93,12 @@ namespace SKR.UI.Gameplay {
 			}
 		}
 
-		private void OnNewEntry(Log sender, EventArgs e) {
-			if (log.Entries[log.Entries.Count - 1].Count == 1)
-				vScrollBar.MaximumValue++;
+		private void OnNewEntry(Log<MessageType> sender, EventArgs e) {
+			if (_log.Entries[_log.Entries.Count - 1].Count == 1)
+				_vScrollBar.MaximumValue++;
 			
-			if (log.Entries.Count - vScrollBar.CurrentValue > maxNumOfDisplayLines) {
-				vScrollBar.CurrentValue++;
+			if (_log.Entries.Count - _vScrollBar.CurrentValue > _maxNumOfDisplayLines) {
+				_vScrollBar.CurrentValue++;
 			}
 
 		}
@@ -109,12 +110,12 @@ namespace SKR.UI.Gameplay {
 		protected override void Dispose(bool isDisposing) {
 			base.Dispose(isDisposing);
 
-			if (alreadyDisposed)
+			if (_alreadyDisposed)
 				return;
 			if (isDisposing)
-				if (vScrollBar != null)
-					vScrollBar.Dispose();
-			alreadyDisposed = true;
+				if (_vScrollBar != null)
+					_vScrollBar.Dispose();
+			_alreadyDisposed = true;
 		}
 	}
 }

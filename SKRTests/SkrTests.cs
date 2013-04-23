@@ -3,6 +3,7 @@ using DEngine.Actor;
 using DEngine.Components;
 using DEngine.Core;
 using DEngine.Entities;
+using DEngine.Random;
 using NUnit.Framework;
 using SkrGame.Gameplay.Combat;
 using SkrGame.Universe;

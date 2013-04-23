@@ -8,16 +8,16 @@ using DEngine.Actor;
 namespace SkrGame.Actions {
 	public sealed class FireOnceAction : IAction {
 		public FireOnceAction(int apCost, Func<ActionResult> process) {
-			this.process = process;
+			this._process = process;
 			APCost = apCost;
 		}
 
-		private readonly Func<ActionResult> process;
+		private readonly Func<ActionResult> _process;
 
 		public int APCost { get; private set; }
 
 		public ActionResult OnProcess() {
-			return process();
+			return _process();
 		}
 	}
 }

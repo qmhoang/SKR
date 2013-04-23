@@ -18,19 +18,19 @@ namespace SKR.UI.Menus {
 	}
 
 	public class ItemWindow : ListWindow<Entity> {
-		private readonly bool singleItem;
-		private Rectangle sizeList;	
+		private readonly bool _singleItem;
+		private Rectangle _sizeList;	
 
 		protected override Rectangle ListRect {
-			get { return sizeList; }
+			get { return _sizeList; }
 		}
 
 		public ItemWindow(ItemWindowTemplate template)
 				: base(template.ItemSelected, template) {
 			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires(Contract.ForAll(template.Items, i => i.Has<Item>()));
-			singleItem = template.SelectSingleItem;            
-			sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
+			_singleItem = template.SelectSingleItem;            
+			_sizeList = new Rectangle(new Point(1, 1), new Size(Size.Width - 2, Size.Height));
 		}
 
 		protected override int MouseToIndex(MouseData mouseData) {
@@ -74,7 +74,7 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSelectItem(Entity item) {
 			base.OnSelectItem(item);
-			if (singleItem)
+			if (_singleItem)
 				ExitWindow();
 		}
 

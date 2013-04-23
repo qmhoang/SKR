@@ -8,28 +8,28 @@ using libtcod;
 
 namespace SKR.UI.Prompts {
 	public class OptionsPrompt<T> : PromptWindow {
-		private readonly Action<T> actionCount;
-		private List<T> options;
-		private Func<T, string> toStringFunction;
-		private string message;
-		private string noOptions;
+		private readonly Action<T> _actionCount;
+		private List<T> _options;
+		private Func<T, string> _toStringFunction;
+		private string _message;
+		private string _noOptions;
 
 		public OptionsPrompt(string message, string noOptions, IEnumerable<T> options, Func<T, string> toStringFunc, Action<T> actionCount, PromptWindowTemplate template)
 				: base(template) {
-			this.actionCount = actionCount;
-			this.options = new List<T>(options);
-			this.toStringFunction = toStringFunc;
-			this.message = message;
-			this.noOptions = noOptions;			
+			this._actionCount = actionCount;
+			this._options = new List<T>(options);
+			this._toStringFunction = toStringFunc;
+			this._message = message;
+			this._noOptions = noOptions;			
 		}
 
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
-			if (options.Count <= 0) {
-				GameLog.Aborted(noOptions);
+			if (_options.Count <= 0) {
+				GameLog.Aborted(_noOptions);
 				ExitWindow();
-			} else if (options.Count == 1) {
-				actionCount(options[0]);
+			} else if (_options.Count == 1) {
+				_actionCount(_options[0]);
 				ExitWindow();
 			}
 		}
@@ -38,15 +38,15 @@ namespace SKR.UI.Prompts {
 			get {
 				StringBuilder sb = new StringBuilder();
 				char c = 'a';
-				foreach (var option in options) {
+				foreach (var option in _options) {
 					sb.AppendFormat("{1}[{0}]", c, ColorPresets.Green.ForegroundCodeString);
 					sb.Append(Color.StopColorCode);
-					sb.Append(toStringFunction(option));
+					sb.Append(_toStringFunction(option));
 					sb.Append(" ");
 					c++;
 				}
 
-				return String.Format("{0} : {1}{2}[Esc]{3} to exit.", message, sb, ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
+				return String.Format("{0} : {1}{2}[Esc]{3} to exit.", _message, sb, ColorPresets.Red.ForegroundCodeString, Color.StopColorCode);
 			}
 		}
 
@@ -55,8 +55,8 @@ namespace SKR.UI.Prompts {
 
 			if (Char.IsLetter(keyData.Character)) {
 				int index = Char.ToLower(keyData.Character) - 'a';
-				if (index < options.Count && index >= 0) {
-					actionCount(options[index]);
+				if (index < _options.Count && index >= 0) {
+					_actionCount(_options[index]);
 					ExitWindow();
 				}
 			} else if (keyData.KeyCode == TCODKeyCode.Escape)

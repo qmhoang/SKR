@@ -47,7 +47,7 @@ namespace SkrGame.Universe {
 			get { return TagManager.GetEntity("player"); }
 			set {				
 				Contract.Requires<ArgumentNullException>(value != null, "value");
-				TagManager.Register(value, "player");
+				TagManager.Register("player", value);
 			}
 		}
 

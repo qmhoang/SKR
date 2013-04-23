@@ -10,21 +10,21 @@ using Level = SkrGame.Universe.Locations.Level;
 
 namespace SkrGame.Universe.Entities {
 	public sealed class GameObject : Component {
-		private Level level;
-		private Point location;
+		private Level _level;
+		private Point _location;
 
 		public Level Level {
-			get { return level; }
+			get { return _level; }
 			set {
-				level = value;
+				_level = value;
 			}
 		}
 
 		public Point Location {
-			get { return location; }
+			get { return _location; }
 			set {
-				var eventArgs = new PositionChangedEvent(location, value);
-				location = value;
+				var eventArgs = new PositionChangedEvent(_location, value);
+				_location = value;
 
 				OnPositionChanged(eventArgs);
 			}

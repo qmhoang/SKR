@@ -9,26 +9,26 @@ namespace SkrGame.Universe.Entities.Features {
 		public Scenery(bool transparent, bool walkable) : this(transparent, walkable, int.MaxValue) { }
 
 		public Scenery(bool transparent, bool walkable, int jumpHeight) {
-			this.transparent = transparent;
-			this.walkable = walkable;
+			this._transparent = transparent;
+			this._walkable = walkable;
 			JumpHeight = jumpHeight;
 		}
 
-		private bool transparent;
-		private bool walkable;
+		private bool _transparent;
+		private bool _walkable;
 
 		public bool Transparent {
-			get { return transparent; }
+			get { return _transparent; }
 			set { 
-				transparent = value; 
+				_transparent = value; 
 				OnTransparencyChanged();
 			}
 		}
 
 		public bool Walkable {
-			get { return walkable; }
+			get { return _walkable; }
 			set {
-				walkable = value;
+				_walkable = value;
 				OnWalkableChanged();
 			}
 		}
@@ -54,7 +54,7 @@ namespace SkrGame.Universe.Entities.Features {
 		}
 		
 		public override Component Copy() {
-			var b = new Scenery(transparent, walkable, JumpHeight);
+			var b = new Scenery(_transparent, _walkable, JumpHeight);
 			if (TransparencyChanged != null)
 				b.TransparencyChanged = (ComponentEventHandler<Scenery, EventArgs>)TransparencyChanged.Clone();
 			if (WalkableChanged != null)

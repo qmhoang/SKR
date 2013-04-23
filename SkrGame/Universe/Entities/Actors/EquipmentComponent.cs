@@ -19,8 +19,8 @@ namespace SkrGame.Universe.Entities.Actors {
 	public sealed class EquipmentComponent : Component {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private readonly Dictionary<string, Entity> equippedItems;
-		private List<string> slots;
+		private readonly Dictionary<string, Entity> _equippedItems;
+		private List<string> _slots;
 
 		public event ComponentEventHandler<EquipmentComponent, EventArgs<string, Entity>> ItemEquipped;
 		public event ComponentEventHandler<EquipmentComponent, EventArgs<string, Entity>> ItemUnequipped;
@@ -39,27 +39,27 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		[Pure]
 		public bool ContainSlot(string slot) {
-			return slots.Contains(slot);
+			return _slots.Contains(slot);
 		}
 
 		public IEnumerable<Entity> EquippedItems {
-			get { return equippedItems.Values; }
+			get { return _equippedItems.Values; }
 		}
 
 		public IEnumerable<string> Slots {
-			get { return slots; }
+			get { return _slots; }
 		}
 
 		public EquipmentComponent(IEnumerable<string> slots) {
-			equippedItems = new Dictionary<string, Entity>();
-			this.slots = new List<string>(slots);
+			_equippedItems = new Dictionary<string, Entity>();
+			this._slots = new List<string>(slots);
 		}
 
 		[ContractInvariantMethod]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
 		private void ObjectInvariant() {
-			Contract.Invariant(slots != null);
-			Contract.Invariant(equippedItems != null);
+			Contract.Invariant(_slots != null);
+			Contract.Invariant(_equippedItems != null);
 		}
 
 		public void Equip(string slot, Entity item) {
@@ -68,7 +68,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
 			Contract.Requires<ArgumentException>(!IsSlotEquipped(slot), "slot already equipped");
 			Contract.Requires<ArgumentException>(item.Get<Equipable>().SlotsOccupied.ContainsKey(slot));
-			Contract.Ensures(equippedItems.ContainsKey(slot), "item is not equipped");
+			Contract.Ensures(_equippedItems.ContainsKey(slot), "item is not equipped");
 
 			var slotsOccupied = item.Get<Equipable>().SlotsOccupied[slot];
 
@@ -77,26 +77,26 @@ namespace SkrGame.Universe.Entities.Actors {
 			OnItemEquipped(new EventArgs<string, Entity>(slot, item));
 
 			foreach (var s in slotsOccupied) {
-				equippedItems.Add(s, item);				
+				_equippedItems.Add(s, item);				
 			}
 
 		}
 
 		public bool Unequip(string slot) {
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
-			Contract.Ensures(!equippedItems.ContainsKey(slot), "item is still equipped");
+			Contract.Ensures(!_equippedItems.ContainsKey(slot), "item is still equipped");
 
-			if (!equippedItems.ContainsKey(slot)) {
+			if (!_equippedItems.ContainsKey(slot)) {
 				return false;
 			} else {
-				Entity old = equippedItems[slot];
+				Entity old = _equippedItems[slot];
 
 				var slotsOccuped = old.Get<Equipable>().SlotsOccupied[slot];
 
 				Logger.DebugFormat("{0} is unequipping his item at {1}. Slots freed: {2}", OwnerUId, slot, slotsOccuped.GetEnumeratedString());
 
 				foreach (var s in slotsOccuped) {
-					equippedItems.Remove(s);					
+					_equippedItems.Remove(s);					
 				}
 				
 				OnItemUnequipped(new EventArgs<string, Entity>(slot, old));
@@ -107,7 +107,7 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		[Pure]
 		public bool IsSlotEquipped(string slot) {
-			return equippedItems.ContainsKey(slot);
+			return _equippedItems.ContainsKey(slot);
 		}
 
 		public Entity GetEquippedItemAt(string slot) {
@@ -115,7 +115,7 @@ namespace SkrGame.Universe.Entities.Actors {
 			Contract.Requires<ArgumentException>(ContainSlot(slot), "Not a valid slot.");
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty");			
 
-			return equippedItems[slot];					
+			return _equippedItems[slot];					
 		}
 
 		public Entity this[string slot] {
@@ -125,10 +125,10 @@ namespace SkrGame.Universe.Entities.Actors {
 		}
 
 		public override Component Copy() {
-			var equipment = new EquipmentComponent(new List<string>(slots));
+			var equipment = new EquipmentComponent(new List<string>(_slots));
 
-			foreach (var equippedItem in equippedItems) {
-				equipment.equippedItems.Add(equippedItem.Key, equippedItem.Value.Copy());
+			foreach (var equippedItem in _equippedItems) {
+				equipment._equippedItems.Add(equippedItem.Key, equippedItem.Value.Copy());
 			}
 
 			if (ItemEquipped != null)

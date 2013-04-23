@@ -13,40 +13,40 @@ using SkrGame.Universe.Locations;
 
 namespace SkrGame.Systems {
 	public class ActionSystem {
-		private FilteredCollection entities;
-		private Entity player;
-		private World world;
+		private readonly FilteredCollection _entities;
+		private readonly Entity _player;
+		private readonly World _world;
 
 		public ActionSystem(World world) {
-			entities = world.EntityManager.Get(typeof(ActorComponent));
-			this.player = world.Player;
-			this.world = world;
+			_entities = world.EntityManager.Get(typeof(ActorComponent));
+			_player = world.Player;
+			_world = world;
 		}
 
 		public void Update() {
-			var playerActor = player.Get<ActorComponent>();
+			var playerActor = _player.Get<ActorComponent>();
 
 			while (playerActor.AP.Updateable && playerActor.Controller.HasActionsQueued) {
-				var action = player.Get<ActorComponent>().NextAction();
+				var action = _player.Get<ActorComponent>().NextAction();
 
 				var result = action.OnProcess();
 
 				if (result == ActionResult.Failed || result == ActionResult.Success) {
 					playerActor.AP.ActionPoints -= action.APCost;
 
-					if (player.Has<EntityConditions>()) {
-						foreach (var c in player.Get<EntityConditions>().Effects) {
+					if (_player.Has<EntityConditions>()) {
+						foreach (var c in _player.Get<EntityConditions>().Effects) {
 							c.Update(action.APCost);
 						}
 					}
 
-					world.OnActionProcessed();
+					_world.OnActionProcessed();
 				}
 			}
 			if (!playerActor.AP.Updateable) {
 				playerActor.AP.Gain();
-				foreach (var entity in entities) {
-					if (entity == player)
+				foreach (var entity in _entities) {
+					if (entity == _player)
 						continue;
 
 					var entityActor = entity.Get<ActorComponent>();
@@ -65,7 +65,7 @@ namespace SkrGame.Systems {
 								}
 							}
 
-							world.OnActionProcessed();
+							_world.OnActionProcessed();
 						}
 					}
 				}

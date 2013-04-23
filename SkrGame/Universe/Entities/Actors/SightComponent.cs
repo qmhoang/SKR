@@ -10,8 +10,8 @@ using SkrGame.Universe.Locations;
 
 namespace SkrGame.Universe.Entities.Actors {
 	public sealed class SightComponent : Component {
-		private VisionMap vision;
-		private Level currLevel;
+		private VisionMap _vision;
+		private Level _currLevel;
 
 		[Pure]
 		public bool IsVisible(Point p) {
@@ -20,16 +20,16 @@ namespace SkrGame.Universe.Entities.Actors {
 
 		[Pure]
 		public bool IsVisible(int x, int y) {
-			return vision.IsVisible(x, y);
+			return _vision.IsVisible(x, y);
 		}
 
 		public void CalculateSight() {
 			var level = Entity.Get<GameObject>();
-			if (currLevel != level.Level) {
-				currLevel = level.Level;
-				vision = new VisionMap(currLevel.Size);	
+			if (_currLevel != level.Level) {
+				_currLevel = level.Level;
+				_vision = new VisionMap(_currLevel.Size);	
 			}
-			ShadowCastingFOV.ComputeRecursiveShadowcasting(vision, currLevel, level.X, level.Y, 32, true);
+			ShadowCastingFOV.ComputeRecursiveShadowcasting(_vision, _currLevel, level.X, level.Y, 32, true);
 		}
 
 		public override Component Copy() {

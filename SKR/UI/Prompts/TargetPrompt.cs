@@ -9,39 +9,39 @@ using libtcod;
 
 namespace SKR.UI.Prompts {
 	public class TargetPrompt : PromptWindow {
-		private readonly Action<Point> actionPosition;
-		private Point selectedPosition;
-		private Point origin;
-		private MapPanel panel;
-		private string message;
+		private readonly Action<Point> _actionPosition;
+		private Point _selectedPosition;
+		private Point _origin;
+		private MapPanel _panel;
+		private string _message;
 
 		public TargetPrompt(string message, Point origin, Action<Point> actionPosition, MapPanel panel, PromptWindowTemplate template) : this(message, origin, origin, actionPosition, panel, template) { }
 
 		public TargetPrompt(string message, Point origin, Point initialPoint, Action<Point> actionPosition, MapPanel panel, PromptWindowTemplate template)
 				: base(template) {
-			this.actionPosition = actionPosition;
-			selectedPosition = initialPoint;
-			this.origin = origin;
-			this.panel = panel;
-			this.message = message;
+			this._actionPosition = actionPosition;
+			_selectedPosition = initialPoint;
+			this._origin = origin;
+			this._panel = panel;
+			this._message = message;
 		}
 
 		protected override void OnAdded() {
 			base.OnSettingUp();
 
-			panel.Draw += PanelDraw;
+			_panel.Draw += PanelDraw;
 		}
 
 		protected override void OnRemoved() {
 			base.OnRemoved();
-			panel.Draw -= PanelDraw;
+			_panel.Draw -= PanelDraw;
 		}
 
 		private void PanelDraw(object sender, EventArgs e) {
 			if ((!(sender is MapPanel)))
 				return;
 			var mapPanel = (MapPanel)sender;
-			var pointList = Bresenham.GeneratePointsFromLine(origin, selectedPosition).ToList();
+			var pointList = Bresenham.GeneratePointsFromLine(_origin, _selectedPosition).ToList();
 
 			bool path = true;
 
@@ -63,41 +63,41 @@ namespace SKR.UI.Prompts {
 		}
 
 		protected override string Text {
-			get { return string.Format("{0} Select position. [Enter] to select. [Esc] to exit.", message); }
+			get { return string.Format("{0} Select position. [Enter] to select. [Esc] to exit.", _message); }
 		}
 
 		protected override void OnKeyPressed(KeyboardData key) {
 			base.OnKeyPressed(key);
 
 			if (key.KeyCode == TCODKeyCode.KeypadEight || key.KeyCode == TCODKeyCode.Up)
-				selectedPosition += Direction.North;
+				_selectedPosition += Direction.North;
 
 			if (key.KeyCode == TCODKeyCode.KeypadTwo || key.KeyCode == TCODKeyCode.Down)
-				selectedPosition += Direction.South;
+				_selectedPosition += Direction.South;
 
 			if (key.KeyCode == TCODKeyCode.KeypadFour || key.KeyCode == TCODKeyCode.Left)
-				selectedPosition += Direction.West;
+				_selectedPosition += Direction.West;
 
 			if (key.KeyCode == TCODKeyCode.KeypadSix || key.KeyCode == TCODKeyCode.Right)
-				selectedPosition += Direction.East;
+				_selectedPosition += Direction.East;
 
 			if (key.KeyCode == TCODKeyCode.KeypadSeven)
-				selectedPosition += Direction.Northwest;
+				_selectedPosition += Direction.Northwest;
 
 			if (key.KeyCode == TCODKeyCode.KeypadNine)
-				selectedPosition += Direction.Northeast;
+				_selectedPosition += Direction.Northeast;
 
 			if (key.KeyCode == TCODKeyCode.KeypadOne)
-				selectedPosition += Direction.Southwest;
+				_selectedPosition += Direction.Southwest;
 
 			if (key.KeyCode == TCODKeyCode.KeypadThree)
-				selectedPosition += Direction.Southeast;
+				_selectedPosition += Direction.Southeast;
 
 			if (key.KeyCode == TCODKeyCode.Escape)
 				ExitWindow();
 
 			if (key.KeyCode == TCODKeyCode.Enter || key.KeyCode == TCODKeyCode.KeypadEnter) {
-				actionPosition(selectedPosition);
+				_actionPosition(_selectedPosition);
 				ExitWindow();
 			}
 		}

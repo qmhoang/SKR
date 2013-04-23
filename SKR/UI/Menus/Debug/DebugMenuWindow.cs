@@ -15,7 +15,7 @@ namespace SKR.UI.Menus.Debug {
 		protected override void OnSettingUp() {
 			base.OnSettingUp();
 
-			seeAllButton = new MenuButton(new MenuButtonTemplate()
+			_seeAllButton = new MenuButton(new MenuButtonTemplate()
 									  {
 										  Label = "See All",
 										  VAlignment = VerticalAlignment.Top,
@@ -30,7 +30,7 @@ namespace SKR.UI.Menus.Debug {
 										          }
 									  });
 
-			godModeButton = new MenuButton(new MenuButtonTemplate()
+			_godModeButton = new MenuButton(new MenuButtonTemplate()
 			                           {
 			                           		Label = "God Mode",
 			                           		VAlignment = VerticalAlignment.Top,
@@ -45,7 +45,7 @@ namespace SKR.UI.Menus.Debug {
 										          }
 			                           });
 
-			freeWalkButton = new MenuButton(new MenuButtonTemplate()
+			_freeWalkButton = new MenuButton(new MenuButtonTemplate()
 			                                {
 			                                		Label = "Free Walk",
 			                                		VAlignment = VerticalAlignment.Top,
@@ -61,11 +61,11 @@ namespace SKR.UI.Menus.Debug {
 			                                		        }
 			                                });
 
-			seeAllButton.ButtonPushed += seeAllButton_ButtonPushed;
-			godModeButton.ButtonPushed += godModeButton_ButtonPushed;
-			freeWalkButton.ButtonPushed += freeWalkButton_ButtonPushed;
+			_seeAllButton.ButtonPushed += seeAllButton_ButtonPushed;
+			_godModeButton.ButtonPushed += godModeButton_ButtonPushed;
+			_freeWalkButton.ButtonPushed += freeWalkButton_ButtonPushed;
 
-			AddControls(seeAllButton, godModeButton, freeWalkButton);
+			AddControls(_seeAllButton, _godModeButton, _freeWalkButton);
 		}
 		
 		protected override void OnKeyPressed(KeyboardData keyData) {
@@ -89,9 +89,9 @@ namespace SKR.UI.Menus.Debug {
 			Program.FreeWalk.Enabled = !Program.FreeWalk.Enabled;
 		}
 
-		private Button seeAllButton;
-		private Button godModeButton;
-		private Button freeWalkButton;
+		private Button _seeAllButton;
+		private Button _godModeButton;
+		private Button _freeWalkButton;
 
 	}
 }

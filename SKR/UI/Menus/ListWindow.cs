@@ -14,7 +14,7 @@ namespace SKR.UI.Menus {
 	}
 
 	public abstract class ListWindow<T> : SkrWindow {
-		private readonly Action<T> selectItem;
+		private readonly Action<T> _selectItem;
 		protected int MouseOverIndex;
 
 		/// <summary>
@@ -29,7 +29,7 @@ namespace SKR.UI.Menus {
 			Contract.Requires<ArgumentNullException>(template != null, "template");
 			Contract.Requires<ArgumentNullException>(template.Items != null, "template.Items");
 
-			this.selectItem = selectItem;
+			this._selectItem = selectItem;
 			HasFrame = template.HasFrame;
 			List = template.Items;
 		}
@@ -81,8 +81,8 @@ namespace SKR.UI.Menus {
 		protected abstract void CustomDraw(Rectangle rect);
 
 		protected virtual void OnSelectItem(T item) {
-			if (selectItem != null)
-				selectItem(item);
+			if (_selectItem != null)
+				_selectItem(item);
 
 			if (List.IsEmpty())
 				ExitWindow();
