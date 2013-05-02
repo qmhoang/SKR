@@ -22,12 +22,12 @@ namespace SkrGame.Universe.Factories {
 			ef.Add("person",
 			       new Sprite("npc", Sprite.ActorLayer),
 			       new Identifier("npc"),
-			       new ActorComponent(new DoNothing(), new AP(World.OneSecondInSpeed / 2)),
+			       new ControllerComponent(new DoNothing(), new AP(World.OneSecondInSpeed / 2)),
 			       new Creature(),
-			       DefendComponent.CreateHuman(50),
+			       BodyComponent.CreateHuman(50),
 			       new VisibleComponent(10),
-			       new ContainerComponent(),
-			       new EntityConditions(new HumanNeedsEffect(), new CreatureEncumbranceEffect()),
+			       new ItemContainerComponent(),
+			       new ConditionHolder(new HumanNeedsEffect(), new CreatureEncumbranceEffect()),
 			       new EquipmentComponent(new List<string>
 			                              {
 												"Head",
@@ -57,12 +57,12 @@ namespace SkrGame.Universe.Factories {
 			                          }));
 
 			ef.Inherits("npc", "person",
-						new ActorComponent(new NPC(), new AP(World.OneSecondInSpeed / 2)));
+						new ControllerComponent(new NPC(), new AP(World.OneSecondInSpeed / 2)));
 
 			ef.Inherits("player", "person",
 			            new Sprite("player", Sprite.PlayerLayer),
 			            new Identifier("Player"),
-						new ActorComponent(new Player(), new AP(World.OneSecondInSpeed / 2)));
+						new ControllerComponent(new Player(), new AP(World.OneSecondInSpeed / 2)));
 		}
 	}
 }

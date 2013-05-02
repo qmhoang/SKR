@@ -19,7 +19,7 @@ using SkrGame.Universe.Locations;
 namespace SkrGame.Actions.Combat {
 	public class RangeAttackAction : AttackAction {
 		
-		public RangeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bodyPartTargetted, bool targettingPenalty = false)
+		public RangeAttackAction(Entity attacker, Entity defender, Entity weapon, BodyComponent.Appendage bodyPartTargetted, bool targettingPenalty = false)
 				: base(attacker, defender, weapon, bodyPartTargetted, targettingPenalty) {
 			Contract.Requires<ArgumentException>(weapon.Has<RangeComponent>(), "weapon cannot range attack");
 		}
@@ -28,14 +28,14 @@ namespace SkrGame.Actions.Combat {
 			get { return Weapon.Get<RangeComponent>().APToAttack; }
 		}
 
-		public const double RangePenaltyStdDevMultiplier = 0.87;
-		public const double RangePenaltyTileOccupied = -World.Mean * 4 / 3;
+		private const double RangePenaltyStdDevMultiplier = 0.87;
+		private const double RangePenaltyTileOccupied = -World.Mean * 4 / 3;
 
 		private IEnumerable<Entity> GetTargetsOnPath(Level currentLevel, Point start, Point end) {
 			if (!currentLevel.IsWalkable(start))
 				throw new ArgumentException("starting point has to be walkable", "start");
 
-			var pointsOnPath = Bresenham.GeneratePointsFromLine(start, end);
+			var pointsOnPath = Bresenham.GeneratePointsFromLine(start, end, false);
 
 			foreach (var location in pointsOnPath) {
 				if (!currentLevel.IsWalkable(location)) {
@@ -43,7 +43,7 @@ namespace SkrGame.Actions.Combat {
 					yield break;
 				}
 
-				var entitiesAt = currentLevel.GetEntitiesAt<DefendComponent>(location).ToList();
+				var entitiesAt = currentLevel.GetEntitiesAt<BodyComponent>(location).ToList();
 				if (entitiesAt.Count() > 0) {
 					foreach (var entity in entitiesAt) {
 						yield return entity;
@@ -61,7 +61,7 @@ namespace SkrGame.Actions.Combat {
 			var defenderLocation = Defender.Get<GameObject>();
 			
 			//apply skill
-			if (Attacker.Has<ActorComponent>()) {
+			if (Attacker.Has<ControllerComponent>()) {
 				hitBonus += Attacker.Get<Creature>().Skills[weapon.Skill];
 			} else {
 				hitBonus += World.Mean;
@@ -78,7 +78,7 @@ namespace SkrGame.Actions.Combat {
 			IEnumerable<Entity> entitiesOnPath;
 			if (attackerLocation.Location == defenderLocation.Location) {
 				// suicide?
-				entitiesOnPath = attackerLocation.Level.GetEntitiesAt<DefendComponent>(defenderLocation.Location).ToList();
+				entitiesOnPath = attackerLocation.Level.GetEntitiesAt<BodyComponent>(defenderLocation.Location).ToList();
 
 			} else
 				entitiesOnPath = GetTargetsOnPath(attackerLocation.Level, attackerLocation.Location, defenderLocation.Location).ToList();

@@ -41,7 +41,7 @@ namespace SkrGame.Actions.Features {
 
 		public override int APCost {
 			get {
-				var actionPointPerTurn = Entity.Get<ActorComponent>().AP.ActionPointPerTurn;
+				var actionPointPerTurn = Entity.Get<ControllerComponent>().AP.ActionPointPerTurn;
 				return LengthInAP < actionPointPerTurn ? LengthInAP : actionPointPerTurn;
 			}
 		}
@@ -56,14 +56,14 @@ namespace SkrGame.Actions.Features {
 					if (result == ActionResult.Aborted || result == ActionResult.Failed) {
 						return OnFinish(Entity);
 					} else if (result == ActionResult.SuccessNoTime) { // prevents infinite queuing
-						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, _counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
+						Entity.Get<ControllerComponent>().Enqueue(new IntervalAction(Entity, _counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
 						return ActionResult.Success;
 					} else {
-						Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, _counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
+						Entity.Get<ControllerComponent>().Enqueue(new IntervalAction(Entity, _counter - Interval + ts, Length - ts, Interval, OnInterval, OnFinish));
 						return result;
 					}
 				} else {
-					Entity.Get<ActorComponent>().Enqueue(new IntervalAction(Entity, _counter + ts, Length - ts, Interval, OnInterval, OnFinish));
+					Entity.Get<ControllerComponent>().Enqueue(new IntervalAction(Entity, _counter + ts, Length - ts, Interval, OnInterval, OnFinish));
 					return ActionResult.Success;
 				}
 			}

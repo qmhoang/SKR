@@ -18,24 +18,24 @@ namespace SkrGame.Systems {
 		private readonly World _world;
 
 		public ActionSystem(World world) {
-			_entities = world.EntityManager.Get(typeof(ActorComponent));
+			_entities = world.EntityManager.Get(typeof(ControllerComponent));
 			_player = world.Player;
 			_world = world;
 		}
 
 		public void Update() {
-			var playerActor = _player.Get<ActorComponent>();
+			var playerActor = _player.Get<ControllerComponent>();
 
 			while (playerActor.AP.Updateable && playerActor.Controller.HasActionsQueued) {
-				var action = _player.Get<ActorComponent>().NextAction();
+				var action = _player.Get<ControllerComponent>().NextAction();
 
 				var result = action.OnProcess();
 
 				if (result == ActionResult.Failed || result == ActionResult.Success) {
 					playerActor.AP.ActionPoints -= action.APCost;
 
-					if (_player.Has<EntityConditions>()) {
-						foreach (var c in _player.Get<EntityConditions>().Effects) {
+					if (_player.Has<ConditionHolder>()) {
+						foreach (var c in _player.Get<ConditionHolder>().Effects) {
 							c.Update(action.APCost);
 						}
 					}
@@ -49,18 +49,18 @@ namespace SkrGame.Systems {
 					if (entity == _player)
 						continue;
 
-					var entityActor = entity.Get<ActorComponent>();
+					var entityActor = entity.Get<ControllerComponent>();
 					entityActor.AP.Gain();
 					while (entityActor.AP.Updateable) {
-						var action = entity.Get<ActorComponent>().NextAction();
+						var action = entity.Get<ControllerComponent>().NextAction();
 
 						var result = action.OnProcess();
 
 						if (result == ActionResult.Failed || result == ActionResult.Success) {
 							entityActor.AP.ActionPoints -= action.APCost;
 
-							if (entity.Has<EntityConditions>()) {
-								foreach (var c in entity.Get<EntityConditions>().Effects) {
+							if (entity.Has<ConditionHolder>()) {
+								foreach (var c in entity.Get<ConditionHolder>().Effects) {
 									c.Update(action.APCost);
 								}
 							}

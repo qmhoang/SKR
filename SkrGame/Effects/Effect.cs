@@ -17,9 +17,9 @@ namespace SkrGame.Effects {
 	public abstract class Effect {
 		private static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private EntityConditions _holder;
+		private ConditionHolder _holder;
 
-		public EntityConditions Holder {
+		public ConditionHolder Holder {
 			get { return _holder; }
 			internal set {
 				Contract.Requires<ArgumentNullException>(value != null, "value");
@@ -36,7 +36,7 @@ namespace SkrGame.Effects {
 		public void End() {
 			Contract.Requires<ArgumentException>(Holder != null);
 
-			var result = Holder.Entity.Get<EntityConditions>().Remove(this);
+			var result = Holder.Entity.Get<ConditionHolder>().Remove(this);
 			if (!result)
 				Logger.ErrorFormat("Condition was attempted to be removed from an entity: {0} that doesn't contain it.", Identifier.GetNameOrId(Holder.Entity));
 			OnEnd();

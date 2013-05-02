@@ -62,7 +62,7 @@ namespace SkrGame.Actions.Skills {
 			                  roll,
 			                  World.ChanceOfSuccess(easeOfLock));
 
-			Entity.Get<ActorComponent>().Enqueue(
+			Entity.Get<ControllerComponent>().Enqueue(
 					new LongAction(Entity,
 					               _lengthRequired,
 					               e => ActionResult.Success,

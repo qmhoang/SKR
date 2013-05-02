@@ -21,7 +21,7 @@ namespace SkrGame.Actions.Items {
 		public override ActionResult OnProcess() {
 			if (_items.Count > 0) {
 				foreach (var entity in _items) {
-					Entity.Get<ActorComponent>().Enqueue(new GetItemAction(Entity, entity, entity.Get<Item>().Amount));
+					Entity.Get<ControllerComponent>().Enqueue(new GetItemAction(Entity, entity, entity.Get<Item>().Amount));
 				}
 				return ActionResult.SuccessNoTime;
 			} else {

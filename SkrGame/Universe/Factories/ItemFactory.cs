@@ -58,59 +58,36 @@ namespace SkrGame.Universe.Factories {
 			            				AmmoCaliber = "base_bullet",
 			            		}));
 
+			var pistolTemplate = new MeleeComponent.Template
+			               {
+			               		ActionDescription = "pistol whip",
+			               		ActionDescriptionPlural = "pistol whips",
+			               		Skill = "skill_unarmed",
+			               		HitBonus = -1,
+			               		Damage = Rand.Constant(World.StandardIncrement * (1 - 2)),
+			               		DamageType = Combat.DamageTypes["crush"],
+			               		Penetration = 1,
+			               		AttackSpeed = .86 * World.OneSecondInSpeed,
+			               		APToReady = 100,
+			               		Reach = 0,
+			               		Strength = 8,
+			               		Parry = -2
+			               };
 			ef.Inherits("base_pistol1", "base_gun",
 			            new MeleeComponent(
-			            		new MeleeComponent.Template
-			            		{
-			            				ActionDescription = "pistol whip",
-			            				ActionDescriptionPlural = "pistol whips",
-			            				Skill = "skill_unarmed",
-			            				HitBonus = -1,
-			            				Damage = Rand.Constant(World.StandardIncrement * (1 - 2)),
-			            				DamageType = Combat.DamageTypes["crush"],
-			            				Penetration = 1,
-			            				AttackSpeed = .86 * World.OneSecondInSpeed,
-			            				APToReady = 100,
-			            				Reach = 0,
-			            				Strength = 8,
-			            				Parry = -2
-			            		}));
+			            		pistolTemplate));
+
+			pistolTemplate.Damage = Rand.Constant(World.StandardIncrement * (2 - 2));
+			pistolTemplate.AttackSpeed *= .95;
 
 			ef.Inherits("base_pistol2", "base_gun",
-			            new MeleeComponent(
-			            		new MeleeComponent.Template
-			            		{
-			            				ActionDescription = "pistol whip",
-			            				ActionDescriptionPlural = "pistol whips",
-			            				Skill = "skill_unarmed",
-			            				HitBonus = -1,
-			            				Damage = Rand.Constant(World.StandardIncrement * (2 - 2)),
-			            				DamageType = Combat.DamageTypes["crush"],
-			            				Penetration = 1,
-			            				AttackSpeed = .85 * World.OneSecondInSpeed,
-			            				APToReady = 100,
-			            				Reach = 0,
-			            				Strength = 8,
-			            				Parry = -2
-			            		}));
+			            new MeleeComponent(pistolTemplate));
+
+			pistolTemplate.Damage = Rand.Constant(World.StandardIncrement * (3 - 2));
+			pistolTemplate.AttackSpeed *= .95;
 
 			ef.Inherits("base_pistol3", "base_gun",
-			            new MeleeComponent(
-			            		new MeleeComponent.Template
-			            		{
-			            				ActionDescription = "pistol whip",
-			            				ActionDescriptionPlural = "pistol whips",
-			            				Skill = "skill_unarmed",
-			            				HitBonus = -1,
-			            				Damage = Rand.Constant(World.StandardIncrement * (3 - 2)),
-			            				DamageType = Combat.DamageTypes["crush"],
-			            				Penetration = 1,
-			            				AttackSpeed = .84 * World.OneSecondInSpeed,
-			            				APToReady = 100,
-			            				Reach = 0,
-			            				Strength = 8,
-			            				Parry = -2
-			            		}));
+			            new MeleeComponent(pistolTemplate));
 
 			ef.Inherits("glock17", "base_pistol2",
 			            //new Sprite("GLOCK17", Sprite.ITEMS_LAYER),

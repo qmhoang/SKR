@@ -10,17 +10,17 @@ namespace SkrGame.Systems {
 
 		public EncumbranceSubsystem(EntityManager em) {
 			entities = em.Get(typeof(Creature));
-			containers = em.Get<ContainerComponent>();
+			containers = em.Get<ItemContainerComponent>();
 			equipments = em.Get<EquipmentComponent>();
 
 			containers.OnEntityAdd += containers_OnEntityAdd;
 		}
 
 		void containers_OnEntityAdd(Entity entity) {
-			entity.Get<ContainerComponent>().ItemAdded += Container_ItemChanged;
+			entity.Get<ItemContainerComponent>().ItemAdded += Container_ItemChanged;
 		}
 
-		void Container_ItemChanged(ContainerComponent sender, DEngine.Core.EventArgs<Entity> e) {
+		void Container_ItemChanged(ItemContainerComponent sender, DEngine.Core.EventArgs<Entity> e) {
 			
 		}
 

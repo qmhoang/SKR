@@ -76,7 +76,7 @@ namespace SkrGame.Universe.Entities.Useables {
 			this.uses = uses;
 
 			Uses = uses.Select(use => new UseAction(use.Description,
-			                                        (user, featureEntity) => user.Get<ActorComponent>().Enqueue(new IntervalAction(user,
+			                                        (user, featureEntity) => user.Get<ControllerComponent>().Enqueue(new IntervalAction(user,
 			                                                                                                                       use.Length,
 			                                                                                                                       use.Interval,
 			                                                                                                                       e => use.OnInterval(e, this),

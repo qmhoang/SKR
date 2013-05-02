@@ -38,7 +38,7 @@ namespace SKRTests {
 			World.Player = Entity = EntityManager.Create(new List<Component>
 			                                             {
 			                                             		new Sprite("player", Sprite.ActorLayer),
-			                                             		DefendComponent.CreateHuman(50),
+			                                             		BodyComponent.CreateHuman(50),
 			                                             		new VisibleComponent(10),
 			                                             		new SightComponent(),
 			                                             		new MeleeComponent(new MeleeComponent.Template
@@ -57,8 +57,8 @@ namespace SKRTests {
 			                                             		                   		Parry = 0
 			                                             		                   }),
 			                                             		new GameObject(2, 2, Level),
-			                                             		new ContainerComponent(),
-			                                             		new ActorComponent(new Player(), new AP(World.OneSecondInSpeed)),
+			                                             		new ItemContainerComponent(),
+			                                             		new ControllerComponent(new Player(), new AP(World.OneSecondInSpeed)),
 			                                             		new Creature(),
 			                                             		new Identifier("Player"),
 			                                             		new EquipmentComponent(new List<string>

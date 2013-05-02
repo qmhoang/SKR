@@ -45,7 +45,7 @@ namespace SkrGame.Actions.Items {
 			// just in case, move the item to the entity's location
 			MoveItemToEntityLocation(i);
 
-			Entity.Get<ContainerComponent>().Add(i);
+			Entity.Get<ItemContainerComponent>().Add(i);
 
 			if (!i.IsActive)
 				World.EntityManager.Remove(i);

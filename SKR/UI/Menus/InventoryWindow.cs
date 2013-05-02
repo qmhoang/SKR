@@ -25,7 +25,7 @@ namespace SKR.UI.Menus {
 
 	public class InventoryWindow : ListWindow<string> {
 		private int _bodyPartWidth;
-		private ContainerComponent _inventory;
+		private ItemContainerComponent _inventory;
 		private EquipmentComponent _equipment;
 		private Entity _player;
 
@@ -41,7 +41,7 @@ namespace SKR.UI.Menus {
 			Contract.Requires<ArgumentNullException>(template.Items != null, "template.Items");
 			Contract.Requires<ArgumentNullException>(template.World != null, "player");			
 
-			_inventory = template.World.Player.Get<ContainerComponent>();
+			_inventory = template.World.Player.Get<ItemContainerComponent>();
 			_equipment = template.World.Player.Get<EquipmentComponent>();
 			_player = template.World.Player;
 
@@ -52,7 +52,7 @@ namespace SKR.UI.Menus {
 
 		protected override void OnSelectItem(string slot) {
 			if (_equipment.IsSlotEquipped(slot)) {
-				_player.Get<ActorComponent>().Enqueue(new UnequipItemAction(_player, slot));
+				_player.Get<ControllerComponent>().Enqueue(new UnequipItemAction(_player, slot));
 			} else {
 				var items = _inventory.Items.Where(i => i.Has<Equipable>() && i.Get<Equipable>().SlotsOccupied.ContainsKey(slot)).ToList();
 				if (items.Count > 0)
@@ -86,7 +86,7 @@ namespace SKR.UI.Menus {
 			}
 
 			if (canEquip)
-				_player.Get<ActorComponent>().Enqueue(new EquipItemAction(_player, item, slot));
+				_player.Get<ControllerComponent>().Enqueue(new EquipItemAction(_player, item, slot));
 		}
 
 		protected override void OnKeyPressed(KeyboardData keyData) {

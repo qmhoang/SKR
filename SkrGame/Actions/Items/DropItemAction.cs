@@ -14,7 +14,7 @@ namespace SkrGame.Actions.Items {
 
 		public DropItemAction(Entity entity, Entity item, int amount = 1)
 				: base(entity, item) {
-			Contract.Requires<ArgumentException>(entity.Get<ContainerComponent>().Contains(item));
+			Contract.Requires<ArgumentException>(entity.Get<ItemContainerComponent>().Contains(item));
 			this._amount = amount;
 		}
 
@@ -44,7 +44,7 @@ namespace SkrGame.Actions.Items {
 				if (Item.Has<VisibleComponent>()) {
 					Item.Get<VisibleComponent>().Reset();
 				}
-				Entity.Get<ContainerComponent>().Remove(Item);
+				Entity.Get<ItemContainerComponent>().Remove(Item);
 				World.Log.NormalFormat("{0} drops {1}.", EntityName, ItemName);
 			}
 			return ActionResult.Success;

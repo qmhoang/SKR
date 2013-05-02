@@ -62,7 +62,7 @@ namespace SkrGame.Actions.Movement {
 				(_current == Posture.Prone && _posture == Posture.Run)) {
 
 				SetPosture(Posture.Crouch);
-				Entity.Get<ActorComponent>().Enqueue(new ChangePostureAction(Entity, _posture));
+				Entity.Get<ControllerComponent>().Enqueue(new ChangePostureAction(Entity, _posture));
 				return ActionResult.Success;
 			}
 			// stand -> prone and run -> prone

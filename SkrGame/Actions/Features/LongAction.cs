@@ -27,7 +27,7 @@ namespace SkrGame.Actions.Features {
 
 		public override int APCost {
 			get {
-				var actionPointPerTurn = Entity.Get<ActorComponent>().AP.ActionPointPerTurn;
+				var actionPointPerTurn = Entity.Get<ControllerComponent>().AP.ActionPointPerTurn;
 				return LengthInAP < actionPointPerTurn ? LengthInAP : actionPointPerTurn;
 			}
 		}
@@ -38,10 +38,10 @@ namespace SkrGame.Actions.Features {
 				if (result == ActionResult.Aborted || result == ActionResult.Failed) {
 					return result;
 				} else if (result == ActionResult.SuccessNoTime) { // prevents infinite queuing
-					Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity, LengthInAP - APCost, OnRepeat, OnFinish));
+					Entity.Get<ControllerComponent>().Enqueue(new LongAction(Entity, LengthInAP - APCost, OnRepeat, OnFinish));
 					return ActionResult.Success;
 				} else {
-					Entity.Get<ActorComponent>().Enqueue(new LongAction(Entity, LengthInAP - APCost, OnRepeat, OnFinish));
+					Entity.Get<ControllerComponent>().Enqueue(new LongAction(Entity, LengthInAP - APCost, OnRepeat, OnFinish));
 					return result;
 				}
 			}

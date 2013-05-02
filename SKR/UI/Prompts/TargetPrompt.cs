@@ -41,7 +41,7 @@ namespace SKR.UI.Prompts {
 			if ((!(sender is MapPanel)))
 				return;
 			var mapPanel = (MapPanel)sender;
-			var pointList = Bresenham.GeneratePointsFromLine(_origin, _selectedPosition).ToList();
+			var pointList = Bresenham.GeneratePointsFromLine(_origin, _selectedPosition, false).ToList();
 
 			bool path = true;
 

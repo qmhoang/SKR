@@ -230,7 +230,7 @@ namespace SKRTests.Actions.Combat {
 			Assert.AreEqual(PistolAmmo.Get<Item>().Amount, 20);
 
 			// there should be no dropped ammo
-			Assert.IsTrue(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ContainerComponent>().Contains(e)).IsEmpty());
+			Assert.IsTrue(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ItemContainerComponent>().Contains(e)).IsEmpty());
 		}
 
 		[Test]
@@ -246,9 +246,9 @@ namespace SKRTests.Actions.Combat {
 			Assert.AreEqual(PistolAmmo.Get<Item>().Amount, 20);
 
 			// check for dropped ammo
-			Assert.IsFalse(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ContainerComponent>().Contains(e)).IsEmpty());
+			Assert.IsFalse(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ItemContainerComponent>().Contains(e)).IsEmpty());
 
-			var dropped = Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).First(e => !Entity.Get<ContainerComponent>().Contains(e));
+			var dropped = Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).First(e => !Entity.Get<ItemContainerComponent>().Contains(e));
 			Assert.AreEqual(dropped.Get<Item>().Amount, 10);
 		}
 
@@ -267,9 +267,9 @@ namespace SKRTests.Actions.Combat {
 			Assert.AreEqual(PistolAmmo.Get<Item>().Amount, 20);
 
 			// check for dropped ammo
-			Assert.IsFalse(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ContainerComponent>().Contains(e)).IsEmpty());
+			Assert.IsFalse(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ItemContainerComponent>().Contains(e)).IsEmpty());
 
-			var dropped = Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).First(e => !Entity.Get<ContainerComponent>().Contains(e));
+			var dropped = Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).First(e => !Entity.Get<ItemContainerComponent>().Contains(e));
 			Assert.AreEqual(dropped.Get<Item>().Amount, 2);
 		}
 
@@ -288,11 +288,11 @@ namespace SKRTests.Actions.Combat {
 			Assert.AreEqual(Pistol.Get<RangeComponent>().ShotsRemaining, 4);
 
 			// we used all of our ammo
-			Assert.IsFalse(Entity.Get<ContainerComponent>().Contains(PistolAmmo));
+			Assert.IsFalse(Entity.Get<ItemContainerComponent>().Contains(PistolAmmo));
 			Assert.IsFalse(EntityManager.Contains(PistolAmmo));	
 
 			// no dropped ammo
-			Assert.IsTrue(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ContainerComponent>().Contains(e)).IsEmpty());
+			Assert.IsTrue(Level.GetEntitiesAt<AmmoComponent>(Entity.Get<GameObject>().Location).Where(e => !Entity.Get<ItemContainerComponent>().Contains(e)).IsEmpty());
 		}
 
 		[Test]
@@ -319,8 +319,8 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Revolver, RevolverAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
-				Entity.Get<ActorComponent>().NextAction().OnProcess();
+			while (Entity.Get<ControllerComponent>().Controller.HasActionsQueued) {
+				Entity.Get<ControllerComponent>().NextAction().OnProcess();
 			}
 
 			Assert.AreEqual(Revolver.Get<RangeComponent>().ShotsRemaining, 10);
@@ -338,8 +338,8 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Revolver, RevolverAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
-				Entity.Get<ActorComponent>().NextAction().OnProcess();
+			while (Entity.Get<ControllerComponent>().Controller.HasActionsQueued) {
+				Entity.Get<ControllerComponent>().NextAction().OnProcess();
 			}
 
 			Assert.AreEqual(Revolver.Get<RangeComponent>().ShotsRemaining, 10);
@@ -358,14 +358,14 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Revolver, RevolverAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
-				Entity.Get<ActorComponent>().NextAction().OnProcess();
+			while (Entity.Get<ControllerComponent>().Controller.HasActionsQueued) {
+				Entity.Get<ControllerComponent>().NextAction().OnProcess();
 			}
 
 			Assert.AreEqual(Revolver.Get<RangeComponent>().ShotsRemaining, 4);
 
 			// we used all of our ammo
-			Assert.IsFalse(Entity.Get<ContainerComponent>().Contains(RevolverAmmo));
+			Assert.IsFalse(Entity.Get<ItemContainerComponent>().Contains(RevolverAmmo));
 			Assert.IsFalse(EntityManager.Contains(RevolverAmmo));
 		}
 
@@ -380,8 +380,8 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Shotgun, ShotgunAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
-				Entity.Get<ActorComponent>().NextAction().OnProcess();
+			while (Entity.Get<ControllerComponent>().Controller.HasActionsQueued) {
+				Entity.Get<ControllerComponent>().NextAction().OnProcess();
 			}
 
 			Assert.AreEqual(Shotgun.Get<RangeComponent>().ShotsRemaining, 11);
@@ -400,14 +400,14 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Shotgun, ShotgunAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
-				Entity.Get<ActorComponent>().NextAction().OnProcess();
+			while (Entity.Get<ControllerComponent>().Controller.HasActionsQueued) {
+				Entity.Get<ControllerComponent>().NextAction().OnProcess();
 			}
 
 			Assert.AreEqual(Shotgun.Get<RangeComponent>().ShotsRemaining, 4);
 
 			// we used all of our ammo
-			Assert.IsFalse(Entity.Get<ContainerComponent>().Contains(ShotgunAmmo));
+			Assert.IsFalse(Entity.Get<ItemContainerComponent>().Contains(ShotgunAmmo));
 			Assert.IsFalse(EntityManager.Contains(ShotgunAmmo));
 		}
 
@@ -420,8 +420,8 @@ namespace SKRTests.Actions.Combat {
 
 			new ReloadAction(Entity, Shotgun, ShotgunAmmo).OnProcess();
 
-			while (Entity.Get<ActorComponent>().Controller.HasActionsQueued) {
-				Entity.Get<ActorComponent>().NextAction().OnProcess();
+			while (Entity.Get<ControllerComponent>().Controller.HasActionsQueued) {
+				Entity.Get<ControllerComponent>().NextAction().OnProcess();
 			}
 
 			Assert.AreEqual(Shotgun.Get<RangeComponent>().ShotsRemaining, 11);

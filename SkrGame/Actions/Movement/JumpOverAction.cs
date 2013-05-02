@@ -74,8 +74,8 @@ namespace SkrGame.Actions.Movement {
 				Entity.Get<GameObject>().Location = _landedLocation;
 
 				// move all items in inventory with entity
-				if (Entity.Has<ContainerComponent>()) {
-					foreach (var item in Entity.Get<ContainerComponent>().Items) {
+				if (Entity.Has<ItemContainerComponent>()) {
+					foreach (var item in Entity.Get<ItemContainerComponent>().Items) {
 						if (item.Has<GameObject>())
 							item.Get<GameObject>().Location = _landedLocation;
 					}

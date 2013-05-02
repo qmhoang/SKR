@@ -40,7 +40,7 @@ namespace SkrGame.Actions.Movement {
 			}
 
 			if (movementAllowed) {
-				Entity.Get<ActorComponent>().Enqueue(new WalkAction(Entity, _direction));
+				Entity.Get<ControllerComponent>().Enqueue(new WalkAction(Entity, _direction));
 				return ActionResult.Success;
 			} else {
 				return ActionResult.Failed;				

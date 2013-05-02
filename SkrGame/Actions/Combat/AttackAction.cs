@@ -19,19 +19,19 @@ namespace SkrGame.Actions.Combat {
 
 		public Entity Defender { get; private set; }
 		public Entity Weapon { get; private set; }
-		public DefendComponent.Appendage BodyPartTargetted { get; private set; }
+		public BodyComponent.Appendage BodyPartTargetted { get; private set; }
 
-		protected AttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bodyPartTargetted, bool targettingPenalty) : base(attacker) {
+		protected AttackAction(Entity attacker, Entity defender, Entity weapon, BodyComponent.Appendage bodyPartTargetted, bool targettingPenalty) : base(attacker) {
 			Contract.Requires<ArgumentNullException>(attacker != null, "attacker");
 			Contract.Requires<ArgumentNullException>(weapon != null, "weapon");
 			Contract.Requires<ArgumentNullException>(defender != null, "defender");
 			Contract.Requires<ArgumentNullException>(bodyPartTargetted != null, "bodyPartTargetted");
 
-			Contract.Requires<ArgumentException>(attacker.Has<ActorComponent>(), "attacker doesn't have a location");
+			Contract.Requires<ArgumentException>(attacker.Has<ControllerComponent>(), "attacker doesn't have a location");
 			Contract.Requires<ArgumentException>(attacker.Has<GameObject>(), "attacker doesn't have a location");
-			Contract.Requires<ArgumentException>(defender.Has<DefendComponent>(), "defender cannot be attacked");
+			Contract.Requires<ArgumentException>(defender.Has<BodyComponent>(), "defender cannot be attacked");
 			Contract.Requires<ArgumentException>(defender.Has<GameObject>(), "defender doesn't have a location");
-			Contract.Requires<ArgumentException>(defender.Get<DefendComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
+			Contract.Requires<ArgumentException>(defender.Get<BodyComponent>() == bodyPartTargetted.Owner, "defender does not contain supplied body part");
 			Contract.Requires<ArgumentException>(defender.Get<GameObject>().Level == attacker.Get<GameObject>().Level, "attacker is not on the same level as defender");
 			Contract.Requires<ArgumentException>(defender.Id == bodyPartTargetted.Owner.OwnerUId);
 
@@ -48,8 +48,8 @@ namespace SkrGame.Actions.Combat {
 		public bool TargettingPenalty { get; private set; }
 
 		public CombatEventResult Attack(string attackerName, string defenderName, double easeOfAttack, double easeOfDodging = World.Mean, bool dodge = true, bool block = true, bool parry = true) {
-			if (Defender.Has<ActorComponent>()) {
-				Defender.Get<ActorComponent>().Disturb();
+			if (Defender.Has<ControllerComponent>()) {
+				Defender.Get<ControllerComponent>().Disturb();
 			}
 
 			double atkRoll = World.SkillRoll();
