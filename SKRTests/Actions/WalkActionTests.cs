@@ -90,41 +90,41 @@ namespace SKRTests.Actions {
 
 		[Test]
 		public void TestMoveContainer() {
-			Entity.Get<ContainerComponent>().Add(Item0);
-			Entity.Get<ContainerComponent>().Add(Item1);
+			Entity.Get<ItemContainerComponent>().Add(Item0);
+			Entity.Get<ItemContainerComponent>().Add(Item1);
 
 			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<GameObject>().Location));
+			Entity.Get<ItemContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<GameObject>().Location));
 		}
 
 		[Test]
 		public void TestMoveContainerAlot() {
-			Entity.Get<ContainerComponent>().Add(Item0);
-			Entity.Get<ContainerComponent>().Add(Item1);
+			Entity.Get<ItemContainerComponent>().Add(Item0);
+			Entity.Get<ItemContainerComponent>().Add(Item1);
 
 			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S + Direction.S, e.Get<GameObject>().Location));
+			Entity.Get<ItemContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S + Direction.S, e.Get<GameObject>().Location));
 		}
 
 		[Test]
 		public void TestRemovedItemDoesntMove() {
-			Entity.Get<ContainerComponent>().Add(Item0);
-			Entity.Get<ContainerComponent>().Add(Item1);
+			Entity.Get<ItemContainerComponent>().Add(Item0);
+			Entity.Get<ItemContainerComponent>().Add(Item1);
 
 			var startingPoint = Entity.Get<GameObject>().Location;
 
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<GameObject>().Location));
+			Entity.Get<ItemContainerComponent>().Items.Each(e => Assert.AreEqual(startingPoint + Direction.S, e.Get<GameObject>().Location));
 
-			Entity.Get<ContainerComponent>().Remove(Item0);
+			Entity.Get<ItemContainerComponent>().Remove(Item0);
 
 			Move(Direction.S);
 
@@ -157,7 +157,7 @@ namespace SKRTests.Actions {
 
 			Move(Direction.S);
 
-			Entity.Get<ContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<GameObject>().Location, startingPoint + Direction.S));
+			Entity.Get<ItemContainerComponent>().Items.Each(e => Assert.AreEqual(e.Get<GameObject>().Location, startingPoint + Direction.S));
 
 			Entity.Get<EquipmentComponent>().Unequip("slot1");
 

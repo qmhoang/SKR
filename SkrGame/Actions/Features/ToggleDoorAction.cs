@@ -17,9 +17,9 @@ namespace SkrGame.Actions.Features {
 
 		public override ActionResult OnProcess() {
 			if (Feature.Get<Opening>().Status == Opening.OpeningStatus.Closed)
-				Entity.Get<ActorComponent>().Enqueue(new OpenDoorAction(Entity, Feature));
+				Entity.Get<ControllerComponent>().Enqueue(new OpenDoorAction(Entity, Feature));
 			else
-				Entity.Get<ActorComponent>().Enqueue(new CloseDoorAction(Entity, Feature));
+				Entity.Get<ControllerComponent>().Enqueue(new CloseDoorAction(Entity, Feature));
 			return ActionResult.SuccessNoTime;
 		}
 	}

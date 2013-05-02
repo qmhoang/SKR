@@ -11,7 +11,7 @@ namespace SkrGame.Actions.Items {
 		public string ItemName { get { return Identifier.GetNameOrId(Item); } }
 		protected AbstractItemAction(Entity entity, Entity item) : base(entity) {
 			Contract.Requires<ArgumentNullException>(item != null, "item");
-			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
+			Contract.Requires<ArgumentException>(entity.Has<ItemContainerComponent>());
 			Item = item;
 		}
 

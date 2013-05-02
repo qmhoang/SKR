@@ -29,7 +29,7 @@ namespace SKR.UI.Gameplay {
 			int i = 1;
 			Canvas.PrintString(1, i++, _player.Get<Identifier>().Name);
 			i++;
-			PrintAttribute(1, i++, _player.Get<DefendComponent>().Health);
+			PrintAttribute(1, i++, _player.Get<BodyComponent>().Health);
 			PrintAttribute(1, i++, person.Stats["stat_stamina"]);
 			PrintAttribute(1, i++, person.Stats["stat_composure"]);
 			i++;

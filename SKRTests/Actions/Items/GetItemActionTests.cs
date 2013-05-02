@@ -9,16 +9,16 @@ namespace SKRTests.Actions.Items {
 	public class GetItemActionTests : ItemTestsHelper {
 		[Test]
 		public void TestPickUpItem() {
-			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 0);
+			Assert.AreEqual(Entity.Get<ItemContainerComponent>().Count, 0);
 			Assert.AreEqual(Item0.Get<VisibleComponent>().VisibilityIndex, 10);
 			Assert.AreEqual(Item0.Get<GameObject>().Location, new Point(-1, -1));
 
 			PickUp(Item0);
 
-			Assert.AreEqual(Entity.Get<ContainerComponent>().Count, 1);
+			Assert.AreEqual(Entity.Get<ItemContainerComponent>().Count, 1);
 			Assert.AreEqual(Item0.Get<GameObject>().Location, Entity.Get<GameObject>().Location);
 			Assert.AreEqual(Item0.Get<VisibleComponent>().VisibilityIndex, -1);
-			CollectionAssert.Contains(Entity.Get<ContainerComponent>().Items, Item0);
+			CollectionAssert.Contains(Entity.Get<ItemContainerComponent>().Items, Item0);
 		}
 
 		[Test]
@@ -28,13 +28,13 @@ namespace SKRTests.Actions.Items {
 
 			PickUp(StackedItem0, 3);
 
-			Assert.AreEqual(1, Entity.Get<ContainerComponent>().Count);
-			Assert.AreEqual(3, Entity.Get<ContainerComponent>().TotalCount);
+			Assert.AreEqual(1, Entity.Get<ItemContainerComponent>().Count);
+			Assert.AreEqual(3, Entity.Get<ItemContainerComponent>().TotalCount);
 
 			PickUp(StackedItem1);
 
-			Assert.AreEqual(1, Entity.Get<ContainerComponent>().Count);
-			Assert.AreEqual(4, Entity.Get<ContainerComponent>().TotalCount);
+			Assert.AreEqual(1, Entity.Get<ItemContainerComponent>().Count);
+			Assert.AreEqual(4, Entity.Get<ItemContainerComponent>().TotalCount);
 			Assert.AreEqual(4, StackedItem0.Get<Item>().Amount);
 			Assert.AreEqual(2, StackedItem1.Get<Item>().Amount);
 

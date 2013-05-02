@@ -26,7 +26,7 @@ namespace SkrGame.Actions.Features {
 			var result = Repeat(Entity);
 
 			if ((result == ActionResult.Success || result == ActionResult.SuccessNoTime) && (Count > 1)) {
-				Entity.Get<ActorComponent>().Enqueue(new RepeatingAction(Entity, Count - 1, Repeat, APCostFunc));
+				Entity.Get<ControllerComponent>().Enqueue(new RepeatingAction(Entity, Count - 1, Repeat, APCostFunc));
 			}
 
 			return result;			

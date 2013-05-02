@@ -35,7 +35,7 @@ namespace SkrGame.Universe.Factories {
 			Contract.Requires<ArgumentNullException>(user != null, "user");
 			Contract.Requires<ArgumentException>(door.Has<Opening>());
 			if (door.Get<Opening>().Status == Opening.OpeningStatus.Closed) {
-				user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, door));	
+				user.Get<ControllerComponent>().Enqueue(new OpenDoorAction(user, door));	
 				return OnBump.BumpResult.BlockMovement;
 			} else {
 				return OnBump.BumpResult.NormalMovement;
@@ -45,7 +45,7 @@ namespace SkrGame.Universe.Factories {
 		public static OnBump.BumpResult WindowOnBump(Entity user, Entity door) {
 			Contract.Requires<ArgumentNullException>(door != null, "door");
 			Contract.Requires<ArgumentNullException>(user != null, "user");
-			user.Get<ActorComponent>().Enqueue(new ToggleDoorAction(user, door));
+			user.Get<ControllerComponent>().Enqueue(new ToggleDoorAction(user, door));
 			return OnBump.BumpResult.BlockMovement;
 		}
 
@@ -59,9 +59,9 @@ namespace SkrGame.Universe.Factories {
 
 			ef.Inherits("LockedDoor", "Door",
 						new LockedFeature(0),
-						new DefendComponent(10, new List<DefendComponent.Appendage>
+						new BodyComponent(10, new List<BodyComponent.Appendage>
 						                        {
-						                        		new DefendComponent.Appendage("Lock", 10, 10, -World.StandardDeviation * 2)
+						                        		new BodyComponent.Appendage("Lock", 10, 10, -World.StandardDeviation * 2)
 						                        }));
 
 			ef.Inherits("WALL_BRICK_DARK_DOOR_HORZ", "Door",
@@ -284,7 +284,7 @@ namespace SkrGame.Universe.Factories {
 						new OnBump(delegate (Entity user, Entity entity)
 						           	{
 										Direction d= entity.Get<GameObject>().Location - user.Get<GameObject>().Location;
-										user.Get<ActorComponent>().Enqueue(new JumpOverAction(user, d));
+										user.Get<ControllerComponent>().Enqueue(new JumpOverAction(user, d));
 						           		return OnBump.BumpResult.BlockMovement;
 						           	}));
 

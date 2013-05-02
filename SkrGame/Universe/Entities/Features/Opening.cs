@@ -83,7 +83,7 @@ namespace SkrGame.Universe.Entities.Features {
 				new UseAction("Open door", (user, featureEntity) =>
 				                           	{
 				                           		if (featureEntity.Has<Opening>())
-				                           			user.Get<ActorComponent>().Enqueue(new OpenDoorAction(user, featureEntity));
+				                           			user.Get<ControllerComponent>().Enqueue(new OpenDoorAction(user, featureEntity));
 				                           		else {
 				                           			Logger.WarnFormat("{0} has no {1} component.", Identifier.GetNameOrId(featureEntity), (typeof(Opening)));
 				                           		}
@@ -93,7 +93,7 @@ namespace SkrGame.Universe.Entities.Features {
 				new UseAction("Close door", (user, featureEntity) =>
 				                            	{
 				                            		if (featureEntity.Has<Opening>())
-				                            			user.Get<ActorComponent>().Enqueue(new CloseDoorAction(user, featureEntity));
+				                            			user.Get<ControllerComponent>().Enqueue(new CloseDoorAction(user, featureEntity));
 													else {
 														Logger.WarnFormat("{0} has no {1} component.", Identifier.GetNameOrId(featureEntity), (typeof(Opening)));
 													}

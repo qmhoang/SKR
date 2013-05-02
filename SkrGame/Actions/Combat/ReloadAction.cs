@@ -20,7 +20,7 @@ namespace SkrGame.Actions.Combat {
 			Contract.Requires<ArgumentException>(weapon.Has<RangeComponent>());
 			Contract.Requires<ArgumentException>(ammo.Has<AmmoComponent>());
 			Contract.Requires<ArgumentException>(entity.Has<GameObject>());
-			Contract.Requires<ArgumentException>(entity.Has<ActorComponent>());
+			Contract.Requires<ArgumentException>(entity.Has<ControllerComponent>());
 			Contract.Requires<ArgumentException>(weapon.Get<RangeComponent>().AmmoCaliber == ammo.Get<AmmoComponent>().Caliber);
 
 			this.weapon = weapon;
@@ -67,8 +67,8 @@ namespace SkrGame.Actions.Combat {
 						rangeWeapon.ShotsRemaining += ammunition.Amount;
 						ammunition.Amount -= weapon.Get<Item>().Amount;
 
-						if (Entity.Has<ContainerComponent>()) {
-							Entity.Get<ContainerComponent>().Remove(ammo);
+						if (Entity.Has<ItemContainerComponent>()) {
+							Entity.Get<ItemContainerComponent>().Remove(ammo);
 						}
 
 						World.EntityManager.Remove(ammo);
@@ -78,8 +78,8 @@ namespace SkrGame.Actions.Combat {
 				} else {
 					rangeWeapon.ShotsRemaining++;
 
-					if (Entity.Has<ContainerComponent>()) {
-						Entity.Get<ContainerComponent>().Remove(ammo);
+					if (Entity.Has<ItemContainerComponent>()) {
+						Entity.Get<ItemContainerComponent>().Remove(ammo);
 					}
 
 					World.EntityManager.Remove(ammo);
@@ -95,25 +95,25 @@ namespace SkrGame.Actions.Combat {
 					if (ammunition.Amount > 1) {
 						ammunition.Amount--;						
 					} else {
-						if (Entity.Has<ContainerComponent>()) {
-							Entity.Get<ContainerComponent>().Remove(ammo);
+						if (Entity.Has<ItemContainerComponent>()) {
+							Entity.Get<ItemContainerComponent>().Remove(ammo);
 						}
 
 						World.EntityManager.Remove(ammo);
 					}
 				} else {
-					if (Entity.Has<ContainerComponent>()) {
-						Entity.Get<ContainerComponent>().Remove(ammo);
+					if (Entity.Has<ItemContainerComponent>()) {
+						Entity.Get<ItemContainerComponent>().Remove(ammo);
 					}
 
 					World.EntityManager.Remove(ammo);
 				}
 
 				if (rangeWeapon.ShotsRemaining < rangeWeapon.Shots + (rangeWeapon.OneInTheChamber ? 1 : 0)) {
-					var ammos = Entity.Get<ContainerComponent>().Items.FilteredBy<Item, AmmoComponent>().Where(e => e.Get<AmmoComponent>().Caliber == rangeWeapon.AmmoCaliber);
+					var ammos = Entity.Get<ItemContainerComponent>().Items.FilteredBy<Item, AmmoComponent>().Where(e => e.Get<AmmoComponent>().Caliber == rangeWeapon.AmmoCaliber);
 					var enumerator = ammos.GetEnumerator();
 					while (enumerator.MoveNext()) {
-						Entity.Get<ActorComponent>().Enqueue(new ReloadAction(Entity, weapon, enumerator.Current));
+						Entity.Get<ControllerComponent>().Enqueue(new ReloadAction(Entity, weapon, enumerator.Current));
 					}
 				}
 				

@@ -18,8 +18,8 @@ namespace SkrGame.Effects {
 				var person = Holder.Entity.Get<Creature>();
 				int weight = 0;
 
-				if (Holder.Entity.Has<ContainerComponent>()) {
-					weight += Holder.Entity.Get<ContainerComponent>().Items.Sum(i => i.Get<Item>().Weight);
+				if (Holder.Entity.Has<ItemContainerComponent>()) {
+					weight += Holder.Entity.Get<ItemContainerComponent>().Items.Sum(i => i.Get<Item>().Weight);
 				}
 
 				if (Holder.Entity.Has<EquipmentComponent>()) {
@@ -28,7 +28,7 @@ namespace SkrGame.Effects {
 
 				person.EncumbrancePenalty = (double) weight / person.Lift;
 			} else {
-				Logger.WarnFormat("{0} doesn't have person component.", Identifier.GetNameOrId(Holder.Entity));				
+				Logger.WarnFormat("{0} doesn't have creature component.", Identifier.GetNameOrId(Holder.Entity));				
 			}
 		}
 	}

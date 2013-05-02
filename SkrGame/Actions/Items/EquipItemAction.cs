@@ -17,12 +17,12 @@ namespace SkrGame.Actions.Items {
 			Contract.Requires<ArgumentNullException>(item != null, "item");
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty.");
 			Contract.Requires<ArgumentException>(entity.Has<EquipmentComponent>());
-			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
+			Contract.Requires<ArgumentException>(entity.Has<ItemContainerComponent>());
 			Contract.Requires<ArgumentException>(item.Has<Item>());
 			Contract.Requires<ArgumentException>(item.Has<Equipable>());
 			Contract.Requires<ArgumentException>(item.Get<Equipable>().SlotsOccupied.ContainsKey(slot));
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().ContainSlot(slot), "Entity doesn't have slot.");
-			Contract.Requires<ArgumentException>(force || entity.Get<ContainerComponent>().Contains(item), "Entity doesn't have item in inventory.");
+			Contract.Requires<ArgumentException>(force || entity.Get<ItemContainerComponent>().Contains(item), "Entity doesn't have item in inventory.");
 
 			this._slot = slot;
 			this._force = force;
@@ -33,12 +33,12 @@ namespace SkrGame.Actions.Items {
 		}
 
 		public override ActionResult OnProcess() {
-			if (!Entity.Get<ContainerComponent>().Contains(Item) && !_force) {
+			if (!Entity.Get<ItemContainerComponent>().Contains(Item) && !_force) {
 				World.Log.Aborted("You cannot equip an item you don't have in your inventory");
 				return ActionResult.Aborted;
 			}
 
-			Entity.Get<ContainerComponent>().Remove(Item);
+			Entity.Get<ItemContainerComponent>().Remove(Item);
 			Entity.Get<EquipmentComponent>().Equip(_slot, Item);
 
 			// skill bonuses

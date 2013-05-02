@@ -17,7 +17,7 @@ namespace SkrGame.Gameplay.Combat {
 		public Entity Attacker { get; private set; }
 		public Entity Defender { get; private set; }
 		public Entity Weapon { get; private set; }
-		public DefendComponent.Appendage BodyPart { get; private set; }
+		public BodyComponent.Appendage BodyPart { get; private set; }
 
 		public CombatEventResult Result { get; private set; }
 
@@ -25,7 +25,7 @@ namespace SkrGame.Gameplay.Combat {
 		public int DamageResisted { get; private set; }
 		public int DamageTaken { get; private set; }
 
-		public CombatEventArgs(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bp, CombatEventResult result = CombatEventResult.Miss, int damage = 0, int damageResisted = 0, int damageTaken = 0) {
+		public CombatEventArgs(Entity attacker, Entity defender, Entity weapon, BodyComponent.Appendage bp, CombatEventResult result = CombatEventResult.Miss, int damage = 0, int damageResisted = 0, int damageTaken = 0) {
 			Attacker = attacker;
 			Defender = defender;
 			Weapon = weapon;

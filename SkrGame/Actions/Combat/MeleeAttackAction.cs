@@ -13,7 +13,7 @@ using SkrGame.Universe.Entities.Items.Equipables;
 
 namespace SkrGame.Actions.Combat {
 	public class MeleeAttackAction : AttackAction {
-		public MeleeAttackAction(Entity attacker, Entity defender, Entity weapon, DefendComponent.Appendage bodyPartTargetted, bool targettingPenalty = false)
+		public MeleeAttackAction(Entity attacker, Entity defender, Entity weapon, BodyComponent.Appendage bodyPartTargetted, bool targettingPenalty = false)
 				: base(attacker, defender, weapon, bodyPartTargetted, targettingPenalty) {
 			Contract.Requires<ArgumentException>(weapon.Has<MeleeComponent>(), "weapon cannot melee attack");
 		}
@@ -31,7 +31,7 @@ namespace SkrGame.Actions.Combat {
 			var melee = Weapon.Get<MeleeComponent>();
 
 			//apply skill
-			if (Attacker.Has<ActorComponent>()) {
+			if (Attacker.Has<ControllerComponent>()) {
 				hitBonus += Attacker.Get<Creature>().Skills[melee.Skill];
 			} else {
 				hitBonus += World.Mean;

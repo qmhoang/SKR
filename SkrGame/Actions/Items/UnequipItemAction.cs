@@ -17,7 +17,7 @@ namespace SkrGame.Actions.Items {
 			Contract.Requires<ArgumentNullException>(entity != null, "entity");
 			Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(slot), "string \"slot\" cannot be null or empty.");
 			Contract.Requires<ArgumentException>(entity.Has<EquipmentComponent>());
-			Contract.Requires<ArgumentException>(entity.Has<ContainerComponent>());
+			Contract.Requires<ArgumentException>(entity.Has<ItemContainerComponent>());
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().ContainSlot(slot), "Entity doesn't have slot.");
 			Contract.Requires<ArgumentException>(entity.Get<EquipmentComponent>().IsSlotEquipped(slot), "No item equipped in slot.");
 
@@ -35,7 +35,7 @@ namespace SkrGame.Actions.Items {
 			Entity.Get<EquipmentComponent>().Unequip(_slot);
 
 			if (removed != null) {
-				Entity.Get<ContainerComponent>().Add(removed);
+				Entity.Get<ItemContainerComponent>().Add(removed);
 				_apCost = removed.Get<Item>().Size * 10;
 
 				if (removed.Has<VisibleComponent>()) {

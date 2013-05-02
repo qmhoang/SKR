@@ -50,7 +50,7 @@ namespace SkrGame.Universe.Entities.Controllers {
 				var distance = location.Location.DistanceTo(target);
 
 				if (distance <= 1.5)
-					return new MeleeAttackAction(Holder.Entity, player, Holder.Entity, player.Get<DefendComponent>().GetRandomPart());
+					return new MeleeAttackAction(Holder.Entity, player, Holder.Entity, player.Get<BodyComponent>().GetRandomPart());
 				else {
 					_pf.Compute(location.X, location.Y, target.X, target.Y);
 					int nx = location.X, ny = location.Y;
