@@ -41,8 +41,11 @@ Long term goals:
 * appliances - breaks after x number of uses
 * appliance logic - making food ala sims style
 * features give coverage at certain postures/heights.  They can also block vision when crouched/prone.
+	* bullets can be blocked if aimed too low (at feet when there's a table covering it)
 * influence / appearances? 
 * batteries
+* pushable items
+	* strength requirement
 
 Ideas:
 * safety needs-based stat? 
@@ -62,3 +65,6 @@ Ideas:
 	* occupation: police, homeless, etc
 * layers in the world, 2nd floor will display stuff on the 1st floor that can be seen (through a window or at the edge of a layer transition)	
 * should actions have a lower and upper APCost bound?  Actions that are longer should use Long/Interval/Repeating actions?
+* LOD AI system
+* Ogui
+	* FrameBorder should inflate widget and move it -1, -1 (not moving label)
