@@ -143,23 +143,22 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\DEngine\DEngine\DEngine.csproj">
-      <Project>{FAA2CEF2-1844-4043-A582-AD4CDE346ADD}</Project>
+      <Project>{faa2cef2-1844-4043-a582-ad4cde346add}</Project>
       <Name>DEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Ogui\Ogui.csproj">
-      <Project>{EA31E2EA-686F-4B95-9FE1-34EC5015794B}</Project>
+      <Project>{ea31e2ea-686f-4b95-9fe1-34ec5015794b}</Project>
       <Name>Ogui</Name>
     </ProjectReference>
     <ProjectReference Include="..\SkrGame\SkrGame.csproj">
-      <Project>{0ADBAB4C-409B-4E65-9444-B7D677B560FA}</Project>
+      <Project>{0adbab4c-409b-4e65-9444-b7d677b560fa}</Project>
       <Name>SkrGame</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
